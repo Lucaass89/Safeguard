@@ -1,0 +1,116 @@
+:root {
+  --sg-bg: #0b1220;
+  --sg-surface: #131c2e;
+  --sg-text: #eef2f6;
+  --sg-muted: #8d98ab;
+  --sg-line: rgb(255 255 255 / 8%);
+
+  --sg-teal: #2a9a96;
+  --sg-blue: #4a74b8;
+  --sg-accent: var(--sg-teal);
+
+  --sg-green: #2f9e6b;
+  --sg-yellow: #c4922a;
+  --sg-red: #d16b5a;
+
+  --sg-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sg-radius: 12px;
+  --sg-radius-sm: 10px;
+  --sg-ease: 200ms ease;
+
+  font-family: var(--sg-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--sg-text);
+  background: var(--sg-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+  accent-color: var(--sg-accent);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--sg-bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--sg-teal) 28%, transparent);
+  color: var(--sg-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 3px;
+}
+
+html.lectura-amplia {
+  --sg-bg: #05070d;
+  --sg-surface: #101722;
+  --sg-text: #ffffff;
+  --sg-muted: #d7deea;
+  --sg-line: rgb(255 255 255 / 34%);
+  --sg-green: #5ddea3;
+  --sg-yellow: #ffd15c;
+  --sg-red: #ff9b8a;
+}
+
+html.lectura-amplia body {
+  zoom: 1.15;
+  line-height: 1.6;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--sg-text);
+  caret-color: var(--sg-text);
+  box-shadow: 0 0 0 1000px var(--sg-surface) inset;
+  transition: background-color 9999s ease-out;
+}
