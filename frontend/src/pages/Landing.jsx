@@ -162,17 +162,10 @@ function Landing() {
         <section className="products section-pad" id="productos">
           <div className="container section-heading">
             <div>
-              <div className="eyebrow">Dos capas, una defensa</div>
-              <h2>
-                Protección que acompaña
-                <br />
-                <em>cada decisión.</em>
-              </h2>
+              <div className="eyebrow">Lo que vendemos</div>
+              <h2>Productos.</h2>
             </div>
-            <p>
-              No se trata de desconfiar del equipo. Se trata de que nadie tenga
-              que adivinar qué es seguro.
-            </p>
+            <p>PhishGuard se paga por persona. SafeLink es gratis.</p>
           </div>
           <div className="product-list container">
             <article className="product-row product-dark">
