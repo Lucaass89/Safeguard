@@ -21,15 +21,29 @@ function Marca() {
 
 function Marco({ children, interior = false }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
   const { sesion } = useSesion()
 
   useEffect(() => {
+    const id = hash.startsWith('#') ? decodeURIComponent(hash.slice(1)) : ''
+    const destino = id ? document.getElementById(id) : null
+    if (destino) {
+      destino.scrollIntoView()
+      return
+    }
     window.scrollTo(0, 0)
-  }, [pathname])
+  }, [pathname, hash])
 
   function cerrarMenu() {
     setMenuAbierto(false)
+  }
+
+  function alClickAncla(evento) {
+    cerrarMenu()
+    const enlace = evento.currentTarget.getAttribute('href') ?? ''
+    const id = enlace.includes('#') ? enlace.split('#').pop() : ''
+    if (!id || pathname !== '/' || hash !== `#${id}`) return
+    document.getElementById(id)?.scrollIntoView()
   }
 
   return (
@@ -51,13 +65,13 @@ function Marco({ children, interior = false }) {
             <span />
           </button>
           <nav className={menuAbierto ? 'main-nav open' : 'main-nav'} id="main-nav">
-            <Link to="/#solucion" onClick={cerrarMenu}>
+            <Link to="/#solucion" onClick={alClickAncla}>
               La solución
             </Link>
-            <Link to="/#productos" onClick={cerrarMenu}>
+            <Link to="/#productos" onClick={alClickAncla}>
               Productos
             </Link>
-            <Link to="/#proceso" onClick={cerrarMenu}>
+            <Link to="/#proceso" onClick={alClickAncla}>
               Cómo funciona
             </Link>
             {sesion ? (
@@ -91,8 +105,12 @@ function Marco({ children, interior = false }) {
           </Link>
           <p>La seguridad empieza con una mejor decisión.</p>
           <div className="footer-links">
-            <Link to="/#solucion">Solución</Link>
-            <Link to="/#productos">Productos</Link>
+            <Link to="/#solucion" onClick={alClickAncla}>
+              Solución
+            </Link>
+            <Link to="/#productos" onClick={alClickAncla}>
+              Productos
+            </Link>
             <Link to="/ingresar">Ingresar</Link>
           </div>
           <small>© 2026 SafeGuard</small>
