@@ -32,12 +32,20 @@
 }
 
 .sg-landing .site-header {
-  position: absolute;
-  z-index: 5;
+  position: fixed;
+  z-index: 20;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 25px 0;
+  padding: 18px 0;
+  background: rgb(248 251 251 / 92%);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgb(219 230 231 / 80%);
+}
+
+.sg-landing main[id],
+.sg-landing section[id] {
+  scroll-margin-top: 92px;
 }
 
 .sg-landing .nav-wrap,
@@ -1225,7 +1233,7 @@
   .sg-landing .main-nav {
     display: none;
     position: absolute;
-    top: 70px;
+    top: calc(100% + 8px);
     left: 18px;
     right: 18px;
     background: #fff;
