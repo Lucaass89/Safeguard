@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router'
+import Marco from '../components/Marco.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Ingresar.css'
@@ -115,15 +116,18 @@ function Ingresar() {
 
   if (cargando) {
     return (
-      <div className="acceso">
-        <p className="acceso-estado">Verificando tu sesión…</p>
-      </div>
+      <Marco interior>
+        <div className="acceso">
+          <p className="acceso-estado">Verificando tu sesión…</p>
+        </div>
+      </Marco>
     )
   }
 
   if (sesion) return <Navigate to="/panel" replace />
 
   return (
+    <Marco interior>
     <div className="acceso">
       <div className="acceso-caja">
         <h1>{crearCuenta ? 'Crear una cuenta' : 'Ingresar'}</h1>
@@ -212,6 +216,7 @@ function Ingresar() {
         </form>
       </div>
     </div>
+    </Marco>
   )
 }
 

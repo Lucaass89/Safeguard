@@ -1,15 +1,15 @@
-import MarcaNivel from './MarcaNivel.jsx'
-import QueHacer from './QueHacer.jsx'
-import ConsultaFaro from './ConsultaFaro.jsx'
-import './MarcaNivel.css'
-import './QueHacer.css'
-import './ConsultaFaro.css'
+const titulos = {
+  verde: 'Verde: sin señales fuertes',
+  amarillo: 'Amarillo: revisá antes de seguir',
+  rojo: 'Rojo: no lo abras',
+}
 
 function Resultado({ nivel, subtitulo, motivos, children }) {
   return (
     <article className={`resultado nivel-${nivel}`}>
       <p className="resultado-semaforo">
-        <MarcaNivel nivel={nivel} detalle />
+        <span className="resultado-punto" aria-hidden="true" />
+        {titulos[nivel]}
       </p>
       {subtitulo && <p className="resultado-sub">{subtitulo}</p>}
       <ul className="resultado-motivos">
@@ -17,8 +17,6 @@ function Resultado({ nivel, subtitulo, motivos, children }) {
           <li key={motivo}>{motivo}</li>
         ))}
       </ul>
-      {nivel === 'rojo' && <QueHacer />}
-      <ConsultaFaro nivel={nivel} motivos={motivos} />
       {children}
     </article>
   )

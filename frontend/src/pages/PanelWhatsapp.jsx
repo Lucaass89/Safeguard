@@ -34,11 +34,9 @@ function PanelWhatsapp() {
     ])
 
     const final = cerrarWhatsapp(local, amenaza, extra)
-    const resumen = (final.texto || '').replace(/\s+/g, ' ').trim().slice(0, 180)
-    const guardable = resumen ? { ...final, resumen } : final
     setResultado(final)
 
-    const { error: fallo } = await guardarAnalisis(sesion, guardable, 'whatsapp')
+    const { error: fallo } = await guardarAnalisis(sesion, final, 'whatsapp')
     setAnalizando(false)
     if (fallo) {
       setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)
@@ -55,14 +53,9 @@ function PanelWhatsapp() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <div className="panel-nav">
-          <Link className="panel-volver" to="/panel">
-            ← Volver al panel
-          </Link>
-          <Link className="panel-volver" to="/panel/historial">
-            Historial
-          </Link>
-        </div>
+        <Link className="panel-volver" to="/panel">
+          ← Volver al panel
+        </Link>
         <span className="panel-tag">SafeLink</span>
         <h1>Pegar un WhatsApp</h1>
         <p className="panel-lead">

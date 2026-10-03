@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import Marco from '../components/Marco.jsx'
 import './Modulo.css'
 
 const pasos = [
@@ -25,93 +26,92 @@ const pasos = [
 ]
 
 const incluye = [
-  'Dashboard con los riesgos detectados y la evolución de la seguridad en el tiempo.',
-  'Reporte mensual en PDF con gráficos simples, listo para gerencia o directorio.',
-  'Alta y baja de usuarios cubiertos, y cambio de plan cuando la organización crece.',
-  'Plantillas en español, pensadas para la región y no traducidas de otro país.',
-  '100% en la nube: sin instalar software en cada equipo.',
-  'Soporte en español por WhatsApp Business y correo.',
+  ['Tablero', 'Riesgos detectados y cómo evoluciona la seguridad.'],
+  ['PDF mensual', 'Gráficos simples, listos para gerencia o directorio.'],
+  ['Usuarios', 'Alta, baja y cambio de plan cuando la organización crece.'],
+  ['Plantillas', 'En español, pensadas para la región.'],
+  ['En la nube', 'Sin instalar software en cada equipo.'],
+  ['Soporte', 'WhatsApp Business y correo, en español.'],
+]
+
+const precios = [
+  ['1 a 100', '1,00'],
+  ['101 a 300', '0,85'],
+  ['301 a 600', '0,70'],
+  ['Más de 600', '0,55'],
 ]
 
 function Empresas() {
   return (
-    <div className="modulo modulo-empresas">
-      <header className="modulo-header">
-        <span className="modulo-tag">Empresas</span>
-        <h1>PhishGuard</h1>
-        <p className="modulo-lead">
-          Simulación de phishing y concientización para PyMEs e instituciones
-          educativas. El ataque apunta a la persona, no al sistema: PhishGuard
-          entrena ese criterio y te deja evidencia medible para mostrar.
+    <Marco interior>
+      <div className="container pg">
+        <section className="pg-banda">
+          <p className="pg-kicker">Para empresas</p>
+          <div className="pg-banda-cuerpo">
+            <div>
+              <h1>PhishGuard entrena el criterio, no el firewall.</h1>
+              <p>
+                Simulación de phishing para PyMEs e instituciones educativas.
+                El ataque apunta a la persona: queda registro de lo que pasó y
+                una explicación corta, sin sanciones.
+              </p>
+            </div>
+            <Link className="pg-cta" to="/ingresar">
+              Ingresar a PhishGuard
+            </Link>
+          </div>
+        </section>
+
+        <section className="pg-bloque">
+          <h2>De la campaña al aprendizaje</h2>
+          <ol className="pg-riel">
+            {pasos.map((paso, i) => (
+              <li key={paso.titulo}>
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                <h3>{paso.titulo}</h3>
+                <p>{paso.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="pg-bloque pg-incluye">
+          <h2>Qué queda en la organización</h2>
+          <dl>
+            {incluye.map(([titulo, texto]) => (
+              <div key={titulo}>
+                <dt>{titulo}</dt>
+                <dd>{texto}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="pg-bloque">
+          <div className="pg-precio-cabeza">
+            <h2>Precio por persona, por mes</h2>
+            <p>
+              Facturación mensual, cancelable. Sin contrato anual ni mínimo de
+              usuarios. Cargo mínimo de USD 25. Pago anual: 15% de descuento.
+            </p>
+          </div>
+          <ul className="pg-precios">
+            {precios.map(([rango, valor]) => (
+              <li key={rango}>
+                <strong>
+                  <small>USD</small> {valor}
+                </strong>
+                <span>{rango} usuarios</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <p className="pg-volver">
+          <Link to="/">Volver al inicio</Link>
         </p>
-      </header>
-
-      <section className="modulo-section">
-        <h2>Cómo funciona</h2>
-        <ol className="pasos">
-          {pasos.map((paso, i) => (
-            <li className="paso" key={paso.titulo}>
-              <span className="paso-num">{i + 1}</span>
-              <h3>{paso.titulo}</h3>
-              <p>{paso.texto}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="modulo-section">
-        <h2>Qué incluye</h2>
-        <ul className="lista">
-          {incluye.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="modulo-section">
-        <h2>Cuánto cuesta</h2>
-        <p className="modulo-texto">
-          Precio por asiento, facturación mensual cancelable. Sin contrato anual
-          ni mínimo de usuarios. Cargo mínimo de USD 25 por mes.
-        </p>
-        <table className="precios">
-          <thead>
-            <tr>
-              <th>Usuarios cubiertos</th>
-              <th>Precio por usuario / mes</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1 a 100</td>
-              <td>USD 1,00</td>
-            </tr>
-            <tr>
-              <td>101 a 300</td>
-              <td>USD 0,85</td>
-            </tr>
-            <tr>
-              <td>301 a 600</td>
-              <td>USD 0,70</td>
-            </tr>
-            <tr>
-              <td>Más de 600</td>
-              <td>USD 0,55</td>
-            </tr>
-          </tbody>
-        </table>
-        <p className="modulo-nota">Pago anual: 15% de descuento.</p>
-      </section>
-
-      <nav className="modulo-acciones">
-        <Link className="boton-primario" to="/ingresar">
-          Ingresar a PhishGuard
-        </Link>
-        <Link className="boton-secundario" to="/">
-          Volver a las dos puertas
-        </Link>
-      </nav>
-    </div>
+      </div>
+    </Marco>
   )
 }
 

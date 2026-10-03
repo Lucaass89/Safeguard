@@ -2,48 +2,25 @@ import { Link } from 'react-router'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
 
-const phishguard = [
+const grupos = [
   {
-    to: '/panel/empresa',
-    titulo: 'Tu empresa',
-    texto: 'El alta y la lista de quienes van a recibir las simulaciones.',
+    nombre: 'SafeLink',
+    clase: 'panel-personas',
+    items: [
+      { to: '/panel/enlaces', titulo: 'Revisar un enlace', nota: 'Abrís el destino' },
+      { to: '/panel/whatsapp', titulo: 'Pegar un WhatsApp', nota: 'Texto y número' },
+      { to: '/panel/pdf', titulo: 'Revisar un PDF', nota: 'Formularios y scripts' },
+      { to: '/panel/correo', titulo: 'Revisar un correo', nota: 'SPF, DKIM, remitente' },
+    ],
   },
   {
-    to: '/panel/campanas',
-    titulo: 'Campañas',
-    texto: 'WhatsApp, SMS o mail. Quien cae recibe un refuerzo más difícil a las 3 semanas.',
-  },
-  {
-    to: '/panel/tablero',
-    titulo: 'Tablero del equipo',
-    texto: 'Cayó, no cayó, se capacitó, mejoró. Por persona y por área.',
-  },
-]
-const safelink = [
-  {
-    to: '/panel/enlaces',
-    titulo: 'Revisar un enlace',
-    texto: 'Pegá la dirección. Si es un acortador, te decimos a dónde lleva.',
-  },
-  {
-    to: '/panel/whatsapp',
-    titulo: 'Pegar un WhatsApp',
-    texto: 'No hace falta cazar el link: analizamos el texto, la urgencia y el número.',
-  },
-  {
-    to: '/panel/pdf',
-    titulo: 'Revisar un PDF',
-    texto: 'Busca formularios, scripts y enlaces escondidos en el archivo.',
-  },
-  {
-    to: '/panel/correo',
-    titulo: 'Revisar un correo',
-    texto: 'Pegá los encabezados. Miramos SPF, DKIM y si el remitente miente.',
-  },
-  {
-    to: '/panel/historial',
-    titulo: 'Historial',
-    texto: 'Enlaces, WhatsApp, correos y PDF que ya revisaste, para volver a un caso.',
+    nombre: 'PhishGuard',
+    clase: 'panel-empresas',
+    items: [
+      { to: '/panel/empresa', titulo: 'Tu empresa', nota: 'Alta y personas' },
+      { to: '/panel/campanas', titulo: 'Campañas', nota: 'WhatsApp, SMS o mail' },
+      { to: '/panel/tablero', titulo: 'Tablero del equipo', nota: 'Por persona y por área' },
+    ],
   },
 ]
 
@@ -55,40 +32,34 @@ function Panel() {
     sesion.user.email
 
   return (
-    <div className="panel">
-      <header className="panel-header">
-        <h1>Hola, {nombre}</h1>
-        <p className="panel-lead">
-          SafeLink revisa lo que te llega. PhishGuard entrena al equipo con las
-          mismas estafas, en el canal donde realmente llegan.
+    <div className="panel mesa">
+      <div className="mesa-barra">
+        <p>
+          <span>{nombre}</span>
+          <span>{sesion.user.email}</span>
         </p>
-      </header>
+        <p>7 herramientas</p>
+      </div>
 
-      <section className="panel-modulos">
-        <div className="panel-grupo panel-personas">
-          <span className="panel-tag">SafeLink</span>
-          <div className="panel-grid">
-            {safelink.map((item) => (
-              <Link className="panel-card" to={item.to} key={item.to}>
-                <h3>{item.titulo}</h3>
-                <p>{item.texto}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="panel-grupo panel-empresas">
-          <span className="panel-tag">PhishGuard</span>
-          <div className="panel-grid">
-            {phishguard.map((item) => (
-              <Link className="panel-card" to={item.to} key={item.to}>
-                <h3>{item.titulo}</h3>
-                <p>{item.texto}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <div className="mesa-hoja">
+        {grupos.map((grupo) => (
+          <section className={grupo.clase} key={grupo.nombre}>
+            <h2>{grupo.nombre}</h2>
+            <ol>
+              {grupo.items.map((item, indice) => (
+                <li key={item.to}>
+                  <Link to={item.to}>
+                    <span>{String(indice + 1).padStart(2, '0')}</span>
+                    <strong>{item.titulo}</strong>
+                    <span>{item.nota}</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
     </div>
   )
 }

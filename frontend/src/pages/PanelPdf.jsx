@@ -34,14 +34,9 @@ function PanelPdf() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <div className="panel-nav">
-          <Link className="panel-volver" to="/panel">
-            ← Volver al panel
-          </Link>
-          <Link className="panel-volver" to="/panel/historial">
-            Historial
-          </Link>
-        </div>
+        <Link className="panel-volver" to="/panel">
+          ← Volver al panel
+        </Link>
         <span className="panel-tag">SafeLink</span>
         <h1>Revisar un PDF</h1>
         <p className="panel-lead">El archivo se lee en tu navegador. No se sube a ningún servidor.</p>
