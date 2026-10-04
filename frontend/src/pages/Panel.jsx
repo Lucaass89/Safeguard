@@ -71,6 +71,7 @@ function Panel() {
 
   const cerrarRecepcion = useCallback(() => {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
+    setFase('elegir')
     setSaliendo(true)
   }, [sesion.user.id])
 
@@ -109,13 +110,13 @@ function Panel() {
     const timer = window.setTimeout(() => {
       setSaliendo(false)
       setFase('elegir')
-    }, 700)
+    }, 360)
     return () => window.clearTimeout(timer)
   }, [saliendo])
 
   useEffect(() => {
     if (fase !== 'elegir' || entradaLista) return undefined
-    const timer = window.setTimeout(() => setEntradaLista(true), 1300)
+    const timer = window.setTimeout(() => setEntradaLista(true), 800)
     return () => window.clearTimeout(timer)
   }, [fase, entradaLista])
 
@@ -128,7 +129,7 @@ function Panel() {
 
   return (
     <div className="panel mesa">
-      {fase === 'recibiendo' && (
+      {(fase === 'recibiendo' || saliendo) && (
         <div
           className={saliendo ? 'recibida saliendo' : 'recibida'}
           onAnimationEnd={(evento) => {

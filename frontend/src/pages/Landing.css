@@ -369,7 +369,7 @@
   font: 700 40px 'Space Grotesk', var(--sg-sans);
   letter-spacing: -2px;
   display: block;
-  color: var(--ink);
+  color: #102a43;
 }
 
 .sg-landing .risk-score strong span {
@@ -458,7 +458,7 @@
 
 .sg-landing .alert-card strong {
   font-size: 13px;
-  color: var(--ink);
+  color: #102a43;
 }
 
 .sg-landing .alert-card small {
@@ -502,7 +502,7 @@
 
 .sg-landing .mini-card strong {
   font-size: 12px;
-  color: var(--ink);
+  color: #102a43;
 }
 
 .sg-landing .check {

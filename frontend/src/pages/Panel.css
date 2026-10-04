@@ -890,7 +890,8 @@
 }
 
 .recibida.saliendo {
-  animation: recibida-sale 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: recibida-sale 0.32s cubic-bezier(0, 0, 0.2, 1) forwards;
+  pointer-events: none;
 }
 
 .recibida > div > p:first-child {
@@ -1008,11 +1009,11 @@
 }
 
 .elegir:not(.elegir-lista) .elegir-safelink {
-  animation: elegir-entra 0.85s cubic-bezier(0.22, 0.8, 0.2, 1) 0.08s both;
+  animation: elegir-entra 0.62s cubic-bezier(0.22, 0.8, 0.2, 1) both;
 }
 
 .elegir:not(.elegir-lista) .elegir-phish {
-  animation: elegir-entra 0.85s cubic-bezier(0.22, 0.8, 0.2, 1) 0.18s both;
+  animation: elegir-entra 0.62s cubic-bezier(0.22, 0.8, 0.2, 1) 0.04s both;
 }
 
 .elegir-safelink span {
