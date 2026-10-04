@@ -4,8 +4,8 @@
   --blue: #2563eb;
   --mint: #b8f5dc;
   --muted: #4a6278;
-  --line: #dbe6e7;
-  --white: #fff;
+  --line: #e3d9cc;
+  --white: #faf7f2;
   --shadow: 0 20px 55px rgb(12 43 63 / 12%);
 
   flex: 1;
@@ -13,7 +13,7 @@
   margin: 0;
   font-family: 'DM Sans', var(--sg-sans);
   color: var(--ink);
-  background: #f8fbfb;
+  background: #f3efe6;
   line-height: 1.55;
 }
 
@@ -38,9 +38,9 @@
   left: 0;
   width: 100%;
   padding: 18px 0;
-  background: rgb(248 251 251 / 92%);
+  background: rgb(243 239 230 / 92%);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgb(219 230 231 / 80%);
+  border-bottom: 1px solid rgb(227 217 204 / 80%);
 }
 
 .sg-landing main[id],
@@ -134,7 +134,7 @@
   border: 1px solid var(--line);
   border-radius: 9px;
   color: var(--ink);
-  background: #fff;
+  background: #faf7f2;
   font: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -160,7 +160,7 @@
   margin-bottom: 0;
   padding-top: 170px;
   overflow: hidden;
-  background: linear-gradient(117deg, #f8fbfb 0%, #edf7f5 64%, #e3f5f2 100%);
+  background: linear-gradient(117deg, #f4f0e6 0%, #efe4d2 62%, #e8e3d4 100%);
 }
 
 .sg-landing .hero::before {
@@ -174,8 +174,8 @@
   top: 130px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, #c9f8e7 0, transparent 68%);
-  opacity: 0.55;
+  background: radial-gradient(circle, #ead9b4 0, transparent 68%);
+  opacity: 0.4;
   pointer-events: none;
 }
 
@@ -259,13 +259,13 @@
 }
 
 .sg-landing .button-ghost {
-  border-color: #bfd4d6;
+  border-color: #d9cfc0;
   color: var(--ink);
-  background: #ffffff88;
+  background: #faf7f2cc;
 }
 
 .sg-landing .button-ghost:hover {
-  background: #fff;
+  background: #faf7f2;
 }
 
 .sg-landing .trust-row {
@@ -549,7 +549,7 @@
 }
 
 .sg-landing .intro {
-  background: #fff;
+  background: #faf7f2;
 }
 
 .sg-landing .intro-heading {
@@ -581,12 +581,12 @@
   border-radius: 14px;
   min-height: 340px;
   position: relative;
-  background: #fff;
+  background: #faf7f2;
 }
 
 .sg-landing .value-card-featured {
-  background: #effaf7;
-  border-color: #c5eee0;
+  background: #efe6d4;
+  border-color: #e0d2b8;
 }
 
 .sg-landing .number {
@@ -684,7 +684,7 @@
 }
 
 .sg-landing .products {
-  background: #f2f7f6;
+  background: #ebe4d6;
 }
 
 .sg-landing .section-heading {
@@ -727,7 +727,7 @@
 }
 
 .sg-landing .product-light {
-  background: #fff;
+  background: #faf7f2;
 }
 
 .sg-landing .product-number {
@@ -1032,7 +1032,7 @@
 }
 
 .sg-landing .process {
-  background: #fff;
+  background: #faf7f2;
 }
 
 .sg-landing .process-layout {
@@ -1101,7 +1101,7 @@
 }
 
 .sg-landing .results {
-  background: #eaf6f3;
+  background: #e8e3d4;
 }
 
 .sg-landing .results-box {
@@ -1130,7 +1130,7 @@
 }
 
 .sg-landing .metrics > div {
-  background: #f5fcfa;
+  background: #faf7f2;
   padding: 25px 10px;
 }
 
@@ -1148,7 +1148,7 @@
 }
 
 .sg-landing .contact {
-  background: #fff;
+  background: #faf7f2;
 }
 
 .sg-landing .contact-box {
@@ -1209,7 +1209,7 @@
 
 .sg-landing .site-footer {
   padding: 32px 0;
-  background: #f8fbfb;
+  background: #f3efe6;
   border-top: 1px solid var(--line);
 }
 

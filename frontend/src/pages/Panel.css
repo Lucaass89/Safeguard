@@ -639,8 +639,8 @@
 }
 
 .sg-landing .panel-lienzo {
-  --sg-bg: #f8fbfb;
-  --sg-surface: #fff;
+  --sg-bg: #f3efe6;
+  --sg-surface: #faf7f2;
   --sg-text: #102a43;
   --sg-muted: #4a6278;
   --sg-line: #d5e2e4;
@@ -885,7 +885,7 @@
   display: grid;
   place-items: center;
   padding: 32px;
-  background: #f7fbfb;
+  background: #f3efe6;
   text-align: center;
 }
 

@@ -1,9 +1,9 @@
 html[data-tema='claro'] {
-  --sg-bg: #f8fbfb;
-  --sg-surface: #fff;
+  --sg-bg: #f3efe6;
+  --sg-surface: #faf7f2;
   --sg-text: #102a43;
   --sg-muted: #4a6278;
-  --sg-line: #dbe6e7;
+  --sg-line: #e3d9cc;
   color-scheme: light;
 }
 
@@ -22,9 +22,9 @@ html[data-tema='oscuro'] {
   flex-shrink: 0;
   margin-left: auto;
   padding: 3px;
-  border: 1px solid #d5e2e4;
+  border: 1px solid #e3d9cc;
   border-radius: 999px;
-  background: #fff;
+  background: #faf7f2;
 }
 
 .tema-control button {
