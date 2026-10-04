@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { useSesion } from '../lib/useSesion.js'
+import { combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
 import { analizarCorreo } from '../lib/analisisCorreo.js'
-import { guardarAnalisis } from '../lib/enriquecer.js'
+import { consultarPeorAmenaza, enriquecer, guardarAnalisis } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -21,9 +22,17 @@ function PanelCorreo() {
       return
     }
     setError(null)
-    setResultado(analisis)
     setAnalizando(true)
-    const { error: fallo } = await guardarAnalisis(sesion, analisis, 'correo')
+    const peor = analisis.enlaces[0]
+    const extra = peor ? await enriquecer(peor.url) : null
+    const { amenaza } = await consultarPeorAmenaza([
+      analisis.dominio,
+      peor?.dominio,
+      extra?.dominio,
+    ])
+    const final = combinarConEnriquecimiento(combinarConAmenaza(analisis, amenaza), extra)
+    setResultado(final)
+    const { error: fallo } = await guardarAnalisis(sesion, final, 'correo')
     setAnalizando(false)
     if (fallo) setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)
   }
@@ -51,7 +60,7 @@ function PanelCorreo() {
           />
         </label>
         <button type="submit" className="panel-boton" disabled={analizando}>
-          {analizando ? 'Guardando…' : 'Analizar correo'}
+          {analizando ? 'Analizando…' : 'Analizar correo'}
         </button>
       </form>
 

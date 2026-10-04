@@ -19,6 +19,11 @@ const SUFIJOS_DOBLES = new Set([
   'com.mx',
   'co.uk',
   'com.co',
+  'com.uy',
+  'com.cl',
+  'com.pe',
+  'com.ec',
+  'com.ve',
 ])
 
 function json(cuerpo: unknown, status = 200) {
@@ -35,6 +40,14 @@ function dominioRegistrable(host: string) {
   if (partes.length <= 2) return limpio
   const dos = partes.slice(-2).join('.')
   return SUFIJOS_DOBLES.has(dos) ? partes.slice(-3).join('.') : dos
+}
+
+async function cerrar(res: Response) {
+  try {
+    await res.body?.cancel()
+  } catch {
+    /* el cuerpo ya estaba cerrado */
+  }
 }
 
 function hostProhibido(host: string) {
@@ -76,15 +89,112 @@ async function seguir(urlInicial: string) {
 
     if (res.status >= 300 && res.status < 400) {
       const loc = res.headers.get('location')
+      await cerrar(res)
       if (!loc) break
       actual = new URL(loc, actual).href
       continue
     }
 
+    await cerrar(res)
     break
   }
 
   return { destino: actual, cadena }
+}
+
+function esArchivoPeligroso(tipo: string, disposicion: string, url: string) {
+  const nombre = `${disposicion} ${url}`.toLowerCase()
+  if (/\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|js|jse|vbs|vbe|ps1)(?:$|[?#\s"])/.test(nombre)) {
+    return true
+  }
+  return (
+    tipo.includes('android.package-archive') ||
+    tipo.includes('x-msdownload') ||
+    tipo.includes('x-msdos-program')
+  )
+}
+
+function unir(partes: Uint8Array[]) {
+  const total = partes.reduce((suma, parte) => suma + parte.byteLength, 0)
+  const salida = new Uint8Array(total)
+  let offset = 0
+  for (const parte of partes) {
+    salida.set(parte, offset)
+    offset += parte.byteLength
+  }
+  return salida
+}
+
+async function mirarPagina(url: string) {
+  const vacio = {
+    titulo: null as string | null,
+    formulario_clave: false,
+    archivo_peligroso: false,
+    meta_destino: null as string | null,
+  }
+  try {
+    const u = new URL(url)
+    if ((u.protocol !== 'http:' && u.protocol !== 'https:') || hostProhibido(u.hostname)) return vacio
+
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(5000),
+      headers: {
+        'User-Agent': 'SafeGuard/1.0',
+        Accept: 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.1',
+      },
+    })
+    const tipo = (res.headers.get('content-type') ?? '').toLowerCase()
+    const disposicion = res.headers.get('content-disposition') ?? ''
+    const archivo = esArchivoPeligroso(tipo, disposicion, url)
+    const esHtml = tipo.includes('html') || tipo.includes('text/plain')
+    if (archivo || !esHtml) {
+      await cerrar(res)
+      return { ...vacio, archivo_peligroso: archivo }
+    }
+
+    const reader = res.body?.getReader()
+    if (!reader) return vacio
+    const partes: Uint8Array[] = []
+    let total = 0
+    while (total < 65_536) {
+      const { done, value } = await reader.read()
+      if (done || !value) break
+      partes.push(value)
+      total += value.byteLength
+    }
+    await reader.cancel()
+
+    const crudo = new TextDecoder('utf-8', { fatal: false }).decode(partes.length ? unir(partes) : new Uint8Array())
+    const lower = crudo.toLowerCase()
+    const formulario =
+      /type\s*=\s*["']?password\b/.test(lower) ||
+      /name\s*=\s*["']?(password|passwd|clave|otp)\b/.test(lower)
+    const titulo = crudo.match(/<title[^>]*>([^<]{0,140})/i)?.[1]?.replace(/\s+/g, ' ').trim() || null
+    const metaCrudo =
+      crudo.match(/http-equiv\s*=\s*["']refresh["'][^>]*content\s*=\s*["'][^"']*?\burl\s*=\s*([^"'\s>]+)/i)?.[1] ??
+      crudo.match(/content\s*=\s*["'][^"']*?\burl\s*=\s*([^"'\s>]+)["'][^>]*http-equiv\s*=\s*["']refresh["']/i)?.[1] ??
+      null
+    let meta_destino: string | null = null
+    if (metaCrudo) {
+      try {
+        const destino = new URL(metaCrudo, url)
+        if (
+          (destino.protocol === 'http:' || destino.protocol === 'https:') &&
+          destino.hostname !== u.hostname &&
+          !hostProhibido(destino.hostname)
+        ) {
+          meta_destino = destino.href
+        }
+      } catch {
+        meta_destino = null
+      }
+    }
+    return { titulo, formulario_clave: formulario, archivo_peligroso: false, meta_destino }
+  } catch {
+    return vacio
+  }
 }
 
 function fraseEdad(dias: number | null) {
@@ -165,7 +275,11 @@ Deno.serve(async (req) => {
     const dominio = dominioRegistrable(host)
     const acortado = cadena.length > 1 || destino !== partida
 
-    const [rdap, cert] = await Promise.all([edadDominio(dominio), edadCertificado(dominio)])
+    const [rdap, cert, pagina] = await Promise.all([
+      edadDominio(dominio),
+      edadCertificado(dominio),
+      mirarPagina(destino),
+    ])
 
     return json({
       destino,
@@ -177,6 +291,10 @@ Deno.serve(async (req) => {
       cert_dias: cert.cert_dias,
       frase_edad: fraseEdad(rdap.edad_dias),
       frase_certificado: fraseCert(cert.cert_dias),
+      titulo: pagina.titulo,
+      formulario_clave: pagina.formulario_clave,
+      archivo_peligroso: pagina.archivo_peligroso,
+      meta_destino: pagina.meta_destino,
     })
   } catch (error) {
     return json({ error: error instanceof Error ? error.message : 'No se pudo enriquecer' }, 400)

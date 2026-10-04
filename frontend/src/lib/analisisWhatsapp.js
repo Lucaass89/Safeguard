@@ -1,4 +1,11 @@
-import { analizar, combinarConAmenaza, combinarConEnriquecimiento, nivelDesde } from './analisis.js'
+import {
+  analizar,
+  combinarConAmenaza,
+  combinarConEnriquecimiento,
+  marcaEnTexto,
+  nivelDesde,
+  peorEnlace,
+} from './analisis.js'
 
 const URGENCIA = [
   'urgente',
@@ -25,20 +32,33 @@ const URGENCIA = [
 
 const PREMIO = ['ganaste', 'premio', 'regalo', 'sorteo', 'gift card', 'mercadería', 'devolución', 'reintegro']
 
-const MARCAS_TEXTO = [
-  'mercadolibre',
-  'mercado libre',
-  'mercadopago',
-  'banco',
-  'santander',
-  'galicia',
-  'afip',
-  'anses',
-  'correo',
-  'whatsapp',
-  'soporte',
-  'seguridad',
+const ROBO_NUMERO = [
+  'me robaron el celular',
+  'me robaron el teléfono',
+  'me robaron el telefono',
+  'cambié de número',
+  'cambie de numero',
+  'nuevo número',
+  'nuevo numero',
+  'este es mi nuevo',
+  'perdí el celular',
+  'perdi el celular',
 ]
+
+const CODIGO = [
+  'código de verificación',
+  'codigo de verificacion',
+  'clave de un solo uso',
+  'pasame el código',
+  'pasame el codigo',
+  'mandame el código',
+  'código que te llegó',
+  'codigo que te llego',
+]
+
+const APP_FALSA = ['.apk', 'instalá esta', 'instala esta', 'descargá la app', 'descarga la app', 'instalá la aplicación', 'instala la aplicacion']
+
+const INVISIBLES = /\u200b|\u200c|\u200d|\u2060|\ufeff/
 
 const RE_URL = /(?:https?:\/\/|www\.)[^\s<>"']+/gi
 const RE_HOST = /\b(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
@@ -96,13 +116,53 @@ export function analizarWhatsapp(crudo) {
     )
   }
 
-  if (MARCAS_TEXTO.some((m) => minuscula.includes(m)) && (raros.length > 0 || URGENCIA.some((p) => minuscula.includes(p)))) {
+  const marca = marcaEnTexto(minuscula)
+  if (marca && (raros.length > 0 || URGENCIA.some((p) => minuscula.includes(p)) || PREMIO.some((p) => minuscula.includes(p)))) {
+    puntos += 25
+    motivos.push(`Se hace pasar por ${marca.nombre}, pero escribe como un desconocido.`)
+  }
+
+  if (/\bbanco\b/.test(minuscula) && (raros.length > 0 || URGENCIA.some((p) => minuscula.includes(p)))) {
     puntos += 20
-    motivos.push('Se hace pasar por un banco, un organismo o WhatsApp, pero escribe como un desconocido.')
+    motivos.push('Habla de un banco y a la vez apura o escribe desde un número raro.')
+  }
+
+  if (ROBO_NUMERO.some((p) => minuscula.includes(p))) {
+    puntos += 35
+    motivos.push('Dice que cambió de número o que le robaron el teléfono. Es un engaño muy común.')
+  }
+
+  if (CODIGO.some((p) => minuscula.includes(p)) || /c[oó]digo de verificaci[oó]n/.test(minuscula)) {
+    puntos += 30
+    motivos.push('Pide un código de verificación. Ese código es la llave de la cuenta.')
+  }
+
+  if (APP_FALSA.some((p) => minuscula.includes(p))) {
+    puntos += 40
+    motivos.push('Manda a instalar una aplicación. Por un mensaje no se instala nada.')
+  }
+
+  if (/\bcbu\b|\bcvu\b/.test(minuscula) || /\balias\s*[:=]\s*\S+/.test(minuscula)) {
+    puntos += 30
+    motivos.push('Pide un CBU, un CVU o un alias. Un banco no pide eso por WhatsApp.')
+  } else {
+    const grupos = texto.match(/\d[\d\s.-]{18,34}\d/g) ?? []
+    if (grupos.some((grupo) => grupo.replace(/\D/g, '').length === 22)) {
+      puntos += 30
+      motivos.push('Incluye un número de 22 dígitos, el largo de un CBU o un CVU.')
+    }
+  }
+
+  if (INVISIBLES.test(texto)) {
+    puntos += 22
+    motivos.push('Tiene caracteres invisibles, usados para disfrazar una palabra o un enlace.')
   }
 
   const crudos = extraerEnlaces(texto)
-  const enlaces = crudos.map((e) => analizar(e)).filter(Boolean)
+  const enlaces = crudos
+    .map((e) => analizar(e))
+    .filter(Boolean)
+    .sort((a, b) => b.puntuacion - a.puntuacion)
 
   if (crudos.length > 0 && enlaces.length === 0) {
     puntos += 10
@@ -113,10 +173,13 @@ export function analizarWhatsapp(crudo) {
     motivos.push('No hay enlaces ni señales fuertes en el texto. Igual, si te pide un código, no lo pases.')
   }
 
-  const peor = enlaces.reduce(
-    (acc, e) => (e.puntuacion > acc.puntuacion ? e : acc),
-    { puntuacion: 0, nivel: 'verde', motivos: [], dominio: null, url: null },
-  )
+  const peor = peorEnlace(enlaces) ?? {
+    puntuacion: 0,
+    nivel: 'verde',
+    motivos: [],
+    dominio: null,
+    url: null,
+  }
 
   const puntuacion = Math.min(100, puntos + peor.puntuacion)
   const todos = [

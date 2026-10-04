@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { useSesion } from '../lib/useSesion.js'
 import { analizarWhatsapp, cerrarWhatsapp } from '../lib/analisisWhatsapp.js'
-import { consultarAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
+import { consultarPeorAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -28,9 +28,10 @@ function PanelWhatsapp() {
     setAnalizando(true)
 
     const peor = local.enlaces[0]
-    const [{ amenaza }, extra] = await Promise.all([
-      consultarAmenaza(local.dominio !== 'whatsapp' ? local.dominio : null),
-      peor ? enriquecer(peor.url) : Promise.resolve(null),
+    const extra = peor ? await enriquecer(peor.url) : null
+    const { amenaza } = await consultarPeorAmenaza([
+      local.dominio !== 'whatsapp' ? local.dominio : null,
+      extra?.dominio,
     ])
 
     const final = cerrarWhatsapp(local, amenaza, extra)

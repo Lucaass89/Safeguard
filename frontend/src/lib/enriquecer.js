@@ -16,7 +16,7 @@ export async function enriquecer(url) {
 }
 
 export async function consultarAmenaza(dominio) {
-  if (!dominio) return { amenaza: null, fallo: null }
+  if (!dominio || !dominio.includes('.')) return { amenaza: null, fallo: null }
 
   const { data, error } = await supabase
     .from('amenazas')
@@ -25,6 +25,23 @@ export async function consultarAmenaza(dominio) {
     .maybeSingle()
 
   return { amenaza: data, fallo: error }
+}
+
+function peso(nivel) {
+  if (nivel === 'rojo') return 2
+  if (nivel === 'amarillo') return 1
+  return 0
+}
+
+export async function consultarPeorAmenaza(dominios) {
+  const unicos = [...new Set(dominios.filter((dominio) => dominio && dominio.includes('.')))]
+  if (unicos.length === 0) return { amenaza: null, fallo: null }
+
+  const resultados = await Promise.all(unicos.map((dominio) => consultarAmenaza(dominio)))
+  const amenazas = resultados.map((resultado) => resultado.amenaza).filter(Boolean)
+  amenazas.sort((a, b) => peso(b.nivel) - peso(a.nivel))
+  const fallo = resultados.every((resultado) => resultado.fallo) ? resultados[0].fallo : null
+  return { amenaza: amenazas[0] ?? null, fallo: amenazas.length ? null : fallo }
 }
 
 export async function guardarAnalisis(sesion, resultado, entrada) {

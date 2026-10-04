@@ -30,13 +30,16 @@ function Privacidad() {
         <p>
           Al revisar un enlace, la función <code>safelink-enriquecer</code> pide
           esa URL (sigue hasta cinco redirecciones y no consulta direcciones
-          privadas) y consulta el dominio en rdap.org y en crt.sh. También se
+          privadas), lee solo el comienzo de la página (el título, si pide una
+          clave y si el destino es una descarga) y consulta el dominio en
+          rdap.org y en crt.sh. No guarda el contenido de la página. También se
           busca el dominio en la tabla propia <code>amenazas</code>.
         </p>
         <p>
-          Pendiente de definir. En este código, el análisis de WhatsApp, PDF y
-          correo corre en el navegador; lo que se guarda después es el
-          resultado, no el archivo ni el mensaje completo.
+          Pendiente de definir. El texto del WhatsApp, el correo y el PDF se leen
+          en el navegador. Si ahí aparece un enlace, esa dirección se manda a la
+          misma función. El archivo y el mensaje completo no se suben; lo que se
+          guarda después es el resultado.
         </p>
 
         <h2>SafeLink: qué se guarda con cuenta</h2>

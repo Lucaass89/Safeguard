@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import { analizar, combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
-import { consultarAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
+import { consultarPeorAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -67,10 +67,8 @@ function PanelEnlaces() {
 
     setAnalizando(true)
 
-    const [{ amenaza, fallo }, extra] = await Promise.all([
-      consultarAmenaza(local.dominio),
-      enriquecer(local.url),
-    ])
+    const extra = await enriquecer(local.url)
+    const { amenaza, fallo } = await consultarPeorAmenaza([local.dominio, extra?.dominio])
 
     let final = combinarConAmenaza(local, fallo ? null : amenaza)
     final = combinarConEnriquecimiento(final, extra)
