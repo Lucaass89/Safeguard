@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0b1220" />
+    <meta name="theme-color" content="#f8fbfb" />
+    <script>
+      (function () {
+        var tema = 'claro'
+        try {
+          if (localStorage.getItem('sg-tema') === 'oscuro') tema = 'oscuro'
+        } catch (e) {}
+        document.documentElement.dataset.tema = tema
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) meta.setAttribute('content', tema === 'oscuro' ? '#1b2836' : '#f8fbfb')
+      })()
+    </script>
     <meta
       name="description"
       content="SafeGuard protege a las personas frente a enlaces y códigos QR, y entrena a los equipos con simulaciones de phishing reales de la región."

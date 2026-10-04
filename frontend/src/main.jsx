@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router'
 import SesionProvider from './components/SesionProvider.jsx'
 import './index.css'
 import App from './App.jsx'
+import './TemaOscuro.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

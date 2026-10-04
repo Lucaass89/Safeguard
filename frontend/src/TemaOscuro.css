@@ -1,0 +1,343 @@
+html[data-tema='claro'] {
+  --sg-bg: #f8fbfb;
+  --sg-surface: #fff;
+  --sg-text: #102a43;
+  --sg-muted: #4a6278;
+  --sg-line: #dbe6e7;
+  color-scheme: light;
+}
+
+html[data-tema='oscuro'] {
+  --sg-bg: #1b2836;
+  --sg-surface: #243444;
+  --sg-text: #e6eef4;
+  --sg-muted: #b4c4d0;
+  --sg-line: #3d5163;
+  color-scheme: dark;
+  background: #1b2836;
+}
+
+.tema-control {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 3px;
+  border: 1px solid #d5e2e4;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.tema-control button {
+  border: 0;
+  background: transparent;
+  color: #4a6278;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.tema-control button[aria-pressed='true'] {
+  background: #2563eb;
+  color: #fff;
+}
+
+.tema-control button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.header-acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-acciones .tema-control {
+  margin-left: 0;
+}
+
+@media (max-width: 850px) {
+  .sg-landing .menu-toggle {
+    margin-left: 10px;
+  }
+}
+
+html[data-tema='oscuro'] .sg-landing {
+  --ink: #e6eef4;
+  --muted: #b4c4d0;
+  --line: #3d5163;
+  background: #1b2836;
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .sg-landing .site-header {
+  background: rgb(27 40 54 / 92%);
+  border-bottom-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .tema-control {
+  background: #2c3d4e;
+  border-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .tema-control button {
+  color: #c5d3de;
+}
+
+html[data-tema='oscuro'] .tema-control button[aria-pressed='true'] {
+  background: #3d6fe0;
+  color: #fff;
+}
+
+html[data-tema='oscuro'] .sg-landing .main-nav > a:not(.nav-cta),
+html[data-tema='oscuro'] .sg-landing .nav-app > a:not(.nav-cta) {
+  color: #c5d3de;
+}
+
+html[data-tema='oscuro'] .sg-landing .main-nav > a:not(.nav-cta):hover,
+html[data-tema='oscuro'] .sg-landing .main-nav > a.nav-activa,
+html[data-tema='oscuro'] .sg-landing .nav-app > a:not(.nav-cta):hover {
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .sg-landing .nav-cta {
+  color: #102a43;
+  background: #fff;
+}
+
+html[data-tema='oscuro'] .sg-landing .brand > span:last-child > span {
+  color: #a9c0cd;
+}
+
+html[data-tema='oscuro'] .sg-landing .hero {
+  background: linear-gradient(117deg, #1b2836 0%, #1e3338 64%, #1a3330 100%);
+}
+
+html[data-tema='oscuro'] .sg-landing .hero::after {
+  opacity: 0.28;
+}
+
+html[data-tema='oscuro'] .sg-landing em,
+html[data-tema='oscuro'] .pg-volver a,
+html[data-tema='oscuro'] .elegir-volver,
+html[data-tema='oscuro'] .sl-lugares a,
+html[data-tema='oscuro'] .nota a {
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .sg-landing .hero-lead,
+html[data-tema='oscuro'] .sg-landing .trust-row,
+html[data-tema='oscuro'] .sg-landing .product-light .product-info ul,
+html[data-tema='oscuro'] .sg-landing .metrics span,
+html[data-tema='oscuro'] .sg-landing .footer-wrap p,
+html[data-tema='oscuro'] .sg-landing .footer-links,
+html[data-tema='oscuro'] .recibida > div > p:nth-child(3) {
+  color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .sg-landing .eyebrow,
+html[data-tema='oscuro'] .sg-landing .product-light .product-tag,
+html[data-tema='oscuro'] .pg-riel span,
+html[data-tema='oscuro'] .sl-lado p:first-child,
+html[data-tema='oscuro'] .recibida > div > p:first-child,
+html[data-tema='oscuro'] .elegir-safelink span {
+  color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .sg-landing .button-ghost {
+  border-color: #3d5163;
+  background: rgb(36 52 68 / 72%);
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .sg-landing .button-ghost:hover {
+  background: #2c3d4e;
+}
+
+html[data-tema='oscuro'] .sg-landing .products,
+html[data-tema='oscuro'] .sg-landing .intro,
+html[data-tema='oscuro'] .sg-landing .process,
+html[data-tema='oscuro'] .sg-landing .contact,
+html[data-tema='oscuro'] .sg-landing .site-footer {
+  background: #1b2836;
+}
+
+html[data-tema='oscuro'] .sg-landing .value-card a,
+html[data-tema='oscuro'] .sg-landing .text-link,
+html[data-tema='oscuro'] .sg-landing .product-light .product-info h3 span {
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .sg-landing .scroll-cue {
+  color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .sg-landing .step-dot {
+  border-color: #3d5163;
+  color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .sg-landing .step.active .step-dot {
+  background: #1e3d36;
+  color: #7ddec4;
+  border-color: #3d5c56;
+}
+
+html[data-tema='oscuro'] .sg-landing .value-card,
+html[data-tema='oscuro'] .sg-landing .product-light,
+html[data-tema='oscuro'] .mesa-hoja,
+html[data-tema='oscuro'] .elegir-safelink,
+html[data-tema='oscuro'] .sg-landing .acceso-caja,
+html[data-tema='oscuro'] .sg-landing .acceso-pestanas button.activa,
+html[data-tema='oscuro'] .sg-landing .acceso-form input {
+  background: #243444;
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .sg-landing .value-card-featured {
+  background: #243e3a;
+  border-color: #3d5c56;
+}
+
+html[data-tema='oscuro'] .sg-landing .results {
+  background: #1e3336;
+}
+
+html[data-tema='oscuro'] .sg-landing .metrics {
+  background: #3d5163;
+}
+
+html[data-tema='oscuro'] .sg-landing .metrics > div {
+  background: #243444;
+}
+
+html[data-tema='oscuro'] .sg-landing .metrics strong {
+  color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .pg,
+html[data-tema='oscuro'] .sl {
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .pg-riel p,
+html[data-tema='oscuro'] .pg-incluye dd,
+html[data-tema='oscuro'] .pg-precio-cabeza p,
+html[data-tema='oscuro'] .pg-precio-regla,
+html[data-tema='oscuro'] .pg-precio-nota,
+html[data-tema='oscuro'] .sl-lado p,
+html[data-tema='oscuro'] .sl-lugares dd,
+html[data-tema='oscuro'] .nota p,
+html[data-tema='oscuro'] .nota li {
+  color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .pg-riel li + li {
+  border-left-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .sl-secundario {
+  color: #e6eef4 !important;
+  border-color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .recibida {
+  background: #1b2836;
+}
+
+html[data-tema='oscuro'] .sg-landing .recibida h1,
+html[data-tema='oscuro'] .elegir h1,
+html[data-tema='oscuro'] .elegir-safelink,
+html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-saludo,
+html[data-tema='oscuro'] .sg-landing .acceso-caja h1 {
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .elegir-safelink {
+  border-color: #3d5163;
+  border-top-color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .sg-landing .panel-lienzo {
+  --sg-bg: #1b2836;
+  --sg-surface: #243444;
+  --sg-text: #e6eef4;
+  --sg-muted: #b4c4d0;
+  --sg-line: #3d5163;
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .sg-landing .panel-lienzo .panel-header h1,
+html[data-tema='oscuro'] .sg-landing .panel-lienzo h2 {
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-tablero h2 {
+  color: #fff;
+}
+
+html[data-tema='oscuro'] .mesa-hoja a:hover {
+  background: #2c3d4e;
+}
+
+html[data-tema='oscuro'] .mesa-hoja a span:last-child {
+  background: #2a4060;
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .sg-landing .panel-lienzo .panel-boton-borde {
+  background: #2c3d4e;
+  border-color: #3d5163;
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .panel-boton {
+  color: #fff;
+}
+
+html[data-tema='oscuro'] .sg-landing .acceso-texto,
+html[data-tema='oscuro'] .sg-landing .acceso-estado,
+html[data-tema='oscuro'] .sg-landing .separador,
+html[data-tema='oscuro'] .sg-landing .acceso-pestanas button {
+  color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .sg-landing .boton-google,
+html[data-tema='oscuro'] .sg-landing .boton-google:hover {
+  background: #2c3d4e;
+  color: #e6eef4;
+  border-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .sg-landing .separador::before,
+html[data-tema='oscuro'] .sg-landing .separador::after {
+  background: #3d5163;
+}
+
+html[data-tema='oscuro'] .sg-landing .acceso-pestanas {
+  background: #1b2836;
+}
+
+html[data-tema='oscuro'] .sg-landing .acceso-form input {
+  border-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .sg-landing .acceso-caja {
+  border-color: #3d5163;
+}
+
+@media (max-width: 850px) {
+  html[data-tema='oscuro'] .sg-landing .main-nav {
+    background: #243444;
+    box-shadow: 0 16px 40px rgb(0 0 0 / 28%);
+  }
+}
+
+@media (min-width: 901px) {
+  html[data-tema='oscuro'] .mesa-grupos section {
+    background: #243444;
+  }
+}

@@ -881,7 +881,10 @@
   padding: 32px;
   background: #f7fbfb;
   text-align: center;
-  animation: recibida-sale 0.7s ease 2.15s forwards;
+}
+
+.recibida.saliendo {
+  animation: recibida-sale 0.62s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
 .recibida > div > p:first-child {
@@ -929,6 +932,7 @@
   font: 700 40px/1.1 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.03em;
   text-wrap: balance;
+  animation: elegir-entra 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
 }
 
 .sg-landing .panel-lienzo .elegir h1 {
@@ -956,6 +960,10 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
+  animation: elegir-entra 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:
+    translate 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s ease;
 }
 
 .elegir-lado span {
@@ -982,6 +990,7 @@
   border: 1px solid #d5e2e4;
   border-top: 4px solid #0c6b58;
   color: #102a43;
+  animation-delay: 0.28s;
 }
 
 .elegir-safelink span {
@@ -991,6 +1000,7 @@
 .elegir-phish {
   background: #102a43;
   color: #f4f7f8;
+  animation-delay: 0.4s;
 }
 
 .elegir-phish span,
@@ -1003,15 +1013,12 @@
 }
 
 .elegir-lado:hover {
-  transform: translateY(-3px);
+  translate: 0 -16px;
+  box-shadow: 0 22px 44px rgb(16 42 67 / 14%);
 }
 
 .elegir-cerrado {
   cursor: default;
-}
-
-.elegir-cerrado:hover {
-  transform: none;
 }
 
 .elegir-cerrado a {
@@ -1045,20 +1052,36 @@
 @keyframes recibida-sale {
   to {
     opacity: 0;
-    visibility: hidden;
+    transform: translateY(-28px);
+  }
+}
+
+@keyframes elegir-entra {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .recibida,
+  .recibida.saliendo,
   .recibida h1,
   .recibida p,
-  .recibida button {
+  .recibida button,
+  .elegir h1,
+  .elegir-lado {
     animation: none;
   }
 
   .elegir-lado:hover {
-    transform: none;
+    translate: none;
+    box-shadow: none;
   }
 }
 

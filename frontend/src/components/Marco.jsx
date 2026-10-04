@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
+import TemaControl from './TemaControl.jsx'
 import '../pages/Landing.css'
 
 function Marca() {
@@ -101,6 +102,7 @@ function Marco({ children, interior = false }) {
           <Link to="/" aria-label="SafeGuard, inicio" onClick={cerrarMenu}>
             <Marca />
           </Link>
+          <TemaControl />
           <button
             className="menu-toggle"
             type="button"

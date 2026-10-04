@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
+import TemaControl from './TemaControl.jsx'
 import './Layout.css'
 
 function ShieldMark() {
@@ -37,28 +38,31 @@ function Layout() {
             SafeGuard
           </Link>
 
-          {sesion ? (
-            <div className="sesion">
-              <Link className="login-link" to="/panel">
-                Mi panel
+          <div className="header-acciones">
+            <TemaControl />
+            {sesion ? (
+              <div className="sesion">
+                <Link className="login-link" to="/panel">
+                  Mi panel
+                </Link>
+                <span className="sesion-correo">{sesion.user.email}</span>
+                <button
+                  type="button"
+                  className="login-link"
+                  onClick={() => {
+                    sessionStorage.removeItem('sg-recibido')
+                    supabase.auth.signOut()
+                  }}
+                >
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <Link className="login-link" to="/ingresar">
+                Ingresar
               </Link>
-              <span className="sesion-correo">{sesion.user.email}</span>
-              <button
-                type="button"
-                className="login-link"
-                onClick={() => {
-                  sessionStorage.removeItem('sg-recibido')
-                  supabase.auth.signOut()
-                }}
-              >
-                Salir
-              </button>
-            </div>
-          ) : (
-            <Link className="login-link" to="/ingresar">
-              Ingresar
-            </Link>
-          )}
+            )}
+          </div>
         </div>
       </header>
 

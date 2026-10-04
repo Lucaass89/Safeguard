@@ -102,7 +102,7 @@
   display: flex;
   gap: 32px;
   align-items: center;
-  margin-left: auto;
+  margin-left: 18px;
   font-size: 14px;
   font-weight: 600;
 }

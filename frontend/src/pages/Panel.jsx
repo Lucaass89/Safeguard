@@ -52,6 +52,7 @@ function Panel() {
   const [tablero, setTablero] = useState(null)
   const [acceso, setAcceso] = useState(null)
   const [fase, setFase] = useState(() => (recibido(sesion.user.id) ? 'elegir' : 'recibiendo'))
+  const [saliendo, setSaliendo] = useState(false)
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
@@ -61,7 +62,11 @@ function Panel() {
 
   function cerrarRecepcion() {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
-    setFase('elegir')
+    if (reducir) {
+      setFase('elegir')
+      return
+    }
+    setSaliendo(true)
   }
 
   useEffect(() => {
@@ -88,10 +93,19 @@ function Panel() {
   }, [])
 
   useEffect(() => {
-    if (fase !== 'recibiendo' || reducir) return undefined
+    if (fase !== 'recibiendo' || reducir || saliendo) return undefined
     const timer = window.setTimeout(cerrarRecepcion, 3600)
     return () => window.clearTimeout(timer)
-  }, [fase, reducir, sesion.user.id])
+  }, [fase, reducir, saliendo, sesion.user.id])
+
+  useEffect(() => {
+    if (!saliendo) return undefined
+    const timer = window.setTimeout(() => {
+      setSaliendo(false)
+      setFase('elegir')
+    }, 900)
+    return () => window.clearTimeout(timer)
+  }, [saliendo])
 
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
@@ -103,9 +117,15 @@ function Panel() {
   return (
     <div className="panel mesa">
       {fase === 'recibiendo' && (
-        <div className="recibida" onAnimationEnd={(evento) => {
-          if (evento.animationName === 'recibida-sale') cerrarRecepcion()
-        }}>
+        <div
+          className={saliendo ? 'recibida saliendo' : 'recibida'}
+          onAnimationEnd={(evento) => {
+            if (evento.animationName === 'recibida-sale') {
+              setSaliendo(false)
+              setFase('elegir')
+            }
+          }}
+        >
           <div>
             <p>SafeGuard</p>
             <h1>{saludo ? `Hola, ${saludo}` : 'Hola'}</h1>
@@ -117,7 +137,7 @@ function Panel() {
         </div>
       )}
 
-      {fase === 'elegir' && (
+      {(fase === 'elegir' || saliendo) && (
         <section className="elegir">
           <h1>¿Qué aplicación querés usar?</h1>
           <div className="elegir-corte">
