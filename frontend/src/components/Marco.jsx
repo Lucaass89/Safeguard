@@ -146,7 +146,10 @@ function Marco({ children, interior = false }) {
                   <button
                     className="nav-cta"
                     type="button"
-                    onClick={() => supabase.auth.signOut()}
+                    onClick={() => {
+                      sessionStorage.removeItem('sg-recibido')
+                      supabase.auth.signOut()
+                    }}
                   >
                     Salir
                   </button>

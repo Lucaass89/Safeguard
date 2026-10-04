@@ -46,7 +46,10 @@ function Layout() {
               <button
                 type="button"
                 className="login-link"
-                onClick={() => supabase.auth.signOut()}
+                onClick={() => {
+                  sessionStorage.removeItem('sg-recibido')
+                  supabase.auth.signOut()
+                }}
               >
                 Salir
               </button>

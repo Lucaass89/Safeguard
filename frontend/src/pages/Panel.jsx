@@ -43,29 +43,55 @@ const grupos = [
   },
 ]
 
+function recibido(id) {
+  return sessionStorage.getItem('sg-recibido') === id
+}
+
 function Panel() {
   const { sesion } = useSesion()
   const [tablero, setTablero] = useState(null)
+  const [acceso, setAcceso] = useState(null)
+  const [fase, setFase] = useState(() => (recibido(sesion.user.id) ? 'elegir' : 'recibiendo'))
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
     sesion.user.email
+  const reducir =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  function cerrarRecepcion() {
+    sessionStorage.setItem('sg-recibido', sesion.user.id)
+    setFase('elegir')
+  }
 
   useEffect(() => {
     let activo = true
 
     supabase.rpc('phishguard_tablero').then(({ data, error }) => {
-      if (!activo || error || !data?.organizacion) return
+      if (!activo) return
+      if (error || !data?.organizacion) {
+        setAcceso(false)
+        return
+      }
+      setAcceso(true)
       setTablero({
         eventos: Array.isArray(data.eventos) ? data.eventos : [],
         campanas: Array.isArray(data.campanas) ? data.campanas : [],
       })
-    }, () => {})
+    }, () => {
+      if (activo) setAcceso(false)
+    })
 
     return () => {
       activo = false
     }
   }, [])
+
+  useEffect(() => {
+    if (fase !== 'recibiendo' || reducir) return undefined
+    const timer = window.setTimeout(cerrarRecepcion, 3600)
+    return () => window.clearTimeout(timer)
+  }, [fase, reducir, sesion.user.id])
 
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
@@ -76,12 +102,66 @@ function Panel() {
 
   return (
     <div className="panel mesa">
-      <header className="mesa-bienvenida">
-        <h1 className="mesa-saludo">{saludo ? `Hola, ${saludo}` : 'Tu panel'}</h1>
-        <p>{sesion.user.email}</p>
-      </header>
+      {fase === 'recibiendo' && (
+        <div className="recibida" onAnimationEnd={(evento) => {
+          if (evento.animationName === 'recibida-sale') cerrarRecepcion()
+        }}>
+          <div>
+            <p>SafeGuard</p>
+            <h1>{saludo ? `Hola, ${saludo}` : 'Hola'}</h1>
+            <p>Bienvenido al panel de SafeGuard</p>
+            <button type="button" onClick={cerrarRecepcion}>
+              Continuar
+            </button>
+          </div>
+        </div>
+      )}
 
-      {tablero && (
+      {fase === 'elegir' && (
+        <section className="elegir">
+          <h1>¿Qué aplicación querés usar?</h1>
+          <div className="elegir-corte">
+            <button type="button" className="elegir-lado elegir-safelink" onClick={() => setFase('safelink')}>
+              <span>Para personas</span>
+              <strong>SafeLink</strong>
+              <p>Revisá un enlace, un mensaje, un PDF o un correo.</p>
+            </button>
+            {acceso ? (
+              <button type="button" className="elegir-lado elegir-phish" onClick={() => setFase('phishguard')}>
+                <span>Para empresas</span>
+                <strong>PhishGuard</strong>
+                <p>Cargá al equipo y armá una simulación.</p>
+              </button>
+            ) : (
+              <div className="elegir-lado elegir-phish elegir-cerrado">
+                <span>{acceso === false ? 'Plan pago' : 'Para empresas'}</span>
+                <strong>PhishGuard</strong>
+                <p>
+                  {acceso === null
+                    ? 'Revisando tu plan…'
+                    : 'Esta parte no viene con la cuenta. Se abre cuando el plan está pago.'}
+                </p>
+                {acceso === false && <Link to="/contacto">Hablar para activarlo</Link>}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {fase !== 'elegir' && fase !== 'recibiendo' && (
+        <button type="button" className="elegir-volver" onClick={() => setFase('elegir')}>
+          Elegir otra aplicación
+        </button>
+      )}
+
+      {fase === 'safelink' && (
+        <header className="mesa-bienvenida">
+          <h1 className="mesa-saludo">SafeLink</h1>
+          <p>Revisá lo que te llega antes de abrirlo.</p>
+        </header>
+      )}
+
+      {fase === 'phishguard' && tablero && (
         <Link className="mesa-tablero" to="/panel/tablero">
           <div className="mesa-tablero-cuerpo">
             <div>
@@ -124,11 +204,16 @@ function Panel() {
         </Link>
       )}
 
+      {(fase === 'safelink' || (fase === 'phishguard' && acceso)) && (
       <div className="mesa-hoja mesa-grupos">
-        {grupos.map((grupo) => (
+        {grupos.filter((grupo) => (fase === 'safelink' ? grupo.nombre === 'SafeLink' : grupo.nombre === 'PhishGuard')).map((grupo) => (
           <section className={grupo.clase} key={grupo.nombre}>
-            <h2>{grupo.nombre}</h2>
-            <p className="mesa-grupo-lead">{grupo.lead}</p>
+            {grupo.nombre !== 'SafeLink' && (
+              <>
+                <h2>{grupo.nombre}</h2>
+                <p className="mesa-grupo-lead">{grupo.lead}</p>
+              </>
+            )}
             <ol>
               {grupo.items.map((item, indice) => (
                 <li key={item.to}>
@@ -144,6 +229,7 @@ function Panel() {
           </section>
         ))}
       </div>
+      )}
     </div>
   )
 }

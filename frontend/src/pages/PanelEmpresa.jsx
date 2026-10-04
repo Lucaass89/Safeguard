@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
-import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
-
-const PLANES = ['Inicial', 'PyME', 'Corporativo', 'Educativo']
 
 async function cargar() {
   const { data: orgs, error: falloOrg } = await supabase
@@ -32,15 +29,10 @@ async function cargar() {
 }
 
 function PanelEmpresa() {
-  const { sesion } = useSesion()
   const [organizacion, setOrganizacion] = useState(null)
   const [empleados, setEmpleados] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
-
-  const [nombreEmpresa, setNombreEmpresa] = useState('')
-  const [plan, setPlan] = useState('Inicial')
-  const [creando, setCreando] = useState(false)
 
   const [nombre, setNombre] = useState('')
   const [correo, setCorreo] = useState('')
@@ -59,32 +51,6 @@ function PanelEmpresa() {
       activo = false
     }
   }, [])
-
-  async function crearEmpresa(evento) {
-    evento.preventDefault()
-    setError(null)
-    setCreando(true)
-
-    const { error: fallo } = await supabase.rpc('provision_it_admin', {
-      p_nombre:
-        sesion.user.user_metadata?.full_name ??
-        sesion.user.user_metadata?.name ??
-        sesion.user.email,
-      p_empresa: nombreEmpresa.trim(),
-      p_plan: plan,
-    })
-
-    setCreando(false)
-    if (fallo) {
-      setError(`No se pudo crear la empresa: ${fallo.message}`)
-      return
-    }
-
-    const estado = await cargar()
-    setOrganizacion(estado.organizacion)
-    setEmpleados(estado.empleados)
-    if (estado.error) setError(estado.error)
-  }
 
   async function agregarEmpleado(evento) {
     evento.preventDefault()
@@ -132,41 +98,22 @@ function PanelEmpresa() {
           ← Volver al panel
         </Link>
         <span className="panel-tag">PhishGuard</span>
-        <h1>{organizacion ? organizacion.nombre_empresa : 'Dar de alta tu empresa'}</h1>
+        <h1>{organizacion ? organizacion.nombre_empresa : 'PhishGuard es pago'}</h1>
         <p className="panel-lead">
           {organizacion
             ? `Plan ${organizacion.plan_id}. Acá cargás a la gente que va a recibir las simulaciones.`
-            : 'Con el nombre alcanza. Después armás las campañas por WhatsApp, SMS o mail.'}
+            : 'Esta cuenta no tiene el plan activo. SafeLink sigue disponible.'}
         </p>
       </header>
 
       {error && <p className="panel-error">{error}</p>}
 
       {!organizacion ? (
-        <form className="panel-form" onSubmit={crearEmpresa}>
-          <label className="panel-campo">
-            <span>Nombre de la empresa</span>
-            <input
-              type="text"
-              value={nombreEmpresa}
-              onChange={(e) => setNombreEmpresa(e.target.value)}
-              required
-            />
-          </label>
-          <label className="panel-campo">
-            <span>Plan</span>
-            <select value={plan} onChange={(e) => setPlan(e.target.value)}>
-              {PLANES.map((opcion) => (
-                <option key={opcion} value={opcion}>
-                  {opcion}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="submit" className="panel-boton" disabled={creando}>
-            {creando ? 'Creando…' : 'Crear empresa'}
-          </button>
-        </form>
+        <p className="panel-vacio">
+          PhishGuard se paga por persona. Cuando el plan esté activo vas a poder
+          cargar el equipo y armar simulaciones.{' '}
+          <Link to="/contacto">Hablar para activarlo</Link>
+        </p>
       ) : (
         <>
           <section className="panel-seccion">

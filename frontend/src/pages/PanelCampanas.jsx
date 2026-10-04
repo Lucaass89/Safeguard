@@ -318,8 +318,8 @@ function PanelCampanas() {
           ← Volver al panel
         </Link>
         <p className="panel-vacio">
-          Primero hay que <Link to="/panel/empresa">dar de alta la empresa</Link> y cargar
-          empleados.
+          PhishGuard se paga por persona. Esta cuenta no tiene el plan activo.{' '}
+          <Link to="/contacto">Hablar para activarlo</Link>
         </p>
       </div>
     )
