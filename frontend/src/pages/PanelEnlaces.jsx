@@ -145,7 +145,7 @@ function PanelEnlaces() {
         </p>
       </header>
 
-      <form className="panel-form panel-form-fila" onSubmit={manejarAnalisis}>
+      <form className="panel-form panel-form-fila panel-pieza" onSubmit={manejarAnalisis}>
         <label className="panel-campo">
           <span>Dirección</span>
           <input

@@ -207,10 +207,23 @@ function Panel() {
       )}
 
       {fase === 'safelink' && (
-        <header className="mesa-bienvenida">
-          <h1 className="mesa-saludo">SafeLink</h1>
-          <p>Revisá lo que te llega antes de abrirlo.</p>
-        </header>
+        <>
+          <header className="mesa-bienvenida">
+            <p className="mesa-kicker">Para personas</p>
+            <h1 className="mesa-saludo">SafeLink</h1>
+            <p>Revisá lo que te llega antes de abrirlo.</p>
+          </header>
+          <div className="mesa-cartas">
+            {grupos[0].items.map((item, indice) => (
+              <Link key={item.to} to={item.to}>
+                <span>{String(indice + 1).padStart(2, '0')}</span>
+                <strong>{item.titulo}</strong>
+                <span>{item.nota}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
 
       {fase === 'phishguard' && tablero && (
@@ -256,7 +269,7 @@ function Panel() {
         </Link>
       )}
 
-      {(fase === 'safelink' || (fase === 'phishguard' && acceso)) && (
+      {fase === 'phishguard' && acceso && (
       <div className="mesa-hoja mesa-grupos">
         {grupos.filter((grupo) => (fase === 'safelink' ? grupo.nombre === 'SafeLink' : grupo.nombre === 'PhishGuard')).map((grupo) => (
           <section className={grupo.clase} key={grupo.nombre}>

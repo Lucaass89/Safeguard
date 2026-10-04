@@ -47,7 +47,7 @@ function PanelPdf() {
         <p className="panel-lead">El archivo se lee en tu navegador. No se sube a ningún servidor.</p>
       </header>
 
-      <label className="panel-campo">
+      <label className="panel-campo panel-pieza">
         <span>Archivo</span>
         <input type="file" accept="application/pdf" onChange={manejarArchivo} />
       </label>

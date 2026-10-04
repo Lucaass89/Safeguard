@@ -65,7 +65,7 @@ function PanelWhatsapp() {
         </p>
       </header>
 
-      <form className="panel-form" onSubmit={manejarEnvio}>
+      <form className="panel-form panel-pieza" onSubmit={manejarEnvio}>
         <label className="panel-campo">
           <span>Mensaje</span>
           <textarea
