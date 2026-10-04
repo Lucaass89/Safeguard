@@ -1,3 +1,4 @@
+import { motivosLimpios } from './analisis.js'
 import { supabase } from './supabase.js'
 
 export async function enriquecer(url) {
@@ -50,7 +51,7 @@ export async function guardarAnalisis(sesion, resultado, entrada) {
     url_analizada: resultado.url,
     dominio: resultado.dominioDestino ?? resultado.dominio,
     nivel_riesgo: resultado.nivel,
-    explicacion: resultado.motivos.join(' '),
+    explicacion: motivosLimpios(resultado.motivos).join(' '),
     puntuacion_riesgo: resultado.puntuacion,
     entrada,
   })
@@ -59,7 +60,10 @@ export async function guardarAnalisis(sesion, resultado, entrada) {
 export async function reportarDominio(resultado, originType = 'web') {
   return supabase.rpc('safelink_reportar', {
     p_dominio: resultado.dominioDestino ?? resultado.dominio,
-    p_motivo: resultado.motivos.join(' '),
+    p_motivo: motivosLimpios(resultado.motivos)
+      .filter((motivo) => !motivo.startsWith('Este dominio ya fue denunciado'))
+      .slice(0, 3)
+      .join(' '),
     p_origin_type: originType,
   })
 }

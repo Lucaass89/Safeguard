@@ -51,6 +51,7 @@ function Layout() {
                   className="login-link"
                   onClick={() => {
                     sessionStorage.removeItem('sg-recibido')
+                    sessionStorage.removeItem(`sg-acceso:${sesion.user.id}`)
                     supabase.auth.signOut()
                   }}
                 >

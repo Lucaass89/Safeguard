@@ -710,7 +710,7 @@ export function analizar(entrada) {
   }
 
   if (url.protocol === 'http:') {
-    sumar(20, 'La dirección no usa candado (http).')
+    sumar(20, 'No tiene candado: es http, no https. Una página que pide datos no debería estar así.')
   }
 
   if (!oficial && TLD_BARATOS.has(tld)) {
@@ -745,7 +745,39 @@ export function analizar(entrada) {
   }
 
   if (!oficial && RUTA_SENSIBLE.test(`${url.pathname}${url.search}`)) {
-    sumar(12, 'La ruta pide entrar, verificar o recuperar una cuenta.')
+    sumar(
+      12,
+      'La dirección abre una página para entrar, verificar o recuperar una cuenta. En un sitio que no es el oficial, eso sirve para robar la clave.',
+    )
+  }
+
+  const partesNombre = etiqueta.split('-').filter(Boolean)
+  const senuelo = new Set([
+    'pago',
+    'pagos',
+    'seguridad',
+    'verificar',
+    'verificacion',
+    'soporte',
+    'factura',
+    'banco',
+    'billetera',
+    'cuenta',
+    'acceso',
+    'clave',
+    'premio',
+    'sorteo',
+  ])
+  const nombrePegado = etiqueta.replace(/-/g, '')
+  if (
+    !oficial &&
+    (partesNombre.some((parte) => senuelo.has(parte)) ||
+      /pagos|seguridad|verificacion|billetera/.test(nombrePegado))
+  ) {
+    sumar(
+      18,
+      'El nombre del sitio habla de pagos, seguridad o una cuenta. Así se disfrazan las páginas que piden datos.',
+    )
   }
 
   if (!oficial) {
@@ -790,24 +822,54 @@ export function analizar(entrada) {
   }
 }
 
+export function motivosLimpios(lista) {
+  const vistos = new Set()
+  const frases = []
+
+  for (const item of lista ?? []) {
+    const sinPrefijo = String(item).replace(/(?:ya está en la base regional:\s*)+/gi, '')
+    for (const parte of sinPrefijo.split(/(?<=\.)\s+/)) {
+      const frase = parte.replace(/\s+/g, ' ').trim()
+      const clave = frase.toLowerCase()
+      if (!frase || clave.startsWith('no aparecen') || clave.startsWith('ya está en la base regional')) continue
+      if (vistos.has(clave)) continue
+      vistos.add(clave)
+      frases.push(frase)
+    }
+  }
+
+  return frases
+}
+
+export function queHacer(nivel) {
+  if (nivel === 'rojo') {
+    return 'No lo abras. No escribas claves, códigos, un CBU ni datos de una tarjeta. Si ya entraste, cerrá la página y no completes nada.'
+  }
+  if (nivel === 'amarillo') {
+    return 'Frená antes de abrirlo. Si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial, no desde este enlace.'
+  }
+  return 'No hay señales fuertes. Antes de poner una clave, fijate que el dominio sea exactamente el del sitio oficial.'
+}
+
 export function combinarConAmenaza(local, amenaza) {
-  if (!amenaza) return local
+  if (!amenaza) return { ...local, motivos: motivosLimpios(local.motivos) }
 
   const piso = amenaza.nivel === 'rojo' ? 90 : amenaza.nivel === 'amarillo' ? 45 : 0
   const puntuacion = Math.max(local.puntuacion, piso)
-  const motivos = [...local.motivos]
+  const motivos = motivosLimpios(local.motivos)
 
   if (amenaza.nivel === 'rojo') {
+    const veces = amenaza.veces_reportado
     motivos.unshift(
-      amenaza.motivo
-        ? `Ya está en la base regional: ${amenaza.motivo}`
-        : `Ya está marcado en rojo (${amenaza.veces_reportado} reporte${amenaza.veces_reportado === 1 ? '' : 's'}).`,
+      veces > 1
+        ? `Este dominio ya fue denunciado en la base de SafeLink (${veces} veces).`
+        : 'Este dominio ya fue denunciado en la base de SafeLink.',
     )
   } else if (amenaza.nivel === 'amarillo') {
-    motivos.unshift('Este dominio ya fue señalado en la base regional.')
+    motivos.unshift('Este dominio ya fue señalado en la base de SafeLink. Conviene mirarlo otra vez.')
   }
 
-  return { ...local, puntuacion, nivel: nivelDesde(puntuacion), motivos }
+  return { ...local, puntuacion, nivel: nivelDesde(puntuacion), motivos: motivosLimpios(motivos) }
 }
 
 function sumarDestino(actual, puntos, urlDestino, frase) {
@@ -889,7 +951,7 @@ export function combinarConEnriquecimiento(local, extra) {
   }
 
   puntos = Math.min(100, puntos)
-  const motivos = [...new Set(actual.motivos.filter((m) => m && !m.startsWith('No aparecen')))]
+  const motivos = motivosLimpios(actual.motivos)
   if (motivos.length === 0) motivos.push('No aparecen señales fuertes en la dirección.')
 
   return { ...actual, motivos, puntuacion: puntos, nivel: nivelDesde(puntos) }

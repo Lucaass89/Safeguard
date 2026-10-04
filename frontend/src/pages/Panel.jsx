@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -47,14 +47,21 @@ function recibido(id) {
   return sessionStorage.getItem('sg-recibido') === id
 }
 
+function accesoGuardado(id) {
+  const valor = sessionStorage.getItem(`sg-acceso:${id}`)
+  if (valor === '1') return true
+  if (valor === '0') return false
+  return null
+}
+
 function Panel() {
   const { sesion } = useSesion()
+  const yaEntro = recibido(sesion.user.id)
   const [tablero, setTablero] = useState(null)
-  const [acceso, setAcceso] = useState(null)
-  const [fase, setFase] = useState(() => (recibido(sesion.user.id) ? 'elegir' : 'recibiendo'))
+  const [acceso, setAcceso] = useState(() => (yaEntro ? accesoGuardado(sesion.user.id) : null))
+  const [fase, setFase] = useState(() => (yaEntro ? 'elegir' : 'recibiendo'))
   const [saliendo, setSaliendo] = useState(false)
-  const [quiereSalir, setQuiereSalir] = useState(false)
-  const [entradaLista, setEntradaLista] = useState(false)
+  const [entradaLista, setEntradaLista] = useState(yaEntro)
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
@@ -62,44 +69,40 @@ function Panel() {
   const reducir =
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  function cerrarRecepcion() {
+  const cerrarRecepcion = useCallback(() => {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
-    setQuiereSalir(true)
-  }
+    setSaliendo(true)
+  }, [sesion.user.id])
 
   useEffect(() => {
     let activo = true
 
     supabase.rpc('phishguard_tablero').then(({ data, error }) => {
       if (!activo) return
-      if (error || !data?.organizacion) {
-        setAcceso(false)
-        return
-      }
-      setAcceso(true)
+      const tiene = !error && Boolean(data?.organizacion)
+      sessionStorage.setItem(`sg-acceso:${sesion.user.id}`, tiene ? '1' : '0')
+      setAcceso(tiene)
+      if (!tiene) return
       setTablero({
         eventos: Array.isArray(data.eventos) ? data.eventos : [],
         campanas: Array.isArray(data.campanas) ? data.campanas : [],
       })
     }, () => {
-      if (activo) setAcceso(false)
+      if (!activo) return
+      sessionStorage.setItem(`sg-acceso:${sesion.user.id}`, '0')
+      setAcceso(false)
     })
 
     return () => {
       activo = false
     }
-  }, [])
+  }, [sesion.user.id])
 
   useEffect(() => {
     if (fase !== 'recibiendo' || reducir || saliendo) return undefined
     const timer = window.setTimeout(cerrarRecepcion, 3600)
     return () => window.clearTimeout(timer)
-  }, [fase, reducir, saliendo, sesion.user.id])
-
-  useEffect(() => {
-    if (!quiereSalir || fase !== 'recibiendo' || saliendo || acceso === null) return undefined
-    setSaliendo(true)
-  }, [quiereSalir, fase, saliendo, acceso])
+  }, [fase, reducir, saliendo, cerrarRecepcion])
 
   useEffect(() => {
     if (!saliendo) return undefined
@@ -111,13 +114,10 @@ function Panel() {
   }, [saliendo])
 
   useEffect(() => {
-    if (fase !== 'elegir') {
-      setEntradaLista(false)
-      return undefined
-    }
+    if (fase !== 'elegir' || entradaLista) return undefined
     const timer = window.setTimeout(() => setEntradaLista(true), 1300)
     return () => window.clearTimeout(timer)
-  }, [fase])
+  }, [fase, entradaLista])
 
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
@@ -149,7 +149,7 @@ function Panel() {
         </div>
       )}
 
-      {fase === 'elegir' && acceso !== null && (
+      {fase === 'elegir' && (
         <section
           className={entradaLista ? 'elegir elegir-lista' : 'elegir'}
           onAnimationEnd={(evento) => {
@@ -166,7 +166,11 @@ function Panel() {
               <p>Revisá un enlace, un mensaje, un PDF o un correo.</p>
             </button>
             <div
-              className={acceso ? 'elegir-lado elegir-phish' : 'elegir-lado elegir-phish elegir-cerrado'}
+              className={
+                acceso === false
+                  ? 'elegir-lado elegir-phish elegir-cerrado'
+                  : 'elegir-lado elegir-phish'
+              }
               role={acceso ? 'button' : undefined}
               tabIndex={acceso ? 0 : undefined}
               onClick={() => {
