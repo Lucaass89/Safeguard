@@ -427,18 +427,21 @@
 }
 
 .sl-verde {
-  background: #d9f6ea;
-  color: #0d5c48;
+  background: #8ee0c0;
+  color: #064e3b;
+  border-left: 7px solid #0c6b58;
 }
 
 .sl-amarillo {
-  background: #fff1d4;
-  color: #8a5a08;
+  background: #f6c445;
+  color: #5a3b00;
+  border-left: 7px solid #c48a00;
 }
 
 .sl-rojo {
-  background: #ffe4de;
-  color: #8d3428;
+  background: #f5a394;
+  color: #7a261c;
+  border-left: 7px solid #c24132;
 }
 
 .sl-verde p,
