@@ -506,6 +506,29 @@
   font-size: 16px;
 }
 
+.mesa-bienvenida {
+  margin-bottom: 22px;
+}
+
+.sg-landing .panel-lienzo .mesa-saludo {
+  margin: 0;
+  font: 700 34px/1.1 'Space Grotesk', var(--sg-sans);
+  letter-spacing: -0.02em;
+  color: #102a43;
+}
+
+.mesa-bienvenida p {
+  margin: 6px 0 0;
+  color: var(--sg-muted);
+  font-size: 16px;
+}
+
+.mesa-grupo-lead {
+  margin: 2px 18px 0;
+  color: var(--sg-muted);
+  font-size: 16px;
+}
+
 .mesa-barra {
   display: flex;
   justify-content: space-between;
@@ -563,8 +586,8 @@
   display: grid;
   grid-template-columns: 2.4rem minmax(10rem, 16rem) 1fr auto;
   gap: 8px 16px;
-  align-items: baseline;
-  padding: 13px 18px;
+  align-items: center;
+  padding: 16px 18px;
   color: inherit;
   text-decoration: none;
 }
@@ -585,7 +608,14 @@
 }
 
 .mesa-hoja a span:last-child {
-  color: var(--sg-accent);
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  justify-self: end;
+  border-radius: 999px;
+  background: #e7f0ff;
+  color: #2563eb;
 }
 
 .mesa-hoja a:hover {
@@ -663,12 +693,56 @@
 .mesa-tablero {
   display: block;
   margin-bottom: 18px;
-  padding: 22px 24px;
+  padding: 28px;
   border: 1px solid #102a43;
-  border-radius: 14px;
+  border-radius: 16px;
   background: #102a43;
   color: #f4f7f8;
   text-decoration: none;
+}
+
+.mesa-tablero-cuerpo {
+  display: grid;
+  gap: 28px;
+}
+
+.mesa-tablero-kicker {
+  margin: 0 0 8px;
+  color: #7ddec4;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mesa-tablero-lectura,
+.mesa-riesgo p {
+  margin: 0;
+  color: #d5e3ea;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.mesa-riesgo {
+  margin-top: 18px;
+}
+
+.mesa-riesgo-pista {
+  height: 8px;
+  border-radius: 999px;
+  background: #17344f;
+  overflow: hidden;
+}
+
+.mesa-riesgo-pista span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #7ddec4;
+}
+
+.mesa-riesgo p {
+  margin-top: 8px;
 }
 
 .mesa-tablero > p {
@@ -715,10 +789,14 @@
   font-size: 16px;
 }
 
-.mesa-tablero-ir {
-  display: inline-block;
-  margin-top: 16px;
-  color: #b9d4ff;
+.mesa-tablero .mesa-tablero-ir {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 20px;
+  padding: 11px 16px;
+  border-radius: 9px;
+  background: #fff;
+  color: #146fd2;
   font-weight: 700;
 }
 
@@ -729,5 +807,64 @@
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
+}
+
+@media (min-width: 901px) {
+  .mesa-tablero-cuerpo {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    align-items: center;
+  }
+
+  .mesa-tablero ul {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mesa-grupos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+    background: transparent;
+    border: 0;
+    overflow: visible;
+  }
+
+  .mesa-hoja a {
+    grid-template-columns: 2.4rem minmax(0, 1fr) auto;
+    grid-template-areas: 'num title arrow' 'num note arrow';
+  }
+
+  .mesa-hoja a span:first-child {
+    grid-area: num;
+    align-self: start;
+    margin-top: 3px;
+  }
+
+  .mesa-hoja a strong {
+    grid-area: title;
+  }
+
+  .mesa-hoja a span:nth-child(3) {
+    grid-area: note;
+  }
+
+  .mesa-hoja a span:last-child {
+    grid-area: arrow;
+  }
+
+  .mesa-grupos section {
+    background: #fff;
+    border: 1px solid var(--sg-line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .mesa-grupos .panel-personas {
+    border-top: 3px solid #0c6b58;
+  }
+
+  .mesa-grupos .panel-empresas {
+    border-top: 3px solid #2563eb;
+  }
 }
 

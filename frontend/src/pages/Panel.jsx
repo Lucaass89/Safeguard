@@ -4,10 +4,27 @@ import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
 
+function primerNombre(nombre, email) {
+  const limpio = (nombre || '').trim()
+  if (!limpio || limpio === email) return ''
+  return limpio.split(/\s+/)[0]
+}
+
+function lectura(campanas, correos, clics, datos) {
+  if (campanas === 0) return 'Todavía no hay campañas.'
+  if (correos === 0) return `${campanas} campañas. Todavía no salió ningún correo.`
+  const clic =
+    clics === 0 ? 'nadie hizo clic' : clics === 1 ? '1 persona hizo clic' : `${clics} personas hicieron clic`
+  const cargados =
+    datos === 0 ? 'nadie cargó datos' : datos === 1 ? '1 persona cargó datos' : `${datos} personas cargaron datos`
+  return `De ${correos} correos, ${clic} y ${cargados}.`
+}
+
 const grupos = [
   {
     nombre: 'SafeLink',
     clase: 'panel-personas',
+    lead: 'Revisá lo que te llega antes de abrirlo.',
     items: [
       { to: '/panel/enlaces', titulo: 'Revisar un enlace', nota: 'Pegá un link y te decimos si es seguro' },
       { to: '/panel/whatsapp', titulo: 'Pegar un WhatsApp', nota: 'Pegá un mensaje sospechoso y te avisamos' },
@@ -18,6 +35,7 @@ const grupos = [
   {
     nombre: 'PhishGuard',
     clase: 'panel-empresas',
+    lead: 'Entrená al equipo con una simulación.',
     items: [
       { to: '/panel/empresa', titulo: 'Tu empresa', nota: 'Cargá a tu equipo' },
       { to: '/panel/campanas', titulo: 'Campañas', nota: 'Armá y programá una simulación' },
@@ -49,54 +67,68 @@ function Panel() {
     }
   }, [])
 
-  const herramientas = grupos.reduce((total, grupo) => total + grupo.items.length, 0) + (tablero ? 1 : 0)
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
   const datos = tablero?.eventos.filter((evento) => evento.ingreso_datos).length ?? 0
+  const campanas = tablero?.campanas.length ?? 0
+  const saludo = primerNombre(nombre, sesion.user.email)
+  const porcentaje = correos > 0 ? Math.round((clics / correos) * 100) : 0
 
   return (
     <div className="panel mesa">
-      <div className="mesa-barra">
-        <p>
-          <span>{nombre}</span>
-          <span>{sesion.user.email}</span>
-        </p>
-        <p>{herramientas} herramientas</p>
-      </div>
+      <header className="mesa-bienvenida">
+        <h1 className="mesa-saludo">{saludo ? `Hola, ${saludo}` : 'Tu panel'}</h1>
+        <p>{sesion.user.email}</p>
+      </header>
 
       {tablero && (
         <Link className="mesa-tablero" to="/panel/tablero">
-          <h2>Tablero del equipo</h2>
-          {tablero.campanas.length === 0 ? (
-            <p className="mesa-tablero-vacio">Todavía no hay campañas</p>
-          ) : (
-            <ul>
-              <li>
-                <strong>{tablero.campanas.length}</strong>
-                <span>Campañas</span>
-              </li>
-              <li>
-                <strong>{correos}</strong>
-                <span>Correos</span>
-              </li>
-              <li>
-                <strong>{clics}</strong>
-                <span>Clics</span>
-              </li>
-              <li>
-                <strong>{datos}</strong>
-                <span>Datos ingresados</span>
-              </li>
-            </ul>
-          )}
-          <span className="mesa-tablero-ir">Mirá cómo evoluciona el riesgo</span>
+          <div className="mesa-tablero-cuerpo">
+            <div>
+              <p className="mesa-tablero-kicker">PhishGuard</p>
+              <h2>Tablero del equipo</h2>
+              <p className="mesa-tablero-lectura">{lectura(campanas, correos, clics, datos)}</p>
+              {correos > 0 && (
+                <div className="mesa-riesgo">
+                  <div className="mesa-riesgo-pista" aria-hidden="true">
+                    <span style={{ width: `${porcentaje}%` }} />
+                  </div>
+                  <p>
+                    {clics} de {correos} correos con clic
+                  </p>
+                </div>
+              )}
+              <span className="mesa-tablero-ir">Ver el tablero</span>
+            </div>
+            {campanas > 0 && (
+              <ul>
+                <li>
+                  <strong>{campanas}</strong>
+                  <span>Campañas</span>
+                </li>
+                <li>
+                  <strong>{correos}</strong>
+                  <span>Correos</span>
+                </li>
+                <li>
+                  <strong>{clics}</strong>
+                  <span>Clics</span>
+                </li>
+                <li>
+                  <strong>{datos}</strong>
+                  <span>Datos ingresados</span>
+                </li>
+              </ul>
+            )}
+          </div>
         </Link>
       )}
 
-      <div className="mesa-hoja">
+      <div className="mesa-hoja mesa-grupos">
         {grupos.map((grupo) => (
           <section className={grupo.clase} key={grupo.nombre}>
             <h2>{grupo.nombre}</h2>
+            <p className="mesa-grupo-lead">{grupo.lead}</p>
             <ol>
               {grupo.items.map((item, indice) => (
                 <li key={item.to}>
