@@ -53,6 +53,8 @@ function Panel() {
   const [acceso, setAcceso] = useState(null)
   const [fase, setFase] = useState(() => (recibido(sesion.user.id) ? 'elegir' : 'recibiendo'))
   const [saliendo, setSaliendo] = useState(false)
+  const [quiereSalir, setQuiereSalir] = useState(false)
+  const [entradaLista, setEntradaLista] = useState(false)
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
@@ -62,7 +64,7 @@ function Panel() {
 
   function cerrarRecepcion() {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
-    setSaliendo(true)
+    setQuiereSalir(true)
   }
 
   useEffect(() => {
@@ -95,6 +97,11 @@ function Panel() {
   }, [fase, reducir, saliendo, sesion.user.id])
 
   useEffect(() => {
+    if (!quiereSalir || fase !== 'recibiendo' || saliendo || acceso === null) return undefined
+    setSaliendo(true)
+  }, [quiereSalir, fase, saliendo, acceso])
+
+  useEffect(() => {
     if (!saliendo) return undefined
     const timer = window.setTimeout(() => {
       setSaliendo(false)
@@ -102,6 +109,15 @@ function Panel() {
     }, 700)
     return () => window.clearTimeout(timer)
   }, [saliendo])
+
+  useEffect(() => {
+    if (fase !== 'elegir') {
+      setEntradaLista(false)
+      return undefined
+    }
+    const timer = window.setTimeout(() => setEntradaLista(true), 1300)
+    return () => window.clearTimeout(timer)
+  }, [fase])
 
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
@@ -133,8 +149,15 @@ function Panel() {
         </div>
       )}
 
-      {fase === 'elegir' && (
-        <section className="elegir">
+      {fase === 'elegir' && acceso !== null && (
+        <section
+          className={entradaLista ? 'elegir elegir-lista' : 'elegir'}
+          onAnimationEnd={(evento) => {
+            if (evento.animationName !== 'elegir-entra') return
+            if (!evento.target.classList?.contains('elegir-phish')) return
+            setEntradaLista(true)
+          }}
+        >
           <h1>¿Qué aplicación querés usar?</h1>
           <div className="elegir-corte">
             <button type="button" className="elegir-lado elegir-safelink" onClick={() => setFase('safelink')}>
@@ -142,24 +165,32 @@ function Panel() {
               <strong>SafeLink</strong>
               <p>Revisá un enlace, un mensaje, un PDF o un correo.</p>
             </button>
-            {acceso ? (
-              <button type="button" className="elegir-lado elegir-phish" onClick={() => setFase('phishguard')}>
-                <span>Para empresas</span>
-                <strong>PhishGuard</strong>
-                <p>Cargá al equipo y armá una simulación.</p>
-              </button>
-            ) : (
-              <div className="elegir-lado elegir-phish elegir-cerrado">
-                <span>{acceso === false ? 'Plan pago' : 'Para empresas'}</span>
-                <strong>PhishGuard</strong>
-                <p>
-                  {acceso === null
-                    ? 'Revisando tu plan…'
-                    : 'Esta parte no viene con la cuenta. Se abre cuando el plan está pago.'}
-                </p>
-                {acceso === false && <Link to="/contacto">Hablar para activarlo</Link>}
-              </div>
-            )}
+            <div
+              className={acceso ? 'elegir-lado elegir-phish' : 'elegir-lado elegir-phish elegir-cerrado'}
+              role={acceso ? 'button' : undefined}
+              tabIndex={acceso ? 0 : undefined}
+              onClick={() => {
+                if (acceso) setFase('phishguard')
+              }}
+              onKeyDown={(evento) => {
+                if (!acceso) return
+                if (evento.key === 'Enter' || evento.key === ' ') {
+                  evento.preventDefault()
+                  setFase('phishguard')
+                }
+              }}
+            >
+              <span>{acceso === false ? 'Plan pago' : 'Para empresas'}</span>
+              <strong>PhishGuard</strong>
+              <p>
+                {acceso
+                  ? 'Cargá al equipo y armá una simulación.'
+                  : acceso === false
+                    ? 'Esta parte no viene con la cuenta. Se abre cuando el plan está pago.'
+                    : 'Revisando tu plan…'}
+              </p>
+              {acceso === false && <Link to="/contacto">Hablar para activarlo</Link>}
+            </div>
           </div>
         </section>
       )}
