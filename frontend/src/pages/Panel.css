@@ -884,7 +884,7 @@
 }
 
 .recibida.saliendo {
-  animation: recibida-sale 0.62s cubic-bezier(0.4, 0, 1, 1) forwards;
+  animation: recibida-sale 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .recibida > div > p:first-child {
@@ -932,7 +932,7 @@
   font: 700 40px/1.1 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.03em;
   text-wrap: balance;
-  animation: elegir-entra 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+  animation: elegir-entra 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .sg-landing .panel-lienzo .elegir h1 {
@@ -990,7 +990,7 @@
   border: 1px solid #d5e2e4;
   border-top: 4px solid #0c6b58;
   color: #102a43;
-  animation-delay: 0.28s;
+  animation-delay: 0.08s;
 }
 
 .elegir-safelink span {
@@ -1000,7 +1000,7 @@
 .elegir-phish {
   background: #102a43;
   color: #f4f7f8;
-  animation-delay: 0.4s;
+  animation-delay: 0.22s;
 }
 
 .elegir-phish span,
@@ -1050,16 +1050,21 @@
 }
 
 @keyframes recibida-sale {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
   to {
     opacity: 0;
-    transform: translateY(-28px);
+    transform: translateY(-40px);
   }
 }
 
 @keyframes elegir-entra {
   from {
     opacity: 0;
-    transform: translateY(36px);
+    transform: translateY(64px);
   }
 
   to {
@@ -1069,19 +1074,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .recibida,
-  .recibida.saliendo,
   .recibida h1,
   .recibida p,
-  .recibida button,
-  .elegir h1,
-  .elegir-lado {
+  .recibida button {
     animation: none;
-  }
-
-  .elegir-lado:hover {
-    translate: none;
-    box-shadow: none;
   }
 }
 

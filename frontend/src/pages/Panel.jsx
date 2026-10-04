@@ -62,10 +62,6 @@ function Panel() {
 
   function cerrarRecepcion() {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
-    if (reducir) {
-      setFase('elegir')
-      return
-    }
     setSaliendo(true)
   }
 
@@ -103,7 +99,7 @@ function Panel() {
     const timer = window.setTimeout(() => {
       setSaliendo(false)
       setFase('elegir')
-    }, 900)
+    }, 700)
     return () => window.clearTimeout(timer)
   }, [saliendo])
 
@@ -137,7 +133,7 @@ function Panel() {
         </div>
       )}
 
-      {(fase === 'elegir' || saliendo) && (
+      {fase === 'elegir' && (
         <section className="elegir">
           <h1>¿Qué aplicación querés usar?</h1>
           <div className="elegir-corte">
