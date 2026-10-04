@@ -64,13 +64,9 @@ function Personas() {
               Instalar la extensión
               <span>Próximamente</span>
             </button>
-            {sesion ? (
+            {sesion && (
               <Link className="sl-secundario" to="/panel/enlaces">
                 Mis enlaces
-              </Link>
-            ) : (
-              <Link className="sl-secundario" to="/ingresar">
-                Crear una cuenta
               </Link>
             )}
           </aside>
