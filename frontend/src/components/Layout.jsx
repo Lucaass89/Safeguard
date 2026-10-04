@@ -75,8 +75,8 @@ function Layout() {
           <div className="footer-contacto">
             <p className="footer-rotulo">Contacto</p>
             <p className="footer-enlaces">
-              <span>WhatsApp Business</span>
-              <span>Correo</span>
+              <Link to="/privacidad">Privacidad</Link>
+              <Link to="/contacto">Contacto</Link>
             </p>
           </div>
         </div>

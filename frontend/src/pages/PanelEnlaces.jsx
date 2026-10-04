@@ -198,6 +198,12 @@ function PanelEnlaces() {
                 <div>
                   <p className="historial-url">{item.url_analizada}</p>
                   <p className="historial-meta">
+                    {item.nivel_riesgo === 'verde'
+                      ? '✓ Verde'
+                      : item.nivel_riesgo === 'amarillo'
+                        ? '! Amarillo'
+                        : '✕ Rojo'}
+                    {' · '}
                     {item.dominio} · {fecha(item.fecha_analisis)}
                   </p>
                 </div>

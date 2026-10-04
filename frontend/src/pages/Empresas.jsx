@@ -5,8 +5,7 @@ import './Modulo.css'
 const pasos = [
   {
     titulo: 'Armás la campaña',
-    texto:
-      'Elegís destinatarios, fecha de envío y nivel de dificultad, sobre plantillas basadas en estafas reales de la región.',
+    texto: 'Elegís destinatarios, fecha de envío y nivel de dificultad.',
   },
   {
     titulo: 'Llegan los correos',
@@ -46,23 +45,58 @@ function Empresas() {
     <Marco interior>
       <div className="container pg">
         <section className="pg-banda">
-          <p className="pg-kicker">Para empresas</p>
           <div className="pg-banda-cuerpo">
             <div>
+              <p className="pg-kicker">Para empresas</p>
               <h1>PhishGuard entrena el criterio, no el firewall.</h1>
               <p>
                 Simulación de phishing para PyMEs e instituciones educativas.
                 El ataque apunta a la persona: queda registro de lo que pasó y
                 una explicación corta, sin sanciones.
               </p>
+              <div className="pg-acciones">
+                <Link className="pg-cta" to="/contacto">
+                  Hablar con nosotros
+                </Link>
+                <a className="pg-cta-secundario" href="#precios">
+                  Ver precios
+                </a>
+              </div>
             </div>
-            <Link className="pg-cta" to="/ingresar">
-              Ingresar a PhishGuard
-            </Link>
+            <aside className="pg-tablero" aria-label="Vista previa del tablero">
+              <p>Ejemplo con datos ficticios</p>
+              <h2>Tablero del equipo</h2>
+              <ul>
+                <li>
+                  <strong>128</strong>
+                  <span>Correos enviados</span>
+                </li>
+                <li>
+                  <strong>74</strong>
+                  <span>Aperturas</span>
+                </li>
+                <li>
+                  <strong>19</strong>
+                  <span>Clics</span>
+                </li>
+                <li>
+                  <strong>4</strong>
+                  <span>Datos ingresados</span>
+                </li>
+              </ul>
+              <div className="pg-evolucion" aria-hidden="true">
+                <span style={{ height: '35%' }} />
+                <span style={{ height: '48%' }} />
+                <span style={{ height: '42%' }} />
+                <span style={{ height: '70%' }} />
+                <span style={{ height: '58%' }} />
+                <span style={{ height: '86%' }} />
+              </div>
+            </aside>
           </div>
         </section>
 
-        <section className="pg-bloque">
+        <section className="pg-bloque" id="pasos">
           <h2>De la campaña al aprendizaje</h2>
           <ol className="pg-riel">
             {pasos.map((paso, i) => (
@@ -87,14 +121,14 @@ function Empresas() {
           </dl>
         </section>
 
-        <section className="pg-bloque">
-          <div className="pg-precio-cabeza">
-            <h2>Precio por persona, por mes</h2>
-            <p>
-              Facturación mensual, cancelable. Sin contrato anual ni mínimo de
-              usuarios. Cargo mínimo de USD 25. Pago anual: 15% de descuento.
-            </p>
-          </div>
+        <section className="pg-bloque" id="precios">
+          <h2>Precio por persona, por mes</h2>
+          <p className="pg-precio-regla">
+            Todos los usuarios pagan la tarifa del tramo en el que cae la
+            organización. Facturación mensual, cancelable. Sin contrato anual.
+            Cargo mínimo de USD 25 por mes. Pago anual opcional: 15% de
+            descuento.
+          </p>
           <ul className="pg-precios">
             {precios.map(([rango, valor]) => (
               <li key={rango}>
@@ -105,11 +139,17 @@ function Empresas() {
               </li>
             ))}
           </ul>
+          <p className="pg-precio-nota">
+            Con 10 usuarios, el mínimo de USD 25 aplica (USD 2,50 por persona).
+          </p>
+          <p className="pg-precio-nota">
+            Con 150 usuarios, la organización cae en 101 a 300: los 150 pagan
+            USD 0,85, o sea USD 127,50 al mes.
+          </p>
+          <p className="pg-precio-nota">
+            Con 100 usuarios pagás USD 100; con 101, USD 85,85.
+          </p>
         </section>
-
-        <p className="pg-volver">
-          <Link to="/">Volver al inicio</Link>
-        </p>
       </div>
     </Marco>
   )

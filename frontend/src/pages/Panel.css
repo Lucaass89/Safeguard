@@ -64,6 +64,7 @@
   grid-area: lead;
   max-width: 42rem;
   color: var(--sg-muted);
+  font-size: 16px;
 }
 
 .panel-error,
@@ -502,7 +503,7 @@
 
 .tablero-kpis span {
   color: var(--sg-muted);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .mesa-barra {
@@ -580,7 +581,7 @@
 
 .mesa-hoja a span:nth-child(3) {
   color: var(--sg-muted);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .mesa-hoja a span:last-child {
@@ -605,7 +606,7 @@
   --sg-bg: #f8fbfb;
   --sg-surface: #fff;
   --sg-text: #102a43;
-  --sg-muted: #60768b;
+  --sg-muted: #4a6278;
   --sg-line: #d5e2e4;
   --sg-teal: #168b76;
   --sg-blue: #2563eb;
@@ -649,11 +650,84 @@
 
 .sg-landing .panel-lienzo .panel-boton,
 .sg-landing .panel-lienzo a.panel-boton {
+  background: var(--sg-blue);
   color: #fff;
 }
 
 .sg-landing .panel-lienzo .panel-boton-borde {
-  color: var(--sg-accent);
+  border-color: #bfd4d6;
+  color: var(--sg-blue);
   background: #fff;
+}
+
+.mesa-tablero {
+  display: block;
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  border: 1px solid #102a43;
+  border-radius: 14px;
+  background: #102a43;
+  color: #f4f7f8;
+  text-decoration: none;
+}
+
+.mesa-tablero > p {
+  margin: 0 0 8px;
+  color: #7ddec4;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sg-landing .panel-lienzo .mesa-tablero h2 {
+  margin: 0 0 16px;
+  color: #fff;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.mesa-tablero ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mesa-tablero li {
+  padding: 12px;
+  border-radius: 10px;
+  background: #17344f;
+}
+
+.mesa-tablero strong {
+  display: block;
+  color: #fff;
+  font: 700 26px 'Space Grotesk', var(--sg-sans);
+  letter-spacing: -0.02em;
+}
+
+.mesa-tablero li span {
+  color: #d5e3ea;
+  font-size: 16px;
+}
+
+.mesa-tablero-ir {
+  display: inline-block;
+  margin-top: 16px;
+  color: #b9d4ff;
+  font-weight: 700;
+}
+
+.mesa-tablero .mesa-tablero-vacio {
+  margin: 0;
+  color: #d5e3ea;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
 }
 

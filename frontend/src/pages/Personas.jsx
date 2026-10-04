@@ -1,22 +1,23 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import { useSesion } from '../lib/useSesion.js'
 import './Modulo.css'
 
 const semaforo = [
   {
     nivel: 'verde',
-    titulo: 'Verde',
+    titulo: '✓ Verde',
     texto: 'No aparecieron señales de riesgo. Podés continuar.',
   },
   {
     nivel: 'amarillo',
-    titulo: 'Amarillo',
+    titulo: '! Amarillo',
     texto:
       'Hay algo raro: por ejemplo, el dominio se creó hace pocos días. Revisá antes de seguir.',
   },
   {
     nivel: 'rojo',
-    titulo: 'Rojo',
+    titulo: '✕ Rojo',
     texto:
       'Fuentes de reputación marcaron esta página como peligrosa. No la abras.',
   },
@@ -46,6 +47,8 @@ const donde = [
 ]
 
 function Personas() {
+  const { sesion } = useSesion()
+
   return (
     <Marco interior>
       <div className="container sl">
@@ -57,10 +60,19 @@ function Personas() {
               Revisa el enlace o el QR antes del clic y responde con un color,
               no con un informe técnico.
             </p>
-            <Link to="/ingresar">Crear una cuenta</Link>
-            <Link className="sl-secundario" to="/">
-              Volver al inicio
-            </Link>
+            <button type="button" disabled>
+              Instalar la extensión
+              <span>Próximamente</span>
+            </button>
+            {sesion ? (
+              <Link className="sl-secundario" to="/panel/enlaces">
+                Mis enlaces
+              </Link>
+            ) : (
+              <Link className="sl-secundario" to="/ingresar">
+                Crear una cuenta
+              </Link>
+            )}
           </aside>
 
           <div className="sl-cuerpo">
@@ -82,15 +94,22 @@ function Personas() {
                 {donde.map((item) => (
                   <div key={item.titulo}>
                     <dt>{item.titulo}</dt>
-                    <dd>{item.texto}</dd>
+                    <dd>
+                      {item.texto}
+                      {item.titulo === 'Con cuenta, tu historial' && (
+                        <>
+                          {' '}
+                          <Link to="/privacidad">Qué se guarda está en Privacidad.</Link>
+                        </>
+                      )}
+                    </dd>
                   </div>
                 ))}
               </dl>
             </section>
 
             <p className="sl-gratis">
-              Gratis para siempre. La cuenta es opcional y solo guarda el
-              historial y los reportes.
+              La cuenta es opcional y solo guarda el historial y los reportes.
             </p>
           </div>
         </div>

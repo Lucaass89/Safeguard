@@ -1,7 +1,7 @@
 const titulos = {
-  verde: 'Verde: sin señales fuertes',
-  amarillo: 'Amarillo: revisá antes de seguir',
-  rojo: 'Rojo: no lo abras',
+  verde: '✓ Verde: sin señales fuertes',
+  amarillo: '! Amarillo: revisá antes de seguir',
+  rojo: '✕ Rojo: no lo abras',
 }
 
 function Resultado({ nivel, subtitulo, motivos, children }) {

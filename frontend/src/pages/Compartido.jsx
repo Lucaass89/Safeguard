@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
+import { useSesion } from '../lib/useSesion.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
 function Compartido() {
   const { token } = useParams()
+  const { sesion } = useSesion()
   const [ficha, setFicha] = useState(null)
   const [error, setError] = useState(null)
 
@@ -52,7 +54,9 @@ function Compartido() {
       />
 
       <p>
-        <Link to="/ingresar">Quiero revisar otro enlace</Link>
+        <Link to={sesion ? '/panel/enlaces' : '/ingresar'}>
+          {sesion ? 'Mis enlaces' : 'Quiero revisar otro enlace'}
+        </Link>
       </p>
     </div>
   )

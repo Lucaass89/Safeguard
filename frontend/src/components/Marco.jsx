@@ -21,8 +21,56 @@ function Marca() {
 
 function Marco({ children, interior = false }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [seccionActiva, setSeccionActiva] = useState('')
   const { pathname, hash } = useLocation()
   const { sesion } = useSesion()
+
+  useEffect(() => {
+    if (pathname !== '/') return undefined
+
+    const ids = ['solucion', 'productos', 'proceso']
+
+    function marcar() {
+      const headerAlto = document.querySelector('.site-header')?.offsetHeight ?? 83
+      const zonaArriba = headerAlto
+      const zonaAbajo = window.innerHeight * 0.62
+      let mejor = ''
+      let maximo = 0
+
+      for (const id of ids) {
+        const nodo = document.getElementById(id)
+        if (!nodo) continue
+        const rect = nodo.getBoundingClientRect()
+        const alto = Math.max(0, Math.min(rect.bottom, zonaAbajo) - Math.max(rect.top, zonaArriba))
+        if (alto > maximo) {
+          maximo = alto
+          mejor = id
+        }
+      }
+
+      setSeccionActiva((actual) => (actual === mejor ? actual : mejor))
+    }
+
+    const headerAlto = document.querySelector('.site-header')?.offsetHeight ?? 83
+    const observer = new IntersectionObserver(marcar, {
+      rootMargin: `-${headerAlto}px 0px -38% 0px`,
+      threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
+    })
+
+    ids.forEach((id) => {
+      const nodo = document.getElementById(id)
+      if (nodo) observer.observe(nodo)
+    })
+
+    marcar()
+    window.addEventListener('scroll', marcar, { passive: true })
+    window.addEventListener('resize', marcar)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', marcar)
+      window.removeEventListener('resize', marcar)
+    }
+  }, [pathname])
 
   useEffect(() => {
     const id = hash.startsWith('#') ? decodeURIComponent(hash.slice(1)) : ''
@@ -65,33 +113,50 @@ function Marco({ children, interior = false }) {
             <span />
           </button>
           <nav className={menuAbierto ? 'main-nav open' : 'main-nav'} id="main-nav">
-            <Link to="/#solucion" onClick={alClickAncla}>
+            <Link
+              className={seccionActiva === 'solucion' ? 'nav-activa' : undefined}
+              to="/#solucion"
+              aria-current={seccionActiva === 'solucion' ? 'true' : undefined}
+              onClick={alClickAncla}
+            >
               La solución
             </Link>
-            <Link to="/#productos" onClick={alClickAncla}>
+            <Link
+              className={seccionActiva === 'productos' ? 'nav-activa' : undefined}
+              to="/#productos"
+              aria-current={seccionActiva === 'productos' ? 'true' : undefined}
+              onClick={alClickAncla}
+            >
               Productos
             </Link>
-            <Link to="/#proceso" onClick={alClickAncla}>
+            <Link
+              className={seccionActiva === 'proceso' ? 'nav-activa' : undefined}
+              to="/#proceso"
+              aria-current={seccionActiva === 'proceso' ? 'true' : undefined}
+              onClick={alClickAncla}
+            >
               Cómo funciona
             </Link>
-            {sesion ? (
-              <>
-                <Link to="/panel" onClick={cerrarMenu}>
-                  Panel
+            <div className="nav-app">
+              {sesion ? (
+                <>
+                  <Link to="/panel" onClick={cerrarMenu}>
+                    Panel
+                  </Link>
+                  <button
+                    className="nav-cta"
+                    type="button"
+                    onClick={() => supabase.auth.signOut()}
+                  >
+                    Salir
+                  </button>
+                </>
+              ) : (
+                <Link className="nav-cta" to="/ingresar" onClick={cerrarMenu}>
+                  Ingresar <span>↗</span>
                 </Link>
-                <button
-                  className="nav-cta"
-                  type="button"
-                  onClick={() => supabase.auth.signOut()}
-                >
-                  Salir
-                </button>
-              </>
-            ) : (
-              <Link className="nav-cta" to="/ingresar" onClick={cerrarMenu}>
-                Ingresar <span>↗</span>
-              </Link>
-            )}
+              )}
+            </div>
           </nav>
         </div>
       </header>
@@ -105,13 +170,8 @@ function Marco({ children, interior = false }) {
           </Link>
           <p>La seguridad empieza con una mejor decisión.</p>
           <div className="footer-links">
-            <Link to="/#solucion" onClick={alClickAncla}>
-              Solución
-            </Link>
-            <Link to="/#productos" onClick={alClickAncla}>
-              Productos
-            </Link>
-            <Link to="/ingresar">Ingresar</Link>
+            <Link to="/privacidad">Privacidad</Link>
+            <Link to="/contacto">Contacto</Link>
           </div>
           <small>© 2026 SafeGuard</small>
         </div>

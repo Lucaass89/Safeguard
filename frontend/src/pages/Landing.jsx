@@ -1,7 +1,10 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import { useSesion } from '../lib/useSesion.js'
 
 function Landing() {
+  const { sesion } = useSesion()
+
   return (
     <Marco>
       <main id="inicio">
@@ -49,7 +52,7 @@ function Landing() {
                     <strong>
                       3<span> colores</span>
                     </strong>
-                    <b>Verde, amarillo o rojo</b>
+                    <b>✓ Verde, ! amarillo o ✕ rojo</b>
                   </div>
                   <div className="score-ring">
                     <span>OK</span>
@@ -104,7 +107,7 @@ function Landing() {
 
         <section className="intro section-pad" id="solucion">
           <div className="container intro-heading">
-            <div className="eyebrow">Un enfoque más inteligente</div>
+            <div className="eyebrow">La solución</div>
             <h2>La seguridad no termina en el firewall.</h2>
             <p>
               El equipo es la primera línea. SafeGuard acompaña la decisión
@@ -134,7 +137,6 @@ function Landing() {
               </div>
               <h3>Simulacros regionales</h3>
               <p>
-                Plantillas en español, basadas en estafas que circulan por acá.
                 Si alguien hace clic, recibe la explicación en el momento, sin
                 exponerlo ni sancionarlo.
               </p>
@@ -149,8 +151,7 @@ function Landing() {
               </div>
               <h3>Reportes para gerencia</h3>
               <p>
-                El tablero muestra qué se abrió, qué se cliqueó y cómo evoluciona
-                el riesgo. El PDF mensual queda listo para directorio.
+                El tablero muestra cómo evoluciona el riesgo del equipo.
               </p>
               <Link to="/empresas">
                 Ver PhishGuard <span>→</span>
@@ -162,7 +163,7 @@ function Landing() {
         <section className="products section-pad" id="productos">
           <div className="container section-heading">
             <div>
-              <div className="eyebrow">Lo que vendemos</div>
+              <div className="eyebrow">Dos formas de empezar</div>
               <h2>Productos.</h2>
             </div>
             <p>PhishGuard se paga por persona. SafeLink es gratis.</p>
@@ -181,12 +182,11 @@ function Landing() {
                   y deja evidencia medible.
                 </p>
                 <ul>
-                  <li>Plantillas de estafas reales de la región</li>
-                  <li>Registro de apertura, clic y datos ingresados</li>
-                  <li>Tablero y reporte mensual en PDF</li>
+                  <li>Registro de clic y datos ingresados</li>
+                  <li>Tablero del equipo</li>
                 </ul>
                 <Link className="text-link light-link" to="/empresas">
-                  Entrar a PhishGuard <span>↗</span>
+                  Probar PhishGuard <span>↗</span>
                 </Link>
               </div>
               <div className="product-art dark-art">
@@ -222,9 +222,9 @@ function Landing() {
                   antes y explica el riesgo en palabras simples.
                 </p>
                 <ul>
-                  <li>Semáforo verde, amarillo o rojo</li>
+                  <li>Semáforo ✓ verde, ! amarillo o ✕ rojo</li>
                   <li>Extensión, cámara para QR y aviso en el portapapeles</li>
-                  <li>Gratis para siempre. La cuenta guarda el historial</li>
+                  <li>La cuenta guarda el historial</li>
                 </ul>
                 <Link className="text-link" to="/personas">
                   Probar SafeLink <span>↗</span>
@@ -237,7 +237,7 @@ function Landing() {
                     <div className="safe-badge">✓</div>
                     <small>ENLACE ANALIZADO</small>
                     <strong>Este enlace parece seguro</strong>
-                    <div className="url-line">Verde · podés continuar</div>
+                    <div className="url-line">✓ Verde · podés continuar</div>
                     <div className="scan-line" />
                   </div>
                 </div>
@@ -252,70 +252,26 @@ function Landing() {
         </section>
 
         <section className="process section-pad" id="proceso">
-          <div className="container process-layout">
+          <div className="container">
             <div className="process-copy">
-              <div className="eyebrow">Simple, continuo, medible</div>
+              <div className="eyebrow">Cómo funciona PhishGuard</div>
               <h2>
-                La cultura de seguridad se <em>construye</em> en cada
-                interacción.
+                De la campaña al reporte, en <em>cuatro pasos</em>.
               </h2>
               <p>
-                Armás la campaña, llegan los correos de prueba y, si alguien
-                cae, la explicación aparece en el momento. Sin interrumpir la
-                operación ni señalar culpables.
+                Armás la campaña, llegan los correos, se registra qué pasó y se
+                explica en el momento.
               </p>
-              <Link className="button button-primary" to="/ingresar">
-                Quiero entrar a SafeGuard <span>↗</span>
+              <Link className="button button-primary" to="/empresas#pasos">
+                Ver los cuatro pasos <span>↗</span>
               </Link>
-            </div>
-            <div className="steps">
-              <div className="step active">
-                <span className="step-dot">01</span>
-                <div>
-                  <h3>Armar</h3>
-                  <p>
-                    Elegís destinatarios, fecha y nivel de dificultad sobre
-                    plantillas de estafas de la región.
-                  </p>
-                </div>
-              </div>
-              <div className="step">
-                <span className="step-dot">02</span>
-                <div>
-                  <h3>Simular</h3>
-                  <p>
-                    El correo sale en el horario programado e imita engaños que
-                    de verdad circulan por acá.
-                  </p>
-                </div>
-              </div>
-              <div className="step">
-                <span className="step-dot">03</span>
-                <div>
-                  <h3>Acompañar</h3>
-                  <p>
-                    Si alguien abre, hace clic o carga datos, recibe una
-                    explicación de 1 a 2 minutos.
-                  </p>
-                </div>
-              </div>
-              <div className="step">
-                <span className="step-dot">04</span>
-                <div>
-                  <h3>Medir</h3>
-                  <p>
-                    El tablero y el PDF mensual muestran la evolución, listos
-                    para gerencia o directorio.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </section>
 
         <section className="results section-pad" id="resultados">
           <div className="container results-box">
-            <div className="eyebrow">Lo que ya está en el producto</div>
+            <div className="eyebrow">En números</div>
             <h2>
               Menos incertidumbre.
               <br />
@@ -327,8 +283,8 @@ function Landing() {
             </p>
             <div className="metrics">
               <div>
-                <strong>Gratis</strong>
-                <span>SafeLink, para siempre</span>
+                <strong>Sin costo</strong>
+                <span>SafeLink</span>
               </div>
               <div>
                 <strong>1–2 min</strong>
@@ -353,8 +309,7 @@ function Landing() {
               </h2>
               <p>
                 PhishGuard es para PyMEs e instituciones, con suscripción
-                mensual. SafeLink es gratis y la cuenta solo guarda el
-                historial.
+                mensual. La cuenta de SafeLink solo guarda el historial.
               </p>
             </div>
             <div className="contact-actions">
@@ -364,9 +319,15 @@ function Landing() {
               <Link className="button button-ghost" to="/personas">
                 Ver SafeLink para personas <span>→</span>
               </Link>
-              <Link className="contact-login" to="/ingresar">
-                Ya tengo cuenta. Ingresar
-              </Link>
+              {sesion ? (
+                <Link className="contact-login" to="/panel">
+                  Ir al panel
+                </Link>
+              ) : (
+                <Link className="contact-login" to="/ingresar">
+                  Ya tengo cuenta. Ingresar
+                </Link>
+              )}
             </div>
           </div>
         </section>

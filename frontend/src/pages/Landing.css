@@ -3,7 +3,7 @@
   --navy: #092238;
   --blue: #2563eb;
   --mint: #b8f5dc;
-  --muted: #60768b;
+  --muted: #4a6278;
   --line: #dbe6e7;
   --white: #fff;
   --shadow: 0 20px 55px rgb(12 43 63 / 12%);
@@ -107,12 +107,26 @@
   font-weight: 600;
 }
 
-.sg-landing .main-nav > a:not(.nav-cta) {
-  color: #587085;
+.sg-landing .main-nav > a:not(.nav-cta),
+.sg-landing .nav-app > a:not(.nav-cta) {
+  color: #4a6278;
 }
 
-.sg-landing .main-nav > a:not(.nav-cta):hover {
+.sg-landing .main-nav > a:not(.nav-cta):hover,
+.sg-landing .main-nav > a.nav-activa,
+.sg-landing .nav-app > a:not(.nav-cta):hover {
   color: var(--blue);
+}
+
+@media (min-width: 901px) {
+  .sg-landing .nav-app {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-left: 8px;
+    padding-left: 24px;
+    border-left: 1px solid var(--line);
+  }
 }
 
 .sg-landing .nav-cta {
@@ -175,7 +189,7 @@
 }
 
 .sg-landing .eyebrow {
-  color: #168b76;
+  color: #0c6b58;
   font-weight: 700;
   text-transform: uppercase;
   font-size: 11px;
@@ -196,7 +210,8 @@
 .sg-landing h1,
 .sg-landing h2 {
   font: 700 clamp(42px, 5vw, 68px) / 1.04 'Space Grotesk', var(--sg-sans);
-  letter-spacing: -3.4px;
+  letter-spacing: -1.6px;
+  text-wrap: balance;
   margin: 0;
   color: var(--ink);
 }
@@ -209,7 +224,7 @@
 .sg-landing .hero-lead {
   font-size: 18px;
   line-height: 1.7;
-  color: #597184;
+  color: #4a6278;
   max-width: 585px;
   margin: 28px 0 31px;
 }
@@ -257,8 +272,8 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #6d8290;
-  font-size: 12px;
+  color: #4a6278;
+  font-size: 16px;
   margin-top: 25px;
 }
 
@@ -359,13 +374,13 @@
 
 .sg-landing .risk-score strong span {
   font-size: 22px;
-  color: #8da4ac;
+  color: #4a6278;
 }
 
 .sg-landing .risk-score b {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
-  color: #13a77b;
+  color: #0c6b58;
 }
 
 .sg-landing .score-ring {
@@ -655,7 +670,7 @@
 }
 
 .sg-landing .value-card p {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--muted);
   margin: 0;
 }
@@ -663,8 +678,8 @@
 .sg-landing .value-card a {
   position: absolute;
   bottom: 29px;
-  color: #187c70;
-  font-size: 12px;
+  color: #1c63cc;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -685,9 +700,9 @@
 }
 
 .sg-landing .section-heading > p {
-  max-width: 310px;
+  max-width: 340px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 16px;
   margin: 0 0 4px;
 }
 
@@ -736,12 +751,12 @@
 }
 
 .sg-landing .product-light .product-tag {
-  color: #188b75;
+  color: #0c6b58;
 }
 
 .sg-landing .product-info h3 {
   font: 700 50px 'Space Grotesk', var(--sg-sans);
-  letter-spacing: -2px;
+  letter-spacing: -1px;
   margin: 0 0 17px;
   color: inherit;
 }
@@ -755,8 +770,8 @@
 }
 
 .sg-landing .product-info p {
-  color: #acc1ca;
-  font-size: 14px;
+  color: #d7e6ee;
+  font-size: 16px;
   line-height: 1.7;
 }
 
@@ -768,13 +783,13 @@
   list-style: none;
   padding: 0;
   margin: 24px 0;
-  color: #cae0e6;
-  font-size: 14px;
+  color: #d7e6ee;
+  font-size: 16px;
   line-height: 1.8;
 }
 
 .sg-landing .product-light .product-info ul {
-  color: #67808e;
+  color: #4a6278;
 }
 
 .sg-landing .product-info li::before {
@@ -791,7 +806,7 @@
 }
 
 .sg-landing .light-link {
-  color: #62d9bc;
+  color: #b9d4ff;
 }
 
 .sg-landing .product-art {
@@ -1082,7 +1097,7 @@
 .sg-landing .step p {
   margin: 7px 0 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .sg-landing .results {
@@ -1127,8 +1142,8 @@
 
 .sg-landing .metrics span {
   display: block;
-  color: #79918f;
-  font-size: 13px;
+  color: #4a6278;
+  font-size: 16px;
   margin-top: 4px;
 }
 
@@ -1182,8 +1197,8 @@
 }
 
 .sg-landing .contact-login {
-  color: #74e1be;
-  font-size: 14px;
+  color: #b9d4ff;
+  font-size: 16px;
   font-weight: 700;
   text-align: center;
 }
@@ -1203,17 +1218,18 @@
 }
 
 .sg-landing .footer-wrap p {
-  color: #79909a;
-  font-size: 12px;
+  color: #4a6278;
+  font-size: 16px;
   margin: 0;
 }
 
 .sg-landing .footer-links {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 16px 20px;
   margin-left: auto;
-  font-size: 12px;
-  color: #627a86;
+  font-size: 16px;
+  color: #4a6278;
 }
 
 .sg-landing .footer-wrap > small {
