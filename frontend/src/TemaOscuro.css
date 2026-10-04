@@ -235,8 +235,10 @@ html[data-tema='oscuro'] .nota li {
   color: #b4c4d0;
 }
 
-html[data-tema='oscuro'] .pg-riel li + li {
-  border-left-color: #3d5163;
+html[data-tema='oscuro'] .pg-riel li + li,
+html[data-tema='oscuro'] .pg-incluye div,
+html[data-tema='oscuro'] .sl-lugares div {
+  border-color: #3d5163;
 }
 
 html[data-tema='oscuro'] .sl-secundario {

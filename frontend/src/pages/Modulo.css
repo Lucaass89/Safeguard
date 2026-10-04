@@ -3,6 +3,11 @@
   color: #102a43;
 }
 
+.sg-landing:has(.pg),
+.sg-landing:has(.sl) {
+  background: linear-gradient(180deg, #f4f0e6 0%, #efe4d2 48%, #e8e3d4 100%);
+}
+
 .pg h1,
 .pg h2,
 .sl h1,
@@ -189,7 +194,7 @@
 
 .pg-riel li + li {
   padding-left: 22px;
-  border-left: 1px solid #d5e2e4;
+  border-left: 1px solid #e3d9cc;
 }
 
 .pg-riel span {
@@ -230,7 +235,7 @@
   grid-template-columns: 140px minmax(0, 1fr);
   gap: 16px;
   padding: 18px 28px 18px 0;
-  border-bottom: 1px solid #d5e2e4;
+  border-bottom: 1px solid #e3d9cc;
 }
 
 .pg-incluye dt {
@@ -394,7 +399,7 @@
 .sl-secundario {
   background: transparent !important;
   color: #102a43 !important;
-  border: 1px solid #c5d5d8;
+  border: 1px solid #d9cfc0;
 }
 
 .sl-cuerpo section + section {
@@ -451,7 +456,7 @@
   grid-template-columns: 180px minmax(0, 1fr);
   gap: 24px;
   padding: 18px 0;
-  border-top: 1px solid #d5e2e4;
+  border-top: 1px solid #e3d9cc;
 }
 
 .sl-lugares dt {
@@ -520,7 +525,7 @@
   .pg-riel li + li {
     padding: 20px 0;
     border-left: 0;
-    border-top: 1px solid #d5e2e4;
+    border-top: 1px solid #e3d9cc;
   }
 
   .pg-incluye div,
