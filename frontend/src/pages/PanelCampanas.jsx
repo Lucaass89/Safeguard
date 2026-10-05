@@ -358,7 +358,7 @@ function PanelCampanas() {
           No hay empleados activos. <Link to="/panel/empresa">Cargalos acá</Link>.
         </p>
       ) : (
-        <form className="panel-form" onSubmit={crearCampana}>
+        <form className="panel-form panel-pieza" onSubmit={crearCampana}>
           <label className="panel-campo">
             <span>Nombre de la campaña</span>
             <input

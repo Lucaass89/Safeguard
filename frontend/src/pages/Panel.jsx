@@ -271,74 +271,66 @@ function Panel() {
         </>
       )}
 
-      {fase === 'phishguard' && tablero && (
-        <Link className="mesa-tablero" to="/panel/tablero">
-          <div className="mesa-tablero-cuerpo">
-            <div>
-              <p className="mesa-tablero-kicker">PhishGuard</p>
-              <h2>Tablero del equipo</h2>
-              <p className="mesa-tablero-lectura">{lectura(campanas, correos, clics, datos)}</p>
-              {correos > 0 && (
-                <div className="mesa-riesgo">
-                  <div className="mesa-riesgo-pista" aria-hidden="true">
-                    <span style={{ width: `${porcentaje}%` }} />
-                  </div>
-                  <p>
-                    {clics} de {correos} correos con clic
-                  </p>
-                </div>
-              )}
-              <span className="mesa-tablero-ir">Ver el tablero</span>
-            </div>
-            {campanas > 0 && (
-              <ul>
-                <li>
-                  <strong>{campanas}</strong>
-                  <span>Campañas</span>
-                </li>
-                <li>
-                  <strong>{correos}</strong>
-                  <span>Correos</span>
-                </li>
-                <li>
-                  <strong>{clics}</strong>
-                  <span>Clics</span>
-                </li>
-                <li>
-                  <strong>{datos}</strong>
-                  <span>Datos ingresados</span>
-                </li>
-              </ul>
-            )}
-          </div>
-        </Link>
-      )}
-
       {fase === 'phishguard' && acceso && (
-      <div className="mesa-hoja mesa-grupos">
-        {grupos.filter((grupo) => (fase === 'safelink' ? grupo.nombre === 'SafeLink' : grupo.nombre === 'PhishGuard')).map((grupo) => (
-          <section className={grupo.clase} key={grupo.nombre}>
-            {grupo.nombre !== 'SafeLink' && (
-              <>
-                <h2>{grupo.nombre}</h2>
-                <p className="mesa-grupo-lead">{grupo.lead}</p>
-              </>
-            )}
-            <ol>
-              {grupo.items.map((item, indice) => (
-                <li key={item.to}>
-                  <Link to={item.to}>
-                    <span>{String(indice + 1).padStart(2, '0')}</span>
-                    <strong>{item.titulo}</strong>
-                    <span>{item.nota}</span>
-                    <span aria-hidden="true">→</span>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </section>
-        ))}
-      </div>
+        <>
+          <header className="mesa-bienvenida">
+            <p className="mesa-kicker">Para empresas</p>
+            <h1 className="mesa-saludo">PhishGuard</h1>
+            <p>{grupos[1].lead}</p>
+          </header>
+          {tablero && (
+            <Link className="mesa-tablero" to="/panel/tablero">
+              <div className="mesa-tablero-cuerpo">
+                <div>
+                  <p className="mesa-tablero-kicker">PhishGuard</p>
+                  <h2>Tablero del equipo</h2>
+                  <p className="mesa-tablero-lectura">{lectura(campanas, correos, clics, datos)}</p>
+                  {correos > 0 && (
+                    <div className="mesa-riesgo">
+                      <div className="mesa-riesgo-pista" aria-hidden="true">
+                        <span style={{ width: `${porcentaje}%` }} />
+                      </div>
+                      <p>
+                        {clics} de {correos} correos con clic
+                      </p>
+                    </div>
+                  )}
+                  <span className="mesa-tablero-ir">Ver el tablero</span>
+                </div>
+                {campanas > 0 && (
+                  <ul>
+                    <li>
+                      <strong>{campanas}</strong>
+                      <span>Campañas</span>
+                    </li>
+                    <li>
+                      <strong>{correos}</strong>
+                      <span>Correos</span>
+                    </li>
+                    <li>
+                      <strong>{clics}</strong>
+                      <span>Clics</span>
+                    </li>
+                    <li>
+                      <strong>{datos}</strong>
+                      <span>Datos ingresados</span>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </Link>
+          )}
+          <div className="mesa-cartas mesa-cartas-empresa">
+            {grupos[1].items.map((item, indice) => (
+              <Link key={item.to} to={item.to}>
+                <span>{String(indice + 1).padStart(2, '0')}</span>
+                <strong>{item.titulo}</strong>
+                <span>{item.nota}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
