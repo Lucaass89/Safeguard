@@ -54,14 +54,27 @@ function accesoGuardado(id) {
   return null
 }
 
+function appPedida() {
+  if (typeof window === 'undefined') return null
+  const app = new URLSearchParams(window.location.search).get('app')
+  if (app === 'safelink' || app === 'phishguard') return app
+  return null
+}
+
 function Panel() {
   const { sesion } = useSesion()
   const yaEntro = recibido(sesion.user.id)
+  const pedida = appPedida()
   const [tablero, setTablero] = useState(null)
-  const [acceso, setAcceso] = useState(() => (yaEntro ? accesoGuardado(sesion.user.id) : null))
-  const [fase, setFase] = useState(() => (yaEntro ? 'elegir' : 'recibiendo'))
+  const [acceso, setAcceso] = useState(() =>
+    yaEntro || pedida ? accesoGuardado(sesion.user.id) : null,
+  )
+  const [fase, setFase] = useState(() => {
+    if (pedida) return pedida
+    return yaEntro ? 'elegir' : 'recibiendo'
+  })
   const [saliendo, setSaliendo] = useState(false)
-  const [entradaLista, setEntradaLista] = useState(yaEntro)
+  const [entradaLista, setEntradaLista] = useState(yaEntro || Boolean(pedida))
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
@@ -159,12 +172,26 @@ function Panel() {
             setEntradaLista(true)
           }}
         >
-          <h1>¿Qué aplicación querés usar?</h1>
+          <header className="elegir-cabeza">
+            <p className="mesa-kicker">Tu panel</p>
+            <h1>¿Qué aplicación querés usar?</h1>
+            <p>SafeLink revisa lo que te llega. PhishGuard entrena a tu equipo.</p>
+          </header>
           <div className="elegir-corte">
             <button type="button" className="elegir-lado elegir-safelink" onClick={() => setFase('safelink')}>
+              <span className="elegir-tope">
+                <span className="elegir-indice">01</span>
+                <span className="elegir-ir" aria-hidden="true">→</span>
+              </span>
               <span>Para personas</span>
               <strong>SafeLink</strong>
               <p>Revisá un enlace, un mensaje, un PDF o un correo.</p>
+              <ul className="elegir-usos">
+                <li>Enlace</li>
+                <li>WhatsApp</li>
+                <li>PDF</li>
+                <li>Correo</li>
+              </ul>
             </button>
             <div
               className={
@@ -185,6 +212,10 @@ function Panel() {
                 }
               }}
             >
+              <span className="elegir-tope">
+                <span className="elegir-indice">02</span>
+                {acceso !== false && <span className="elegir-ir" aria-hidden="true">→</span>}
+              </span>
               <span>{acceso === false ? 'Plan pago' : 'Para empresas'}</span>
               <strong>PhishGuard</strong>
               <p>
@@ -194,6 +225,11 @@ function Panel() {
                     ? 'Esta parte no viene con la cuenta. Se abre cuando el plan está pago.'
                     : 'Revisando tu plan…'}
               </p>
+              <ul className="elegir-usos">
+                <li>Empresa</li>
+                <li>Campañas</li>
+                <li>Tablero</li>
+              </ul>
               {acceso === false && <Link to="/contacto">Hablar para activarlo</Link>}
             </div>
           </div>
@@ -201,8 +237,17 @@ function Panel() {
       )}
 
       {fase !== 'elegir' && fase !== 'recibiendo' && (
-        <button type="button" className="elegir-volver" onClick={() => setFase('elegir')}>
-          Elegir otra aplicación
+        <button
+          type="button"
+          className="elegir-volver"
+          onClick={() => {
+            setFase('elegir')
+            const url = new URL(window.location.href)
+            url.searchParams.delete('app')
+            window.history.replaceState(null, '', `${url.pathname}${url.search}`)
+          }}
+        >
+          ← Elegir otra aplicación
         </button>
       )}
 

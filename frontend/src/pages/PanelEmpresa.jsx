@@ -94,8 +94,8 @@ function PanelEmpresa() {
   return (
     <div className="panel panel-empresas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel">
-          ← Volver al panel
+        <Link className="panel-volver" to="/panel?app=phishguard">
+          ← Volver a las opciones
         </Link>
         <span className="panel-tag">PhishGuard</span>
         <h1>{organizacion ? organizacion.nombre_empresa : 'PhishGuard es pago'}</h1>

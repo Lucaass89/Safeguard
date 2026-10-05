@@ -112,8 +112,8 @@ function PanelTablero() {
   if (!organizacion) {
     return (
       <div className="panel panel-empresas">
-        <Link className="panel-volver" to="/panel">
-          ← Volver al panel
+        <Link className="panel-volver" to="/panel?app=phishguard">
+          ← Volver a las opciones
         </Link>
         {error && <p className="panel-error">{error}</p>}
         <p className="panel-vacio">
@@ -127,8 +127,8 @@ function PanelTablero() {
   return (
     <div className="panel panel-empresas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel">
-          ← Volver al panel
+        <Link className="panel-volver" to="/panel?app=phishguard">
+          ← Volver a las opciones
         </Link>
         <span className="panel-tag">PhishGuard</span>
         <h1>Vulnerabilidad del equipo</h1>

@@ -39,8 +39,8 @@ function PanelPdf() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel">
-          ← Volver al panel
+        <Link className="panel-volver" to="/panel?app=safelink">
+          ← Volver a las opciones
         </Link>
         <span className="panel-tag">SafeLink</span>
         <h1>Revisar un PDF</h1>

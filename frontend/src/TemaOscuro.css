@@ -259,8 +259,43 @@ html[data-tema='oscuro'] .sg-landing .acceso-caja h1 {
 }
 
 html[data-tema='oscuro'] .elegir-safelink {
+  background:
+    linear-gradient(160deg, rgb(125 222 196 / 12%), transparent 42%),
+    #243444;
   border-color: #3d5163;
   border-top-color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .elegir-cabeza p:last-child,
+html[data-tema='oscuro'] .elegir-safelink p {
+  color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .elegir-safelink .elegir-usos li {
+  background: #1e3d36;
+  color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .elegir-safelink .elegir-ir {
+  background: #2a4060;
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .elegir-phish {
+  border-color: #3d5163;
+  border-top-color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .elegir-volver {
+  background: #243444;
+  border-color: #3d5163;
+  color: #e6eef4;
+}
+
+html[data-tema='oscuro'] .elegir-volver:hover {
+  background: #2c3d4e;
+  border-color: #7ddec4;
+  color: #7ddec4;
 }
 
 html[data-tema='oscuro'] .sg-landing .panel-lienzo {

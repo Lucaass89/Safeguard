@@ -1073,15 +1073,36 @@
   animation: recibida-entra 0.8s ease 0.45s both;
 }
 
+.elegir-cabeza {
+  margin-bottom: 22px;
+}
+
+.elegir-cabeza .mesa-kicker {
+  margin: 0 0 8px;
+  color: #0c6b58;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .elegir h1 {
-  margin: 0 0 22px;
+  margin: 0;
   color: #102a43;
   font: 700 40px/1.1 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
-.elegir:not(.elegir-lista) h1 {
+.elegir-cabeza p:last-child {
+  margin: 10px 0 0;
+  max-width: 42ch;
+  color: #4a6278;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.elegir:not(.elegir-lista) .elegir-cabeza {
   animation: elegir-entra 0.7s cubic-bezier(0.22, 0.8, 0.2, 1) both;
 }
 
@@ -1101,12 +1122,12 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 10px;
   min-height: 420px;
-  padding: 32px;
-  border: 0;
-  border-radius: 18px;
+  padding: 28px;
+  border: 1px solid transparent;
+  border-radius: 22px;
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -1136,11 +1157,67 @@
   line-height: 1.45;
 }
 
+.elegir-tope {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.elegir-indice {
+  font: 700 13px 'Space Grotesk', var(--sg-sans);
+  letter-spacing: 0.16em;
+}
+
+.elegir-usos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.elegir-usos li {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.elegir-ir {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .elegir-safelink {
-  background: #fff;
-  border: 1px solid #d5e2e4;
+  background:
+    linear-gradient(160deg, rgb(12 107 88 / 8%), transparent 42%),
+    #faf7f2;
+  border-color: #e3d9cc;
   border-top: 4px solid #0c6b58;
   color: #102a43;
+}
+
+.elegir-safelink .elegir-usos li {
+  background: #fff;
+  border: 1px solid #b7e0d4;
+  color: #0c6b58;
+}
+
+.elegir-safelink .elegir-ir {
+  background: #e7f0ff;
+  color: #2563eb;
 }
 
 .elegir:not(.elegir-lista) .elegir-lado {
@@ -1161,8 +1238,23 @@
 }
 
 .elegir-phish {
-  background: #102a43;
+  background:
+    linear-gradient(165deg, rgb(125 222 196 / 16%), transparent 46%),
+    #102a43;
+  border-color: #102a43;
+  border-top: 4px solid #7ddec4;
   color: #f4f7f8;
+}
+
+.elegir-phish .elegir-usos li {
+  background: rgb(125 222 196 / 12%);
+  border: 1px solid rgb(125 222 196 / 35%);
+  color: #7ddec4;
+}
+
+.elegir-phish .elegir-ir {
+  background: #2a4060;
+  color: #b9d4ff;
 }
 
 .elegir-phish span,
@@ -1174,6 +1266,30 @@
   color: #7ddec4;
 }
 
+.elegir-lado .elegir-tope {
+  font-size: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.elegir-lado .elegir-ir {
+  font-size: 18px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.elegir-safelink .elegir-ir {
+  color: #2563eb;
+}
+
+.elegir-phish .elegir-ir {
+  color: #b9d4ff;
+}
+
+.elegir-safelink p {
+  color: #4a6278;
+}
+
 .elegir-lista .elegir-lado {
   pointer-events: auto;
 }
@@ -1183,24 +1299,51 @@
   box-shadow: 0 22px 44px rgb(16 42 67 / 14%);
 }
 
+.elegir-lista .elegir-cerrado:hover {
+  translate: none;
+  box-shadow: none;
+}
+
 .elegir-cerrado {
   cursor: default;
 }
 
 .elegir-cerrado a {
-  color: #b9d4ff;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
   font-weight: 700;
+  text-decoration: none;
 }
 
 .elegir-volver {
-  margin: 0 0 18px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #1c63cc;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 0 0 22px;
+  padding: 8px 14px;
+  border: 1px solid #e3d9cc;
+  border-radius: 999px;
+  background: #faf7f2;
+  color: #102a43;
   font: inherit;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  transition:
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    color 0.35s ease;
+}
+
+.elegir-volver:hover {
+  translate: 0 -2px;
+  border-color: #0c6b58;
+  color: #0c6b58;
 }
 
 @keyframes recibida-entra {

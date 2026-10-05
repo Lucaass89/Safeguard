@@ -314,8 +314,8 @@ function PanelCampanas() {
   if (!organizacion) {
     return (
       <div className="panel">
-        <Link className="panel-volver" to="/panel">
-          ← Volver al panel
+        <Link className="panel-volver" to="/panel?app=phishguard">
+          ← Volver a las opciones
         </Link>
         <p className="panel-vacio">
           PhishGuard se paga por persona. Esta cuenta no tiene el plan activo.{' '}
@@ -328,8 +328,8 @@ function PanelCampanas() {
   return (
     <div className="panel panel-empresas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel">
-          ← Volver al panel
+        <Link className="panel-volver" to="/panel?app=phishguard">
+          ← Volver a las opciones
         </Link>
         <span className="panel-tag">PhishGuard</span>
         <h1>Campañas</h1>
