@@ -45,6 +45,9 @@ function Layout() {
                 <Link className="login-link" to="/panel">
                   Mi panel
                 </Link>
+                <Link className="login-link" to="/panel/perfil">
+                  Perfil
+                </Link>
                 <span className="sesion-correo">{sesion.user.email}</span>
                 <button
                   type="button"

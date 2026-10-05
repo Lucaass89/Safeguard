@@ -99,7 +99,8 @@ html[data-tema='oscuro'] .sg-landing .nav-app > a:not(.nav-cta) {
 
 html[data-tema='oscuro'] .sg-landing .main-nav > a:not(.nav-cta):hover,
 html[data-tema='oscuro'] .sg-landing .main-nav > a.nav-activa,
-html[data-tema='oscuro'] .sg-landing .nav-app > a:not(.nav-cta):hover {
+html[data-tema='oscuro'] .sg-landing .nav-app > a:not(.nav-cta):hover,
+html[data-tema='oscuro'] .sg-landing .nav-app > a.nav-activa {
   color: #8eb4ff;
 }
 
@@ -331,6 +332,12 @@ html[data-tema='oscuro'] .panel-volver:hover {
 html[data-tema='oscuro'] .panel-personas .panel-tag,
 html[data-tema='oscuro'] .panel-empresas .panel-tag {
   color: #7ddec4;
+}
+
+html[data-tema='oscuro'] .perfil-nota,
+html[data-tema='oscuro'] .perfil-apariencia p,
+html[data-tema='oscuro'] .perfil .panel-campo input[readonly] {
+  color: #b4c4d0;
 }
 
 html[data-tema='oscuro'] .panel-personas .panel-pieza,

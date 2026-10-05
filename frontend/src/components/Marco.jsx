@@ -145,6 +145,13 @@ function Marco({ children, interior = false }) {
                   <Link to="/panel" onClick={cerrarMenu}>
                     Panel
                   </Link>
+                  <Link
+                    className={pathname === '/panel/perfil' ? 'nav-activa' : undefined}
+                    to="/panel/perfil"
+                    onClick={cerrarMenu}
+                  >
+                    Perfil
+                  </Link>
                   <button
                     className="nav-cta"
                     type="button"

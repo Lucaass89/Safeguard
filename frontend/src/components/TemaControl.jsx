@@ -8,13 +8,20 @@ function TemaControl() {
 
   useEffect(() => {
     function alCambiar(evento) {
+      if (evento.type === 'sg-tema') {
+        setTema(evento.detail === 'oscuro' ? 'oscuro' : 'claro')
+        return
+      }
       if (evento.key !== 'sg-tema') return
-      const siguiente = aplicarTema(evento.newValue)
-      setTema(siguiente)
+      setTema(aplicarTema(evento.newValue))
     }
 
+    window.addEventListener('sg-tema', alCambiar)
     window.addEventListener('storage', alCambiar)
-    return () => window.removeEventListener('storage', alCambiar)
+    return () => {
+      window.removeEventListener('sg-tema', alCambiar)
+      window.removeEventListener('storage', alCambiar)
+    }
   }, [])
 
   function elegir(siguiente) {

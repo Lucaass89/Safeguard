@@ -114,7 +114,8 @@
 
 .sg-landing .main-nav > a:not(.nav-cta):hover,
 .sg-landing .main-nav > a.nav-activa,
-.sg-landing .nav-app > a:not(.nav-cta):hover {
+.sg-landing .nav-app > a:not(.nav-cta):hover,
+.sg-landing .nav-app > a.nav-activa {
   color: var(--blue);
 }
 

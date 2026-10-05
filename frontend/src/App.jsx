@@ -17,6 +17,7 @@ import Compartido from './pages/Compartido.jsx'
 import PanelEmpresa from './pages/PanelEmpresa.jsx'
 import PanelCampanas from './pages/PanelCampanas.jsx'
 import PanelTablero from './pages/PanelTablero.jsx'
+import PanelPerfil from './pages/PanelPerfil.jsx'
 import Simulacion from './pages/Simulacion.jsx'
 import Reconocimiento from './pages/Reconocimiento.jsx'
 
@@ -42,6 +43,7 @@ function App() {
           <Route path="empresa" element={<PanelEmpresa />} />
           <Route path="campanas" element={<PanelCampanas />} />
           <Route path="tablero" element={<PanelTablero />} />
+          <Route path="perfil" element={<PanelPerfil />} />
         </Route>
       </Route>
 

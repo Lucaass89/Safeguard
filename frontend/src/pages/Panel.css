@@ -902,6 +902,27 @@
   border-style: dashed;
 }
 
+.perfil .panel-boton {
+  justify-self: start;
+  padding-inline: 22px;
+}
+
+.perfil-nota,
+.perfil-apariencia p {
+  margin: 0;
+  color: #4a6278;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.perfil .panel-campo input[readonly] {
+  color: #4a6278;
+}
+
+.perfil-apariencia .tema-control {
+  margin: 16px 0 0;
+}
+
 .sg-landing .panel-lienzo .mesa-hoja h2 {
   font-size: 13px;
   font-weight: 700;
