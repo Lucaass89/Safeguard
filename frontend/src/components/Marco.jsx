@@ -98,11 +98,10 @@ function Marco({ children, interior = false }) {
   return (
     <div className="sg-landing">
       <header className="site-header">
-        <div className={sesion ? 'container nav-wrap nav-con-sesion' : 'container nav-wrap'}>
+        <div className="container nav-wrap">
           <Link to="/" aria-label="SafeGuard, inicio" onClick={cerrarMenu}>
             <Marca />
           </Link>
-          {!sesion && <TemaControl />}
           <button
             className="menu-toggle"
             type="button"
@@ -171,6 +170,7 @@ function Marco({ children, interior = false }) {
               )}
             </div>
           </nav>
+          <TemaControl icono />
         </div>
       </header>
 

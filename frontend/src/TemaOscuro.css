@@ -69,6 +69,7 @@ html[data-tema='oscuro'] .sg-landing {
   --ink: #e6eef4;
   --muted: #b4c4d0;
   --line: #3d5163;
+  --nav-activo: color-mix(in srgb, var(--ink) 16%, #243444);
   background: #1b2836;
   color: #e6eef4;
 }
@@ -107,6 +108,37 @@ html[data-tema='oscuro'] .sg-landing .nav-app > a.nav-activa {
 html[data-tema='oscuro'] .sg-landing .nav-cta {
   color: #102a43;
   background: #fff;
+}
+
+@media (min-width: 901px) {
+  html[data-tema='oscuro'] .sg-landing .main-nav {
+    background: #243444;
+    border-color: #3d5163;
+    box-shadow: 0 10px 28px rgb(0 0 0 / 28%);
+  }
+
+  html[data-tema='oscuro'] .sg-landing .nav-app {
+    border-left-color: #3d5163;
+  }
+
+  html[data-tema='oscuro'] .sg-landing .main-nav > a:not(.nav-cta):hover,
+  html[data-tema='oscuro'] .sg-landing .main-nav > a.nav-activa,
+  html[data-tema='oscuro'] .sg-landing .nav-app > a:not(.nav-cta):hover,
+  html[data-tema='oscuro'] .sg-landing .nav-app > a.nav-activa {
+    background: var(--nav-activo);
+    color: var(--ink);
+  }
+
+  html[data-tema='oscuro'] .sg-landing .nav-cta {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #fff;
+  }
+
+  html[data-tema='oscuro'] .sg-landing .nav-cta:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+  }
 }
 
 html[data-tema='oscuro'] .sg-landing .brand > span:last-child > span {

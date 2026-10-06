@@ -7,6 +7,7 @@
   --line: #e3d9cc;
   --white: #faf7f2;
   --shadow: 0 20px 55px rgb(12 43 63 / 12%);
+  --nav-activo: color-mix(in srgb, var(--ink) 14%, #fff);
 
   flex: 1;
   min-height: 100svh;
@@ -108,9 +109,39 @@
 }
 
 @media (min-width: 851px) {
-  .sg-landing .nav-con-sesion .main-nav {
+  .sg-landing .main-nav {
     margin-left: auto;
   }
+}
+
+.sg-landing .tema-icono {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  margin-left: 10px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sg-landing .tema-icono svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sg-landing .tema-icono:hover {
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.sg-landing .tema-icono:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
 
 .sg-landing .main-nav > a:not(.nav-cta),
@@ -129,10 +160,47 @@
   .sg-landing .nav-app {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 4px;
     margin-left: 8px;
-    padding-left: 24px;
-    border-left: 1px solid var(--line);
+    padding-left: 12px;
+    border-left: 1px solid #e3d9cc;
+  }
+
+  .sg-landing .main-nav {
+    gap: 4px;
+    padding: 10px 14px 10px 10px;
+    border: 1px solid #e3d9cc;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 10px 28px rgb(16 42 67 / 8%);
+  }
+
+  .sg-landing .main-nav > a:not(.nav-cta),
+  .sg-landing .nav-app > a:not(.nav-cta) {
+    padding: 8px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .sg-landing .main-nav > a:not(.nav-cta):hover,
+  .sg-landing .main-nav > a.nav-activa,
+  .sg-landing .nav-app > a:not(.nav-cta):hover,
+  .sg-landing .nav-app > a.nav-activa {
+    background: var(--nav-activo);
+    color: var(--ink);
+  }
+
+  .sg-landing .main-nav .nav-cta {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #fff;
+  }
+
+  .sg-landing .main-nav .nav-cta:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
   }
 }
 
