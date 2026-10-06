@@ -1798,6 +1798,13 @@
   gap: 14px;
 }
 
+.csv-panel a.panel-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .csv-ayuda {
   margin: 0;
   color: var(--sg-muted);

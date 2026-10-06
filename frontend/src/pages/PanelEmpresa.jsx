@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { analizarCsv, decodificarCsv, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
+import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -60,7 +60,7 @@ const ESTADOS = [
 
 const ORIGENES = [
   ['manual', 'Manual'],
-  ['csv', 'CSV'],
+  ['csv', 'Importación'],
   ['link', 'Link'],
 ]
 
@@ -102,12 +102,11 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
     setAutoriza(false)
     setCreaAreas(false)
     if (!archivo) return
-    const tipo = archivo.type
     const nombre = archivo.name.toLowerCase()
-    const pareceCsv = nombre.endsWith('.csv') || tipo === 'text/csv' || tipo === 'text/plain' || tipo === 'application/vnd.ms-excel' || tipo === ''
-    if (!pareceCsv) {
+    const extension = nombre.endsWith('.xlsx') ? 'xlsx' : nombre.endsWith('.csv') ? 'csv' : ''
+    if (!extension) {
       setVista(null)
-      setError('Elegí un archivo CSV.')
+      setError('Formato no soportado. Guardá tu archivo como .xlsx o .csv.')
       return
     }
     if (archivo.size > LIMITE_BYTES) {
@@ -118,17 +117,23 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
 
     setLeyendo(true)
     try {
-      const decodificado = decodificarCsv(await archivo.arrayBuffer())
-      if (decodificado.error) {
-        setVista(null)
-        setError(decodificado.error)
-        return
-      }
-      const analisis = analizarCsv(decodificado.texto, {
+      const opciones = {
         correos: empleados.map((persona) => persona.email),
         areas: empleados.map((persona) => persona.departamento),
         dominios: [dominioDe(correoAdmin), ...empleados.map((persona) => dominioDe(persona.email))],
-      })
+      }
+      let analisis
+      if (extension === 'xlsx') {
+        analisis = await leerXlsx(archivo, opciones)
+      } else {
+        const decodificado = decodificarCsv(await archivo.arrayBuffer())
+        if (decodificado.error) {
+          setVista(null)
+          setError(decodificado.error)
+          return
+        }
+        analisis = analizarCsv(decodificado.texto, opciones)
+      }
       if (analisis.error) {
         setVista(null)
         setError(analisis.error)
@@ -137,7 +142,9 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
       setVista(analisis)
     } catch {
       setVista(null)
-      setError('No pudimos leer el archivo.')
+      setError(extension === 'xlsx'
+        ? 'No pudimos leer el archivo. Verificá que no tenga contraseña y que no esté dañado.'
+        : 'No pudimos leer el archivo.')
     } finally {
       setLeyendo(false)
       if (archivoRef.current) archivoRef.current.value = ''
@@ -175,7 +182,7 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
   if (!abierto) {
     return (
       <button type="button" className="panel-boton-borde" onClick={() => setAbierto(true)}>
-        Importar desde CSV
+        Importar desde Excel o CSV
       </button>
     )
   }
@@ -188,14 +195,17 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
   return (
     <div className="csv-panel">
       <div className="panel-acciones">
+        <a className="panel-boton" href="/plantilla-importacion.xlsx" download="plantilla-importacion.xlsx">
+          Descargar plantilla (Excel)
+        </a>
         <button type="button" className="panel-boton-borde" onClick={() => descargarTexto('plantilla-personas.csv', plantillaCsv())}>
-          Descargar plantilla
+          Descargar plantilla (CSV)
         </button>
         <button type="button" className="panel-boton-borde" onClick={() => { setAbierto(false); limpiarVista(); setError(null) }}>
           Cerrar
         </button>
       </div>
-      <p className="csv-ayuda">Columnas: nombre, correo y area. Area es opcional. Podés separar con coma o con punto y coma.</p>
+      <p className="csv-ayuda">Columnas: nombre, correo y area. Area es opcional. En el CSV podés separar con coma o con punto y coma. Hasta 1000 filas y 2 MB.</p>
 
       <div
         className={arrastrando ? 'csv-zona csv-zona-activa' : 'csv-zona'}
@@ -210,7 +220,7 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
           leerArchivo(evento.dataTransfer.files?.[0])
         }}
       >
-        <p>{leyendo ? 'Leyendo el archivo…' : 'Arrastrá el CSV acá.'}</p>
+        <p>{leyendo ? 'Leyendo el archivo…' : 'Arrastrá tu archivo Excel (.xlsx) o CSV acá.'}</p>
         <button type="button" className="panel-boton-borde" onClick={() => archivoRef.current?.click()} disabled={leyendo || importando}>
           Elegir archivo
         </button>
@@ -218,7 +228,7 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
           ref={archivoRef}
           className="csv-input"
           type="file"
-          accept=".csv,text/csv"
+          accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           onChange={(evento) => leerArchivo(evento.target.files?.[0])}
         />
       </div>
@@ -228,6 +238,9 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
 
       {vista && (
         <div className="csv-vista" aria-live="polite">
+          {vista.masHojas && (
+            <p className="panel-aviso">Se leyó la hoja '{vista.hoja}'.</p>
+          )}
           <p className="csv-resumen">
             {vista.validas.length} {vista.validas.length === 1 ? 'válida' : 'válidas'}
             {' · '}

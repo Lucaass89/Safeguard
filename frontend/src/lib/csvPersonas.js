@@ -13,7 +13,13 @@ const CLAVES = {
   mail: 'correo',
   area: 'area',
   departamento: 'area',
+  puesto: 'area',
+  'area o puesto': 'area',
 }
+
+const MENSAJE_SIN_FILAS = 'No encontramos filas con datos. Completá la plantilla y volvé a subirla.'
+const MENSAJE_ILEGIBLE = 'No pudimos leer el archivo. Verificá que no tenga contraseña y que no esté dañado.'
+const MENSAJE_TOPE = `El archivo tiene más de ${LIMITE_FILAS} filas. El máximo es ${LIMITE_FILAS}.`
 
 function pareceMojibake(texto) {
   return /Ã[\u0080-\u00FF]|Â[\u0080-\u00BF]/.test(texto)
@@ -136,11 +142,36 @@ function partirLinea(linea, separador) {
 }
 
 function claveColumna(valor) {
-  return valor
+  return String(valor ?? '')
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
     .toLowerCase()
     .trim()
+    .replace(/\s+/g, ' ')
+}
+
+function textoCelda(valor) {
+  if (valor == null) return ''
+  if (typeof valor === 'number') return String(valor).trim()
+  if (typeof valor === 'boolean') return valor ? 'true' : 'false'
+  if (valor instanceof Date) return ''
+  return String(valor).replaceAll('\u00a0', ' ').trim()
+}
+
+function normalizarCorreo(valor) {
+  let correo = textoCelda(valor).replace(/\s+/g, '').toLowerCase()
+  while (correo.startsWith('mailto:')) correo = correo.slice(7)
+  return correo
+}
+
+function riesgoFormula(valor) {
+  return /^[=+\-@]/.test(valor)
+}
+
+function errorColumnas(nombres) {
+  const encontradas = nombres.map((nombre) => String(nombre).trim()).filter(Boolean)
+  const lista = encontradas.length > 0 ? encontradas.join(', ') : 'ninguna'
+  return { error: `Falta la columna nombre o correo. Encontré: ${lista}.` }
 }
 
 function correoValido(correo) {
@@ -154,33 +185,30 @@ function areaCanonica(area, existentes) {
   return hallada ?? limpia
 }
 
-export function analizarCsv(texto, { correos = [], areas = [], dominios = [] } = {}) {
-  const crudas = filasCrudas(texto).filter((linea, indice) => indice === 0 || linea.trim() !== '')
-  if (crudas.length === 0) return { error: 'El archivo está vacío.' }
-
-  const encabezado = crudas[0]
-  const comas = contarSeparador(encabezado, ',')
-  const puntos = contarSeparador(encabezado, ';')
-  if (comas === 0 && puntos === 0) {
-    return { error: 'No encontré columnas. Separalas con coma o punto y coma.' }
-  }
-  const separador = puntos > comas ? ';' : ','
-  const columnas = partirLinea(encabezado, separador).map(claveColumna)
+function mapearTabla(encabezados, datos) {
+  const columnas = encabezados.map((nombre) => claveColumna(textoCelda(nombre)))
   const mapa = {}
   columnas.forEach((columna, indice) => {
     const destino = CLAVES[columna]
     if (destino && mapa[destino] === undefined) mapa[destino] = indice
   })
-  if (mapa.nombre === undefined || mapa.correo === undefined) {
-    return { error: 'El archivo tiene que tener las columnas nombre y correo. Área es opcional.' }
-  }
+  if (mapa.nombre === undefined || mapa.correo === undefined) return errorColumnas(encabezados)
 
-  const datos = crudas.slice(1).filter((linea) => linea.trim() !== '')
-  if (datos.length === 0) return { error: 'El archivo no tiene personas.' }
-  if (datos.length > LIMITE_FILAS) {
-    return { error: `El archivo tiene más de ${LIMITE_FILAS} filas. El máximo es ${LIMITE_FILAS}.` }
-  }
+  const filas = []
+  datos.forEach((dato) => {
+    const celdas = dato.celdas ?? []
+    const nombre = textoCelda(celdas[mapa.nombre])
+    const correo = normalizarCorreo(celdas[mapa.correo])
+    const area = mapa.area === undefined ? '' : textoCelda(celdas[mapa.area])
+    if (!nombre && !correo && !area) return
+    filas.push({ fila: dato.numero, nombre, correo, area })
+  })
+  if (filas.length === 0) return { error: MENSAJE_SIN_FILAS }
+  if (filas.length > LIMITE_FILAS) return { error: MENSAJE_TOPE }
+  return { filas }
+}
 
+export function analizarFilas(filas, { correos = [], areas = [], dominios = [], hoja = '', masHojas = false } = {}) {
   const yaCargados = new Set(correos.map((correo) => correo.trim().toLowerCase()))
   const vistos = new Map()
   const dominiosConocidos = new Set(dominios.map((dominio) => dominio.trim().toLowerCase()).filter(Boolean))
@@ -188,41 +216,45 @@ export function analizarCsv(texto, { correos = [], areas = [], dominios = [] } =
   const areasVistas = new Set(areas.map((area) => area.trim().toLowerCase()).filter(Boolean))
   areasVistas.add('general')
 
-  const filas = datos.map((linea, indice) => {
-    const numero = indice + 2
-    const campos = partirLinea(linea, separador)
-    const nombre = (campos[mapa.nombre] ?? '').trim()
-    const correo = (campos[mapa.correo] ?? '').trim().toLowerCase()
-    const area = areaCanonica(mapa.area === undefined ? '' : (campos[mapa.area] ?? ''), areas)
-    const base = { fila: numero, nombre, correo, area, aviso: '' }
+  const revisadas = filas.map((fila) => {
+    const area = areaCanonica(fila.area, areas)
+    const base = { fila: fila.fila, nombre: fila.nombre, correo: fila.correo, area, aviso: '' }
 
-    if (!nombre || nombre.length > 200) {
-      return { ...base, resultado: 'invalida', motivo: nombre ? 'El nombre es demasiado largo.' : 'Falta el nombre.' }
+    if (riesgoFormula(fila.nombre) || riesgoFormula(fila.area)) {
+      return {
+        ...base,
+        area: fila.area,
+        resultado: 'invalida',
+        motivo: 'El nombre o el área empieza con un símbolo que Excel puede tomar como fórmula.',
+      }
     }
-    if (!correoValido(correo)) {
+    if (!fila.nombre || fila.nombre.length > 200) {
+      return { ...base, resultado: 'invalida', motivo: fila.nombre ? 'El nombre es demasiado largo.' : 'Falta el nombre.' }
+    }
+    if (!correoValido(fila.correo)) {
       return { ...base, resultado: 'invalida', motivo: 'El correo no es válido.' }
     }
     if (area.length > 120) {
       return { ...base, resultado: 'invalida', motivo: 'El área es demasiado larga.' }
     }
 
-    const dominio = correo.slice(correo.indexOf('@') + 1)
+    const dominio = fila.correo.slice(fila.correo.indexOf('@') + 1)
     const aviso = dominiosConocidos.size > 0 && !dominiosConocidos.has(dominio)
       ? `El dominio ${dominio} no es el de la empresa. Se puede cargar igual.`
       : ''
 
-    if (yaCargados.has(correo)) {
+    if (yaCargados.has(fila.correo)) {
       return { ...base, aviso, resultado: 'duplicada', motivo: 'Ese correo ya está cargado en tu empresa.' }
     }
-    if (vistos.has(correo)) {
+    if (vistos.has(fila.correo)) {
       return {
         ...base,
         aviso,
         resultado: 'duplicada',
-        motivo: `Ese correo ya está en el archivo, en la fila ${vistos.get(correo)}.`,
+        motivo: `Ese correo ya está en el archivo, en la fila ${vistos.get(fila.correo)}.`,
       }
     }
-    vistos.set(correo, numero)
+    vistos.set(fila.correo, fila.fila)
 
     if (!areasVistas.has(area.toLowerCase())) {
       areasVistas.add(area.toLowerCase())
@@ -233,11 +265,76 @@ export function analizarCsv(texto, { correos = [], areas = [], dominios = [] } =
   })
 
   return {
-    filas,
-    validas: filas.filter((fila) => fila.resultado === 'valida'),
-    duplicadas: filas.filter((fila) => fila.resultado === 'duplicada').length,
-    invalidas: filas.filter((fila) => fila.resultado === 'invalida'),
+    filas: revisadas,
+    validas: revisadas.filter((fila) => fila.resultado === 'valida'),
+    duplicadas: revisadas.filter((fila) => fila.resultado === 'duplicada').length,
+    invalidas: revisadas.filter((fila) => fila.resultado === 'invalida'),
     areasNuevas,
+    hoja,
+    masHojas,
+  }
+}
+
+export function analizarCsv(texto, opciones = {}) {
+  const numeradas = filasCrudas(texto).map((linea, indice) => ({ linea, numero: indice + 1 }))
+  const utiles = numeradas.filter((fila) => fila.linea.trim() !== '')
+  if (utiles.length === 0) return { error: 'El archivo está vacío.' }
+
+  const encabezado = utiles[0].linea
+  const comas = contarSeparador(encabezado, ',')
+  const puntos = contarSeparador(encabezado, ';')
+  if (comas === 0 && puntos === 0) {
+    return { error: 'No encontré columnas. Separalas con coma o punto y coma.' }
+  }
+  const separador = puntos > comas ? ';' : ','
+  const datos = []
+  utiles.slice(1).forEach((fila) => {
+    datos.push({ numero: fila.numero, celdas: partirLinea(fila.linea, separador) })
+  })
+  if (datos.length > LIMITE_FILAS) return { error: MENSAJE_TOPE }
+
+  const tabla = mapearTabla(partirLinea(encabezado, separador), datos)
+  if (tabla.error) return tabla
+  return analizarFilas(tabla.filas, opciones)
+}
+
+export function interpretarLibro(hojas, opciones = {}) {
+  if (!Array.isArray(hojas) || hojas.length === 0) return { error: MENSAJE_ILEGIBLE }
+  const primera = hojas[0]
+  const celdas = primera?.data
+  if (!Array.isArray(celdas) || celdas.length === 0) return { error: MENSAJE_SIN_FILAS }
+
+  const indiceEncabezado = celdas.findIndex((fila) => Array.isArray(fila) && fila.some((celda) => textoCelda(celda) !== ''))
+  if (indiceEncabezado === -1) return { error: MENSAJE_SIN_FILAS }
+
+  const datos = []
+  for (let i = indiceEncabezado + 1; i < celdas.length; i += 1) {
+    const fila = Array.isArray(celdas[i]) ? celdas[i] : []
+    if (!fila.some((celda) => textoCelda(celda) !== '')) continue
+    datos.push({ numero: i + 1, celdas: fila })
+    if (datos.length > LIMITE_FILAS) return { error: MENSAJE_TOPE }
+  }
+
+  const tabla = mapearTabla(celdas[indiceEncabezado], datos)
+  if (tabla.error) return tabla
+  return analizarFilas(tabla.filas, {
+    ...opciones,
+    hoja: primera.sheet ?? '',
+    masHojas: hojas.length > 1,
+  })
+}
+
+export async function leerXlsx(archivo, opciones = {}) {
+  // fflate, que es quien descomprime el .xlsx, no pone tope al tamaño
+  // descomprimido: usa el tamaño que declara el zip. El tope de 2 MB es
+  // del archivo subido, no de lo que el zip dice que pesa adentro.
+  // readSheet lee una sola hoja pero no devuelve su nombre ni si hay más.
+  // La exportación por defecto de la 9.3.10 sí. Nos quedamos con la primera.
+  try {
+    const { default: leerLibro } = await import('read-excel-file/browser')
+    return interpretarLibro(await leerLibro(archivo), opciones)
+  } catch {
+    return { error: MENSAJE_ILEGIBLE }
   }
 }
 
