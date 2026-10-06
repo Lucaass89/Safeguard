@@ -7,6 +7,23 @@ function cayo(ev) {
   return ev.hizo_clic || ev.ingreso_datos
 }
 
+function claseResultado(persona) {
+  if (persona.cayo) return 'persona-badge persona-badge-rechazado'
+  if (persona.participo) return 'persona-badge persona-badge-activo'
+  return 'persona-badge persona-badge-inactivo'
+}
+
+function ademas(persona) {
+  const partes = [
+    persona.capacitado && 'capacitado',
+    persona.reconocio && 'reconoció el engaño',
+    persona.mejoro && 'mejoró',
+  ].filter(Boolean)
+  if (partes.length === 0) return '–'
+  const texto = partes.join(' · ')
+  return texto[0].toUpperCase() + texto.slice(1)
+}
+
 function PanelTablero() {
   const [organizacion, setOrganizacion] = useState(undefined)
   const [empleados, setEmpleados] = useState([])
@@ -107,6 +124,9 @@ function PanelTablero() {
     [porPersona],
   )
 
+  const sinEquipo = porPersona.length === 0
+  const sinResultados = !porPersona.some((p) => p.participo)
+
   if (cargando) return <p className="panel-estado">Armando el tablero…</p>
 
   if (!organizacion) {
@@ -130,7 +150,6 @@ function PanelTablero() {
         <Link className="panel-volver" to="/panel?app=phishguard">
           ← Volver a las opciones
         </Link>
-        <span className="panel-tag">PhishGuard</span>
         <h1>Vulnerabilidad del equipo</h1>
         <p className="panel-lead">
           {organizacion.nombre_empresa}. Medimos si la persona cayó, si se capacitó y si
@@ -140,87 +159,110 @@ function PanelTablero() {
 
       {error && <p className="panel-error">{error}</p>}
 
-      <ul className="tablero-kpis">
-        <li>
-          <strong>{resumen.personas}</strong>
-          <span>Personas</span>
-        </li>
-        <li>
-          <strong>{resumen.cayo}</strong>
-          <span>Cayeron</span>
-        </li>
-        <li>
-          <strong>{resumen.noCayo}</strong>
-          <span>No cayeron</span>
-        </li>
-        <li>
-          <strong>{resumen.cap}</strong>
-          <span>Capacitados</span>
-        </li>
-      </ul>
+      {sinEquipo || sinResultados ? (
+        <section className="panel-seccion tablero-vacio">
+          {sinEquipo ? (
+            <>
+              <p>Todavía no cargaste a nadie.</p>
+              <p>Cargá a tu equipo y después armá una campaña para ver resultados.</p>
+              <Link className="panel-boton" to="/panel/empresa">
+                Cargar empleados
+              </Link>
+            </>
+          ) : (
+            <>
+              <p>Todavía no hay campañas con resultados.</p>
+              <p>Armá una campaña para ver cómo responde tu equipo.</p>
+              <Link className="panel-boton" to="/panel/campanas">
+                Armar una campaña
+              </Link>
+            </>
+          )}
+        </section>
+      ) : (
+        <>
+          <ul className="metricas-franja">
+            <li>
+              <strong>{resumen.personas}</strong>
+              <span>Personas</span>
+            </li>
+            <li>
+              <strong>{resumen.cayo}</strong>
+              <span>Cayeron</span>
+            </li>
+            <li>
+              <strong>{resumen.noCayo}</strong>
+              <span>No cayeron</span>
+            </li>
+            <li>
+              <strong>{resumen.cap}</strong>
+              <span>Capacitados</span>
+            </li>
+          </ul>
 
-      <section className="panel-seccion">
-        <h2>Por área</h2>
-        {porArea.length === 0 ? (
-          <p className="panel-vacio">
-            Todavía no hay gente cargada. <Link to="/panel/empresa">Agregá empleados</Link>.
-          </p>
-        ) : (
+          <section className="panel-seccion">
+            <h2>Por área</h2>
+            <div className="tabla-wrap">
+              <table className="tabla-equipo">
+                <thead>
+                  <tr>
+                    <th>Área</th>
+                    <th>Personas</th>
+                    <th>Cayeron</th>
+                    <th>No cayeron</th>
+                    <th>Se capacitaron</th>
+                    <th>Mejoraron</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {porArea.map((a) => (
+                    <tr key={a.area}>
+                      <td>{a.area}</td>
+                      <td>{a.total}</td>
+                      <td>{a.cayo}</td>
+                      <td>{a.noCayo}</td>
+                      <td>{a.cap}</td>
+                      <td>{a.mejoro}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
+
+      {!sinEquipo && (
+        <section className="panel-seccion">
+          <h2>Por persona</h2>
           <div className="tabla-wrap">
-            <table className="tabla-equipo">
+            <table className="tabla-equipo tabla-personas">
               <thead>
                 <tr>
+                  <th>Nombre</th>
                   <th>Área</th>
-                  <th>Personas</th>
-                  <th>Cayeron</th>
-                  <th>No cayeron</th>
-                  <th>Se capacitaron</th>
-                  <th>Mejoraron</th>
+                  <th>Resultado</th>
+                  <th>Detalle</th>
                 </tr>
               </thead>
               <tbody>
-                {porArea.map((a) => (
-                  <tr key={a.area}>
-                    <td>{a.area}</td>
-                    <td>{a.total}</td>
-                    <td>{a.cayo}</td>
-                    <td>{a.noCayo}</td>
-                    <td>{a.cap}</td>
-                    <td>{a.mejoro}</td>
+                {porPersona.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.nombre}</td>
+                    <td>{p.departamento || 'General'}</td>
+                    <td>
+                      <span className={claseResultado(p)}>
+                        {p.cayo ? 'Cayó' : p.participo ? 'No cayó' : 'Sin campaña'}
+                      </span>
+                    </td>
+                    <td>{ademas(p)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
-      </section>
-
-      <section className="panel-seccion">
-        <h2>Por persona</h2>
-        {porPersona.length === 0 ? (
-          <p className="panel-vacio">
-            Cargá empleados y <Link to="/panel/campanas">lanzá una campaña</Link> para ver la
-            curva.
-          </p>
-        ) : (
-          <ul className="empleados">
-            {porPersona.map((p) => (
-              <li className="empleado" key={p.id}>
-                <div>
-                  <p className="empleado-nombre">{p.nombre}</p>
-                  <p className="empleado-meta">{p.departamento || 'General'}</p>
-                </div>
-                <p className="empleado-meta">
-                  {p.cayo ? 'Cayó' : p.participo ? 'No cayó' : 'Sin campaña'}
-                  {p.capacitado ? ' · capacitado' : ''}
-                  {p.reconocio ? ' · reconoció el engaño' : ''}
-                  {p.mejoro ? ' · mejoró' : ''}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        </section>
+      )}
     </div>
   )
 }

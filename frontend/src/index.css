@@ -7,7 +7,7 @@
 
   --sg-teal: #2a9a96;
   --sg-blue: #4a74b8;
-  --sg-accent: var(--sg-teal);
+  --sg-accent: var(--sg-blue);
 
   --sg-green: #2f9e6b;
   --sg-yellow: #c4922a;
@@ -15,8 +15,8 @@
 
   --sg-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
-  --sg-radius: 12px;
-  --sg-radius-sm: 10px;
+  --sg-radius: 8px;
+  --sg-radius-sm: 6px;
   --sg-ease: 200ms ease;
 
   font-family: var(--sg-sans);
@@ -73,7 +73,7 @@ a {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--sg-teal) 28%, transparent);
+  background: color-mix(in srgb, var(--sg-blue) 28%, transparent);
   color: var(--sg-text);
 }
 

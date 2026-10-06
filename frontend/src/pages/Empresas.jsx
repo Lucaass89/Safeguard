@@ -1,28 +1,7 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import { pasosCampana as pasos } from '../lib/pasosCampana.js'
 import './Modulo.css'
-
-const pasos = [
-  {
-    titulo: 'Armás la campaña',
-    texto: 'Elegís destinatarios, fecha de envío y nivel de dificultad.',
-  },
-  {
-    titulo: 'Llegan los correos',
-    texto:
-      'El sistema envía la simulación en el horario programado, imitando engaños que de verdad circulan por acá.',
-  },
-  {
-    titulo: 'Se registra qué pasó',
-    texto:
-      'Queda guardado si el empleado abrió el correo, hizo clic en el enlace o llegó a ingresar sus datos.',
-  },
-  {
-    titulo: 'Se explica en el momento',
-    texto:
-      'Si alguien cae, recibe una explicación de 1 a 2 minutos de por qué era riesgoso. Sin exponerlo ni sancionarlo.',
-  },
-]
 
 const incluye = [
   ['Tablero', 'Riesgos detectados y cómo evoluciona la seguridad.'],
@@ -47,7 +26,6 @@ function Empresas() {
         <section className="pg-banda">
           <div className="pg-banda-cuerpo">
             <div>
-              <p className="pg-kicker">Para empresas</p>
               <h1>PhishGuard entrena el criterio, no el firewall.</h1>
               <p>
                 Simulación de phishing para PyMEs e instituciones educativas.
@@ -64,7 +42,6 @@ function Empresas() {
               </div>
             </div>
             <aside className="pg-tablero" aria-label="Vista previa del tablero">
-              <p>Ejemplo con datos ficticios</p>
               <h2>Tablero del equipo</h2>
               <ul>
                 <li>
@@ -84,14 +61,7 @@ function Empresas() {
                   <span>Datos ingresados</span>
                 </li>
               </ul>
-              <div className="pg-evolucion" aria-hidden="true">
-                <span style={{ height: '35%' }} />
-                <span style={{ height: '48%' }} />
-                <span style={{ height: '42%' }} />
-                <span style={{ height: '70%' }} />
-                <span style={{ height: '58%' }} />
-                <span style={{ height: '86%' }} />
-              </div>
+              <p>Ejemplo con datos ficticios</p>
             </aside>
           </div>
         </section>
@@ -101,7 +71,7 @@ function Empresas() {
           <ol className="pg-riel">
             {pasos.map((paso, i) => (
               <li key={paso.titulo}>
-                <span>{String(i + 1).padStart(2, '0')}</span>
+                <span>{i + 1}</span>
                 <h3>{paso.titulo}</h3>
                 <p>{paso.texto}</p>
               </li>

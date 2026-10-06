@@ -87,7 +87,7 @@
   min-height: 40px;
   padding: 0 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   background: transparent;
   color: var(--sg-muted);
   font: inherit;
@@ -133,7 +133,7 @@
 }
 
 .acceso-form input:focus {
-  border-color: color-mix(in srgb, var(--sg-teal) 55%, var(--sg-line));
+  border-color: var(--sg-accent);
 }
 
 .acceso-boton {
@@ -142,8 +142,8 @@
   padding: 0 20px;
   border: none;
   border-radius: var(--sg-radius-sm);
-  background: var(--sg-teal);
-  color: var(--sg-text);
+  background: var(--sg-blue);
+  color: #fff;
   font: inherit;
   font-size: 16px;
   font-weight: 500;
@@ -152,7 +152,7 @@
 }
 
 .acceso-boton:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--sg-teal) 82%, white);
+  background: #1d4ed8;
 }
 
 .acceso-boton:disabled {
@@ -175,14 +175,14 @@
 }
 
 .acceso-aviso {
-  background: color-mix(in srgb, var(--sg-teal) 12%, var(--sg-surface));
-  color: color-mix(in srgb, var(--sg-text) 88%, var(--sg-teal));
+  background: var(--sg-bg);
+  color: var(--sg-text);
 }
 
 .sg-landing .acceso-caja {
   background: #fff;
   border: 1px solid #dbe6e7;
-  border-radius: 18px;
+  border-radius: 8px;
   color: #102a43;
 }
 
@@ -216,7 +216,7 @@
 }
 
 .sg-landing .acceso-pestanas {
-  background: #eef6f5;
+  background: #f3efe6;
 }
 
 .sg-landing .acceso-pestanas button {
@@ -255,8 +255,8 @@
 }
 
 .sg-landing .acceso-aviso {
-  background: #effaf7;
-  color: #0b6b58;
-  border-color: #c5eee0;
+  background: #f3efe6;
+  color: #102a43;
+  border-color: #e3d9cc;
 }
 

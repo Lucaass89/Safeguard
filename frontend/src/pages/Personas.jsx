@@ -54,7 +54,6 @@ function Personas() {
       <div className="container sl">
         <div className="sl-grilla">
           <aside className="sl-lado">
-            <p>Para personas</p>
             <h1>SafeLink</h1>
             <p>
               Revisa el enlace o el QR antes del clic y responde con un color,

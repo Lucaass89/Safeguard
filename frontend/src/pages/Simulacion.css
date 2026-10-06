@@ -20,11 +20,9 @@
 }
 
 .sim-marca {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #1d4ed8;
+  color: #4b5563;
 }
 
 .sim-nota {

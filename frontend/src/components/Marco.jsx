@@ -350,7 +350,7 @@ function Marco({ children, interior = false }) {
                       </Link>
                     </div>
                     <Link className="nav-cta" to="/ingresar" onClick={cerrarMenu}>
-                      Ingresar <span>↗</span>
+                      Ingresar <span>→</span>
                     </Link>
                   </>
                 )}

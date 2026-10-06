@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
+import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -49,14 +50,6 @@ function dominioDe(correo) {
 function esAdministrador(rol) {
   return typeof rol === 'string' && rol.toLowerCase().startsWith('admin')
 }
-
-const ESTADOS = [
-  ['activo', 'Activo'],
-  ['inactivo', 'Inactivo'],
-  ['pendiente_verificacion', 'Pendiente de verificación'],
-  ['pendiente_aprobacion', 'Pendiente de aprobación'],
-  ['rechazado', 'Rechazado'],
-]
 
 const ORIGENES = [
   ['manual', 'Manual'],
@@ -469,7 +462,6 @@ function PanelEmpresa() {
         <Link className="panel-volver" to="/panel?app=phishguard">
           ← Volver a las opciones
         </Link>
-        <span className="panel-tag">PhishGuard</span>
         <h1>{organizacion ? organizacion.nombre_empresa : 'PhishGuard es pago'}</h1>
         <p className="panel-lead">
           {organizacion
@@ -490,7 +482,7 @@ function PanelEmpresa() {
         <>
           <section className="panel-seccion">
             <h2>Agregar empleado</h2>
-            <form className="panel-form panel-form-fila" onSubmit={agregarEmpleado}>
+            <form className="panel-form panel-form-fila panel-form-empleado" onSubmit={agregarEmpleado}>
               <label className="panel-campo">
                 <span>Nombre</span>
                 <input
@@ -548,20 +540,12 @@ function PanelEmpresa() {
               </p>
             ) : (
               <>
-                <button
-                  type="button"
-                  className={vistaPendientes ? 'persona-filtro persona-filtro-activo' : 'persona-filtro'}
-                  aria-pressed={vistaPendientes}
-                  onClick={verPendientes}
-                >
-                  Pendientes de aprobación ({pendientes.length})
-                </button>
-                <div className="persona-filtros">
+                <div className="persona-barra">
                   <label className="panel-campo">
                     <span>Estado</span>
                     <select value={filtroEstado} onChange={(evento) => { setFiltroEstado(evento.target.value); setElegidos([]) }}>
                       <option value="todos">Todos</option>
-                      {ESTADOS.map(([valor, texto]) => (
+                      {estadosDe('empleado').map(([valor, texto]) => (
                         <option key={valor} value={valor}>{texto}</option>
                       ))}
                     </select>
@@ -584,6 +568,14 @@ function PanelEmpresa() {
                       ))}
                     </select>
                   </label>
+                  <button
+                    type="button"
+                    className={vistaPendientes ? 'persona-filtro persona-filtro-activo' : 'persona-filtro'}
+                    aria-pressed={vistaPendientes}
+                    onClick={verPendientes}
+                  >
+                    Pendientes de aprobación ({pendientes.length})
+                  </button>
                 </div>
                 {avisoLista && <p className="panel-aviso" aria-live="polite">{avisoLista}</p>}
                 {esAdministrador(rol) && !cargandoMembresia && vistaPendientes && pendientesVisibles.length > 0 && (
@@ -667,7 +659,7 @@ function PanelEmpresa() {
                               </td>
                               <td>
                                 <span className={claseEstado(empleado.estado)}>
-                                  {etiqueta(ESTADOS, empleado.estado)}
+                                  {etiquetaEstado('empleado', empleado.estado)}
                                 </span>
                               </td>
                               <td>

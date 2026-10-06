@@ -3,11 +3,6 @@
   color: #102a43;
 }
 
-.sg-landing:has(.pg),
-.sg-landing:has(.sl) {
-  background: linear-gradient(180deg, #f4f0e6 0%, #efe4d2 48%, #e8e3d4 100%);
-}
-
 .pg h1,
 .pg h2,
 .sl h1,
@@ -22,18 +17,9 @@
 .pg-banda {
   margin-bottom: 72px;
   padding: 48px 56px;
-  border-radius: 28px;
+  border-radius: 8px;
   background: #102a43;
   color: #f4f7f8;
-}
-
-.pg-kicker {
-  margin: 0 0 28px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7ddec4;
 }
 
 .pg-banda-cuerpo {
@@ -41,12 +27,6 @@
   grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
   gap: 48px;
   align-items: center;
-}
-
-.pg-banda .pg-kicker {
-  max-width: none;
-  margin: 0 0 22px;
-  font-size: 13px;
 }
 
 .pg-banda h1 {
@@ -80,7 +60,7 @@
   align-items: center;
   min-height: 48px;
   padding: 0 18px;
-  border-radius: 9px;
+  border-radius: 6px;
   background: #fff;
   color: #146fd2;
   font-weight: 700;
@@ -98,25 +78,20 @@
   min-height: 48px;
   padding: 0 18px;
   border: 1px solid #d5e3ea;
-  border-radius: 9px;
+  border-radius: 6px;
   color: #fff;
   font-weight: 700;
 }
 
 .pg-tablero {
-  padding: 22px;
-  border-radius: 16px;
-  background: #17344f;
+  padding-top: 28px;
+  border-top: 1px solid rgb(255 255 255 / 22%);
 }
 
-.pg-tablero > p {
+.pg-banda .pg-tablero > p {
   max-width: none;
-  margin: 0 0 8px;
-  color: #7ddec4;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  margin: 16px 0 0;
+  font-size: 14px;
 }
 
 .sg-landing .pg-tablero h2 {
@@ -129,16 +104,15 @@
 .pg-tablero ul {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  column-gap: 24px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .pg-tablero li {
-  padding: 12px;
-  border-radius: 10px;
-  background: #102a43;
+  padding: 12px 0;
+  border-top: 1px solid rgb(255 255 255 / 22%);
 }
 
 .pg-tablero strong {
@@ -151,20 +125,6 @@
 .pg-tablero li span {
   color: #d5e3ea;
   font-size: 16px;
-}
-
-.pg-evolucion {
-  display: flex;
-  align-items: end;
-  gap: 10px;
-  height: 72px;
-  margin-top: 16px;
-}
-
-.pg-evolucion span {
-  flex: 1;
-  border-radius: 6px 6px 2px 2px;
-  background: #7ddec4;
 }
 
 .pg-bloque {
@@ -185,7 +145,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid #102a43;
+  border-top: 1px solid var(--sg-text);
 }
 
 .pg-riel li {
@@ -199,9 +159,9 @@
 
 .pg-riel span {
   display: block;
-  margin-bottom: 18px;
-  font: 700 13px 'Space Grotesk', var(--sg-sans);
-  color: #0c6b58;
+  margin-bottom: 14px;
+  font: 600 16px 'Space Grotesk', var(--sg-sans);
+  color: var(--sg-muted);
 }
 
 .pg-riel h3 {
@@ -266,19 +226,7 @@
 
 .pg-precios li {
   padding-top: 16px;
-  border-top: 4px solid #102a43;
-}
-
-.pg-precios li:nth-child(2) {
-  border-top-color: #146fd2;
-}
-
-.pg-precios li:nth-child(3) {
-  border-top-color: #168b76;
-}
-
-.pg-precios li:nth-child(4) {
-  border-top-color: #8d98ab;
+  border-top: 1px solid var(--sg-text);
 }
 
 .pg-precios strong {
@@ -334,15 +282,6 @@
   top: 120px;
 }
 
-.sl-lado p:first-child {
-  margin: 0 0 8px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #0c6b58;
-}
-
 .sl-lado h1 {
   margin: 0;
   font-size: 48px;
@@ -365,7 +304,7 @@
   margin-top: 22px;
   padding: 10px 16px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 6px;
   background: #2563eb;
   color: #fff;
   font: inherit;
@@ -418,7 +357,7 @@
   align-items: center;
   min-height: 84px;
   padding: 18px 22px;
-  border-radius: 8px 18px 18px 8px;
+  border-radius: 8px;
 }
 
 .sl-banda h3 {
@@ -469,7 +408,7 @@
 .sl-gratis {
   margin: 36px 0 0;
   padding-top: 18px;
-  border-top: 2px solid #168b76;
+  border-top: 1px solid var(--sg-line);
   font-weight: 700;
 }
 
@@ -504,6 +443,14 @@
 
 .nota li + li {
   margin-top: 8px;
+}
+
+@media (min-width: 901px) {
+  .pg-tablero {
+    padding: 0 0 0 48px;
+    border-top: 0;
+    border-left: 1px solid rgb(255 255 255 / 22%);
+  }
 }
 
 @media (max-width: 900px) {

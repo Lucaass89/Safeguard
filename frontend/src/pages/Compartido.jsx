@@ -39,7 +39,6 @@ function Compartido() {
   return (
     <div className="compartido panel-personas">
       <header className="panel-header">
-        <span className="panel-tag">SafeLink</span>
         <h1>Te mandaron este resultado</h1>
         <p className="panel-lead">
           Alguien de confianza pidió que SafeLink revisara un enlace antes de

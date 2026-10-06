@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { copiarTexto } from '../lib/copiar.js'
+import { etiquetaEstado } from '../lib/estados.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
@@ -10,6 +11,10 @@ const CANALES = [
   { id: 'sms', etiqueta: 'SMS' },
   { id: 'email', etiqueta: 'Mail' },
 ]
+
+function etiquetaCanal(canal) {
+  return CANALES.find((c) => c.id === canal)?.etiqueta ?? canal
+}
 
 function fecha(valor) {
   if (!valor) return ''
@@ -62,6 +67,19 @@ function textoKit(campana) {
       '',
     ]),
   ].join('\n')
+}
+
+const COLUMNAS = [
+  ['clic', 'Clics'],
+  ['datos', 'Datos ingresados'],
+  ['cap', 'Capacitados'],
+  ['bien', 'Lo hicieron bien'],
+]
+
+function claseCampana(estado) {
+  if (estado === 'en_proceso') return 'persona-badge persona-badge-activo'
+  if (estado === 'programada') return 'persona-badge persona-badge-aprobacion'
+  return 'persona-badge persona-badge-inactivo'
 }
 
 function metricas(eventos) {
@@ -331,7 +349,6 @@ function PanelCampanas() {
         <Link className="panel-volver" to="/panel?app=phishguard">
           ← Volver a las opciones
         </Link>
-        <span className="panel-tag">PhishGuard</span>
         <h1>Campañas</h1>
         <p className="panel-lead">
           El CEO fraudulento y el paquete retenido se simulan por WhatsApp o SMS.
@@ -424,98 +441,116 @@ function PanelCampanas() {
         {campanas.length === 0 ? (
           <p className="panel-vacio">Todavía no hay campañas.</p>
         ) : (
-          <ul className="campanas">
-            {campanas.map((campana) => {
-              const evs = campana.eventos_simulacion ?? []
-              const m = metricas(evs)
-              const abiertaEsta = abierta === campana.id
-              return (
-                <li className="campana" key={campana.id}>
-                  <button
-                    type="button"
-                    className="campana-cabecera"
-                    onClick={() => setAbierta(abiertaEsta ? null : campana.id)}
-                  >
-                    <div>
-                      <p className="campana-nombre">
-                        {campana.nombre_campana}
-                        {campana.es_refuerzo ? ' · refuerzo' : ''}
-                      </p>
-                      <p className="campana-meta">
-                        {campana.canal} · {campana.estado}
-                        {campana.es_refuerzo && campana.estado === 'programada'
-                          ? ` · se lanza el ${fecha(campana.fecha_inicio)}`
-                          : ''}
-                        {m.total
-                          ? ` · ${m.clic} clic · ${m.datos} datos · ${m.cap} capacitados · ${m.bien} lo hicieron bien`
-                          : ''}
-                      </p>
-                    </div>
-                  </button>
+          <>
+            <div className="campanas-cabeza" aria-hidden="true">
+              <span>Campaña</span>
+              <span>Estado</span>
+              {COLUMNAS.map(([, titulo]) => (
+                <span key={titulo}>{titulo}</span>
+              ))}
+            </div>
+            <ul className="campanas">
+              {campanas.map((campana) => {
+                const evs = campana.eventos_simulacion ?? []
+                const m = metricas(evs)
+                const abiertaEsta = abierta === campana.id
+                return (
+                  <li className="campana" key={campana.id}>
+                    <button
+                      type="button"
+                      className="campana-cabecera"
+                      aria-expanded={abiertaEsta}
+                      onClick={() => setAbierta(abiertaEsta ? null : campana.id)}
+                    >
+                      <span className="campana-titulo">
+                        <span className="campana-nombre">
+                          {campana.nombre_campana}
+                          {campana.es_refuerzo ? ' · refuerzo' : ''}
+                        </span>
+                        <span className="campana-meta">
+                          {etiquetaCanal(campana.canal)}
+                          {campana.es_refuerzo && campana.estado === 'programada'
+                            ? ` · se lanza el ${fecha(campana.fecha_inicio)}`
+                            : ''}
+                        </span>
+                      </span>
+                      <span className="campana-estado">
+                        <span className={claseCampana(campana.estado)}>
+                          {etiquetaEstado('campana', campana.estado)}
+                        </span>
+                      </span>
+                      {COLUMNAS.map(([clave, titulo]) => (
+                        <span className="campana-dato" key={clave}>
+                          <strong>{m.total > 0 ? m[clave] : '–'}</strong>
+                          <span>{titulo}</span>
+                        </span>
+                      ))}
+                    </button>
 
-                  {abiertaEsta && (
-                    <div className="campana-cuerpo">
-                      {campana.es_refuerzo && campana.estado === 'programada' && (
-                        <button
-                          type="button"
-                          className="panel-boton panel-boton-borde"
-                          onClick={() => lanzarRefuerzo(campana.id)}
-                        >
-                          Lanzar refuerzo ahora
-                        </button>
-                      )}
+                    {abiertaEsta && (
+                      <div className="campana-cuerpo">
+                        {campana.es_refuerzo && campana.estado === 'programada' && (
+                          <button
+                            type="button"
+                            className="panel-boton panel-boton-borde"
+                            onClick={() => lanzarRefuerzo(campana.id)}
+                          >
+                            Lanzar refuerzo ahora
+                          </button>
+                        )}
 
-                      {evs.length === 0 ? (
-                        <p className="panel-vacio">
-                          {campana.estado === 'programada'
-                            ? 'Todavía no se envió. Cuando se lance, aparecen los enlaces.'
-                            : 'Sin destinatarios.'}
-                        </p>
-                      ) : (
-                        <ul className="enlaces-sim">
-                          {evs.map((ev) => (
-                            <li key={ev.id}>
-                              <p>
-                                {ev.empleados?.nombre ?? 'Empleado'}
-                                {ev.hizo_clic ? ' · cayó' : ''}
-                                {ev.completo_capacitacion ? ' · capacitado' : ''}
-                                {ev.vio_reconocimiento && !ev.hizo_clic
-                                  ? ' · reconoció'
-                                  : ''}
-                              </p>
-                              <p className="historial-meta">{enlace(ev.token_unico, 'sim')}</p>
-                              <div className="panel-acciones">
-                                <button
-                                  type="button"
-                                  className="panel-boton panel-boton-borde"
-                                  onClick={() =>
-                                    copiarYMarcar(`${ev.id}-sim`, textoSimulacion(campana, ev.token_unico))
-                                  }
-                                >
-                                  {copiado === `${ev.id}-sim` ? 'Copiado' : 'Copiar simulación'}
-                                </button>
-                                {!ev.hizo_clic && (
+                        {evs.length === 0 ? (
+                          <p className="panel-vacio">
+                            {campana.estado === 'programada'
+                              ? 'Todavía no se envió. Cuando se lance, aparecen los enlaces.'
+                              : 'Sin destinatarios.'}
+                          </p>
+                        ) : (
+                          <ul className="enlaces-sim">
+                            {evs.map((ev) => (
+                              <li key={ev.id}>
+                                <p>
+                                  {ev.empleados?.nombre ?? 'Empleado'}
+                                  {ev.hizo_clic ? ' · cayó' : ''}
+                                  {ev.completo_capacitacion ? ' · capacitado' : ''}
+                                  {ev.vio_reconocimiento && !ev.hizo_clic
+                                    ? ' · reconoció'
+                                    : ''}
+                                </p>
+                                <p className="historial-meta">{enlace(ev.token_unico, 'sim')}</p>
+                                <div className="panel-acciones">
                                   <button
                                     type="button"
                                     className="panel-boton panel-boton-borde"
-                                    onClick={() => copiarYMarcar(`${ev.id}-bien`, textoBien(ev))}
+                                    onClick={() =>
+                                      copiarYMarcar(`${ev.id}-sim`, textoSimulacion(campana, ev.token_unico))
+                                    }
                                   >
-                                    {copiado === `${ev.id}-bien`
-                                      ? 'Copiado'
-                                      : 'Copiar “lo hiciste bien”'}
+                                    {copiado === `${ev.id}-sim` ? 'Copiado' : 'Copiar simulación'}
                                   </button>
-                                )}
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
+                                  {!ev.hizo_clic && (
+                                    <button
+                                      type="button"
+                                      className="panel-boton panel-boton-borde"
+                                      onClick={() => copiarYMarcar(`${ev.id}-bien`, textoBien(ev))}
+                                    >
+                                      {copiado === `${ev.id}-bien`
+                                        ? 'Copiado'
+                                        : 'Copiar “lo hiciste bien”'}
+                                    </button>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </>
         )}
       </section>
     </div>

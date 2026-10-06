@@ -67,7 +67,6 @@ function Panel() {
     return yaEntro ? 'elegir' : 'recibiendo'
   })
   const [saliendo, setSaliendo] = useState(false)
-  const [entradaLista, setEntradaLista] = useState(yaEntro || Boolean(pedida))
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
@@ -112,12 +111,6 @@ function Panel() {
     return () => window.clearTimeout(timer)
   }, [saliendo])
 
-  useEffect(() => {
-    if (fase !== 'elegir' || entradaLista) return undefined
-    const timer = window.setTimeout(() => setEntradaLista(true), 800)
-    return () => window.clearTimeout(timer)
-  }, [fase, entradaLista])
-
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
   const datos = tablero?.eventos.filter((evento) => evento.ingreso_datos).length ?? 0
@@ -138,7 +131,6 @@ function Panel() {
           }}
         >
           <div>
-            <p>SafeGuard</p>
             <h1>{saludo ? `Hola, ${saludo}` : 'Hola'}</h1>
             <p>Bienvenido al panel de SafeGuard</p>
             <button type="button" onClick={cerrarRecepcion}>
@@ -149,27 +141,17 @@ function Panel() {
       )}
 
       {fase === 'elegir' && (
-        <section
-          className={entradaLista ? 'elegir elegir-lista' : 'elegir'}
-          onAnimationEnd={(evento) => {
-            if (evento.animationName !== 'elegir-entra') return
-            if (!evento.target.classList?.contains('elegir-phish')) return
-            setEntradaLista(true)
-          }}
-        >
+        <section className="elegir">
           <header className="elegir-cabeza">
-            <p className="mesa-kicker">Tu panel</p>
             <h1>¿Qué aplicación querés usar?</h1>
             <p>SafeLink revisa lo que te llega. PhishGuard entrena a tu equipo.</p>
           </header>
           <div className="elegir-corte">
             <button type="button" className="elegir-lado elegir-safelink" onClick={() => setFase('safelink')}>
               <span className="elegir-tope">
-                <span className="elegir-indice">01</span>
+                <strong>SafeLink</strong>
                 <span className="elegir-ir" aria-hidden="true">→</span>
               </span>
-              <span>Para personas</span>
-              <strong>SafeLink</strong>
               <p>Revisá un enlace, un mensaje, un PDF o un correo.</p>
               <ul className="elegir-usos">
                 <li>Enlace</li>
@@ -198,11 +180,13 @@ function Panel() {
               }}
             >
               <span className="elegir-tope">
-                <span className="elegir-indice">02</span>
-                {acceso !== false && <span className="elegir-ir" aria-hidden="true">→</span>}
+                <strong>PhishGuard</strong>
+                {acceso === false ? (
+                  <span className="elegir-plan">Plan pago</span>
+                ) : (
+                  <span className="elegir-ir" aria-hidden="true">→</span>
+                )}
               </span>
-              <span>{acceso === false ? 'Plan pago' : 'Para empresas'}</span>
-              <strong>PhishGuard</strong>
               <p>
                 {acceso
                   ? 'Cargá al equipo y armá una simulación.'
@@ -239,17 +223,15 @@ function Panel() {
       {fase === 'safelink' && (
         <>
           <header className="mesa-bienvenida">
-            <p className="mesa-kicker">Para personas</p>
             <h1 className="mesa-saludo">SafeLink</h1>
             <p>Revisá lo que te llega antes de abrirlo.</p>
           </header>
           <div className="mesa-cartas">
-            {grupos[0].items.map((item, indice) => (
+            {grupos[0].items.map((item) => (
               <Link key={item.to} to={item.to}>
-                <span>{String(indice + 1).padStart(2, '0')}</span>
                 <strong>{item.titulo}</strong>
-                <span>{item.nota}</span>
-                <span aria-hidden="true">→</span>
+                <span className="mesa-carta-nota">{item.nota}</span>
+                <span className="mesa-carta-ir" aria-hidden="true">→</span>
               </Link>
             ))}
           </div>
@@ -259,31 +241,21 @@ function Panel() {
       {fase === 'phishguard' && acceso && (
         <>
           <header className="mesa-bienvenida">
-            <p className="mesa-kicker">Para empresas</p>
             <h1 className="mesa-saludo">PhishGuard</h1>
             <p>{grupos[1].lead}</p>
           </header>
           {tablero && (
-            <Link className="mesa-tablero" to="/panel/tablero">
-              <div className="mesa-tablero-cuerpo">
-                <div>
-                  <p className="mesa-tablero-kicker">PhishGuard</p>
-                  <h2>Tablero del equipo</h2>
-                  <p className="mesa-tablero-lectura">{lectura(campanas, correos, clics, datos)}</p>
-                  {correos > 0 && (
-                    <div className="mesa-riesgo">
-                      <div className="mesa-riesgo-pista" aria-hidden="true">
-                        <span style={{ width: `${porcentaje}%` }} />
-                      </div>
-                      <p>
-                        {clics} de {correos} correos con clic
-                      </p>
-                    </div>
-                  )}
-                  <span className="mesa-tablero-ir">Ver el tablero</span>
-                </div>
-                {campanas > 0 && (
-                  <ul>
+            <section className="mesa-tablero" aria-labelledby="mesa-tablero-titulo">
+              <div className="mesa-tablero-cabeza">
+                <h2 id="mesa-tablero-titulo">Tablero del equipo</h2>
+                <Link className="mesa-tablero-ir" to="/panel/tablero">
+                  Ver el tablero
+                </Link>
+              </div>
+              <p className="mesa-tablero-lectura">{lectura(campanas, correos, clics, datos)}</p>
+              {correos > 0 && (
+                <>
+                  <ul className="metricas-franja">
                     <li>
                       <strong>{campanas}</strong>
                       <span>Campañas</span>
@@ -301,17 +273,24 @@ function Panel() {
                       <span>Datos ingresados</span>
                     </li>
                   </ul>
-                )}
-              </div>
-            </Link>
+                  <div className="mesa-riesgo">
+                    <div className="mesa-riesgo-pista" aria-hidden="true">
+                      <span style={{ width: `${porcentaje}%` }} />
+                    </div>
+                    <p>
+                      {clics} de {correos} correos con clic
+                    </p>
+                  </div>
+                </>
+              )}
+            </section>
           )}
           <div className="mesa-cartas mesa-cartas-empresa">
-            {grupos[1].items.map((item, indice) => (
+            {grupos[1].items.map((item) => (
               <Link key={item.to} to={item.to}>
-                <span>{String(indice + 1).padStart(2, '0')}</span>
                 <strong>{item.titulo}</strong>
-                <span>{item.nota}</span>
-                <span aria-hidden="true">→</span>
+                <span className="mesa-carta-nota">{item.nota}</span>
+                <span className="mesa-carta-ir" aria-hidden="true">→</span>
               </Link>
             ))}
           </div>

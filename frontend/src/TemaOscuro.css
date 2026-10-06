@@ -4,6 +4,7 @@ html[data-tema='claro'] {
   --sg-text: #102a43;
   --sg-muted: #4a6278;
   --sg-line: #e3d9cc;
+  --sg-blue: #2563eb;
   color-scheme: light;
 }
 
@@ -13,6 +14,7 @@ html[data-tema='oscuro'] {
   --sg-text: #e6eef4;
   --sg-muted: #b4c4d0;
   --sg-line: #3d5163;
+  --sg-accent: #8eb4ff;
   color-scheme: dark;
   background: #1b2836;
 }
@@ -23,7 +25,7 @@ html[data-tema='oscuro'] {
   margin-left: auto;
   padding: 3px;
   border: 1px solid #e3d9cc;
-  border-radius: 999px;
+  border-radius: 6px;
   background: #faf7f2;
 }
 
@@ -35,7 +37,7 @@ html[data-tema='oscuro'] {
   font-size: 13px;
   font-weight: 700;
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
@@ -72,11 +74,6 @@ html[data-tema='oscuro'] .sg-landing {
   --nav-activo: color-mix(in srgb, var(--ink) 16%, #243444);
   background: #1b2836;
   color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .sg-landing .site-header {
-  background: rgb(27 40 54 / 92%);
-  border-bottom-color: #3d5163;
 }
 
 html[data-tema='oscuro'] .tema-control {
@@ -118,12 +115,6 @@ html[data-tema='oscuro'] .sg-landing .nav-fin .main-nav {
 }
 
 @media (min-width: 901px) {
-  html[data-tema='oscuro'] .sg-landing .main-nav {
-    background: #243444;
-    border-color: #3d5163;
-    box-shadow: 0 10px 28px rgb(0 0 0 / 28%);
-  }
-
   html[data-tema='oscuro'] .sg-landing .nav-app {
     border-left-color: #3d5163;
   }
@@ -164,109 +155,46 @@ html[data-tema='oscuro'] .sg-landing .brand > span:last-child > span {
   color: #a9c0cd;
 }
 
-html[data-tema='oscuro'] .sg-landing .hero {
-  background: linear-gradient(117deg, #1b2836 0%, #1e3338 64%, #1a3330 100%);
-}
-
-html[data-tema='oscuro'] .sg-landing .hero::after {
-  opacity: 0.28;
-}
-
 html[data-tema='oscuro'] .sg-landing em,
 html[data-tema='oscuro'] .pg-volver a,
-html[data-tema='oscuro'] .elegir-volver,
 html[data-tema='oscuro'] .sl-lugares a,
 html[data-tema='oscuro'] .nota a {
   color: #8eb4ff;
 }
 
-html[data-tema='oscuro'] .sg-landing .hero-lead,
-html[data-tema='oscuro'] .sg-landing .trust-row,
-html[data-tema='oscuro'] .sg-landing .product-light .product-info ul,
-html[data-tema='oscuro'] .sg-landing .metrics span,
 html[data-tema='oscuro'] .sg-landing .footer-wrap p,
 html[data-tema='oscuro'] .sg-landing .footer-links,
-html[data-tema='oscuro'] .recibida > div > p:nth-child(3) {
+html[data-tema='oscuro'] .recibida > div > p {
   color: #b4c4d0;
 }
 
-html[data-tema='oscuro'] .sg-landing .eyebrow,
-html[data-tema='oscuro'] .sg-landing .product-light .product-tag,
-html[data-tema='oscuro'] .pg-riel span,
-html[data-tema='oscuro'] .sl-lado p:first-child,
-html[data-tema='oscuro'] .recibida > div > p:first-child,
-html[data-tema='oscuro'] .elegir-safelink span {
+html[data-tema='oscuro'] .sg-landing .eyebrow {
   color: #7ddec4;
 }
 
-html[data-tema='oscuro'] .sg-landing .button-ghost {
-  border-color: #3d5163;
-  background: rgb(36 52 68 / 72%);
-  color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .sg-landing .button-ghost:hover {
-  background: #2c3d4e;
-}
-
-html[data-tema='oscuro'] .sg-landing .products,
-html[data-tema='oscuro'] .sg-landing .intro,
-html[data-tema='oscuro'] .sg-landing .process,
 html[data-tema='oscuro'] .sg-landing .site-footer {
   background: #1b2836;
 }
 
-html[data-tema='oscuro'] .sg-landing .value-card a,
-html[data-tema='oscuro'] .sg-landing .text-link,
-html[data-tema='oscuro'] .sg-landing .product-light .product-info h3 span {
+html[data-tema='oscuro'] .sg-landing .text-link {
   color: #8eb4ff;
 }
 
-html[data-tema='oscuro'] .sg-landing .scroll-cue {
-  color: #b4c4d0;
+html[data-tema='oscuro'] .sg-landing .producto-phish {
+  background: #121d28;
+  border-block: 1px solid #3d5163;
 }
 
-html[data-tema='oscuro'] .sg-landing .step-dot {
-  border-color: #3d5163;
-  color: #b4c4d0;
+html[data-tema='oscuro'] .sg-landing .producto-phish .text-link {
+  color: #b9d4ff;
 }
 
-html[data-tema='oscuro'] .sg-landing .step.active .step-dot {
-  background: #1e3d36;
-  color: #7ddec4;
-  border-color: #3d5c56;
-}
-
-html[data-tema='oscuro'] .sg-landing .value-card,
-html[data-tema='oscuro'] .sg-landing .product-light,
 html[data-tema='oscuro'] .mesa-hoja,
-html[data-tema='oscuro'] .elegir-safelink,
 html[data-tema='oscuro'] .sg-landing .acceso-caja,
 html[data-tema='oscuro'] .sg-landing .acceso-pestanas button.activa,
 html[data-tema='oscuro'] .sg-landing .acceso-form input {
   background: #243444;
   color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .sg-landing .value-card-featured {
-  background: #243e3a;
-  border-color: #3d5c56;
-}
-
-html[data-tema='oscuro'] .sg-landing .results {
-  background: #1e3336;
-}
-
-html[data-tema='oscuro'] .sg-landing .metrics {
-  background: #3d5163;
-}
-
-html[data-tema='oscuro'] .sg-landing .metrics > div {
-  background: #243444;
-}
-
-html[data-tema='oscuro'] .sg-landing .metrics strong {
-  color: #7ddec4;
 }
 
 html[data-tema='oscuro'] .pg,
@@ -303,50 +231,9 @@ html[data-tema='oscuro'] .recibida {
 
 html[data-tema='oscuro'] .sg-landing .recibida h1,
 html[data-tema='oscuro'] .elegir h1,
-html[data-tema='oscuro'] .elegir-safelink,
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-saludo,
 html[data-tema='oscuro'] .sg-landing .acceso-caja h1 {
   color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .elegir-safelink {
-  background:
-    linear-gradient(160deg, rgb(125 222 196 / 12%), transparent 42%),
-    #243444;
-  border-color: #3d5163;
-  border-top-color: #7ddec4;
-}
-
-html[data-tema='oscuro'] .elegir-cabeza p:last-child,
-html[data-tema='oscuro'] .elegir-safelink p {
-  color: #b4c4d0;
-}
-
-html[data-tema='oscuro'] .elegir-safelink .elegir-usos li {
-  background: #1e3d36;
-  color: #7ddec4;
-}
-
-html[data-tema='oscuro'] .elegir-safelink .elegir-ir {
-  background: #2a4060;
-  color: #8eb4ff;
-}
-
-html[data-tema='oscuro'] .elegir-phish {
-  border-color: #3d5163;
-  border-top-color: #7ddec4;
-}
-
-html[data-tema='oscuro'] .elegir-volver {
-  background: #243444;
-  border-color: #3d5163;
-  color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .elegir-volver:hover {
-  background: #2c3d4e;
-  border-color: #7ddec4;
-  color: #7ddec4;
 }
 
 html[data-tema='oscuro'] .sg-landing .panel-lienzo {
@@ -355,6 +242,7 @@ html[data-tema='oscuro'] .sg-landing .panel-lienzo {
   --sg-text: #e6eef4;
   --sg-muted: #b4c4d0;
   --sg-line: #3d5163;
+  --sg-accent: #8eb4ff;
   color: #e6eef4;
 }
 
@@ -369,27 +257,6 @@ html[data-tema='oscuro'] .sg-landing .perfil-modal h2 {
   color: var(--sg-red);
 }
 
-html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-tablero h2 {
-  color: #fff;
-}
-
-html[data-tema='oscuro'] .panel-volver {
-  background: #243444;
-  border-color: #3d5163;
-  color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .panel-volver:hover {
-  background: #2c3d4e;
-  border-color: #7ddec4;
-  color: #7ddec4;
-}
-
-html[data-tema='oscuro'] .panel-personas .panel-tag,
-html[data-tema='oscuro'] .panel-empresas .panel-tag {
-  color: #7ddec4;
-}
-
 html[data-tema='oscuro'] .perfil-nota,
 html[data-tema='oscuro'] .perfil-candado {
   color: #b4c4d0;
@@ -401,37 +268,11 @@ html[data-tema='oscuro'] .perfil .panel-campo input[readonly] {
   color: var(--sg-muted);
 }
 
-html[data-tema='oscuro'] .panel-personas .panel-pieza,
-html[data-tema='oscuro'] .panel-personas .panel-seccion,
-html[data-tema='oscuro'] .panel-empresas .panel-pieza,
-html[data-tema='oscuro'] .panel-empresas .panel-seccion,
-html[data-tema='oscuro'] .panel-empresas .tablero-kpis li {
-  background: #243444;
-  border-color: #3d5163;
-}
-
-html[data-tema='oscuro'] .panel-personas .perfil-peligro {
-  background: var(--sg-surface);
-  border-color: color-mix(in srgb, var(--sg-red) 55%, var(--sg-line));
-  border-top-color: var(--sg-red);
-}
-
-html[data-tema='oscuro'] .panel-personas .panel-pieza {
-  border-top-color: #7ddec4;
-}
-
-html[data-tema='oscuro'] .panel-empresas .panel-pieza,
-html[data-tema='oscuro'] .panel-empresas .tablero-kpis li {
-  border-top-color: #8eb4ff;
-}
-
 html[data-tema='oscuro'] .panel-personas .panel-campo input,
 html[data-tema='oscuro'] .panel-personas .panel-campo textarea,
 html[data-tema='oscuro'] .panel-empresas .panel-campo input,
 html[data-tema='oscuro'] .panel-empresas .panel-campo textarea,
 html[data-tema='oscuro'] .panel-empresas .panel-campo select,
-html[data-tema='oscuro'] .panel-empresas .empleado,
-html[data-tema='oscuro'] .panel-empresas .campana,
 html[data-tema='oscuro'] .check-empleado {
   background: #1b2836;
   border-color: #3d5163;
@@ -442,40 +283,6 @@ html[data-tema='oscuro'] .check-empleado:has(input:checked) {
   border-color: #8eb4ff;
   background: #2a4060;
   color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .mesa-kicker,
-html[data-tema='oscuro'] .mesa-cartas a span:first-child {
-  color: #7ddec4;
-}
-
-html[data-tema='oscuro'] .mesa-cartas a {
-  background: #243444;
-  border-color: #3d5163;
-  border-top-color: #7ddec4;
-  color: #e6eef4;
-}
-
-html[data-tema='oscuro'] .mesa-cartas a span:nth-child(3) {
-  color: #b4c4d0;
-}
-
-html[data-tema='oscuro'] .mesa-cartas a span:last-child {
-  background: #2a4060;
-  color: #8eb4ff;
-}
-
-html[data-tema='oscuro'] .mesa-cartas a:hover {
-  background: #2c3d4e;
-  box-shadow: 0 18px 36px rgb(0 0 0 / 28%);
-}
-
-html[data-tema='oscuro'] .mesa-cartas-empresa a {
-  border-top-color: #8eb4ff;
-}
-
-html[data-tema='oscuro'] .mesa-cartas-empresa a span:first-child {
-  color: #8eb4ff;
 }
 
 html[data-tema='oscuro'] .mesa-hoja a:hover {
@@ -525,6 +332,12 @@ html[data-tema='oscuro'] .sg-landing .acceso-form input {
 }
 
 html[data-tema='oscuro'] .sg-landing .acceso-caja {
+  border-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .sg-landing .acceso-aviso {
+  background: #1b2836;
+  color: #e6eef4;
   border-color: #3d5163;
 }
 

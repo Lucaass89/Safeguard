@@ -6,7 +6,6 @@ function Privacidad() {
   return (
     <Marco interior>
       <div className="container nota">
-        <div className="eyebrow">Privacidad</div>
         <p className="nota-aviso">Este documento está en elaboración y puede cambiar.</p>
         <h1>Qué hace SafeGuard con los datos</h1>
         <p>

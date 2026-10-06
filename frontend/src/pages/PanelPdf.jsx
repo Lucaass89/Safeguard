@@ -42,7 +42,6 @@ function PanelPdf() {
         <Link className="panel-volver" to="/panel?app=safelink">
           ← Volver a las opciones
         </Link>
-        <span className="panel-tag">SafeLink</span>
         <h1>Revisar un PDF</h1>
         <p className="panel-lead">El archivo se lee en tu navegador. No se sube a ningún servidor.</p>
       </header>

@@ -97,35 +97,40 @@ function PerfilActividad({ usuarioId }) {
   const vacio = conteos && conteos.analisis === 0 && conteos.reportes === 0
 
   return (
-    <section className="panel-seccion perfil-actividad" aria-labelledby="perfil-actividad-titulo" aria-busy={cargando}>
-      <h2 id="perfil-actividad-titulo">Tu actividad</h2>
-      {cargando && <p className="perfil-estado">Cargando tu actividad…</p>}
-      {!cargando && error && (
-        <>
-          <p className="panel-error">No pudimos leer tu actividad. Probá de nuevo en un momento.</p>
-          <button type="button" className="panel-boton-borde" onClick={() => setIntento((valor) => valor + 1)}>
-            Reintentar
-          </button>
-        </>
-      )}
-      {!cargando && !error && vacio && (
-        <p className="perfil-estado">Todavía no hay análisis ni reportes.</p>
-      )}
-      {!cargando && !error && conteos && !vacio && (
-        <ul className="perfil-cifras">
-          <li>
-            <strong>{conteos.analisis}</strong>
-            <span>Análisis</span>
-          </li>
-          <li>
-            <strong>{conteos.reportes}</strong>
-            <span>Reportes</span>
-          </li>
-        </ul>
-      )}
-      {!cargando && !error && (
-        <Link className="perfil-historial" to="/panel/enlaces">Ver historial</Link>
-      )}
+    <section className="ajuste perfil-actividad" aria-labelledby="perfil-actividad-titulo" aria-busy={cargando}>
+      <div className="ajuste-cabeza">
+        <h2 id="perfil-actividad-titulo">Tu actividad</h2>
+        <p>Lo que revisaste y reportaste con SafeLink.</p>
+      </div>
+      <div className="ajuste-cuerpo">
+        {cargando && <p className="perfil-estado">Cargando tu actividad…</p>}
+        {!cargando && error && (
+          <>
+            <p className="panel-error">No pudimos leer tu actividad. Probá de nuevo en un momento.</p>
+            <button type="button" className="panel-boton-borde" onClick={() => setIntento((valor) => valor + 1)}>
+              Reintentar
+            </button>
+          </>
+        )}
+        {!cargando && !error && vacio && (
+          <p className="perfil-estado">Todavía no hay análisis ni reportes.</p>
+        )}
+        {!cargando && !error && conteos && !vacio && (
+          <ul className="perfil-cifras">
+            <li>
+              <strong>{conteos.analisis}</strong>
+              <span>Análisis</span>
+            </li>
+            <li>
+              <strong>{conteos.reportes}</strong>
+              <span>Reportes</span>
+            </li>
+          </ul>
+        )}
+        {!cargando && !error && (
+          <Link className="perfil-historial" to="/panel/enlaces">Ver historial</Link>
+        )}
+      </div>
     </section>
   )
 }
@@ -166,29 +171,34 @@ function PerfilOrganizacion({ organizacionId, rol }) {
   }, [organizacionId, intento])
 
   return (
-    <section className="panel-seccion perfil-org" aria-labelledby="perfil-org-titulo" aria-busy={cargando}>
-      <h2 id="perfil-org-titulo">Organización</h2>
-      {cargando && <p className="perfil-estado">Cargando tu empresa…</p>}
-      {!cargando && error && (
-        <>
-          <p className="panel-error">No pudimos cargar tu empresa. Probá de nuevo en un momento.</p>
-          <button type="button" className="panel-boton-borde" onClick={() => setIntento((valor) => valor + 1)}>
-            Reintentar
-          </button>
-        </>
-      )}
-      {!cargando && !error && (
-        <dl className="perfil-ficha">
-          <div>
-            <dt>Empresa</dt>
-            <dd>{nombre || 'Esta empresa no tiene nombre cargado.'}</dd>
-          </div>
-          <div>
-            <dt>Rol</dt>
-            <dd>{etiqueta ? <span className="perfil-rol">{etiqueta}</span> : 'No hay un rol cargado.'}</dd>
-          </div>
-        </dl>
-      )}
+    <section className="ajuste perfil-org" aria-labelledby="perfil-org-titulo" aria-busy={cargando}>
+      <div className="ajuste-cabeza">
+        <h2 id="perfil-org-titulo">Organización</h2>
+        <p>La empresa de PhishGuard a la que pertenece tu cuenta.</p>
+      </div>
+      <div className="ajuste-cuerpo">
+        {cargando && <p className="perfil-estado">Cargando tu empresa…</p>}
+        {!cargando && error && (
+          <>
+            <p className="panel-error">No pudimos cargar tu empresa. Probá de nuevo en un momento.</p>
+            <button type="button" className="panel-boton-borde" onClick={() => setIntento((valor) => valor + 1)}>
+              Reintentar
+            </button>
+          </>
+        )}
+        {!cargando && !error && (
+          <dl className="perfil-ficha">
+            <div>
+              <dt>Empresa</dt>
+              <dd>{nombre || 'Esta empresa no tiene nombre cargado.'}</dd>
+            </div>
+            <div>
+              <dt>Rol</dt>
+              <dd>{etiqueta ? <span className="perfil-rol">{etiqueta}</span> : 'No hay un rol cargado.'}</dd>
+            </div>
+          </dl>
+        )}
+      </div>
     </section>
   )
 }
@@ -288,91 +298,95 @@ function PerfilSeguridad({ usuario }) {
   }
 
   return (
-    <section className="panel-seccion perfil-seguridad" aria-labelledby="perfil-seguridad-titulo">
-      <h2 id="perfil-seguridad-titulo">Seguridad</h2>
-      <p>{texto ?? 'No pudimos ver cómo entrás a la cuenta.'}</p>
-      {metodos?.clave && (
-        <form className="perfil-clave" onSubmit={cambiarClave}>
-          <h3>Cambiar contraseña</h3>
-          <label className="panel-campo">
-            <span>Contraseña actual</span>
-            <input
-              type="password"
-              value={actual}
-              onChange={(evento) => setActual(evento.target.value)}
-              autoComplete="current-password"
-              required
-            />
-          </label>
-          <label className="panel-campo">
-            <span>Contraseña nueva</span>
-            <input
-              type="password"
-              value={nueva}
-              onChange={(evento) => setNueva(evento.target.value)}
-              autoComplete="new-password"
-              minLength={6}
-              required
-            />
-          </label>
-          <label className="panel-campo">
-            <span>Confirmación</span>
-            <input
-              type="password"
-              value={confirmar}
-              onChange={(evento) => setConfirmar(evento.target.value)}
-              autoComplete="new-password"
-              minLength={6}
-              required
-            />
-          </label>
-          <div aria-live="polite">
-            {error && <p className="panel-error">{error}</p>}
-            {aviso && <p className="panel-aviso">{aviso}</p>}
-          </div>
-          <button type="submit" className="panel-boton" disabled={guardando} aria-busy={guardando}>
-            {guardando ? 'Guardando…' : 'Cambiar contraseña'}
-          </button>
-        </form>
-      )}
-      <div className="perfil-fila">
-        <div>
-          <h3>Cerrar sesión en todos los dispositivos</h3>
-          <p>Salís de SafeGuard en este navegador y en los demás.</p>
-        </div>
-        <button type="button" className="panel-boton-borde" onClick={abrirCierre}>
-          Cerrar sesión
-        </button>
+    <section className="ajuste perfil-seguridad" aria-labelledby="perfil-seguridad-titulo">
+      <div className="ajuste-cabeza">
+        <h2 id="perfil-seguridad-titulo">Seguridad</h2>
+        <p>{texto ?? 'No pudimos ver cómo entrás a la cuenta.'}</p>
       </div>
-      {confirmarCierre && (
-        <dialog
-          ref={dialogo}
-          className="perfil-dialogo"
-          aria-modal="true"
-          aria-labelledby="perfil-cierre-titulo"
-          aria-describedby="perfil-cierre-texto"
-          onCancel={(evento) => {
-            evento.preventDefault()
-            cerrarDialogo()
-          }}
-        >
-          <h2 id="perfil-cierre-titulo">Cerrar sesión en todos lados</h2>
-          <p id="perfil-cierre-texto">
-            Vas a salir de SafeGuard en este dispositivo y en los demás. Después tenés que volver a entrar.
-          </p>
-          <div aria-live="polite">
-            {errorCerrar && <p className="panel-error">{errorCerrar}</p>}
-          </div>
-          <div className="perfil-modal-acciones">
-            <button type="button" className="panel-boton-borde" onClick={cerrarDialogo} disabled={cerrando}>
-              Cancelar
+      <div className="ajuste-cuerpo">
+        {metodos?.clave && (
+          <form className="perfil-clave" onSubmit={cambiarClave}>
+            <h3>Cambiar contraseña</h3>
+            <label className="panel-campo">
+              <span>Contraseña actual</span>
+              <input
+                type="password"
+                value={actual}
+                onChange={(evento) => setActual(evento.target.value)}
+                autoComplete="current-password"
+                required
+              />
+            </label>
+            <label className="panel-campo">
+              <span>Contraseña nueva</span>
+              <input
+                type="password"
+                value={nueva}
+                onChange={(evento) => setNueva(evento.target.value)}
+                autoComplete="new-password"
+                minLength={6}
+                required
+              />
+            </label>
+            <label className="panel-campo">
+              <span>Confirmación</span>
+              <input
+                type="password"
+                value={confirmar}
+                onChange={(evento) => setConfirmar(evento.target.value)}
+                autoComplete="new-password"
+                minLength={6}
+                required
+              />
+            </label>
+            <div aria-live="polite">
+              {error && <p className="panel-error">{error}</p>}
+              {aviso && <p className="panel-aviso">{aviso}</p>}
+            </div>
+            <button type="submit" className="panel-boton" disabled={guardando} aria-busy={guardando}>
+              {guardando ? 'Guardando…' : 'Cambiar contraseña'}
             </button>
-            <button type="button" className="panel-boton" onClick={cerrarEnTodos} disabled={cerrando} aria-busy={cerrando}>
-              {cerrando ? 'Cerrando…' : 'Cerrar sesión'}
-            </button>
+          </form>
+        )}
+        <div className="perfil-fila">
+          <div>
+            <h3>Cerrar sesión en todos los dispositivos</h3>
+            <p>Salís de SafeGuard en este navegador y en los demás.</p>
           </div>
-        </dialog>
-      )}
+          <button type="button" className="panel-boton-borde" onClick={abrirCierre}>
+            Cerrar sesión
+          </button>
+        </div>
+        {confirmarCierre && (
+          <dialog
+            ref={dialogo}
+            className="perfil-dialogo"
+            aria-modal="true"
+            aria-labelledby="perfil-cierre-titulo"
+            aria-describedby="perfil-cierre-texto"
+            onCancel={(evento) => {
+              evento.preventDefault()
+              cerrarDialogo()
+            }}
+          >
+            <h2 id="perfil-cierre-titulo">Cerrar sesión en todos lados</h2>
+            <p id="perfil-cierre-texto">
+              Vas a salir de SafeGuard en este dispositivo y en los demás. Después tenés que volver a entrar.
+            </p>
+            <div aria-live="polite">
+              {errorCerrar && <p className="panel-error">{errorCerrar}</p>}
+            </div>
+            <div className="perfil-modal-acciones">
+              <button type="button" className="panel-boton-borde" onClick={cerrarDialogo} disabled={cerrando}>
+                Cancelar
+              </button>
+              <button type="button" className="panel-boton" onClick={cerrarEnTodos} disabled={cerrando} aria-busy={cerrando}>
+                {cerrando ? 'Cerrando…' : 'Cerrar sesión'}
+              </button>
+            </div>
+          </dialog>
+        )}
+      </div>
     </section>
   )
 }
@@ -541,94 +555,101 @@ function PanelPerfil() {
   return (
     <div className="panel panel-personas perfil">
       <header className="panel-header">
-        <span className="panel-tag">Cuenta</span>
         <span className="perfil-avatar" aria-hidden="true">{iniciales(nombre, correo)}</span>
         <h1>Tu perfil</h1>
-        <p className="panel-lead">El nombre es el que ves al entrar al panel.</p>
       </header>
 
-      <form className="panel-form panel-pieza" onSubmit={guardar}>
-        <label className="panel-campo">
-          <span>Nombre</span>
-          <input
-            type="text"
-            value={nombre}
-            onChange={alEscribir}
-            autoComplete="name"
-            required
-          />
-        </label>
-        <label className="panel-campo">
-          <span>Correo</span>
-          <span className="perfil-correo">
-            <input
-              type="email"
-              value={usuario.email ?? ''}
-              readOnly
-              aria-readonly="true"
-              aria-describedby="perfil-correo-ayuda"
-            />
-            <svg className="perfil-candado" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </span>
-        </label>
-        <p id="perfil-correo-ayuda" className="perfil-nota">
-          El correo es el de la cuenta con la que entraste.
-        </p>
-        <div aria-live="polite">
-          {error && <p className="panel-error">{error}</p>}
-          {aviso && <p className="panel-aviso">{aviso}</p>}
+      <section className="ajuste perfil-cuenta" aria-labelledby="perfil-cuenta-titulo">
+        <div className="ajuste-cabeza">
+          <h2 id="perfil-cuenta-titulo">Cuenta</h2>
+          <p>El nombre es el que ves al entrar al panel.</p>
         </div>
-        <button type="submit" className="panel-boton" disabled={!cambio || guardando} aria-busy={guardando}>
-          {guardando ? 'Guardando…' : 'Guardar'}
-        </button>
-      </form>
+        <form className="ajuste-cuerpo" onSubmit={guardar}>
+          <label className="panel-campo">
+            <span>Nombre</span>
+            <input
+              type="text"
+              value={nombre}
+              onChange={alEscribir}
+              autoComplete="name"
+              required
+            />
+          </label>
+          <label className="panel-campo">
+            <span>Correo</span>
+            <span className="perfil-correo">
+              <input
+                type="email"
+                value={usuario.email ?? ''}
+                readOnly
+                aria-readonly="true"
+                aria-describedby="perfil-correo-ayuda"
+              />
+              <svg className="perfil-candado" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </span>
+          </label>
+          <p id="perfil-correo-ayuda" className="perfil-nota">
+            El correo es el de la cuenta con la que entraste.
+          </p>
+          <div aria-live="polite">
+            {error && <p className="panel-error">{error}</p>}
+            {aviso && <p className="panel-aviso">{aviso}</p>}
+          </div>
+          <button type="submit" className="panel-boton" disabled={!cambio || guardando} aria-busy={guardando}>
+            {guardando ? 'Guardando…' : 'Guardar'}
+          </button>
+        </form>
+      </section>
 
       <PerfilActividad usuarioId={usuario.id} />
       {pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
       <PerfilSeguridad usuario={usuario} />
 
-      <section className="panel-seccion perfil-datos" aria-labelledby="perfil-datos-titulo">
-        <h2 id="perfil-datos-titulo">Tus datos</h2>
-        <div className="perfil-fila">
-          <div>
-            <h3>Exportar mis datos</h3>
-            <p>Un archivo con tu cuenta, tus análisis y tus reportes.</p>
-          </div>
-          <button type="button" className="panel-boton-borde" onClick={exportar} disabled={exportando}>
-            {exportando ? 'Exportando…' : 'Exportar'}
-          </button>
+      <section className="ajuste perfil-datos" aria-labelledby="perfil-datos-titulo">
+        <div className="ajuste-cabeza">
+          <h2 id="perfil-datos-titulo">Tus datos</h2>
+          <p>Un archivo con tu cuenta, tus análisis y tus reportes.</p>
         </div>
-        <div aria-live="polite">
-          {errorExportar && <p className="panel-error">{errorExportar}</p>}
+        <div className="ajuste-cuerpo">
+          <button type="button" className="panel-boton-borde" onClick={exportar} disabled={exportando}>
+            {exportando ? 'Exportando…' : 'Exportar mis datos'}
+          </button>
+          <div aria-live="polite">
+            {errorExportar && <p className="panel-error">{errorExportar}</p>}
+          </div>
         </div>
       </section>
 
-      <section className="panel-seccion perfil-peligro" aria-labelledby="perfil-peligro-titulo">
-        <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
-        <p>Estas acciones son definitivas.</p>
-        <div className="perfil-fila">
-          <div>
-            <h3>Eliminar cuenta</h3>
-            {textoBorrar && <p>{textoBorrar}</p>}
-          </div>
-          <button
-            type="button"
-            className="perfil-borrar"
-            onClick={abrirBorrado}
-            disabled={cargandoMembresia || bloqueado}
-            aria-describedby={bloqueado ? 'perfil-unico-admin' : undefined}
-          >
-            Eliminar cuenta
-          </button>
+      <section className="ajuste perfil-peligro" aria-labelledby="perfil-peligro-titulo">
+        <div className="ajuste-cabeza">
+          <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
+          <p>Estas acciones son definitivas.</p>
         </div>
-        {bloqueado && (
-          <p id="perfil-unico-admin" className="panel-error perfil-bloqueo">
-            {AVISO_UNICO_ADMIN}
-          </p>
-        )}
+        <div className="ajuste-cuerpo">
+          <div className="perfil-fila">
+            <div>
+              <h3>Eliminar cuenta</h3>
+              {textoBorrar && <p>{textoBorrar}</p>}
+            </div>
+            <button
+              type="button"
+              className="perfil-borrar"
+              onClick={abrirBorrado}
+              disabled={cargandoMembresia || bloqueado}
+              aria-describedby={bloqueado ? 'perfil-unico-admin' : undefined}
+            >
+              Eliminar cuenta
+            </button>
+          </div>
+          {bloqueado && (
+            <p id="perfil-unico-admin" className="panel-error perfil-bloqueo">
+              {AVISO_UNICO_ADMIN}
+            </p>
+          )}
+        </div>
       </section>
 
       {modalAbierto && (

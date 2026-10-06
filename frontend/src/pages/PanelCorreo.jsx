@@ -43,7 +43,6 @@ function PanelCorreo() {
         <Link className="panel-volver" to="/panel?app=safelink">
           ← Volver a las opciones
         </Link>
-        <span className="panel-tag">SafeLink</span>
         <h1>Revisar un correo</h1>
         <p className="panel-lead">
           En Gmail: tres puntitos → Mostrar original. Pegá todo, incluyendo los encabezados.
