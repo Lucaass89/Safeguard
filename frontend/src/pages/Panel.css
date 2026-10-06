@@ -1793,3 +1793,196 @@
   }
 }
 
+.csv-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.csv-ayuda {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 14px;
+}
+
+.csv-zona {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 20px;
+  border: 1px dashed var(--sg-line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--sg-surface) 88%, var(--sg-bg));
+}
+
+.csv-zona p {
+  margin: 0;
+  color: var(--sg-text);
+}
+
+.csv-zona-activa {
+  border-color: var(--sg-accent);
+  background: color-mix(in srgb, var(--sg-accent) 12%, var(--sg-surface));
+}
+
+.csv-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.csv-resumen {
+  margin: 0;
+  color: var(--sg-text);
+  font-weight: 600;
+}
+
+.csv-vista {
+  display: grid;
+  gap: 14px;
+}
+
+.csv-tabla-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.csv-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.csv-tabla caption {
+  margin-bottom: 8px;
+  text-align: left;
+  color: var(--sg-muted);
+}
+
+.csv-tabla th,
+.csv-tabla td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--sg-line);
+  text-align: left;
+  color: var(--sg-text);
+  vertical-align: top;
+}
+
+.csv-tabla th {
+  font-weight: 600;
+}
+
+.csv-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--sg-text);
+  font-size: 14px;
+}
+
+.csv-check input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+
+.persona-filtro,
+.persona-accion {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--sg-line);
+  border-radius: 999px;
+  background: var(--sg-surface);
+  color: var(--sg-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.persona-filtro-activo {
+  border-color: color-mix(in srgb, var(--sg-blue) 55%, var(--sg-line));
+  background: color-mix(in srgb, var(--sg-blue) 16%, var(--sg-surface));
+  color: var(--sg-text);
+}
+
+.persona-filtro:focus-visible,
+.persona-accion:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
+}
+
+.persona-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.persona-lote,
+.persona-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.persona-lote {
+  margin-top: 14px;
+}
+
+.persona-accion:disabled,
+.persona-filtro:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.persona-accion-rechazar {
+  color: color-mix(in srgb, var(--sg-red) 75%, var(--sg-text));
+  border-color: color-mix(in srgb, var(--sg-red) 45%, var(--sg-line));
+}
+
+.persona-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid var(--sg-line);
+  border-radius: 999px;
+  background: var(--sg-surface);
+  color: var(--sg-text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.persona-badge-origen,
+.persona-badge-inactivo {
+  color: var(--sg-muted);
+}
+
+.persona-badge-activo {
+  border-color: color-mix(in srgb, var(--sg-green) 45%, var(--sg-line));
+  background: color-mix(in srgb, var(--sg-green) 18%, var(--sg-surface));
+}
+
+.persona-badge-aprobacion {
+  border-color: color-mix(in srgb, var(--sg-blue) 45%, var(--sg-line));
+  background: color-mix(in srgb, var(--sg-blue) 16%, var(--sg-surface));
+}
+
+.persona-badge-verificacion {
+  border-color: color-mix(in srgb, var(--sg-teal) 45%, var(--sg-line));
+  background: color-mix(in srgb, var(--sg-teal) 16%, var(--sg-surface));
+}
+
+.persona-badge-rechazado {
+  border-color: color-mix(in srgb, var(--sg-red) 45%, var(--sg-line));
+  background: color-mix(in srgb, var(--sg-red) 14%, var(--sg-surface));
+  color: color-mix(in srgb, var(--sg-red) 70%, var(--sg-text));
+}
+
