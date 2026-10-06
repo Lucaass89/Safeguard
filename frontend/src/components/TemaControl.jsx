@@ -4,7 +4,7 @@ import { aplicarTema } from '../lib/tema.js'
 function IconoSol() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="3.4" fill="currentColor" />
       <path
         d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"
         fill="none"
@@ -21,10 +21,7 @@ function IconoLuna() {
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path
         d="M16.5 14.5A6.5 6.5 0 0 1 9.2 6.2 6.5 6.5 0 1 0 16.5 14.5Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
+        fill="currentColor"
       />
     </svg>
   )
@@ -34,6 +31,7 @@ function TemaControl({ icono = false }) {
   const [tema, setTema] = useState(() =>
     document.documentElement.dataset.tema === 'oscuro' ? 'oscuro' : 'claro',
   )
+  const [animado, setAnimado] = useState(false)
 
   useEffect(() => {
     function alCambiar(evento) {
@@ -53,6 +51,10 @@ function TemaControl({ icono = false }) {
     }
   }, [])
 
+  useEffect(() => {
+    setAnimado(true)
+  }, [])
+
   function elegir(siguiente) {
     setTema(aplicarTema(siguiente))
   }
@@ -62,11 +64,16 @@ function TemaControl({ icono = false }) {
     return (
       <button
         type="button"
-        className="tema-icono"
+        className={animado ? 'tema-icono tema-animado' : 'tema-icono'}
         aria-label={aClaro ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
         onClick={() => elegir(aClaro ? 'claro' : 'oscuro')}
       >
-        {aClaro ? <IconoSol /> : <IconoLuna />}
+        <span className={tema === 'claro' ? 'tema-glifo tema-glifo-activo' : 'tema-glifo'} aria-hidden="true">
+          <IconoLuna />
+        </span>
+        <span className={tema === 'oscuro' ? 'tema-glifo tema-glifo-activo' : 'tema-glifo'} aria-hidden="true">
+          <IconoSol />
+        </span>
       </button>
     )
   }

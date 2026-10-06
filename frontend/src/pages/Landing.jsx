@@ -1,10 +1,7 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
-import { useSesion } from '../lib/useSesion.js'
 
 function Landing() {
-  const { sesion } = useSesion()
-
   return (
     <Marco>
       <main id="inicio">
@@ -294,40 +291,6 @@ function Landing() {
                 <strong>USD 1</strong>
                 <span>por usuario al mes, desde</span>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="contact section-pad" id="contacto">
-          <div className="container contact-box">
-            <div>
-              <div className="eyebrow">Tu próxima decisión segura</div>
-              <h2>
-                Elegí por dónde
-                <br />
-                <em>empezar.</em>
-              </h2>
-              <p>
-                PhishGuard es para PyMEs e instituciones, con suscripción
-                mensual. La cuenta de SafeLink solo guarda el historial.
-              </p>
-            </div>
-            <div className="contact-actions">
-              <Link className="button button-primary" to="/empresas">
-                Ver PhishGuard para empresas <span>↗</span>
-              </Link>
-              <Link className="button button-ghost" to="/personas">
-                Ver SafeLink para personas <span>→</span>
-              </Link>
-              {sesion ? (
-                <Link className="contact-login" to="/panel">
-                  Ir al panel
-                </Link>
-              ) : (
-                <Link className="contact-login" to="/ingresar">
-                  Ya tengo cuenta. Ingresar
-                </Link>
-              )}
             </div>
           </div>
         </section>

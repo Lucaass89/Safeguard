@@ -902,25 +902,156 @@
   border-style: dashed;
 }
 
+.perfil .panel-header {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'tag'
+    'titulo'
+    'lead';
+}
+
+.perfil .panel-tag {
+  justify-self: start;
+}
+
 .perfil .panel-boton {
   justify-self: start;
   padding-inline: 22px;
 }
 
-.perfil-nota,
-.perfil-apariencia p {
+.perfil-nota {
   margin: 0;
   color: #4a6278;
   font-size: 15px;
   line-height: 1.45;
 }
 
-.perfil .panel-campo input[readonly] {
-  color: #4a6278;
+.perfil-correo {
+  position: relative;
+  display: block;
 }
 
-.perfil-apariencia .tema-control {
-  margin: 16px 0 0;
+.perfil-correo input {
+  padding-right: 40px;
+}
+
+.perfil .panel-campo input[readonly] {
+  background: color-mix(in srgb, var(--sg-muted) 12%, var(--sg-bg));
+  color: #4a6278;
+  cursor: not-allowed;
+}
+
+.perfil .panel-campo input[readonly]:focus {
+  border-color: var(--sg-line);
+}
+
+.perfil-candado {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  translate: 0 -50%;
+  color: #4a6278;
+  pointer-events: none;
+}
+
+.panel-personas .perfil-peligro {
+  display: grid;
+  gap: 16px;
+  border-color: color-mix(in srgb, var(--sg-red) 45%, var(--sg-line));
+  border-top: 4px solid var(--sg-red);
+  background: var(--sg-surface);
+}
+
+.sg-landing .panel-lienzo .perfil-peligro h2,
+.perfil-peligro h3,
+.perfil-modal h2 {
+  color: var(--sg-red);
+}
+
+.perfil-peligro h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.perfil-peligro p,
+.perfil-modal p {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.perfil-peligro-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.perfil-peligro-fila > div {
+  flex: 1 1 220px;
+}
+
+.perfil-borrar {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--sg-radius-sm);
+  background: color-mix(in srgb, var(--sg-red) 78%, var(--sg-bg));
+  color: var(--sg-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.perfil-borrar:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sg-red) 88%, var(--sg-text));
+}
+
+.perfil-borrar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.perfil-borrar:focus-visible,
+.perfil-modal .panel-boton-borde:focus-visible,
+.perfil-modal input:focus-visible {
+  outline: 2px solid var(--sg-text);
+  outline-offset: 2px;
+}
+
+.perfil-modal {
+  width: min(440px, calc(100% - 32px));
+  margin: auto;
+  padding: 22px;
+  border: 1px solid color-mix(in srgb, var(--sg-red) 45%, var(--sg-line));
+  border-radius: 18px;
+  background: var(--sg-surface);
+  color: var(--sg-text);
+}
+
+.perfil-modal::backdrop {
+  background: color-mix(in srgb, var(--sg-bg) 72%, transparent);
+}
+
+.perfil-modal form {
+  display: grid;
+  gap: 14px;
+}
+
+.perfil-modal h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.perfil-modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .sg-landing .panel-lienzo .mesa-hoja h2 {

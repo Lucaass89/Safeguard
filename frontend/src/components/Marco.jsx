@@ -152,7 +152,7 @@ function Marco({ children, interior = false }) {
                     Perfil
                   </Link>
                   <button
-                    className="nav-cta"
+                    className="nav-salir"
                     type="button"
                     onClick={() => {
                       sessionStorage.removeItem('sg-recibido')

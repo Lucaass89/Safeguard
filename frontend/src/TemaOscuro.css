@@ -139,6 +139,18 @@ html[data-tema='oscuro'] .sg-landing .nav-cta {
     background: #1d4ed8;
     border-color: #1d4ed8;
   }
+
+  html[data-tema='oscuro'] .sg-landing .main-nav .nav-salir {
+    border-color: #6d8496;
+    background: transparent;
+    color: #e6eef4;
+  }
+
+  html[data-tema='oscuro'] .sg-landing .main-nav .nav-salir:hover {
+    background: var(--nav-activo);
+    border-color: #e6eef4;
+    color: var(--ink);
+  }
 }
 
 html[data-tema='oscuro'] .sg-landing .brand > span:last-child > span {
@@ -193,7 +205,6 @@ html[data-tema='oscuro'] .sg-landing .button-ghost:hover {
 html[data-tema='oscuro'] .sg-landing .products,
 html[data-tema='oscuro'] .sg-landing .intro,
 html[data-tema='oscuro'] .sg-landing .process,
-html[data-tema='oscuro'] .sg-landing .contact,
 html[data-tema='oscuro'] .sg-landing .site-footer {
   background: #1b2836;
 }
@@ -345,6 +356,12 @@ html[data-tema='oscuro'] .sg-landing .panel-lienzo h2 {
   color: #e6eef4;
 }
 
+html[data-tema='oscuro'] .sg-landing .panel-lienzo .perfil-peligro h2,
+html[data-tema='oscuro'] .perfil-peligro h3,
+html[data-tema='oscuro'] .sg-landing .perfil-modal h2 {
+  color: var(--sg-red);
+}
+
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-tablero h2 {
   color: #fff;
 }
@@ -367,9 +384,14 @@ html[data-tema='oscuro'] .panel-empresas .panel-tag {
 }
 
 html[data-tema='oscuro'] .perfil-nota,
-html[data-tema='oscuro'] .perfil-apariencia p,
-html[data-tema='oscuro'] .perfil .panel-campo input[readonly] {
+html[data-tema='oscuro'] .perfil .panel-campo input[readonly],
+html[data-tema='oscuro'] .perfil-candado {
   color: #b4c4d0;
+}
+
+html[data-tema='oscuro'] .perfil .panel-campo input[readonly] {
+  background: #172230;
+  border-color: #3d5163;
 }
 
 html[data-tema='oscuro'] .panel-personas .panel-pieza,
@@ -379,6 +401,12 @@ html[data-tema='oscuro'] .panel-empresas .panel-seccion,
 html[data-tema='oscuro'] .panel-empresas .tablero-kpis li {
   background: #243444;
   border-color: #3d5163;
+}
+
+html[data-tema='oscuro'] .panel-personas .perfil-peligro {
+  background: var(--sg-surface);
+  border-color: color-mix(in srgb, var(--sg-red) 55%, var(--sg-line));
+  border-top-color: var(--sg-red);
 }
 
 html[data-tema='oscuro'] .panel-personas .panel-pieza {
