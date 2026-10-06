@@ -39,7 +39,7 @@ function Layout() {
           </Link>
 
           <div className="header-acciones">
-            <TemaControl />
+            {!sesion && <TemaControl />}
             {sesion ? (
               <div className="sesion">
                 <Link className="login-link" to="/panel">

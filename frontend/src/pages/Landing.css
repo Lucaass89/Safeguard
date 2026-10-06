@@ -107,6 +107,12 @@
   font-weight: 600;
 }
 
+@media (min-width: 851px) {
+  .sg-landing .nav-con-sesion .main-nav {
+    margin-left: auto;
+  }
+}
+
 .sg-landing .main-nav > a:not(.nav-cta),
 .sg-landing .nav-app > a:not(.nav-cta) {
   color: #4a6278;
