@@ -106,8 +106,15 @@ html[data-tema='oscuro'] .sg-landing .nav-app > a.nav-activa {
 }
 
 html[data-tema='oscuro'] .sg-landing .nav-cta {
-  color: #102a43;
-  background: #fff;
+  color: var(--white);
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+html[data-tema='oscuro'] .sg-landing .nav-fin .main-nav {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 @media (min-width: 901px) {
@@ -130,14 +137,14 @@ html[data-tema='oscuro'] .sg-landing .nav-cta {
   }
 
   html[data-tema='oscuro'] .sg-landing .nav-cta {
-    border-color: #2563eb;
-    background: #2563eb;
-    color: #fff;
+    border-color: var(--blue);
+    background: var(--blue);
+    color: var(--white);
   }
 
   html[data-tema='oscuro'] .sg-landing .nav-cta:hover {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
+    background: color-mix(in srgb, var(--blue) 82%, var(--ink));
+    border-color: color-mix(in srgb, var(--blue) 82%, var(--ink));
   }
 
   html[data-tema='oscuro'] .sg-landing .main-nav .nav-salir {
