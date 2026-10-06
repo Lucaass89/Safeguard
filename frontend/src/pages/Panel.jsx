@@ -62,22 +62,16 @@ function Panel() {
   const pedida = appPedida()
   const [tablero, setTablero] = useState(null)
   const acceso = yaEntro || pedida || !cargandoMembresia ? pertenece : null
-  const [fase, setFase] = useState(() => {
-    if (pedida) return pedida
-    return yaEntro ? 'elegir' : 'recibiendo'
-  })
-  const [saliendo, setSaliendo] = useState(false)
+  const [fase, setFase] = useState(() => pedida ?? 'elegir')
+  const [saludoVisible, setSaludoVisible] = useState(!yaEntro)
   const nombre =
     sesion.user.user_metadata?.full_name ??
     sesion.user.user_metadata?.name ??
     sesion.user.email
-  const reducir =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  const cerrarRecepcion = useCallback(() => {
+  const cerrarSaludo = useCallback(() => {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
-    setFase('elegir')
-    setSaliendo(true)
+    setSaludoVisible(false)
   }, [sesion.user.id])
 
   useEffect(() => {
@@ -96,58 +90,27 @@ function Panel() {
     }
   }, [sesion.user.id])
 
-  useEffect(() => {
-    if (fase !== 'recibiendo' || reducir || saliendo) return undefined
-    const timer = window.setTimeout(cerrarRecepcion, 3600)
-    return () => window.clearTimeout(timer)
-  }, [fase, reducir, saliendo, cerrarRecepcion])
-
-  useEffect(() => {
-    if (!saliendo) return undefined
-    const timer = window.setTimeout(() => {
-      setSaliendo(false)
-      setFase('elegir')
-    }, 360)
-    return () => window.clearTimeout(timer)
-  }, [saliendo])
-
   const correos = tablero?.eventos.length ?? 0
   const clics = tablero?.eventos.filter((evento) => evento.hizo_clic).length ?? 0
   const datos = tablero?.eventos.filter((evento) => evento.ingreso_datos).length ?? 0
   const campanas = tablero?.campanas.length ?? 0
   const saludo = primerNombre(nombre, sesion.user.email)
   const porcentaje = correos > 0 ? Math.round((clics / correos) * 100) : 0
+  const lineaSaludo = saludoVisible ? (
+    <p className="mesa-hola">{saludo ? `Hola, ${saludo}` : 'Hola'}</p>
+  ) : null
 
   return (
     <div className="panel mesa">
-      {(fase === 'recibiendo' || saliendo) && (
-        <div
-          className={saliendo ? 'recibida saliendo' : 'recibida'}
-          onAnimationEnd={(evento) => {
-            if (evento.animationName === 'recibida-sale') {
-              setSaliendo(false)
-              setFase('elegir')
-            }
-          }}
-        >
-          <div>
-            <h1>{saludo ? `Hola, ${saludo}` : 'Hola'}</h1>
-            <p>Bienvenido al panel de SafeGuard</p>
-            <button type="button" onClick={cerrarRecepcion}>
-              Continuar
-            </button>
-          </div>
-        </div>
-      )}
-
       {fase === 'elegir' && (
         <section className="elegir">
           <header className="elegir-cabeza">
+            {lineaSaludo}
             <h1>¿Qué aplicación querés usar?</h1>
             <p>SafeLink revisa lo que te llega. PhishGuard entrena a tu equipo.</p>
           </header>
           <div className="elegir-corte">
-            <button type="button" className="elegir-lado elegir-safelink" onClick={() => setFase('safelink')}>
+            <button type="button" className="elegir-lado elegir-safelink" onClick={() => { cerrarSaludo(); setFase('safelink') }}>
               <span className="elegir-tope">
                 <strong>SafeLink</strong>
                 <span className="elegir-ir" aria-hidden="true">→</span>
@@ -169,12 +132,16 @@ function Panel() {
               role={acceso ? 'button' : undefined}
               tabIndex={acceso ? 0 : undefined}
               onClick={() => {
-                if (acceso) setFase('phishguard')
+                if (acceso) {
+                  cerrarSaludo()
+                  setFase('phishguard')
+                }
               }}
               onKeyDown={(evento) => {
                 if (!acceso) return
                 if (evento.key === 'Enter' || evento.key === ' ') {
                   evento.preventDefault()
+                  cerrarSaludo()
                   setFase('phishguard')
                 }
               }}
@@ -205,11 +172,12 @@ function Panel() {
         </section>
       )}
 
-      {fase !== 'elegir' && fase !== 'recibiendo' && (
+      {fase !== 'elegir' && (
         <button
           type="button"
           className="elegir-volver"
           onClick={() => {
+            cerrarSaludo()
             setFase('elegir')
             const url = new URL(window.location.href)
             url.searchParams.delete('app')
@@ -223,12 +191,13 @@ function Panel() {
       {fase === 'safelink' && (
         <>
           <header className="mesa-bienvenida">
+            {lineaSaludo}
             <h1 className="mesa-saludo">SafeLink</h1>
             <p>Revisá lo que te llega antes de abrirlo.</p>
           </header>
           <div className="mesa-cartas">
             {grupos[0].items.map((item) => (
-              <Link key={item.to} to={item.to}>
+              <Link key={item.to} to={item.to} onClick={cerrarSaludo}>
                 <strong>{item.titulo}</strong>
                 <span className="mesa-carta-nota">{item.nota}</span>
                 <span className="mesa-carta-ir" aria-hidden="true">→</span>
@@ -241,6 +210,7 @@ function Panel() {
       {fase === 'phishguard' && acceso && (
         <>
           <header className="mesa-bienvenida">
+            {lineaSaludo}
             <h1 className="mesa-saludo">PhishGuard</h1>
             <p>{grupos[1].lead}</p>
           </header>
@@ -287,7 +257,7 @@ function Panel() {
           )}
           <div className="mesa-cartas mesa-cartas-empresa">
             {grupos[1].items.map((item) => (
-              <Link key={item.to} to={item.to}>
+              <Link key={item.to} to={item.to} onClick={cerrarSaludo}>
                 <strong>{item.titulo}</strong>
                 <span className="mesa-carta-nota">{item.nota}</span>
                 <span className="mesa-carta-ir" aria-hidden="true">→</span>

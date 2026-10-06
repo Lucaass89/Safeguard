@@ -30,11 +30,11 @@
 }
 
 .pg-banda h1 {
-  max-width: 14ch;
+  max-width: 16ch;
   margin: 0;
-  font-size: clamp(36px, 4vw, 52px);
+  font-size: clamp(32px, 3.4vw, 44px);
   font-weight: 700;
-  line-height: 0.98;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: #fff;
@@ -44,7 +44,8 @@
   max-width: 46ch;
   margin: 18px 0 0;
   color: #c5d5dc;
-  font-size: 17px;
+  font-size: 18px;
+  line-height: 1.55;
 }
 
 .pg-acciones {
@@ -55,6 +56,13 @@
   margin-top: 28px;
 }
 
+.pg-banda .pg-cta,
+.pg-banda .pg-cta-secundario,
+.sl-lado button,
+.sl-secundario {
+  font-family: Inter, var(--sg-sans);
+}
+
 .pg-banda .pg-cta {
   display: inline-flex;
   align-items: center;
@@ -62,14 +70,14 @@
   padding: 0 18px;
   border-radius: 6px;
   background: #fff;
-  color: #146fd2;
+  color: var(--blue);
   font-weight: 700;
   white-space: nowrap;
 }
 
 .pg-banda .pg-cta:hover {
   background: #e7f0ff;
-  color: #146fd2;
+  color: var(--blue);
 }
 
 .pg-banda .pg-cta-secundario {
@@ -133,9 +141,15 @@
 
 .pg-bloque h2,
 .sl-cuerpo h2 {
-  margin: 0 0 28px;
+  margin: 0 0 20px;
   font-size: 28px;
   font-weight: 700;
+  line-height: 1.25;
+}
+
+.pg-bloque .text-link {
+  display: inline-block;
+  margin-top: 16px;
 }
 
 .pg-riel {
@@ -231,12 +245,13 @@
 
 .pg-precios strong {
   display: block;
-  font: 700 32px 'Space Grotesk', var(--sg-sans);
+  font: 700 40px/1 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.04em;
 }
 
 .pg-precios small {
   font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0;
 }
 
@@ -284,7 +299,8 @@
 
 .sl-lado h1 {
   margin: 0;
-  font-size: 48px;
+  font-size: clamp(32px, 4vw, 40px);
+  line-height: 1.15;
   font-weight: 700;
   line-height: 0.95;
 }
@@ -423,7 +439,8 @@
 
 .sg-landing .nota h1 {
   margin-bottom: 18px;
-  font-size: clamp(40px, 5vw, 56px);
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.2;
 }
 
 .sg-landing .nota h2 {

@@ -1,6 +1,5 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
-import { pasosCampana as pasos } from '../lib/pasosCampana.js'
 import './Modulo.css'
 
 const incluye = [
@@ -45,14 +44,6 @@ function Empresas() {
               <h2>Tablero del equipo</h2>
               <ul>
                 <li>
-                  <strong>128</strong>
-                  <span>Correos enviados</span>
-                </li>
-                <li>
-                  <strong>74</strong>
-                  <span>Aperturas</span>
-                </li>
-                <li>
                   <strong>19</strong>
                   <span>Clics</span>
                 </li>
@@ -67,16 +58,11 @@ function Empresas() {
         </section>
 
         <section className="pg-bloque" id="pasos">
-          <h2>De la campaña al aprendizaje</h2>
-          <ol className="pg-riel">
-            {pasos.map((paso, i) => (
-              <li key={paso.titulo}>
-                <span>{i + 1}</span>
-                <h3>{paso.titulo}</h3>
-                <p>{paso.texto}</p>
-              </li>
-            ))}
-          </ol>
+          <h2>Cómo funciona una campaña</h2>
+          <p>Los cuatro pasos están en la página de inicio.</p>
+          <Link className="text-link" to="/#proceso">
+            Ver los cuatro pasos <span>→</span>
+          </Link>
         </section>
 
         <section className="pg-bloque pg-incluye">

@@ -108,13 +108,7 @@ function Landing() {
                   Probar PhishGuard <span>→</span>
                 </Link>
               </div>
-              <Captura src="/capturas/phishguard.png" alt="Campaña de PhishGuard en el panel">
-                <div className="ejemplo-correo" aria-hidden="true">
-                  <p className="ejemplo-asunto">Actualización urgente de cuenta</p>
-                  <p className="ejemplo-enlace">Verificar acceso →</p>
-                  <p className="ejemplo-estado">Simulación segura</p>
-                </div>
-              </Captura>
+              <Captura src="/capturas/phishguard.png" alt="Campaña de PhishGuard en el panel" />
             </div>
           </article>
 
@@ -136,13 +130,7 @@ function Landing() {
                   Probar SafeLink <span>→</span>
                 </Link>
               </div>
-              <Captura src="/capturas/safelink.png" alt="Resultado de SafeLink con el semáforo">
-                <ul className="semaforo-muestra" aria-hidden="true">
-                  <li className="muestra-verde">Verde: sin señales fuertes</li>
-                  <li className="muestra-amarillo">Amarillo: revisá antes de seguir</li>
-                  <li className="muestra-rojo">Rojo: no lo abras</li>
-                </ul>
-              </Captura>
+              <Captura src="/capturas/safelink.png" alt="Resultado de SafeLink con el semáforo" />
             </article>
           </div>
         </section>

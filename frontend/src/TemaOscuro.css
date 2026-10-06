@@ -72,6 +72,8 @@ html[data-tema='oscuro'] .sg-landing {
   --muted: #b4c4d0;
   --line: #3d5163;
   --nav-activo: color-mix(in srgb, var(--ink) 16%, #243444);
+  --tinta: #314556;
+  --tinta-fuerte: #071018;
   background: #1b2836;
   color: #e6eef4;
 }
@@ -163,8 +165,7 @@ html[data-tema='oscuro'] .nota a {
 }
 
 html[data-tema='oscuro'] .sg-landing .footer-wrap p,
-html[data-tema='oscuro'] .sg-landing .footer-links,
-html[data-tema='oscuro'] .recibida > div > p {
+html[data-tema='oscuro'] .sg-landing .footer-links {
   color: #b4c4d0;
 }
 
@@ -181,12 +182,17 @@ html[data-tema='oscuro'] .sg-landing .text-link {
 }
 
 html[data-tema='oscuro'] .sg-landing .producto-phish {
-  background: #121d28;
+  background: var(--tinta-fuerte);
   border-block: 1px solid #3d5163;
 }
 
 html[data-tema='oscuro'] .sg-landing .producto-phish .text-link {
-  color: #b9d4ff;
+  color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .pg-banda {
+  background: var(--tinta-fuerte);
+  border: 1px solid #3d5163;
 }
 
 html[data-tema='oscuro'] .mesa-hoja,
@@ -225,11 +231,6 @@ html[data-tema='oscuro'] .sl-secundario {
   border-color: #8eb4ff;
 }
 
-html[data-tema='oscuro'] .recibida {
-  background: #1b2836;
-}
-
-html[data-tema='oscuro'] .sg-landing .recibida h1,
 html[data-tema='oscuro'] .elegir h1,
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-saludo,
 html[data-tema='oscuro'] .sg-landing .acceso-caja h1 {

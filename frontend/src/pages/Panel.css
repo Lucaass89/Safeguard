@@ -100,7 +100,10 @@
   }
 
   .panel-form-empleado .panel-boton {
+    grid-column: 4;
     grid-row: 2;
+    width: auto;
+    justify-self: end;
   }
 }
 
@@ -185,7 +188,18 @@
 }
 
 .panel-boton:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: color-mix(in srgb, var(--sg-blue) 82%, #102a43);
+}
+
+.panel-form > .panel-boton {
+  width: 100%;
+}
+
+@media (min-width: 701px) {
+  .panel-form > .panel-boton {
+    width: auto;
+    justify-self: end;
+  }
 }
 
 .panel-boton:disabled {
@@ -315,18 +329,21 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 10px;
+  gap: 0;
+  border-bottom: 1px solid var(--sg-line);
 }
 
 .historial-item,
 .reporte-item {
   display: flex;
   gap: 12px;
-  align-items: flex-start;
-  padding: 12px 14px;
-  border-radius: var(--sg-radius-sm);
-  background: var(--sg-surface);
-  border: 1px solid var(--sg-line);
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 0;
+  border: 0;
+  border-top: 1px solid var(--sg-line);
+  border-radius: 0;
+  background: none;
 }
 
 .historial-punto {
@@ -436,7 +453,7 @@
   gap: 10px 16px;
   align-items: center;
   width: 100%;
-  min-height: 64px;
+  min-height: 52px;
   padding: 14px 4px;
   border: 0;
   background: none;
@@ -693,9 +710,15 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .mesa-saludo {
   margin: 0;
-  font: 700 48px/0.98 'Space Grotesk', var(--sg-sans);
+  font: 700 30px/1.25 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.03em;
   color: var(--sg-text);
+}
+
+.mesa-hola {
+  margin: 0 0 6px;
+  color: var(--sg-muted);
+  font-size: 15px;
 }
 
 .mesa-bienvenida p {
@@ -714,7 +737,8 @@ table.persona-tabla td:first-child,
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 4px 24px;
   align-items: center;
-  padding: 20px 4px;
+  min-height: 52px;
+  padding: 12px 4px;
   border-top: 1px solid var(--sg-line);
   color: var(--sg-text);
   text-decoration: none;
@@ -898,7 +922,8 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .panel-personas .panel-header h1,
 .sg-landing .panel-lienzo .panel-empresas .panel-header h1 {
-  font-size: 40px;
+  font-size: 30px;
+  line-height: 1.25;
   letter-spacing: -0.03em;
 }
 
@@ -1439,49 +1464,43 @@ table.persona-tabla td:first-child,
   }
 }
 
-.recibida {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
+.panel-archivo-zona {
+  position: relative;
   display: grid;
   place-items: center;
-  padding: 32px;
-  background: #f3efe6;
+  min-height: 88px;
+  padding: 20px;
+  border: 1px dashed var(--sg-line);
+  border-radius: 8px;
+  color: var(--sg-muted);
   text-align: center;
-}
-
-.recibida.saliendo {
-  animation: recibida-sale 0.32s cubic-bezier(0, 0, 0.2, 1) forwards;
-  pointer-events: none;
-}
-
-.sg-landing .recibida h1 {
-  margin: 0;
-  color: #102a43;
-  font: 700 clamp(52px, 7vw, 88px) / 1.02 'Space Grotesk', var(--sg-sans);
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-  animation: recibida-entra 0.9s ease 0.12s both;
-}
-
-.recibida > div > p {
-  margin: 18px 0 0;
-  color: #4a6278;
-  font-size: clamp(18px, 2vw, 24px);
-  animation: recibida-entra 0.9s ease 0.28s both;
-}
-
-.recibida button {
-  margin-top: 28px;
-  padding: 12px 18px;
-  border: 1px solid #bfd4d6;
-  border-radius: 6px;
-  background: #fff;
-  color: #102a43;
-  font: inherit;
-  font-weight: 700;
   cursor: pointer;
-  animation: recibida-entra 0.8s ease 0.45s both;
+}
+
+.panel-archivo-zona:hover {
+  border-color: var(--sg-accent);
+  color: var(--sg-text);
+}
+
+.panel-archivo-zona:focus-within {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
+}
+
+.panel-archivo-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.panel-archivo-nombre {
+  color: var(--sg-text);
+  font-weight: 600;
 }
 
 .elegir-cabeza {
@@ -1491,7 +1510,7 @@ table.persona-tabla td:first-child,
 .elegir h1 {
   margin: 0;
   color: var(--sg-text);
-  font: 700 40px/1.1 'Space Grotesk', var(--sg-sans);
+  font: 700 30px/1.25 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
@@ -1505,7 +1524,7 @@ table.persona-tabla td:first-child,
 }
 
 .sg-landing .panel-lienzo .elegir h1 {
-  font-size: 40px;
+  font-size: 30px;
   letter-spacing: -0.03em;
 }
 
@@ -1549,7 +1568,7 @@ table.persona-tabla td:first-child,
 }
 
 .elegir-lado strong {
-  font: 700 40px/1 'Space Grotesk', var(--sg-sans);
+  font: 700 32px/1.15 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.03em;
 }
 
@@ -1639,38 +1658,6 @@ table.persona-tabla td:first-child,
 .elegir-volver:hover {
   border-color: var(--sg-accent);
   color: var(--sg-accent);
-}
-
-@keyframes recibida-entra {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes recibida-sale {
-  from {
-    opacity: 1;
-    transform: none;
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(-40px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .recibida h1,
-  .recibida p,
-  .recibida button {
-    animation: none;
-  }
 }
 
 .csv-panel {

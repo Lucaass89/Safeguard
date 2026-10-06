@@ -12,10 +12,12 @@ function PanelPdf() {
   const [resultado, setResultado] = useState(null)
   const [analizando, setAnalizando] = useState(false)
   const [error, setError] = useState(null)
+  const [nombreArchivo, setNombreArchivo] = useState('')
 
   async function manejarArchivo(evento) {
     const archivo = evento.target.files?.[0]
     if (!archivo) return
+    setNombreArchivo(archivo.name)
     setError(null)
     setResultado(null)
     setAnalizando(true)
@@ -48,7 +50,20 @@ function PanelPdf() {
 
       <label className="panel-campo panel-pieza">
         <span>Archivo</span>
-        <input type="file" accept="application/pdf" onChange={manejarArchivo} />
+        <span className="panel-archivo-zona">
+          {nombreArchivo ? (
+            <span className="panel-archivo-nombre">{nombreArchivo}</span>
+          ) : (
+            'Elegí un PDF'
+          )}
+          <input
+            className="panel-archivo-input"
+            type="file"
+            accept="application/pdf"
+            onChange={manejarArchivo}
+            disabled={analizando}
+          />
+        </span>
       </label>
 
       {analizando && <p className="panel-estado">Leyendo el PDF…</p>}
