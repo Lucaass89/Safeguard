@@ -1,9 +1,13 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router'
+import { Navigate, useNavigate, useSearchParams } from 'react-router'
 import Marco from '../components/Marco.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Ingresar.css'
+
+const avisosConocidos = {
+  sesion: 'Cerramos tu sesión en todos los dispositivos. Volvé a entrar.',
+}
 
 const mensajes = {
   'Invalid login credentials': 'El correo o la contraseña no coinciden.',
@@ -61,7 +65,8 @@ function Ingresar() {
   const [correo, setCorreo] = useState('')
   const [clave, setClave] = useState('')
   const [error, setError] = useState(errorDeRedirect)
-  const [aviso, setAviso] = useState(null)
+  const [params] = useSearchParams()
+  const [aviso, setAviso] = useState(() => avisosConocidos[params.get('aviso')] ?? null)
   const [enviando, setEnviando] = useState(false)
   const { sesion, cargando } = useSesion()
   const navegar = useNavigate()

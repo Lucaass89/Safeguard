@@ -6,6 +6,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const AVISO_UNICO_ADMIN =
+  'Sos el único administrador de tu empresa. Asigná a otra persona como administrador antes de eliminar tu cuenta.'
+
+function esAdministrador(rol: string | null) {
+  return typeof rol === 'string' && rol.toLowerCase().startsWith('admin')
+}
+
 function json(cuerpo: unknown, status = 200) {
   return new Response(JSON.stringify(cuerpo), {
     status,
@@ -43,6 +50,32 @@ Deno.serve(async (req) => {
   }
 
   const admin = createClient(url, servicio)
+  const { data: membresia, error: errorMembresia } = await admin
+    .from('usuarios_admin')
+    .select('rol, organizacion_id')
+    .eq('auth_user_id', data.user.id)
+    .maybeSingle()
+
+  if (errorMembresia) {
+    return json({ error: 'No se pudo eliminar la cuenta' }, 500)
+  }
+
+  if (membresia && esAdministrador(membresia.rol)) {
+    const { count, error: errorConteo } = await admin
+      .from('usuarios_admin')
+      .select('id', { count: 'exact', head: true })
+      .eq('organizacion_id', membresia.organizacion_id)
+      .ilike('rol', 'admin%')
+
+    if (errorConteo) {
+      return json({ error: 'No se pudo eliminar la cuenta' }, 500)
+    }
+
+    if (count === 1) {
+      return json({ error: AVISO_UNICO_ADMIN, codigo: 'unico_admin' }, 409)
+    }
+  }
+
   const { error: fallo } = await admin.auth.admin.deleteUser(data.user.id)
   if (fallo) {
     return json({ error: 'No se pudo eliminar la cuenta' }, 500)

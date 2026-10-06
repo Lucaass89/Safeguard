@@ -903,11 +903,25 @@
 }
 
 .perfil .panel-header {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
-    'tag'
-    'titulo'
-    'lead';
+    'tag tag'
+    'avatar titulo'
+    'lead lead';
+  column-gap: 16px;
+}
+
+.perfil-avatar {
+  grid-area: avatar;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sg-line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--sg-accent) 18%, var(--sg-surface));
+  color: var(--sg-text);
+  font: 700 18px/1 'Space Grotesk', var(--sg-sans);
 }
 
 .perfil .panel-tag {
@@ -926,9 +940,11 @@
   line-height: 1.45;
 }
 
-.perfil-correo {
+.panel-personas .panel-campo > .perfil-correo {
   position: relative;
   display: block;
+  font-size: inherit;
+  font-weight: 400;
 }
 
 .perfil-correo input {
@@ -937,7 +953,8 @@
 
 .perfil .panel-campo input[readonly] {
   background: color-mix(in srgb, var(--sg-muted) 12%, var(--sg-bg));
-  color: #4a6278;
+  color: var(--sg-muted);
+  font-weight: 400;
   cursor: not-allowed;
 }
 
@@ -956,9 +973,148 @@
   pointer-events: none;
 }
 
-.panel-personas .perfil-peligro {
+.panel-personas .perfil-datos,
+.panel-personas .perfil-peligro,
+.panel-personas .perfil-actividad,
+.panel-personas .perfil-org,
+.panel-personas .perfil-seguridad {
   display: grid;
   gap: 16px;
+}
+
+.perfil-estado {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.perfil-actividad .panel-error,
+.perfil-org .panel-error,
+.perfil-seguridad .panel-error,
+.perfil-dialogo .panel-error {
+  margin: 0;
+}
+
+.perfil-cifras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.perfil-cifras li {
+  flex: 1 1 140px;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--sg-line);
+  border-radius: 14px;
+  background: var(--sg-surface);
+}
+
+.perfil-cifras strong {
+  color: var(--sg-text);
+  font: 700 32px/1 'Space Grotesk', var(--sg-sans);
+}
+
+.perfil-cifras span {
+  color: var(--sg-muted);
+  font-size: 14px;
+}
+
+.perfil-historial {
+  width: fit-content;
+  color: var(--sg-accent);
+  font-weight: 600;
+}
+
+.perfil-ficha {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+.perfil-ficha div {
+  display: grid;
+  gap: 4px;
+}
+
+.perfil-ficha dt {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.perfil-ficha dd {
+  margin: 0;
+  color: var(--sg-text);
+  font-size: 16px;
+}
+
+.perfil-rol {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--sg-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sg-accent) 16%, var(--sg-surface));
+  color: var(--sg-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.perfil-clave {
+  display: grid;
+  gap: 12px;
+}
+
+.perfil-clave h3 {
+  margin: 0;
+  color: var(--sg-text);
+  font-size: 16px;
+}
+
+.perfil-seguridad > p,
+.perfil-dialogo p {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.perfil-dialogo {
+  width: min(440px, calc(100% - 32px));
+  margin: auto;
+  padding: 22px;
+  border: 1px solid var(--sg-line);
+  border-radius: 18px;
+  background: var(--sg-surface);
+  color: var(--sg-text);
+}
+
+.perfil-dialogo::backdrop {
+  background: color-mix(in srgb, var(--sg-bg) 72%, transparent);
+}
+
+.perfil-dialogo {
+  display: grid;
+  gap: 14px;
+}
+
+.perfil-dialogo h2 {
+  margin: 0;
+  color: var(--sg-text);
+  font-size: 22px;
+}
+
+.panel-personas .perfil-peligro {
   border-color: color-mix(in srgb, var(--sg-red) 45%, var(--sg-line));
   border-top: 4px solid var(--sg-red);
   background: var(--sg-surface);
@@ -970,12 +1126,13 @@
   color: var(--sg-red);
 }
 
-.perfil-peligro h3 {
+.perfil-fila h3 {
   margin: 0 0 4px;
   font-size: 16px;
 }
 
-.perfil-peligro p,
+.perfil-fila p,
+.perfil-peligro > p,
 .perfil-modal p {
   margin: 0;
   color: var(--sg-muted);
@@ -983,7 +1140,7 @@
   line-height: 1.45;
 }
 
-.perfil-peligro-fila {
+.perfil-fila {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -991,8 +1148,12 @@
   gap: 16px;
 }
 
-.perfil-peligro-fila > div {
+.perfil-fila > div {
   flex: 1 1 220px;
+}
+
+.perfil-bloqueo {
+  margin: 0;
 }
 
 .perfil-borrar {

@@ -384,7 +384,6 @@ html[data-tema='oscuro'] .panel-empresas .panel-tag {
 }
 
 html[data-tema='oscuro'] .perfil-nota,
-html[data-tema='oscuro'] .perfil .panel-campo input[readonly],
 html[data-tema='oscuro'] .perfil-candado {
   color: #b4c4d0;
 }
@@ -392,6 +391,7 @@ html[data-tema='oscuro'] .perfil-candado {
 html[data-tema='oscuro'] .perfil .panel-campo input[readonly] {
   background: #172230;
   border-color: #3d5163;
+  color: var(--sg-muted);
 }
 
 html[data-tema='oscuro'] .panel-personas .panel-pieza,

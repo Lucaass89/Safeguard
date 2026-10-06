@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
+import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
 
@@ -47,13 +48,6 @@ function recibido(id) {
   return sessionStorage.getItem('sg-recibido') === id
 }
 
-function accesoGuardado(id) {
-  const valor = sessionStorage.getItem(`sg-acceso:${id}`)
-  if (valor === '1') return true
-  if (valor === '0') return false
-  return null
-}
-
 function appPedida() {
   if (typeof window === 'undefined') return null
   const app = new URLSearchParams(window.location.search).get('app')
@@ -63,12 +57,11 @@ function appPedida() {
 
 function Panel() {
   const { sesion } = useSesion()
+  const { pertenece, cargando: cargandoMembresia } = useMembresia()
   const yaEntro = recibido(sesion.user.id)
   const pedida = appPedida()
   const [tablero, setTablero] = useState(null)
-  const [acceso, setAcceso] = useState(() =>
-    yaEntro || pedida ? accesoGuardado(sesion.user.id) : null,
-  )
+  const acceso = yaEntro || pedida || !cargandoMembresia ? pertenece : null
   const [fase, setFase] = useState(() => {
     if (pedida) return pedida
     return yaEntro ? 'elegir' : 'recibiendo'
@@ -92,20 +85,12 @@ function Panel() {
     let activo = true
 
     supabase.rpc('phishguard_tablero').then(({ data, error }) => {
-      if (!activo) return
-      const tiene = !error && Boolean(data?.organizacion)
-      sessionStorage.setItem(`sg-acceso:${sesion.user.id}`, tiene ? '1' : '0')
-      setAcceso(tiene)
-      if (!tiene) return
+      if (!activo || error || !data?.organizacion) return
       setTablero({
         eventos: Array.isArray(data.eventos) ? data.eventos : [],
         campanas: Array.isArray(data.campanas) ? data.campanas : [],
       })
-    }, () => {
-      if (!activo) return
-      sessionStorage.setItem(`sg-acceso:${sesion.user.id}`, '0')
-      setAcceso(false)
-    })
+    }, () => {})
 
     return () => {
       activo = false

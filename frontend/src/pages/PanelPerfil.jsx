@@ -1,8 +1,381 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase.js'
+import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
+
+const AVISO_UNICO_ADMIN =
+  'Sos el único administrador de tu empresa. Asigná a otra persona como administrador antes de eliminar tu cuenta.'
+
+const ROLES = {
+  Admin_Principal: 'Administrador principal',
+  Tecnico: 'Técnico',
+}
+
+function textoEliminar(pertenece) {
+  if (pertenece) return 'Se borra tu cuenta y tu historial. La empresa y sus campañas quedan.'
+  if (pertenece === false) return 'Se borra tu cuenta y todo tu historial de SafeLink.'
+  return null
+}
+
+function iniciales(nombre, correo) {
+  const partes = nombre.trim().split(/\s+/).filter(Boolean)
+  const base = partes.length >= 2
+    ? `${partes[0][0]}${partes[partes.length - 1][0]}`
+    : (partes[0] || correo.split('@')[0] || '')
+  return base.slice(0, 2).toUpperCase() || '·'
+}
+
+function metodosDe(usuario) {
+  const identidades = Array.isArray(usuario.identities) ? usuario.identities : null
+  const proveedores = identidades
+    ? identidades.map((identidad) => identidad.provider)
+    : usuario.app_metadata?.providers
+  if (!Array.isArray(proveedores)) return null
+
+  const unicos = [...new Set(proveedores.filter((proveedor) => typeof proveedor === 'string'))]
+  return {
+    clave: unicos.includes('email'),
+    google: unicos.includes('google'),
+    otros: unicos.filter((proveedor) => proveedor !== 'email' && proveedor !== 'google'),
+  }
+}
+
+function textoMetodo(metodos) {
+  if (!metodos) return null
+  const partes = []
+  if (metodos.clave) partes.push('correo y contraseña')
+  if (metodos.google) partes.push('Google')
+  partes.push(...metodos.otros)
+  if (partes.length === 0) return null
+  if (partes.length === 1) return `Entrás con ${partes[0]}.`
+  const ultimo = partes[partes.length - 1]
+  return `Entrás con ${partes.slice(0, -1).join(', ')} y con ${ultimo}.`
+}
+
+function PerfilActividad({ usuarioId }) {
+  const [conteos, setConteos] = useState(null)
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(false)
+  const [intento, setIntento] = useState(0)
+
+  useEffect(() => {
+    let activo = true
+    setCargando(true)
+    setError(false)
+
+    Promise.all([
+      supabase
+        .from('safelink_analisis')
+        .select('id', { count: 'exact', head: true })
+        .eq('usuario_id', usuarioId),
+      supabase
+        .from('safelink_reportes')
+        .select('id', { count: 'exact', head: true })
+        .eq('usuario_id', usuarioId),
+    ]).then(([analisis, reportes]) => {
+      if (!activo) return
+      if (analisis.error || reportes.error) {
+        setError(true)
+        setConteos(null)
+        setCargando(false)
+        return
+      }
+      setConteos({
+        analisis: analisis.count ?? 0,
+        reportes: reportes.count ?? 0,
+      })
+      setCargando(false)
+    })
+
+    return () => {
+      activo = false
+    }
+  }, [usuarioId, intento])
+
+  const vacio = conteos && conteos.analisis === 0 && conteos.reportes === 0
+
+  return (
+    <section className="panel-seccion perfil-actividad" aria-labelledby="perfil-actividad-titulo" aria-busy={cargando}>
+      <h2 id="perfil-actividad-titulo">Tu actividad</h2>
+      {cargando && <p className="perfil-estado">Cargando tu actividad…</p>}
+      {!cargando && error && (
+        <>
+          <p className="panel-error">No pudimos leer tu actividad. Probá de nuevo en un momento.</p>
+          <button type="button" className="panel-boton-borde" onClick={() => setIntento((valor) => valor + 1)}>
+            Reintentar
+          </button>
+        </>
+      )}
+      {!cargando && !error && vacio && (
+        <p className="perfil-estado">Todavía no hay análisis ni reportes.</p>
+      )}
+      {!cargando && !error && conteos && !vacio && (
+        <ul className="perfil-cifras">
+          <li>
+            <strong>{conteos.analisis}</strong>
+            <span>Análisis</span>
+          </li>
+          <li>
+            <strong>{conteos.reportes}</strong>
+            <span>Reportes</span>
+          </li>
+        </ul>
+      )}
+      {!cargando && !error && (
+        <Link className="perfil-historial" to="/panel/enlaces">Ver historial</Link>
+      )}
+    </section>
+  )
+}
+
+function PerfilOrganizacion({ organizacionId, rol }) {
+  const [nombre, setNombre] = useState(null)
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(false)
+  const [intento, setIntento] = useState(0)
+  const etiqueta = ROLES[rol] ?? (typeof rol === 'string' && rol.trim() ? rol.trim() : null)
+
+  useEffect(() => {
+    if (!organizacionId) return undefined
+    let activo = true
+    setCargando(true)
+    setError(false)
+
+    supabase
+      .from('organizaciones')
+      .select('nombre_empresa')
+      .eq('id', organizacionId)
+      .maybeSingle()
+      .then(({ data, error: fallo }) => {
+        if (!activo) return
+        if (fallo) {
+          setError(true)
+          setNombre(null)
+          setCargando(false)
+          return
+        }
+        setNombre((data?.nombre_empresa ?? '').trim())
+        setCargando(false)
+      })
+
+    return () => {
+      activo = false
+    }
+  }, [organizacionId, intento])
+
+  return (
+    <section className="panel-seccion perfil-org" aria-labelledby="perfil-org-titulo" aria-busy={cargando}>
+      <h2 id="perfil-org-titulo">Organización</h2>
+      {cargando && <p className="perfil-estado">Cargando tu empresa…</p>}
+      {!cargando && error && (
+        <>
+          <p className="panel-error">No pudimos cargar tu empresa. Probá de nuevo en un momento.</p>
+          <button type="button" className="panel-boton-borde" onClick={() => setIntento((valor) => valor + 1)}>
+            Reintentar
+          </button>
+        </>
+      )}
+      {!cargando && !error && (
+        <dl className="perfil-ficha">
+          <div>
+            <dt>Empresa</dt>
+            <dd>{nombre || 'Esta empresa no tiene nombre cargado.'}</dd>
+          </div>
+          <div>
+            <dt>Rol</dt>
+            <dd>{etiqueta ? <span className="perfil-rol">{etiqueta}</span> : 'No hay un rol cargado.'}</dd>
+          </div>
+        </dl>
+      )}
+    </section>
+  )
+}
+
+function PerfilSeguridad({ usuario }) {
+  const navegar = useNavigate()
+  const metodos = metodosDe(usuario)
+  const texto = textoMetodo(metodos)
+  const [actual, setActual] = useState('')
+  const [nueva, setNueva] = useState('')
+  const [confirmar, setConfirmar] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const [error, setError] = useState(null)
+  const [aviso, setAviso] = useState(null)
+  const [confirmarCierre, setConfirmarCierre] = useState(false)
+  const [cerrando, setCerrando] = useState(false)
+  const [errorCerrar, setErrorCerrar] = useState(null)
+  const dialogo = useRef(null)
+  const disparador = useRef(null)
+
+  useEffect(() => {
+    if (!confirmarCierre) return undefined
+    const nodo = dialogo.current
+    nodo?.showModal()
+    return () => {
+      if (nodo?.open) nodo.close()
+    }
+  }, [confirmarCierre])
+
+  function abrirCierre() {
+    disparador.current = document.activeElement
+    setErrorCerrar(null)
+    setConfirmarCierre(true)
+  }
+
+  function cerrarDialogo() {
+    if (cerrando) return
+    setConfirmarCierre(false)
+    disparador.current?.focus?.()
+  }
+
+  async function cambiarClave(evento) {
+    evento.preventDefault()
+    setError(null)
+    setAviso(null)
+
+    if (nueva.length < 6) {
+      setError('La contraseña tiene que tener al menos 6 caracteres.')
+      return
+    }
+    if (nueva !== confirmar) {
+      setError('La confirmación no coincide con la contraseña nueva.')
+      return
+    }
+    if (nueva === actual) {
+      setError('La contraseña nueva tiene que ser distinta de la actual.')
+      return
+    }
+
+    setGuardando(true)
+    const { error: falloActual } = await supabase.auth.signInWithPassword({
+      email: usuario.email,
+      password: actual,
+    })
+    if (falloActual) {
+      setGuardando(false)
+      setError('La contraseña actual no coincide.')
+      return
+    }
+
+    const { error: falloNueva } = await supabase.auth.updateUser({ password: nueva })
+    setGuardando(false)
+    if (falloNueva) {
+      setError('No se pudo cambiar la contraseña. Probá de nuevo en un momento.')
+      return
+    }
+
+    setActual('')
+    setNueva('')
+    setConfirmar('')
+    setAviso('Listo. La próxima vez entrá con la contraseña nueva.')
+  }
+
+  async function cerrarEnTodos() {
+    if (cerrando) return
+    setErrorCerrar(null)
+    setCerrando(true)
+    sessionStorage.removeItem('sg-recibido')
+    sessionStorage.removeItem(`sg-acceso:${usuario.id}`)
+    const { error: fallo } = await supabase.auth.signOut({ scope: 'global' })
+    if (fallo) {
+      setCerrando(false)
+      setErrorCerrar('No se pudo cerrar la sesión. Probá de nuevo en un momento.')
+      return
+    }
+    navegar('/ingresar?aviso=sesion', { replace: true })
+  }
+
+  return (
+    <section className="panel-seccion perfil-seguridad" aria-labelledby="perfil-seguridad-titulo">
+      <h2 id="perfil-seguridad-titulo">Seguridad</h2>
+      <p>{texto ?? 'No pudimos ver cómo entrás a la cuenta.'}</p>
+      {metodos?.clave && (
+        <form className="perfil-clave" onSubmit={cambiarClave}>
+          <h3>Cambiar contraseña</h3>
+          <label className="panel-campo">
+            <span>Contraseña actual</span>
+            <input
+              type="password"
+              value={actual}
+              onChange={(evento) => setActual(evento.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </label>
+          <label className="panel-campo">
+            <span>Contraseña nueva</span>
+            <input
+              type="password"
+              value={nueva}
+              onChange={(evento) => setNueva(evento.target.value)}
+              autoComplete="new-password"
+              minLength={6}
+              required
+            />
+          </label>
+          <label className="panel-campo">
+            <span>Confirmación</span>
+            <input
+              type="password"
+              value={confirmar}
+              onChange={(evento) => setConfirmar(evento.target.value)}
+              autoComplete="new-password"
+              minLength={6}
+              required
+            />
+          </label>
+          <div aria-live="polite">
+            {error && <p className="panel-error">{error}</p>}
+            {aviso && <p className="panel-aviso">{aviso}</p>}
+          </div>
+          <button type="submit" className="panel-boton" disabled={guardando} aria-busy={guardando}>
+            {guardando ? 'Guardando…' : 'Cambiar contraseña'}
+          </button>
+        </form>
+      )}
+      <div className="perfil-fila">
+        <div>
+          <h3>Cerrar sesión en todos los dispositivos</h3>
+          <p>Salís de SafeGuard en este navegador y en los demás.</p>
+        </div>
+        <button type="button" className="panel-boton-borde" onClick={abrirCierre}>
+          Cerrar sesión
+        </button>
+      </div>
+      {confirmarCierre && (
+        <dialog
+          ref={dialogo}
+          className="perfil-dialogo"
+          aria-modal="true"
+          aria-labelledby="perfil-cierre-titulo"
+          aria-describedby="perfil-cierre-texto"
+          onCancel={(evento) => {
+            evento.preventDefault()
+            cerrarDialogo()
+          }}
+        >
+          <h2 id="perfil-cierre-titulo">Cerrar sesión en todos lados</h2>
+          <p id="perfil-cierre-texto">
+            Vas a salir de SafeGuard en este dispositivo y en los demás. Después tenés que volver a entrar.
+          </p>
+          <div aria-live="polite">
+            {errorCerrar && <p className="panel-error">{errorCerrar}</p>}
+          </div>
+          <div className="perfil-modal-acciones">
+            <button type="button" className="panel-boton-borde" onClick={cerrarDialogo} disabled={cerrando}>
+              Cancelar
+            </button>
+            <button type="button" className="panel-boton" onClick={cerrarEnTodos} disabled={cerrando} aria-busy={cerrando}>
+              {cerrando ? 'Cerrando…' : 'Cerrar sesión'}
+            </button>
+          </div>
+        </dialog>
+      )}
+    </section>
+  )
+}
 
 function nombreInicial(usuario) {
   const meta = usuario.user_metadata ?? {}
@@ -13,6 +386,7 @@ function nombreInicial(usuario) {
 
 function PanelPerfil() {
   const { sesion } = useSesion()
+  const { pertenece, cargando: cargandoMembresia, rol, organizacionId, unicoAdmin } = useMembresia()
   const usuario = sesion.user
   const navegar = useNavigate()
   const [nombre, setNombre] = useState(() => nombreInicial(usuario))
@@ -32,6 +406,8 @@ function PanelPerfil() {
   const cambio = nombre.trim() !== guardado
   const correo = usuario.email ?? ''
   const puedeBorrar = confirmacion.trim().toLowerCase() === correo.trim().toLowerCase() && correo !== ''
+  const textoBorrar = textoEliminar(pertenece)
+  const bloqueado = unicoAdmin === true
 
   useEffect(() => {
     if (!modalAbierto) return undefined
@@ -130,16 +506,29 @@ function PanelPerfil() {
     URL.revokeObjectURL(url)
   }
 
+  async function mensajeBorrado(fallo) {
+    const respuesta = fallo?.context
+    if (respuesta && typeof respuesta.json === 'function') {
+      try {
+        const cuerpo = await respuesta.json()
+        if (cuerpo?.codigo === 'unico_admin') return AVISO_UNICO_ADMIN
+      } catch {
+        /* el cuerpo no era json */
+      }
+    }
+    return 'No se pudo eliminar la cuenta. Probá de nuevo en un momento.'
+  }
+
   async function eliminarCuenta(evento) {
     evento.preventDefault()
-    if (!puedeBorrar || borrando) return
+    if (!puedeBorrar || borrando || bloqueado) return
 
     setErrorBorrar(null)
     setBorrando(true)
     const { error: fallo } = await supabase.functions.invoke('eliminar-cuenta', { method: 'POST' })
     if (fallo) {
       setBorrando(false)
-      setErrorBorrar('No se pudo eliminar la cuenta. Probá de nuevo en un momento.')
+      setErrorBorrar(await mensajeBorrado(fallo))
       return
     }
 
@@ -153,6 +542,7 @@ function PanelPerfil() {
     <div className="panel panel-personas perfil">
       <header className="panel-header">
         <span className="panel-tag">Cuenta</span>
+        <span className="perfil-avatar" aria-hidden="true">{iniciales(nombre, correo)}</span>
         <h1>Tu perfil</h1>
         <p className="panel-lead">El nombre es el que ves al entrar al panel.</p>
       </header>
@@ -196,10 +586,13 @@ function PanelPerfil() {
         </button>
       </form>
 
-      <section className="panel-seccion perfil-peligro" aria-labelledby="perfil-peligro-titulo">
-        <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
-        <p>Estas acciones son definitivas.</p>
-        <div className="perfil-peligro-fila">
+      <PerfilActividad usuarioId={usuario.id} />
+      {pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
+      <PerfilSeguridad usuario={usuario} />
+
+      <section className="panel-seccion perfil-datos" aria-labelledby="perfil-datos-titulo">
+        <h2 id="perfil-datos-titulo">Tus datos</h2>
+        <div className="perfil-fila">
           <div>
             <h3>Exportar mis datos</h3>
             <p>Un archivo con tu cuenta, tus análisis y tus reportes.</p>
@@ -208,20 +601,34 @@ function PanelPerfil() {
             {exportando ? 'Exportando…' : 'Exportar'}
           </button>
         </div>
-        <div className="perfil-peligro-fila">
-          <div>
-            <h3>Eliminar cuenta</h3>
-            <p>
-              Se borra tu cuenta y el historial de SafeLink. La empresa y sus campañas quedan.
-            </p>
-          </div>
-          <button type="button" className="perfil-borrar" onClick={abrirBorrado}>
-            Eliminar cuenta
-          </button>
-        </div>
         <div aria-live="polite">
           {errorExportar && <p className="panel-error">{errorExportar}</p>}
         </div>
+      </section>
+
+      <section className="panel-seccion perfil-peligro" aria-labelledby="perfil-peligro-titulo">
+        <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
+        <p>Estas acciones son definitivas.</p>
+        <div className="perfil-fila">
+          <div>
+            <h3>Eliminar cuenta</h3>
+            {textoBorrar && <p>{textoBorrar}</p>}
+          </div>
+          <button
+            type="button"
+            className="perfil-borrar"
+            onClick={abrirBorrado}
+            disabled={cargandoMembresia || bloqueado}
+            aria-describedby={bloqueado ? 'perfil-unico-admin' : undefined}
+          >
+            Eliminar cuenta
+          </button>
+        </div>
+        {bloqueado && (
+          <p id="perfil-unico-admin" className="panel-error perfil-bloqueo">
+            {AVISO_UNICO_ADMIN}
+          </p>
+        )}
       </section>
 
       {modalAbierto && (
@@ -239,8 +646,7 @@ function PanelPerfil() {
           <form onSubmit={eliminarCuenta}>
             <h2 id="perfil-borrar-titulo">Eliminar cuenta</h2>
             <p id="perfil-borrar-texto">
-              Se borra tu historial de SafeLink y no se puede deshacer. La empresa, si tenés una, no se toca.
-              Escribí tu correo para confirmar.
+              {textoBorrar} No se puede deshacer. Escribí tu correo para confirmar.
             </p>
             <label className="panel-campo">
               <span>Correo</span>
