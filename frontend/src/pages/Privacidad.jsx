@@ -40,6 +40,12 @@ function Privacidad() {
           misma función. El archivo y el mensaje completo no se suben; lo que se
           guarda después es el resultado.
         </p>
+        <p>
+          Faro explica el resultado que ya está. La función <code>safelink-faro</code> recibe
+          el nivel, los motivos, la pregunta y los últimos turnos del chat. No recibe el
+          mensaje original, el enlace ni el archivo. Si el modelo no responde, la respuesta
+          se arma en el navegador con ese mismo nivel y esos motivos.
+        </p>
 
         <h2>SafeLink: qué se guarda con cuenta</h2>
         <p>

@@ -28,7 +28,7 @@ function PanelPdf() {
       const extra = peor ? await enriquecer(peor.url) : null
       const { amenaza } = await consultarPeorAmenaza([peor?.dominio, extra?.dominio])
       const final = combinarConEnriquecimiento(combinarConAmenaza(analisis, amenaza), extra)
-      setResultado(final)
+      setResultado({ ...final, casoId: crypto.randomUUID() })
       const { error: fallo } = await guardarAnalisis(sesion, final, 'pdf')
       if (fallo) setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)
     } catch (fallo) {
@@ -70,7 +70,12 @@ function PanelPdf() {
       {error && <p className="panel-error">{error}</p>}
 
       {resultado && (
-        <Resultado nivel={resultado.nivel} subtitulo={resultado.nombre} motivos={resultado.motivos} />
+        <Resultado
+          casoId={resultado.casoId}
+          nivel={resultado.nivel}
+          subtitulo={resultado.nombre}
+          motivos={resultado.motivos}
+        />
       )}
     </div>
   )

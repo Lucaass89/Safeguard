@@ -275,11 +275,20 @@
   margin-bottom: 28px;
 }
 
+.resultado-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 6px;
+}
+
 .resultado-semaforo {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 0 6px;
+  margin: 0;
   font-weight: 700;
   font-size: 18px;
 }
@@ -344,6 +353,28 @@
   border-top: 1px solid var(--sg-line);
   border-radius: 0;
   background: none;
+}
+
+.historial-abrir {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.historial-ver {
+  margin-left: 8px;
+  color: var(--sg-teal);
+  font-weight: 600;
 }
 
 .historial-punto {

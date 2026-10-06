@@ -31,7 +31,7 @@ function PanelCorreo() {
       extra?.dominio,
     ])
     const final = combinarConEnriquecimiento(combinarConAmenaza(analisis, amenaza), extra)
-    setResultado(final)
+    setResultado({ ...final, casoId: crypto.randomUUID() })
     const { error: fallo } = await guardarAnalisis(sesion, final, 'correo')
     setAnalizando(false)
     if (fallo) setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)
@@ -67,6 +67,7 @@ function PanelCorreo() {
 
       {resultado && (
         <Resultado
+          casoId={resultado.casoId}
           nivel={resultado.nivel}
           subtitulo={resultado.asunto || resultado.dominio}
           motivos={resultado.motivos}

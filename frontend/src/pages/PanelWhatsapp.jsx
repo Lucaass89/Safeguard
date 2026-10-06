@@ -35,7 +35,7 @@ function PanelWhatsapp() {
     ])
 
     const final = cerrarWhatsapp(local, amenaza, extra)
-    setResultado(final)
+    setResultado({ ...final, casoId: crypto.randomUUID() })
 
     const { error: fallo } = await guardarAnalisis(sesion, final, 'whatsapp')
     setAnalizando(false)
@@ -82,6 +82,7 @@ function PanelWhatsapp() {
 
       {resultado && (
         <Resultado
+          casoId={resultado.casoId}
           nivel={resultado.nivel}
           subtitulo={
             resultado.dominio === 'whatsapp'

@@ -1,4 +1,5 @@
 import { motivosLimpios, queHacer } from '../lib/analisis.js'
+import Faro from './Faro.jsx'
 
 const titulos = {
   verde: '✓ Verde: sin señales fuertes',
@@ -6,14 +7,17 @@ const titulos = {
   rojo: '✕ Rojo: no lo abras',
 }
 
-function Resultado({ nivel, subtitulo, motivos, children }) {
+function Resultado({ nivel, subtitulo, motivos, casoId, children }) {
   const lista = motivosLimpios(motivos)
   return (
     <article className={`resultado nivel-${nivel}`}>
-      <p className="resultado-semaforo">
-        <span className="resultado-punto" aria-hidden="true" />
-        {titulos[nivel]}
-      </p>
+      <div className="resultado-cabeza">
+        <p className="resultado-semaforo">
+          <span className="resultado-punto" aria-hidden="true" />
+          {titulos[nivel]}
+        </p>
+        <Faro casoId={casoId ?? `${nivel}:${lista.join('|')}`} nivel={nivel} motivos={lista} />
+      </div>
       {subtitulo && <p className="resultado-sub">{subtitulo}</p>}
       <p className="resultado-quehacer">{queHacer(nivel)}</p>
       {lista.length > 0 && (

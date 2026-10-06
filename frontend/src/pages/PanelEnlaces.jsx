@@ -26,6 +26,7 @@ function PanelEnlaces() {
   const [reportes, setReportes] = useState([])
   const [analizando, setAnalizando] = useState(false)
   const [cierre, setCierre] = useState(null)
+  const [caso, setCaso] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -83,7 +84,7 @@ function PanelEnlaces() {
       }
     }
 
-    setResultado(final)
+    setResultado({ ...final, casoId: crypto.randomUUID() })
 
     const { error: falloGuardado } = await guardarAnalisis(sesion, final, 'web')
     setAnalizando(false)
@@ -165,6 +166,7 @@ function PanelEnlaces() {
 
       {resultado && (
         <Resultado
+          casoId={resultado.casoId}
           nivel={resultado.nivel}
           subtitulo={resultado.dominioDestino ?? resultado.dominio}
           motivos={resultado.motivos}
@@ -185,25 +187,41 @@ function PanelEnlaces() {
 
       <section className="panel-seccion">
         <h2>Mis enlaces</h2>
+        {caso && (
+          <Resultado
+            casoId={caso.id}
+            nivel={caso.nivel_riesgo}
+            subtitulo={caso.dominio}
+            motivos={caso.explicacion ? [caso.explicacion] : []}
+          />
+        )}
         {historial.length === 0 ? (
           <p className="panel-vacio">Todavía no analizaste ninguno.</p>
         ) : (
           <ul className="historial">
             {historial.map((item) => (
               <li className={`historial-item nivel-${item.nivel_riesgo}`} key={item.id}>
-                <span className="historial-punto" aria-hidden="true" />
-                <div>
-                  <p className="historial-url">{item.url_analizada}</p>
-                  <p className="historial-meta">
-                    {item.nivel_riesgo === 'verde'
-                      ? '✓ Verde'
-                      : item.nivel_riesgo === 'amarillo'
-                        ? '! Amarillo'
-                        : '✕ Rojo'}
-                    {' · '}
-                    {item.dominio} · {fecha(item.fecha_analisis)}
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  className="historial-abrir"
+                  aria-expanded={caso?.id === item.id}
+                  onClick={() => setCaso(item)}
+                >
+                  <span className="historial-punto" aria-hidden="true" />
+                  <span>
+                    <p className="historial-url">{item.url_analizada}</p>
+                    <p className="historial-meta">
+                      {item.nivel_riesgo === 'verde'
+                        ? '✓ Verde'
+                        : item.nivel_riesgo === 'amarillo'
+                          ? '! Amarillo'
+                          : '✕ Rojo'}
+                      {' · '}
+                      {item.dominio} · {fecha(item.fecha_analisis)}
+                      <span className="historial-ver">{caso?.id === item.id ? 'Caso abierto' : 'Ver caso'}</span>
+                    </p>
+                  </span>
+                </button>
               </li>
             ))}
           </ul>

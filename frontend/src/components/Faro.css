@@ -1,0 +1,191 @@
+.faro-abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 4px 14px 4px 6px;
+  border: 1px solid color-mix(in srgb, var(--sg-teal) 62%, var(--sg-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sg-teal) 14%, var(--sg-surface));
+  color: var(--sg-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faro-abrir:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sg-teal) 24%, var(--sg-surface));
+}
+
+.faro-abrir .faro-robot {
+  width: 42px;
+  height: 52px;
+}
+
+.faro {
+  flex: 1 0 100%;
+  margin-top: 8px;
+}
+
+.faro-nota {
+  margin: 0;
+  color: #c5d0dc;
+  font-size: 14px;
+}
+
+.faro-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgb(42 154 150 / 40%);
+  border-radius: 12px;
+  background: #0b1220;
+  color: #eef2f6;
+}
+
+.faro-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faro-panel .faro-robot {
+  width: 76px;
+  height: 94px;
+  flex: 0 0 auto;
+}
+
+.faro-dialogo {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.faro-mensajes {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.faro-mensajes p {
+  margin: 2px 0 0;
+  line-height: 1.45;
+}
+
+.faro-quien {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.faro-msg-faro .faro-quien {
+  color: #2a9a96;
+}
+
+.faro-msg-vos .faro-quien {
+  color: #eef2f6;
+}
+
+.faro-pensando-texto {
+  margin: 0;
+  color: #8d98ab;
+}
+
+.faro-listas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.faro-listas button,
+.faro-enviar {
+  min-height: 40px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faro-listas button {
+  padding: 8px 12px;
+  border: 1px solid rgb(42 154 150 / 55%);
+  background: transparent;
+  color: #eef2f6;
+  text-align: left;
+}
+
+.faro-listas button:hover:not(:disabled),
+.faro-enviar:hover:not(:disabled) {
+  background: rgb(42 154 150 / 22%);
+}
+
+.faro-listas button:disabled,
+.faro-enviar:disabled,
+.faro-campo + input:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.faro-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.faro-campo {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #eef2f6;
+}
+
+.faro-form input {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  background: #131c2e;
+  color: #eef2f6;
+  font: inherit;
+}
+
+.faro-enviar {
+  padding: 0 16px;
+  border: 0;
+  background: #2a9a96;
+  color: #fff;
+}
+
+@media (min-width: 701px) {
+  .faro-cuerpo {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .faro-pensando .faro-visor {
+    animation: faro-parpadeo 0.9s steps(1, end) infinite;
+  }
+}
+
+@keyframes faro-parpadeo {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0.2;
+  }
+}

@@ -47,6 +47,7 @@ function Compartido() {
       </header>
 
       <Resultado
+        casoId={token}
         nivel={ficha.nivel_riesgo}
         subtitulo={ficha.dominio}
         motivos={ficha.explicacion ? ficha.explicacion.split(/(?<=\.)\s+/).filter(Boolean) : []}
