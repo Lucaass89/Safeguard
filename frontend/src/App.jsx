@@ -16,6 +16,7 @@ import PanelCorreo from './pages/PanelCorreo.jsx'
 import Compartido from './pages/Compartido.jsx'
 import PanelEmpresa from './pages/PanelEmpresa.jsx'
 import PanelCampanas from './pages/PanelCampanas.jsx'
+import PanelDarkconsole from './pages/PanelDarkconsole.jsx'
 import PanelTablero from './pages/PanelTablero.jsx'
 import PanelPerfil from './pages/PanelPerfil.jsx'
 import Simulacion from './pages/Simulacion.jsx'
@@ -42,6 +43,7 @@ function App() {
           <Route path="correo" element={<PanelCorreo />} />
           <Route path="empresa" element={<PanelEmpresa />} />
           <Route path="campanas" element={<PanelCampanas />} />
+          <Route path="darkconsole" element={<PanelDarkconsole />} />
           <Route path="tablero" element={<PanelTablero />} />
           <Route path="perfil" element={<PanelPerfil />} />
         </Route>

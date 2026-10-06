@@ -71,8 +71,10 @@ function Privacidad() {
           muestra uno por uno.
         </p>
         <p>
-          Pendiente de definir. En <code>eventos_simulacion</code> no hay una
-          columna de apertura.
+          Abrir el enlace de la simulación deja <code>mail_abierto</code>. El botón
+          Entendido deja <code>completo_capacitacion</code>. Darkconsole solo se abre
+          para la cuenta que dio de alta la empresa, y el kit de enlaces llega al
+          correo de esa cuenta.
         </p>
         <p>
           Pendiente de definir. El tablero de la app lista a cada persona por

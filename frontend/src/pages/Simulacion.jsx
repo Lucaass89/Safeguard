@@ -26,6 +26,7 @@ function Simulacion() {
       setFicha(data)
       if (data.capacitado) setPaso('leccion')
       else if (data.hizo_clic) setPaso('datos')
+      supabase.rpc('phishguard_registrar', { p_token: token, p_evento: 'abrio' })
     })
     return () => {
       activo = false
@@ -67,8 +68,9 @@ function Simulacion() {
     return (
       <main className="sim-pagina sim-leccion">
         <p className="sim-marca">SafeGuard · PhishGuard</p>
-        <h1>{leccion.titulo || 'Esto era una simulación'}</h1>
-        <p>{leccion.cuerpo || 'El mensaje apuraba y pedía un clic. Eso es el engaño.'}</p>
+        <h1>Esto era una simulación</h1>
+        <p>Era una simulación. El mensaje apuraba y pedía un clic.</p>
+        {leccion.cuerpo && !/era una simulaci[oó]n/i.test(leccion.cuerpo) && <p>{leccion.cuerpo}</p>}
         {ficha.refuerzo && (
           <p className="sim-nota">Esta era una segunda ronda, un poco más difícil a propósito.</p>
         )}

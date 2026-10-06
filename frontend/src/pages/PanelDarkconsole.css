@@ -1,0 +1,152 @@
+.panel-header:has(.dc-kicker) {
+  grid-template-areas:
+    'volver volver'
+    'kicker kicker'
+    'titulo titulo'
+    'lead lead';
+}
+
+.dc-kicker {
+  grid-area: kicker;
+  margin: 0 0 4px;
+  color: var(--sg-teal);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.panel-empresas fieldset.panel-campo.dc-areas {
+  display: grid;
+  gap: 12px;
+}
+
+.panel-empresas fieldset.dc-areas > legend {
+  grid-column: 1 / -1;
+}
+
+.dc-personas .dc-check span {
+  font-weight: 500;
+}
+
+.dc-bloque {
+  padding: 12px 14px;
+  border: 1px solid var(--sg-line);
+  border-radius: var(--sg-radius);
+  background: color-mix(in srgb, var(--sg-teal) 6%, var(--sg-surface));
+}
+
+.dc-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--sg-text);
+  cursor: pointer;
+}
+
+.dc-check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--sg-teal);
+}
+
+.dc-check-area {
+  font-weight: 700;
+}
+
+.dc-personas {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 28px;
+}
+
+.dc-marca {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--sg-teal) 55%, var(--sg-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sg-teal) 16%, var(--sg-surface));
+  color: var(--sg-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dc-ultimo-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dc-ultimo-cabeza h2 {
+  margin: 0;
+}
+
+.dc-resultado-nombre {
+  margin: 0;
+  font-weight: 700;
+}
+
+.dc-resultado-meta {
+  margin: 4px 0 8px;
+  color: var(--sg-muted);
+}
+
+.dc-lista {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  border-bottom: 1px solid var(--sg-line);
+}
+
+.dc-lista > li {
+  padding: 14px 0;
+  border-top: 1px solid var(--sg-line);
+}
+
+.dc-lista-nombre {
+  margin: 0;
+  font-weight: 700;
+}
+
+.dc-lista-area {
+  margin: 2px 0 8px;
+  color: var(--sg-muted);
+  font-size: 14px;
+}
+
+.dc-estados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dc-estado {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dc-estado-si {
+  background: color-mix(in srgb, var(--sg-teal) 18%, var(--sg-surface));
+  color: var(--sg-text);
+}
+
+.dc-estado-no {
+  background: transparent;
+  color: var(--sg-muted);
+  border: 1px solid var(--sg-line);
+}

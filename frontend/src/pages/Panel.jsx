@@ -40,6 +40,8 @@ const grupos = [
     items: [
       { to: '/panel/empresa', titulo: 'Tu empresa', nota: 'Cargá a tu equipo' },
       { to: '/panel/campanas', titulo: 'Campañas', nota: 'Armá y programá una simulación' },
+      { to: '/panel/darkconsole', titulo: 'Darkconsole', nota: 'Lanzá un simulacro y mirá quién cayó' },
+      { to: '/panel/tablero', titulo: 'Tablero', nota: 'El detalle del equipo a lo largo del tiempo' },
     ],
   },
 ]
@@ -164,6 +166,7 @@ function Panel() {
               <ul className="elegir-usos">
                 <li>Empresa</li>
                 <li>Campañas</li>
+                <li>Darkconsole</li>
                 <li>Tablero</li>
               </ul>
               {acceso === false && <Link to="/contacto">Hablar para activarlo</Link>}
