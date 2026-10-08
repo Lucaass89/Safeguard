@@ -141,11 +141,18 @@ function instrucciones(nivel: Nivel, motivos: string[]) {
   ].join('\n')
 }
 
+function claveGemini() {
+  return ['GEMINI_API_KEY', 'Gemini API Key', 'GEMINI_KEY', 'GOOGLE_API_KEY']
+    .map((nombre) => Deno.env.get(nombre)?.trim() ?? '')
+    .find(Boolean) ?? ''
+}
+
 async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, turnos: Turno[]) {
-  const clave = Deno.env.get('GEMINI_API_KEY')
+  const clave = claveGemini()
   if (!clave) return null
 
-  const modelo = Deno.env.get('GEMINI_MODEL') || 'gemini-3.8-flash'
+  const preferido = Deno.env.get('GEMINI_MODEL') || 'gemini-3.8-flash'
+  const modelos = [...new Set([preferido, 'gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'])]
   const contents = [
     ...turnos.map((turno) => ({
       role: turno.rol === 'vos' ? 'user' : 'model',
@@ -153,37 +160,46 @@ async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, tu
     })),
     { role: 'user', parts: [{ text: pregunta }] },
   ]
+  const cuerpo = {
+    systemInstruction: { parts: [{ text: instrucciones(nivel, motivos) }] },
+    contents,
+    generationConfig: { maxOutputTokens: 400 },
+  }
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,
-    {
-      method: 'POST',
-      signal: AbortSignal.timeout(12000),
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': clave,
+  for (const modelo of modelos) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,
+      {
+        method: 'POST',
+        signal: AbortSignal.timeout(20000),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': clave,
+        },
+        body: JSON.stringify(cuerpo),
       },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: instrucciones(nivel, motivos) }] },
-        contents,
-        generationConfig: { maxOutputTokens: 400 },
-      }),
-    },
-  )
+    )
+    if (res.status === 404) continue
+    if (!res.ok) {
+      const detalle = await res.text()
+      console.log('faro-modelo', res.status, detalle.replace(/AIza[0-9A-Za-z_-]+/g, '').slice(0, 180))
+      return null
+    }
+    const data = await res.json()
+    const partes = data?.candidates?.[0]?.content?.parts
+    if (!Array.isArray(partes)) return null
+    const texto = sinEmojis(
+      partes
+        .filter((parte: { thought?: boolean; text?: string }) => !parte?.thought && typeof parte?.text === 'string')
+        .map((parte: { text?: string }) => parte.text ?? '')
+        .join(' '),
+    )
+    const corta = oraciones(texto).slice(0, 5).join(' ')
+    if (!corta || contradice(nivel, corta)) return null
+    return corta
+  }
 
-  if (!res.ok) return null
-  const data = await res.json()
-  const partes = data?.candidates?.[0]?.content?.parts
-  if (!Array.isArray(partes)) return null
-  const texto = sinEmojis(
-    partes
-      .filter((parte: { thought?: boolean; text?: string }) => !parte?.thought && typeof parte?.text === 'string')
-      .map((parte: { text?: string }) => parte.text ?? '')
-      .join(' '),
-  )
-  const corta = oraciones(texto).slice(0, 5).join(' ')
-  if (!corta || contradice(nivel, corta)) return null
-  return corta
+  return null
 }
 
 Deno.serve(async (req) => {
@@ -192,7 +208,7 @@ Deno.serve(async (req) => {
 
   const autorizacion = req.headers.get('Authorization')
   const url = Deno.env.get('SUPABASE_URL')
-  const anon = Deno.env.get('SUPABASE_ANON_KEY')
+  const anon = Deno.env.get('SUPABASE_ANON_KEY') ?? Deno.env.get('SUPABASE_PUBLISHABLE_KEY')
   if (!autorizacion || !url || !anon) return json({ respuesta: null }, 401)
 
   const comoUsuario = createClient(url, anon, {
