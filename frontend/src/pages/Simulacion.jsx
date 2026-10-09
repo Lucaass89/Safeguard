@@ -88,6 +88,9 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
             <button type="button" className="ml-boton" onClick={() => setCompra('medio')}>
               Comprar ahora
             </button>
+            <button type="button" className="mp-boton ml-pagar" onClick={onMercadoPago}>
+              Pagar con Mercado Pago
+            </button>
           </div>
         </article>
       </MarcoTienda>
