@@ -67,6 +67,9 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
             />
           </label>
           <button type="submit" className="ml-boton">Crear cuenta</button>
+          <button type="button" className="mp-boton ml-pagar" onClick={onMercadoPago}>
+            Pagar con Mercado Pago
+          </button>
         </form>
       </MarcoTienda>
     )
@@ -140,7 +143,7 @@ function Simulacion() {
       }
       setFicha(data)
       if (data.capacitado || (data.categoria === 'MERCADOLIBRE' && data.ingreso_datos)) setPaso('leccion')
-      else if (data.categoria === 'MERCADOLIBRE') setPaso(data.hizo_clic ? 'producto' : 'cuenta')
+      else if (data.categoria === 'MERCADOLIBRE') setPaso('producto')
       else if (data.hizo_clic) setPaso('datos')
       supabase.rpc('phishguard_registrar', { p_token: token, p_evento: 'abrio' })
     })

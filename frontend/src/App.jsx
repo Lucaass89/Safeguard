@@ -4,6 +4,7 @@ import Layout from './components/Layout.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import Landing from './pages/Landing.jsx'
 import Empresas from './pages/Empresas.jsx'
+import Adquirir from './pages/Adquirir.jsx'
 import Personas from './pages/Personas.jsx'
 import Privacidad from './pages/Privacidad.jsx'
 import Contacto from './pages/Contacto.jsx'
@@ -29,6 +30,7 @@ function App() {
       <Route path="bien/:token" element={<Reconocimiento />} />
       <Route index element={<Landing />} />
       <Route path="empresas" element={<Empresas />} />
+      <Route path="adquirir" element={<Adquirir />} />
       <Route path="personas" element={<Personas />} />
       <Route path="privacidad" element={<Privacidad />} />
       <Route path="contacto" element={<Contacto />} />

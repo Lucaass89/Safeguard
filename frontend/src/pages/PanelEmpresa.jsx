@@ -476,7 +476,7 @@ function PanelEmpresa() {
         <p className="panel-vacio">
           PhishGuard se paga por persona. Cuando el plan esté activo vas a poder
           cargar el equipo y armar simulaciones.{' '}
-          <Link to="/contacto">Hablar para activarlo</Link>
+          <Link to="/adquirir">Adquirir PhishGuard</Link>
         </p>
       ) : (
         <>

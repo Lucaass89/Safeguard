@@ -169,7 +169,7 @@ function Panel() {
                 <li>Darkconsole</li>
                 <li>Tablero</li>
               </ul>
-              {acceso === false && <Link to="/contacto">Hablar para activarlo</Link>}
+              {acceso === false && <Link to="/adquirir">Adquirir PhishGuard</Link>}
             </div>
           </div>
         </section>

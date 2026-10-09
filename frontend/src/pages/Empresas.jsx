@@ -32,8 +32,8 @@ function Empresas() {
                 una explicación corta, sin sanciones.
               </p>
               <div className="pg-acciones">
-                <Link className="pg-cta" to="/contacto">
-                  Hablar con nosotros
+                <Link className="pg-cta" to="/adquirir">
+                  Adquirir PhishGuard
                 </Link>
                 <a className="pg-cta-secundario" href="#precios">
                   Ver precios
@@ -105,6 +105,9 @@ function Empresas() {
           <p className="pg-precio-nota">
             Con 100 usuarios pagás USD 100; con 101, USD 85,85.
           </p>
+          <Link className="pg-cta adquirir-precio" to="/adquirir">
+            Adquirir PhishGuard
+          </Link>
         </section>
       </div>
     </Marco>

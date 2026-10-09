@@ -506,3 +506,41 @@
     position: static;
   }
 }
+
+.adquirir-vuelta {
+  margin: 0 0 12px;
+}
+
+.adquirir-vuelta a {
+  font-weight: 700;
+}
+
+.adquirir-precio {
+  margin-top: 24px;
+  background: var(--blue, #2563eb);
+  color: #fff;
+}
+
+.adquirir-precio:hover {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.sg-landing a.medio-pago {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 0 18px;
+  border-radius: 6px;
+  background: #009ee3;
+  color: #fff;
+  font-family: Inter, var(--sg-sans);
+  font-weight: 700;
+}
+
+.sg-landing a.medio-pago:hover {
+  background: #007eb5;
+  color: #fff;
+}

@@ -21,8 +21,8 @@ function Landing() {
                 abrirlo.
               </p>
               <div className="hero-actions">
-                <Link className="button button-primary" to="/empresas">
-                  Probar PhishGuard <span>→</span>
+                <Link className="button button-primary" to="/adquirir">
+                  Adquirir PhishGuard <span>→</span>
                 </Link>
                 <Link className="button button-ghost" to="/personas">
                   Conocer SafeLink <span>→</span>
@@ -104,8 +104,8 @@ function Landing() {
                   <li>Registro de clic y datos ingresados</li>
                   <li>Tablero del equipo</li>
                 </ul>
-                <Link className="text-link" to="/empresas">
-                  Probar PhishGuard <span>→</span>
+                <Link className="text-link" to="/adquirir">
+                  Adquirir PhishGuard <span>→</span>
                 </Link>
               </div>
               <Captura src="/capturas/phishguard.png" alt="Campaña de PhishGuard en el panel" />

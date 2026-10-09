@@ -138,7 +138,7 @@ function PanelTablero() {
         {error && <p className="panel-error">{error}</p>}
         <p className="panel-vacio">
           PhishGuard se paga por persona. Esta cuenta no tiene el plan activo.{' '}
-          <Link to="/contacto">Hablar para activarlo</Link>
+          <Link to="/adquirir">Adquirir PhishGuard</Link>
         </p>
       </div>
     )
