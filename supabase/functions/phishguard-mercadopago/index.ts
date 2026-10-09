@@ -1,5 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import postgres from 'npm:postgres'
 
 const PRECIO = 500
 const MONEDA = 'ARS'
@@ -17,12 +18,31 @@ function json(cuerpo: unknown, status = 200) {
   })
 }
 
-function tokenMercadoPago() {
-  return (
+async function tokenMercadoPago() {
+  const desdeEntorno = (
     Deno.env.get('MERCADO_PAGO_ACCESS_TOKEN') ??
     Deno.env.get('MP_ACCESS_TOKEN') ??
     ''
   ).trim()
+  if (desdeEntorno) return desdeEntorno
+
+  const dbUrl = Deno.env.get('SUPABASE_DB_URL')
+  if (!dbUrl) return ''
+
+  const sql = postgres(dbUrl, { prepare: false, max: 1, connect_timeout: 10 })
+  try {
+    const filas = await sql<{ decrypted_secret: string }[]>`
+      select decrypted_secret
+      from vault.decrypted_secrets
+      where name = 'mercado_pago_access_token'
+      limit 1
+    `
+    return (filas[0]?.decrypted_secret ?? '').trim()
+  } catch {
+    return ''
+  } finally {
+    await sql.end({ timeout: 2 })
+  }
 }
 
 function esCheckoutReal(valor: string) {
@@ -205,7 +225,7 @@ Deno.serve(async (req) => {
     return json({ error: 'Tenés que entrar para pagar.' }, 401)
   }
 
-  const token = tokenMercadoPago()
+  const token = await tokenMercadoPago()
   if (!token) {
     return json(
       { error: 'Falta la credencial de Mercado Pago para armar el cobro.' },
