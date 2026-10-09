@@ -95,8 +95,10 @@ async function crearCobro(usuarioId: string, token: string) {
         failure: vuelta,
       },
       auto_return: 'approved',
-      statement_descriptor: 'PHISHGUARD',
-      binary_mode: true,
+      payment_methods: {
+        installments: 1,
+        default_installments: 1,
+      },
     }),
   })
 
