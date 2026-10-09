@@ -23,6 +23,12 @@ function traducir(error) {
   return mensajes[error.message] ?? error.message
 }
 
+function destinoSeguro(valor) {
+  if (typeof valor !== 'string') return '/panel'
+  if (!valor.startsWith('/') || valor.startsWith('//')) return '/panel'
+  return valor
+}
+
 // Cuando falla el proveedor externo, Supabase vuelve con el motivo en la query
 // o en el hash. Sin leerlo, el usuario solo ve el formulario otra vez.
 function errorDeRedirect() {
@@ -72,6 +78,7 @@ function Ingresar() {
   const navegar = useNavigate()
 
   const crearCuenta = modo === 'crear'
+  const destino = destinoSeguro(params.get('volver'))
 
   async function manejarEnvio(evento) {
     evento.preventDefault()
@@ -92,7 +99,7 @@ function Ingresar() {
     }
 
     if (data.session) {
-      navegar('/panel')
+      navegar(destino)
       return
     }
 
@@ -129,7 +136,7 @@ function Ingresar() {
     )
   }
 
-  if (sesion) return <Navigate to="/panel" replace />
+  if (sesion) return <Navigate to={destino} replace />
 
   return (
     <Marco interior>

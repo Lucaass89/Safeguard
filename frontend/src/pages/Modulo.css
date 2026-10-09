@@ -526,21 +526,43 @@
   color: #fff;
 }
 
-.sg-landing a.medio-pago {
+.sg-landing a.medio-pago,
+.sg-landing button.medio-pago {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 48px;
   margin-top: 20px;
   padding: 0 18px;
+  border: 0;
   border-radius: 6px;
   background: #009ee3;
   color: #fff;
   font-family: Inter, var(--sg-sans);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sg-landing a.medio-pago:hover,
+.sg-landing button.medio-pago:hover {
+  background: #007eb5;
+  color: #fff;
+}
+
+.sg-landing button.medio-pago:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.adquirir-monto {
+  margin: 8px 0 0;
+  font-size: 40px;
   font-weight: 700;
 }
 
-.sg-landing a.medio-pago:hover {
-  background: #007eb5;
-  color: #fff;
+.adquirir-error {
+  margin: 16px 0 0;
+  color: #b42318;
+  font-weight: 700;
 }
