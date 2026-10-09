@@ -61,9 +61,10 @@ function Adquirir() {
           <h1>Medios de pago</h1>
           <p className="adquirir-monto">$ 500</p>
           <p>
-            Precio de prueba. El botón abre el checkout de Mercado Pago. Ahí
-            elegí tarjeta o efectivo. Cuando el pago queda aprobado, se
-            desbloquea PhishGuard.
+            Precio de prueba. El botón abre el checkout de Mercado Pago.
+            Cerrá antes la sesión de la cuenta que cobra y pagá como invitado
+            con una tarjeta. Cuando el pago queda aprobado, se desbloquea
+            PhishGuard.
           </p>
           {cargando ? (
             <p>Verificando tu sesión…</p>

@@ -95,10 +95,6 @@ async function crearCobro(usuarioId: string, token: string) {
         failure: vuelta,
       },
       auto_return: 'approved',
-      payment_methods: {
-        installments: 1,
-        default_installments: 1,
-      },
     }),
   })
 
