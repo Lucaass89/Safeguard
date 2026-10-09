@@ -1,32 +1,54 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Modulo.css'
 
+function esCheckoutReal(valor) {
+  try {
+    const url = new URL(valor)
+    return (
+      url.protocol === 'https:' &&
+      (url.hostname === 'www.mercadopago.com.ar' || url.hostname === 'www.mercadopago.com')
+    )
+  } catch {
+    return false
+  }
+}
+
+async function mensajeDe(error, data) {
+  if (data?.error) return data.error
+  if (error?.context && typeof error.context.json === 'function') {
+    try {
+      const cuerpo = await error.context.json()
+      if (cuerpo?.error) return cuerpo.error
+    } catch {
+      // La función no devolvió un mensaje legible.
+    }
+  }
+  return 'No se pudo abrir Mercado Pago.'
+}
+
 function Adquirir() {
   const { sesion, cargando } = useSesion()
-  const navegar = useNavigate()
   const [error, setError] = useState(null)
   const [enviando, setEnviando] = useState(false)
 
   async function pagar() {
     setError(null)
     setEnviando(true)
-    const { error: fallo } = await supabase.rpc('phishguard_pagar_prueba')
+    const { data, error: fallo } = await supabase.functions.invoke('phishguard-mercadopago', {
+      body: { accion: 'crear' },
+    })
     setEnviando(false)
 
-    if (fallo) {
-      setError(fallo.message)
+    if (fallo || !esCheckoutReal(data?.url)) {
+      setError(await mensajeDe(fallo, data))
       return
     }
 
-    if (sesion?.user?.id) {
-      sessionStorage.removeItem(`sg-acceso:${sesion.user.id}`)
-    }
-
-    navegar('/panel?app=phishguard')
+    window.location.assign(data.url)
   }
 
   return (
@@ -39,8 +61,8 @@ function Adquirir() {
           <h1>Medios de pago</h1>
           <p className="adquirir-monto">$ 500</p>
           <p>
-            Precio de prueba. El único medio es Mercado Pago. Al pagar se
-            desbloquea PhishGuard. En esta prueba no se cobra una tarjeta.
+            Precio de prueba. El botón abre el checkout de Mercado Pago. Cuando
+            el pago queda aprobado, se desbloquea PhishGuard.
           </p>
           {cargando ? (
             <p>Verificando tu sesión…</p>
@@ -51,7 +73,7 @@ function Adquirir() {
               onClick={pagar}
               disabled={enviando}
             >
-              {enviando ? 'Pagando…' : 'Pagar 500 pesos'}
+              {enviando ? 'Abriendo Mercado Pago…' : 'Pagar con Mercado Pago'}
             </button>
           ) : (
             <Link className="medio-pago" to="/ingresar?volver=/adquirir">
