@@ -86,7 +86,10 @@ function Ingresar() {
     setAviso(null)
     setEnviando(true)
 
-    const credenciales = { email: correo, password: clave }
+    const credenciales = {
+      email: correo.trim().toLowerCase(),
+      password: clave.replace(/[\u2010-\u2015\u2212]/g, '-').trim(),
+    }
     const { data, error: fallo } = crearCuenta
       ? await supabase.auth.signUp(credenciales)
       : await supabase.auth.signInWithPassword(credenciales)
@@ -183,12 +186,18 @@ function Ingresar() {
           </button>
         </div>
 
-        <form className="acceso-form" onSubmit={manejarEnvio}>
+        <form className="acceso-form" autoCapitalize="none" onSubmit={manejarEnvio}>
           <label htmlFor="correo">Correo</label>
           <input
             id="correo"
+            name="email"
             type="email"
+            inputMode="email"
             autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="next"
             required
             value={correo}
             onChange={(e) => setCorreo(e.target.value)}
@@ -198,8 +207,13 @@ function Ingresar() {
           <label htmlFor="clave">Contraseña</label>
           <input
             id="clave"
+            name="password"
             type="password"
             autoComplete={crearCuenta ? 'new-password' : 'current-password'}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="go"
             required
             minLength={6}
             value={clave}

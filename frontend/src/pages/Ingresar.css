@@ -1,6 +1,7 @@
 .acceso {
   display: flex;
   justify-content: center;
+  padding: 0 16px;
 }
 
 .acceso-caja {
@@ -258,5 +259,17 @@
   background: #f3efe6;
   color: #102a43;
   border-color: #e3d9cc;
+}
+
+@media (max-width: 700px) {
+  .acceso-caja,
+  .sg-landing .acceso-caja {
+    padding: 24px 18px;
+  }
+
+  .sg-landing .acceso-caja h1 {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
 }
 
