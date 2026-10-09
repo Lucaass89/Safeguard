@@ -8,6 +8,118 @@ function cuerpoConLink(texto, token) {
   return (texto ?? '').replaceAll('{link}', link)
 }
 
+function MarcoTienda({ children }) {
+  return (
+    <div className="ml">
+      <header className="ml-barra">
+        <p className="ml-marca">mercado libre</p>
+        <p className="ml-buscar" aria-hidden="true">Buscar productos, marcas y más…</p>
+      </header>
+      <main className="ml-cuerpo">{children}</main>
+    </div>
+  )
+}
+
+function Tienda({ paso, onCuenta, onMercadoPago }) {
+  const [cuenta, setCuenta] = useState({ nombre: '', mail: '', clave: '' })
+  const [compra, setCompra] = useState('no')
+
+  if (paso === 'cuenta') {
+    return (
+      <MarcoTienda>
+        <form
+          className="ml-caja"
+          onSubmit={(evento) => {
+            evento.preventDefault()
+            setCuenta({ nombre: '', mail: '', clave: '' })
+            onCuenta()
+          }}
+        >
+          <h1>Creá tu cuenta</h1>
+          <p>Para ver la compra pendiente necesitás una cuenta.</p>
+          <label>
+            Nombre y apellido
+            <input
+              required
+              autoComplete="off"
+              value={cuenta.nombre}
+              onChange={(evento) => setCuenta({ ...cuenta, nombre: evento.target.value })}
+            />
+          </label>
+          <label>
+            E-mail
+            <input
+              required
+              type="email"
+              autoComplete="off"
+              value={cuenta.mail}
+              onChange={(evento) => setCuenta({ ...cuenta, mail: evento.target.value })}
+            />
+          </label>
+          <label>
+            Clave
+            <input
+              required
+              type="password"
+              autoComplete="off"
+              value={cuenta.clave}
+              onChange={(evento) => setCuenta({ ...cuenta, clave: evento.target.value })}
+            />
+          </label>
+          <button type="submit" className="ml-boton">Crear cuenta</button>
+        </form>
+      </MarcoTienda>
+    )
+  }
+
+  if (paso === 'producto' && compra === 'no') {
+    return (
+      <MarcoTienda>
+        <article className="ml-producto">
+          <div className="ml-foto" aria-hidden="true">
+            <span />
+            <span />
+          </div>
+          <div>
+            <p className="ml-estado">Nuevo · 3 disponibles</p>
+            <h1>Auriculares inalámbricos SoundPro</h1>
+            <p className="ml-precio">$ 45.999</p>
+            <p className="ml-envio">Llega mañana a tu domicilio</p>
+            <button type="button" className="ml-boton" onClick={() => setCompra('medio')}>
+              Comprar ahora
+            </button>
+          </div>
+        </article>
+      </MarcoTienda>
+    )
+  }
+
+  if (paso === 'producto' && compra === 'medio') {
+    return (
+      <div className="mp">
+        <header className="mp-barra">
+          <p className="mp-marca">Mercado Pago</p>
+        </header>
+        <main className="mp-cuerpo">
+          <section className="mp-caja">
+            <h1>Medio de pago</h1>
+            <p>Auriculares inalámbricos SoundPro · $ 45.999</p>
+            <label className="mp-opcion">
+              <input type="radio" name="medio" checked onChange={() => {}} />
+              <span>Mercado Pago</span>
+            </label>
+            <button type="button" className="mp-boton" onClick={onMercadoPago}>
+              Continuar
+            </button>
+          </section>
+        </main>
+      </div>
+    )
+  }
+
+  return null
+}
+
 function Simulacion() {
   const { token } = useParams()
   const [ficha, setFicha] = useState(null)
@@ -24,7 +136,8 @@ function Simulacion() {
         return
       }
       setFicha(data)
-      if (data.capacitado) setPaso('leccion')
+      if (data.capacitado || (data.categoria === 'MERCADOLIBRE' && data.ingreso_datos)) setPaso('leccion')
+      else if (data.categoria === 'MERCADOLIBRE') setPaso(data.hizo_clic ? 'producto' : 'cuenta')
       else if (data.hizo_clic) setPaso('datos')
       supabase.rpc('phishguard_registrar', { p_token: token, p_evento: 'abrio' })
     })
@@ -70,6 +183,12 @@ function Simulacion() {
         <p className="sim-marca">SafeGuard · PhishGuard</p>
         <h1>Esto era una simulación</h1>
         <p>Era una simulación. El mensaje apuraba y pedía un clic.</p>
+        {ficha.categoria === 'MERCADOLIBRE' && (
+          <p>
+            El botón de Mercado Pago abre el sitio real, mercadopago.com.ar. La barra pasa a decir
+            eso recién ahí. Esta página no era Mercado Libre ni Mercado Pago.
+          </p>
+        )}
         {leccion.cuerpo && !/era una simulaci[oó]n/i.test(leccion.cuerpo) && <p>{leccion.cuerpo}</p>}
         {ficha.refuerzo && (
           <p className="sim-nota">Esta era una segunda ronda, un poco más difícil a propósito.</p>
@@ -80,6 +199,26 @@ function Simulacion() {
           </button>
         )}
       </main>
+    )
+  }
+
+  if (ficha.categoria === 'MERCADOLIBRE') {
+    return (
+      <Tienda
+        paso={paso}
+        onCuenta={() => registrar('clic', 'producto')}
+        onMercadoPago={async () => {
+          const { error: fallo } = await supabase.rpc('phishguard_registrar', {
+            p_token: token,
+            p_evento: 'clic',
+          })
+          if (fallo) {
+            setError(fallo.message)
+            return
+          }
+          window.location.assign('https://www.mercadopago.com.ar')
+        }}
+      />
     )
   }
 
