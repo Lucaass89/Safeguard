@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+  width: 320px;
+  background: #f3efe6;
+  color: #102a43;
+}
+
+main {
+  padding: 16px 16px 18px;
+  border-top: 6px solid #8d98ab;
+}
+
+main.verde {
+  border-top-color: #0c6b58;
+}
+
+main.amarillo {
+  border-top-color: #c48a00;
+}
+
+main.rojo {
+  border-top-color: #c24132;
+}
+
+.marca {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4a6278;
+}
+
+h1 {
+  margin: 6px 0 0;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+#dominio {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  word-break: break-all;
+}
+
+#motivos {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+#motivos li + li {
+  margin-top: 6px;
+}
+
+#hacer,
+#aviso {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+#aviso {
+  color: #4a6278;
+}

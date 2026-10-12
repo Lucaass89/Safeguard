@@ -124,7 +124,7 @@ function Landing() {
                 <ul>
                   <li>Semáforo ✓ verde, ! amarillo o ✕ rojo</li>
                   <li>La cuenta guarda el historial</li>
-                  <li>Próximamente: extensión de Chrome</li>
+                  <li>Extensión de Chrome: un color en la barra, sin bloquear la página</li>
                 </ul>
                 <Link className="text-link" to="/personas">
                   Probar SafeLink <span>→</span>

@@ -59,10 +59,7 @@ function Personas() {
               Revisa el enlace o el QR antes del clic y responde con un color,
               no con un informe técnico.
             </p>
-            <button type="button" disabled>
-              Instalar la extensión
-              <span>Próximamente</span>
-            </button>
+            <a href="#instalar">Instalar la extensión</a>
             {sesion && (
               <Link className="sl-secundario" to="/panel/enlaces">
                 Mis enlaces
@@ -101,6 +98,19 @@ function Personas() {
                   </div>
                 ))}
               </dl>
+            </section>
+
+            <section id="instalar">
+              <h2>Extensión de Chrome</h2>
+              <p>
+                Revisa la pestaña que estás viendo y pone un color en el ícono de la barra.
+                Avisa. No bloquea la página y no guarda el historial.
+              </p>
+              <ol className="sl-pasos">
+                <li>Abrí la página de extensiones de Chrome.</li>
+                <li>Activá el modo de desarrollador.</li>
+                <li>Elegí Cargar descomprimida y seleccioná la carpeta extension de SafeGuard.</li>
+              </ol>
             </section>
 
             <p className="sl-gratis">

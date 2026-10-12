@@ -20,9 +20,11 @@ function Privacidad() {
           <li>PDFs, leídos en el navegador con pdf.js. El archivo no se manda a la función de enriquecimiento.</li>
           <li>Correos, desde el panel de correo (encabezados que pegás ahí).</li>
           <li>
-            Códigos QR y la extensión de Chrome: Pendiente de definir. Ese
-            código no está en este repositorio.
+            La extensión de Chrome, en la carpeta <code>extension</code>: lee la
+            dirección de la pestaña activa si es http o https. No lee el contenido
+            de la página y no bloquea la navegación.
           </li>
+          <li>Códigos QR: pendiente. Eso queda para la app del celular, y ese código no está en este repositorio.</li>
         </ul>
 
         <h2>SafeLink: qué sale del navegador</h2>
@@ -57,9 +59,11 @@ function Privacidad() {
         </p>
         <p>
           El panel exige iniciar sesión, así que desde la web el chequeo se
-          guarda. Pendiente de definir. El sitio lo dice en SafeLink, pero el
-          código de la extensión no está en este repositorio y no hay un
-          análisis público sin sesión.
+          guarda. La extensión no escribe en <code>safelink_analisis</code>. Si{' '}
+          <code>extension/config.js</code> tiene la clave publishable, manda la
+          dirección a <code>safelink-enriquecer</code> y consulta{' '}
+          <code>amenazas</code>, igual que el panel. Sin esa clave, el color sale
+          solo de la dirección y no sale nada del navegador.
         </p>
         <p>Pendiente de definir.</p>
 
