@@ -20,7 +20,8 @@ function Privacidad() {
           <li>PDFs, leídos en el navegador con pdf.js. El archivo no se manda a la función de enriquecimiento.</li>
           <li>Correos, desde el panel de correo (encabezados que pegás ahí).</li>
           <li>
-            La extensión de Chrome, en la carpeta <code>extension</code>: lee la
+            La extensión de Chrome, en la carpeta <code>extension</code> y en el
+            archivo <code>safelink.zip</code> que se descarga desde SafeLink: lee la
             dirección de la pestaña activa si es http o https. No lee el contenido
             de la página y no bloquea la navegación.
           </li>

@@ -160,6 +160,7 @@ html[data-tema='oscuro'] .sg-landing .brand > span:last-child > span {
 html[data-tema='oscuro'] .sg-landing em,
 html[data-tema='oscuro'] .pg-volver a,
 html[data-tema='oscuro'] .sl-lugares a,
+html[data-tema='oscuro'] .sl-cuerpo a,
 html[data-tema='oscuro'] .nota a {
   color: #8eb4ff;
 }
