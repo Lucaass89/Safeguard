@@ -1,12 +1,14 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import { pasosCampana } from '../lib/pasosCampana.js'
 import './Modulo.css'
 
 const incluye = [
   ['Tablero', 'Riesgos detectados y cómo evoluciona la seguridad.'],
-  ['PDF mensual', 'Gráficos simples, listos para gerencia o directorio.'],
+  ['Aviso', 'Un correo corto cuando alguien toca el enlace.'],
+  ['Informe', 'Quién tocó el enlace, quién se capacitó y quién mejoró. Se guarda o se imprime.'],
   ['Usuarios', 'Alta, baja y cambio de plan cuando la organización crece.'],
-  ['Plantillas', 'En español, pensadas para la región.'],
+  ['Plantillas', 'Bancos, ARCA, colegios, envíos y Mercado Libre, en español.'],
   ['En la nube', 'Sin instalar software en cada equipo.'],
   ['Soporte', 'WhatsApp Business y correo, en español.'],
 ]
@@ -59,10 +61,15 @@ function Empresas() {
 
         <section className="pg-bloque" id="pasos">
           <h2>Cómo funciona una campaña</h2>
-          <p>Los cuatro pasos están en la página de inicio.</p>
-          <Link className="text-link" to="/#proceso">
-            Ver los cuatro pasos <span>→</span>
-          </Link>
+          <ol className="pg-riel">
+            {pasosCampana.map((paso, i) => (
+              <li key={paso.titulo}>
+                <span>{i + 1}</span>
+                <h3>{paso.titulo}</h3>
+                <p>{paso.texto}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section className="pg-bloque pg-incluye">

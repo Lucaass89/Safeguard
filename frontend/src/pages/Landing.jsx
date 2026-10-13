@@ -1,159 +1,119 @@
 import { Link } from 'react-router'
-import Captura from '../components/Captura.jsx'
-import Marco from '../components/Marco.jsx'
-import { pasosCampana } from '../lib/pasosCampana.js'
+import { useSesion } from '../lib/useSesion.js'
+import './LandingInicio.css'
+
+function Marca() {
+  return (
+    <svg className="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 2.5 4.5 5.6v6.1c0 4.6 3.1 8.4 7.5 9.8 4.4-1.4 7.5-5.2 7.5-9.8V5.6L12 2.5Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m8.6 12.2 2.4 2.4 4.4-4.8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 function Landing() {
+  const { sesion } = useSesion()
+
   return (
-    <Marco>
-      <main id="inicio">
-        <section className="hero">
-          <div className="container hero-cuerpo">
+    <div className="landing-puertas page">
+      <header className="header">
+        <div className="shell header-inner">
+          <Link className="brand" to="/" aria-label="SafeGuard, inicio">
+            <Marca />
+            SafeGuard
+          </Link>
+          <Link className="login-link" to={sesion ? '/panel' : '/ingresar'}>
+            {sesion ? 'Mi panel' : 'Ingresar'}
+          </Link>
+        </div>
+      </header>
+
+      <main className="main">
+        <div className="shell">
+          <section className="hero">
             <h1>
-              El ataque no rompe tus sistemas: <em>engaña a tu gente.</em>
+              El ataque no rompe tus sistemas: <span>engaña a tu gente.</span>
             </h1>
-            <div className="hero-pie">
-              <p className="hero-lead">
-                SafeGuard tiene dos partes. PhishGuard arma simulaciones de
-                phishing para tu equipo y, si alguien cae, le explica en el
-                momento qué tenía que mirar. SafeLink revisa un enlace, un
-                WhatsApp, un PDF o un correo y te dice con un color si conviene
-                abrirlo.
+            <p className="hero-text">
+              SafeGuard tiene dos partes. PhishGuard arma simulaciones de
+              phishing para tu equipo y, si alguien cae, le explica en el
+              momento qué tenía que mirar. SafeLink revisa un enlace, un
+              WhatsApp, un PDF o un correo y te dice con un color si conviene
+              abrirlo.
+            </p>
+            <div className="hero-shield" aria-hidden="true">
+              <svg viewBox="0 0 200 220" fill="none">
+                <path
+                  d="M100 16 172 46v62c0 46-30 78-72 96-42-18-72-50-72-96V46L100 16Z"
+                  stroke="#2864e8"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M100 40 152 62v42c0 34-22 58-52 72-30-14-52-38-52-72V62L100 40Z"
+                  stroke="#35bea8"
+                  strokeWidth="1.6"
+                  opacity="0.85"
+                />
+                <circle cx="100" cy="112" r="26" stroke="#2864e8" strokeWidth="1.4" opacity="0.55" />
+              </svg>
+              <span>SG</span>
+            </div>
+          </section>
+
+          <section className="doors">
+            <article className="door door-empresas">
+              <p className="door-tag">Empresas</p>
+              <h2 className="door-title">PhishGuard</h2>
+              <p className="door-text">
+                Simulaciones de phishing por correo, WhatsApp o SMS. Queda
+                registrado quién hizo clic y quien cae ve una explicación corta,
+                sin sanciones.
               </p>
-              <div className="hero-actions">
-                <Link className="button button-primary" to="/adquirir">
-                  Adquirir PhishGuard <span>→</span>
-                </Link>
-                <Link className="button button-ghost" to="/personas">
-                  Conocer SafeLink <span>→</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="container">
-            <Captura
-              className="hero-captura"
-              src="/capturas/hero.png"
-              alt="Panel de PhishGuard con el tablero del equipo"
-            />
-          </div>
-        </section>
-
-        <section className="solucion section-pad" id="solucion">
-          <div className="container">
-            <div className="solucion-cabeza">
-              <h2>Dónde ayuda SafeGuard</h2>
-              <p>
-                Los engaños que llegan por correo o WhatsApp dependen de que
-                alguien haga clic. SafeGuard actúa justo ahí: antes de abrir, con
-                SafeLink, y después de caer en una prueba, con PhishGuard.
-              </p>
-            </div>
-            <div className="solucion-items">
-              <article>
-                <h3>Antes de abrir un enlace</h3>
-                <p>
-                  Con una cuenta gratis, pegás un enlace, un WhatsApp, un PDF o un
-                  correo, y SafeLink responde verde, amarillo o rojo, con el
-                  motivo.
-                </p>
-                <Link className="text-link" to="/personas">
-                  Ver SafeLink <span>→</span>
-                </Link>
-              </article>
-              <article>
-                <h3>Explicación en el momento</h3>
-                <p>
-                  Si alguien hace clic, recibe la explicación en el momento, sin
-                  exponerlo ni sancionarlo.
-                </p>
-                <a className="text-link" href="#proceso">
-                  Conocer las simulaciones <span>→</span>
-                </a>
-              </article>
-              <article>
-                <h3>Tablero del equipo</h3>
-                <p>
-                  Muestra quién cayó, quién se capacitó y quién mejoró en el
-                  refuerzo, por persona y por área.
-                </p>
-                <Link className="text-link" to="/empresas">
-                  Ver PhishGuard <span>→</span>
-                </Link>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section className="productos" id="productos">
-          <div className="container productos-cabeza">
-            <h2>Productos</h2>
-            <p>PhishGuard se paga por persona. SafeLink es gratis.</p>
-          </div>
-
-          <article className="producto-phish">
-            <div className="container producto-cuerpo">
-              <div className="producto-texto">
-                <h3>PhishGuard</h3>
-                <p>
-                  Simulaciones de phishing por correo, WhatsApp o SMS para PyMEs e
-                  instituciones educativas. Queda registrado quién hizo clic o
-                  cargó datos, y quien cae ve una explicación corta.
-                </p>
-                <ul>
-                  <li>Registro de clic y datos ingresados</li>
-                  <li>Tablero del equipo</li>
-                </ul>
-                <Link className="text-link" to="/adquirir">
-                  Adquirir PhishGuard <span>→</span>
-                </Link>
-              </div>
-              <Captura src="/capturas/phishguard.png" alt="Campaña de PhishGuard en el panel" />
-            </div>
-          </article>
-
-          <div className="container">
-            <article className="producto-safe">
-              <div className="producto-texto">
-                <h3>SafeLink</h3>
-                <p>
-                  Un enlace no dice a dónde lleva hasta que hacés clic. SafeLink
-                  lo revisa antes y te explica el riesgo con palabras simples.
-                  También revisa mensajes de WhatsApp, PDFs y correos.
-                </p>
-                <ul>
-                  <li>Semáforo ✓ verde, ! amarillo o ✕ rojo</li>
-                  <li>La cuenta guarda el historial</li>
-                  <li>Extensión de Chrome: un color en la barra, sin bloquear la página</li>
-                </ul>
-                <Link className="text-link" to="/personas">
-                  Probar SafeLink <span>→</span>
-                </Link>
-              </div>
-              <Captura src="/capturas/safelink.png" alt="Resultado de SafeLink con el semáforo" />
+              <p className="door-meta">Se paga por persona</p>
+              <Link className="door-cta" to="/empresas">
+                Ver PhishGuard
+              </Link>
             </article>
-          </div>
-        </section>
-
-        <section className="proceso section-pad" id="proceso">
-          <div className="container proceso-cuerpo">
-            <h2>Cómo funciona una campaña</h2>
-            <ol className="proceso-pasos">
-              {pasosCampana.map((paso, i) => (
-                <li key={paso.titulo}>
-                  <span>{i + 1}</span>
-                  <h3>{paso.titulo}</h3>
-                  <p>{paso.texto}</p>
-                </li>
-              ))}
-            </ol>
-            <Link className="text-link" to="/empresas">
-              Ver PhishGuard <span>→</span>
-            </Link>
-          </div>
-        </section>
+            <article className="door door-personas">
+              <p className="door-tag">Personas</p>
+              <h2 className="door-title">SafeLink</h2>
+              <p className="door-text">
+                Pegá un enlace, un WhatsApp, un PDF o un correo. SafeLink
+                responde verde, amarillo o rojo, con el motivo, antes de que lo
+                abras.
+              </p>
+              <p className="door-meta">Gratis</p>
+              <Link className="door-cta" to="/personas">
+                Conocer SafeLink
+              </Link>
+            </article>
+          </section>
+        </div>
       </main>
-    </Marco>
+
+      <footer className="footer">
+        <div className="shell footer-linea">
+          <p>SafeGuard no reemplaza al antivirus ni al firewall: protege el eslabón humano.</p>
+          <p className="footer-enlaces">
+            <Link to="/privacidad">Privacidad</Link>
+            <Link to="/contacto">Contacto</Link>
+          </p>
+        </div>
+      </footer>
+    </div>
   )
 }
 

@@ -1,0 +1,292 @@
+.landing-puertas {
+  --sg-bg: #f3efe6;
+  --sg-surface: #fbf9f4;
+  --sg-text: #172d42;
+  --sg-muted: #617182;
+  --sg-line: rgb(23 45 66 / 14%);
+  --sg-blue: #2864e8;
+  --sg-teal: #35bea8;
+  --sg-accent: var(--sg-blue);
+  --sg-sans: 'DM Sans', Inter, system-ui, sans-serif;
+  --sg-serif: 'Source Serif 4', Georgia, serif;
+  --sg-ease: 200ms ease;
+
+  flex: 1;
+  min-height: 100vh;
+  color: var(--sg-text);
+  background: var(--sg-bg);
+  font-family: var(--sg-sans);
+  color-scheme: light;
+}
+
+.landing-puertas .shell {
+  width: min(1080px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.landing-puertas .header {
+  border-bottom: 1px solid #ddd7cb;
+  background: var(--sg-bg);
+}
+
+.landing-puertas .header-inner {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.landing-puertas .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sg-text);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.landing-puertas .brand-mark {
+  width: 26px;
+  height: 26px;
+  color: var(--sg-blue);
+}
+
+.landing-puertas .login-link,
+.landing-puertas .door-cta {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 20px;
+  border: 1px solid var(--sg-blue);
+  border-radius: 6px;
+  background: var(--sg-blue);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color var(--sg-ease), transform var(--sg-ease);
+}
+
+.landing-puertas .login-link:hover,
+.landing-puertas .door-cta:hover {
+  transform: translateY(-1px);
+  background: #1e55cb;
+}
+
+.landing-puertas .main {
+  padding-block: 30px 88px;
+}
+
+.landing-puertas .hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 390px;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 26px;
+  padding-block: 48px;
+  perspective: 900px;
+}
+
+.landing-puertas .hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: -20% -12% -8%;
+  background:
+    radial-gradient(ellipse at 79% 50%, rgb(40 100 232 / 12%), transparent 28%),
+    radial-gradient(ellipse at 30% 60%, rgb(53 190 168 / 7%), transparent 54%);
+  content: '';
+  pointer-events: none;
+}
+
+.landing-puertas .hero h1 {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+  color: var(--sg-text);
+  font-family: var(--sg-sans);
+  font-size: clamp(38px, 5.2vw, 54px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+
+.landing-puertas .hero h1 span {
+  color: var(--sg-blue);
+}
+
+.landing-puertas .hero-text {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin-top: 20px;
+  color: var(--sg-text);
+  font-family: var(--sg-serif);
+  font-size: 19px;
+  line-height: 1.65;
+}
+
+.landing-puertas .hero-shield {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: 0;
+  display: grid;
+  width: clamp(280px, 34vw, 420px);
+  aspect-ratio: 1;
+  place-items: center;
+  transform: translateY(-50%);
+  transform-style: preserve-3d;
+  animation: shield-spin 18s linear infinite;
+  pointer-events: none;
+}
+
+.landing-puertas .hero-shield svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 18px rgb(40 100 232 / 24%));
+}
+
+.landing-puertas .hero-shield span {
+  position: absolute;
+  color: #e9fbff;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 8px #00cfff, 0 0 24px #286aff, 0 0 38px #a946ff;
+}
+
+@keyframes shield-spin {
+  from { transform: translateY(-50%) rotateY(0deg); }
+  to { transform: translateY(-50%) rotateY(360deg); }
+}
+
+.landing-puertas .doors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.landing-puertas .door {
+  position: relative;
+  display: flex;
+  min-height: 280px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+  overflow: hidden;
+  padding: 32px;
+  border: 1px solid #ded7ca;
+  border-radius: 8px;
+  background: var(--sg-surface);
+  box-shadow: 0 10px 30px rgb(23 45 66 / 6%);
+  transition: transform var(--sg-ease), border-color var(--sg-ease), box-shadow var(--sg-ease);
+}
+
+.landing-puertas .door:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--door-accent) 45%, #ded7ca);
+  box-shadow: 0 16px 38px rgb(23 45 66 / 12%);
+}
+
+.landing-puertas .door:focus-visible,
+.landing-puertas :focus-visible {
+  outline: 2px solid var(--sg-blue);
+  outline-offset: 3px;
+}
+
+.landing-puertas .door-empresas { --door-accent: var(--sg-blue); }
+.landing-puertas .door-personas { --door-accent: var(--sg-teal); }
+
+.landing-puertas .door-tag {
+  color: var(--door-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-puertas .door-title {
+  color: var(--sg-text);
+  font-family: var(--sg-sans);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.landing-puertas .door-text {
+  max-width: 470px;
+  color: var(--sg-text);
+  font-family: var(--sg-serif);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.landing-puertas .door-meta {
+  margin-top: auto;
+  color: var(--sg-muted);
+  font-size: 13px;
+}
+
+.landing-puertas .door-cta::after {
+  margin-left: 10px;
+  content: '→';
+}
+
+.landing-puertas .door-personas .door-cta {
+  border-color: #d8d2c7;
+  background: transparent;
+  color: var(--sg-text);
+}
+
+.landing-puertas .footer {
+  padding-block: 28px 32px;
+  border-top: 1px solid #d8cebc;
+  background: #e5dac8;
+  color: var(--sg-muted);
+  font-size: 14px;
+}
+
+.landing-puertas .footer-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.landing-puertas .footer-enlaces {
+  display: flex;
+  gap: 16px;
+}
+
+.landing-puertas .footer-enlaces a:hover {
+  color: var(--sg-text);
+}
+
+@media (max-width: 820px) {
+  .landing-puertas .doors { grid-template-columns: 1fr; }
+  .landing-puertas .hero { min-height: 350px; }
+  .landing-puertas .hero-shield { right: -5%; width: clamp(220px, 38vw, 320px); opacity: 0.72; }
+}
+
+@media (max-width: 600px) {
+  .landing-puertas .shell { width: calc(100% - 32px); }
+  .landing-puertas .hero { min-height: 330px; padding-block: 36px; }
+  .landing-puertas .hero-shield { top: 18%; right: -23%; width: 240px; opacity: 0.34; }
+  .landing-puertas .hero h1 { font-size: clamp(34px, 10vw, 46px); }
+  .landing-puertas .hero-text { font-size: 16px; }
+  .landing-puertas .door { min-height: 290px; padding: 28px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-puertas .hero-shield,
+  .landing-puertas .door,
+  .landing-puertas .login-link,
+  .landing-puertas .door-cta { animation: none; transition: none; }
+}
