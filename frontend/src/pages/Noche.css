@@ -274,3 +274,73 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche :focus-visible {
   outline-color: #f0abfc;
 }
+
+html[data-tema] .sg-landing.sg-noche .panel-lienzo {
+  --sg-bg: transparent;
+  --sg-surface: rgb(22 16 48 / 88%);
+  --sg-text: #f5f3ff;
+  --sg-muted: #c9c2e0;
+  --sg-line: rgb(196 181 253 / 28%);
+  --sg-blue: #e879f9;
+  --sg-teal: #67e8f9;
+  --sg-accent: #e879f9;
+  color: #f5f3ff;
+}
+
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-header h1,
+html[data-tema] .sg-landing.sg-noche .panel-lienzo h2,
+html[data-tema] .sg-landing.sg-noche .elegir h1,
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .mesa-saludo {
+  color: #fff;
+}
+
+html[data-tema] .sg-landing.sg-noche .mesa-hoja {
+  background: rgb(16 12 36 / 72%);
+  border-color: rgb(196 181 253 / 28%);
+}
+
+html[data-tema] .sg-landing.sg-noche .mesa-hoja a:hover {
+  background: rgb(232 121 249 / 12%);
+}
+
+html[data-tema] .sg-landing.sg-noche .mesa-hoja a span:last-child {
+  background: linear-gradient(180deg, #f5d0fe, #d946ef);
+  color: #1a0528;
+}
+
+html[data-tema] .sg-landing.sg-noche .elegir-cerrado a,
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton,
+html[data-tema] .sg-landing.sg-noche .panel-lienzo a.panel-boton {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5d0fe, #d946ef);
+  color: #1a0528;
+}
+
+html[data-tema] .sg-landing.sg-noche .panel-boton:hover:not(:disabled),
+html[data-tema] .sg-landing.sg-noche .elegir-cerrado a:hover {
+  background: #f5d0fe;
+  color: #1a0528;
+}
+
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton-borde {
+  border-color: #7dd3fc;
+  background: transparent;
+  color: #f0fbff;
+}
+
+html[data-tema] .sg-landing.sg-noche .panel-personas .panel-campo input,
+html[data-tema] .sg-landing.sg-noche .panel-personas .panel-campo textarea,
+html[data-tema] .sg-landing.sg-noche .panel-empresas .panel-campo input,
+html[data-tema] .sg-landing.sg-noche .panel-empresas .panel-campo textarea,
+html[data-tema] .sg-landing.sg-noche .panel-empresas .panel-campo select,
+html[data-tema] .sg-landing.sg-noche .check-empleado {
+  background: #0c0818;
+  border-color: rgb(196 181 253 / 35%);
+  color: #f5f3ff;
+}
+
+html[data-tema] .sg-landing.sg-noche .perfil .panel-campo input[readonly] {
+  background: #10081f;
+  border-color: rgb(196 181 253 / 28%);
+  color: #c9c2e0;
+}
