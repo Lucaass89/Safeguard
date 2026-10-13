@@ -1,0 +1,276 @@
+html[data-tema] .sg-landing.sg-noche,
+.sg-landing.sg-noche {
+  --ink: #f5f3ff;
+  --navy: #070814;
+  --blue: #e879f9;
+  --muted: #c9c2e0;
+  --line: rgb(196 181 253 / 28%);
+  --white: #f5f3ff;
+  --shadow: 0 18px 40px rgb(0 0 0 / 40%);
+  --nav-activo: rgb(232 121 249 / 16%);
+  --tinta: rgb(16 12 36 / 78%);
+  --tinta-fuerte: #10081f;
+  --sg-bg: #070814;
+  --sg-surface: rgb(22 16 48 / 88%);
+  --sg-text: #f5f3ff;
+  --sg-muted: #c9c2e0;
+  --sg-line: rgb(196 181 253 / 28%);
+  --sg-blue: #7dd3fc;
+  --sg-accent: #e879f9;
+
+  color: #f5f3ff;
+  color-scheme: dark;
+  background-color: #070814;
+  background-image:
+    radial-gradient(1.2px 1.2px at 8% 16%, rgb(255 255 255 / 70%), transparent),
+    radial-gradient(1px 1px at 22% 42%, rgb(255 255 255 / 45%), transparent),
+    radial-gradient(1.4px 1.4px at 71% 12%, rgb(255 255 255 / 65%), transparent),
+    radial-gradient(1px 1px at 84% 38%, rgb(186 230 253 / 70%), transparent),
+    radial-gradient(1px 1px at 46% 72%, rgb(255 255 255 / 35%), transparent),
+    radial-gradient(1.2px 1.2px at 91% 78%, rgb(244 114 182 / 55%), transparent),
+    radial-gradient(ellipse 62% 42% at 82% 8%, rgb(109 40 217 / 42%), transparent 62%),
+    radial-gradient(ellipse 48% 36% at 8% 92%, rgb(30 64 175 / 32%), transparent 58%),
+    linear-gradient(180deg, #05060f 0%, #14082a 46%, #070814 100%);
+}
+
+.sg-landing.sg-noche h1,
+.sg-landing.sg-noche h2,
+.sg-landing.sg-noche h3,
+.sg-landing.sg-noche .pg,
+.sg-landing.sg-noche .sl,
+.sg-landing.sg-noche .nota {
+  color: #f5f3ff;
+}
+
+.sg-landing.sg-noche .site-header {
+  background: rgb(7 8 20 / 78%);
+  border-bottom-color: rgb(255 255 255 / 8%);
+  backdrop-filter: blur(16px);
+}
+
+.sg-landing.sg-noche .brand,
+.sg-landing.sg-noche .brand > span:last-child > span {
+  color: #f5f3ff;
+}
+
+.sg-landing.sg-noche .main-nav > a:not(.nav-cta),
+.sg-landing.sg-noche .nav-publico > a,
+.sg-landing.sg-noche .nav-panel,
+.sg-landing.sg-noche .footer-wrap p,
+.sg-landing.sg-noche .footer-links {
+  color: #ddd6f3;
+}
+
+.sg-landing.sg-noche .nav-publico > a:hover,
+.sg-landing.sg-noche .nav-publico > a.nav-activa,
+.sg-landing.sg-noche .nav-panel:hover,
+.sg-landing.sg-noche .nav-panel.nav-activa {
+  background: rgb(232 121 249 / 16%);
+  color: #fff;
+}
+
+.sg-landing.sg-noche .nav-fin .nav-cta,
+.sg-landing.sg-noche .nav-cta {
+  border-color: transparent;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5d0fe, #d946ef);
+  color: #1a0528;
+  box-shadow: 0 0 22px rgb(217 70 239 / 45%);
+}
+
+.sg-landing.sg-noche .nav-fin .nav-cta:hover,
+.sg-landing.sg-noche .nav-cta:hover {
+  background: #f5d0fe;
+  border-color: transparent;
+  color: #1a0528;
+}
+
+.sg-landing.sg-noche .menu-toggle span {
+  background: #f5f3ff;
+}
+
+.sg-landing.sg-noche .main-nav.open,
+.sg-landing.sg-noche .nav-fin .main-nav.open {
+  background: #140c28;
+  border: 1px solid rgb(196 181 253 / 28%);
+  color: #f5f3ff;
+}
+
+.sg-landing.sg-noche .site-footer {
+  background: #05060f;
+  border-top-color: rgb(255 255 255 / 8%);
+}
+
+.sg-landing.sg-noche .footer-wrap > small {
+  color: #b7afd4;
+}
+
+.sg-landing.sg-noche .eyebrow {
+  color: #f0abfc;
+}
+
+.sg-landing.sg-noche .pg-banda {
+  background:
+    radial-gradient(ellipse at 80% 20%, rgb(109 40 217 / 45%), transparent 55%),
+    #10081f;
+}
+
+.sg-landing.sg-noche .pg-banda .pg-cta {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5d0fe, #d946ef);
+  color: #1a0528;
+  box-shadow: 0 0 22px rgb(217 70 239 / 45%);
+}
+
+.sg-landing.sg-noche .pg-banda .pg-cta:hover {
+  background: #f5d0fe;
+  color: #1a0528;
+}
+
+.sg-landing.sg-noche .pg-banda .pg-cta-secundario {
+  color: #f0fbff;
+}
+
+.sg-landing.sg-noche .pg-riel,
+.sg-landing.sg-noche .pg-incluye div,
+.sg-landing.sg-noche .sl-gratis {
+  border-color: rgb(196 181 253 / 28%);
+}
+
+.sg-landing.sg-noche .pg-riel li + li,
+.sg-landing.sg-noche .pg-incluye div {
+  border-color: rgb(196 181 253 / 28%);
+}
+
+.sg-landing.sg-noche .pg-riel p,
+.sg-landing.sg-noche .pg-incluye dd,
+.sg-landing.sg-noche .pg-precios span,
+.sg-landing.sg-noche .pg-precio-regla,
+.sg-landing.sg-noche .pg-precio-nota,
+.sg-landing.sg-noche .nota p,
+.sg-landing.sg-noche .nota li,
+.sg-landing.sg-noche .sl-lado p,
+.sg-landing.sg-noche .sl-lugares dd {
+  color: #e4def4;
+}
+
+.sg-landing.sg-noche .sl-verde h3,
+.sg-landing.sg-noche .sl-verde p,
+.sg-landing.sg-noche .sl-amarillo h3,
+.sg-landing.sg-noche .sl-amarillo p,
+.sg-landing.sg-noche .sl-rojo h3,
+.sg-landing.sg-noche .sl-rojo p {
+  color: inherit;
+}
+
+.sg-landing.sg-noche .pg-riel span,
+.sg-landing.sg-noche .pg-volver a,
+.sg-landing.sg-noche .sl-lugares a,
+.sg-landing.sg-noche .sl-cuerpo a,
+.sg-landing.sg-noche .nota a,
+.sg-landing.sg-noche .adquirir-vuelta a {
+  color: #f0abfc;
+}
+
+.sg-landing.sg-noche .sl-lado a,
+.sg-landing.sg-noche .sl-lado button,
+.sg-landing.sg-noche .adquirir-precio {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5d0fe, #d946ef);
+  color: #1a0528;
+}
+
+.sg-landing.sg-noche .sl-lado a:hover,
+.sg-landing.sg-noche .sl-lado button:hover,
+.sg-landing.sg-noche .adquirir-precio:hover {
+  background: #f5d0fe;
+  color: #1a0528;
+}
+
+.sg-landing.sg-noche .sl-secundario {
+  background: transparent !important;
+  border-color: #7dd3fc !important;
+  color: #f0fbff !important;
+}
+
+.sg-landing.sg-noche .acceso-caja {
+  background: rgb(22 16 48 / 88%);
+  border-color: rgb(196 181 253 / 28%);
+  color: #f5f3ff;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 35%);
+}
+
+.sg-landing.sg-noche .acceso-caja h1,
+.sg-landing.sg-noche .acceso-aviso {
+  color: #f5f3ff;
+}
+
+.sg-landing.sg-noche .acceso-texto,
+.sg-landing.sg-noche .acceso-estado,
+.sg-landing.sg-noche .separador,
+.sg-landing.sg-noche .acceso-pestanas button {
+  color: #ddd6f3;
+}
+
+.sg-landing.sg-noche .boton-google {
+  background: #120c24;
+  border-color: rgb(196 181 253 / 35%);
+  color: #f5f3ff;
+}
+
+.sg-landing.sg-noche .boton-google:hover {
+  background: #1c1434;
+  border-color: #f0abfc;
+}
+
+.sg-landing.sg-noche .separador::before,
+.sg-landing.sg-noche .separador::after {
+  background: rgb(196 181 253 / 35%);
+}
+
+.sg-landing.sg-noche .acceso-pestanas,
+.sg-landing.sg-noche .acceso-aviso {
+  background: #10081f;
+  border-color: rgb(196 181 253 / 28%);
+}
+
+.sg-landing.sg-noche .acceso-pestanas button.activa {
+  background: rgb(232 121 249 / 18%);
+  color: #fff;
+}
+
+.sg-landing.sg-noche .acceso-form input {
+  background: #0c0818;
+  border-color: rgb(196 181 253 / 35%);
+  color: #f5f3ff;
+}
+
+.sg-landing.sg-noche .acceso-form input:focus {
+  border-color: #e879f9;
+}
+
+.sg-landing.sg-noche .acceso-boton {
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5d0fe, #d946ef);
+  color: #1a0528;
+}
+
+.sg-landing.sg-noche .acceso-boton:hover:not(:disabled) {
+  background: #f5d0fe;
+}
+
+.sg-landing.sg-noche .acceso-error {
+  background: rgb(180 35 24 / 18%);
+  border-color: rgb(252 165 165 / 40%);
+  color: #fecaca;
+}
+
+.sg-landing.sg-noche .tema-icono {
+  border-color: rgb(196 181 253 / 35%);
+  color: #ddd6f3;
+}
+
+.sg-landing.sg-noche :focus-visible {
+  outline-color: #f0abfc;
+}

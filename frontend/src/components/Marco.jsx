@@ -160,9 +160,20 @@ function Marco({ children, interior = false }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const { pathname, hash } = useLocation()
   const { sesion, cargando } = useSesion()
+  const noche = !pathname.startsWith('/panel')
   const conSesion = Boolean(sesion)
   const navegacion = useRef(null)
   const hamburguesa = useRef(null)
+
+  useEffect(() => {
+    if (!noche) return undefined
+    const meta = document.querySelector('meta[name="theme-color"]')
+    const previo = meta?.getAttribute('content')
+    meta?.setAttribute('content', '#070814')
+    return () => {
+      if (previo) meta?.setAttribute('content', previo)
+    }
+  }, [noche])
 
   useEffect(() => {
     const id = hash.startsWith('#') ? decodeURIComponent(hash.slice(1)) : ''
@@ -214,7 +225,7 @@ function Marco({ children, interior = false }) {
   }
 
   return (
-    <div className="sg-landing">
+    <div className={noche ? 'sg-landing sg-noche' : 'sg-landing'}>
       <header className="site-header">
         <div className="container nav-wrap">
           <div className="nav-inicio">

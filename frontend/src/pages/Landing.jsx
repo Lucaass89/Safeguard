@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router'
 import { useSesion } from '../lib/useSesion.js'
 import './LandingInicio.css'
@@ -26,6 +27,15 @@ function Marca() {
 
 function Landing() {
   const { sesion } = useSesion()
+
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]')
+    const previo = meta?.getAttribute('content')
+    meta?.setAttribute('content', '#070814')
+    return () => {
+      if (previo) meta.setAttribute('content', previo)
+    }
+  }, [])
 
   return (
     <div className="landing-puertas page">
@@ -58,16 +68,16 @@ function Landing() {
               <svg viewBox="0 0 200 220" fill="none">
                 <path
                   d="M100 16 172 46v62c0 46-30 78-72 96-42-18-72-50-72-96V46L100 16Z"
-                  stroke="#2864e8"
+                  stroke="#7dd3fc"
                   strokeWidth="3"
                 />
                 <path
                   d="M100 40 152 62v42c0 34-22 58-52 72-30-14-52-38-52-72V62L100 40Z"
-                  stroke="#35bea8"
+                  stroke="#e879f9"
                   strokeWidth="1.6"
-                  opacity="0.85"
+                  opacity="0.9"
                 />
-                <circle cx="100" cy="112" r="26" stroke="#2864e8" strokeWidth="1.4" opacity="0.55" />
+                <circle cx="100" cy="112" r="26" stroke="#fff6d8" strokeWidth="1.4" opacity="0.85" />
               </svg>
               <span>SG</span>
             </div>
