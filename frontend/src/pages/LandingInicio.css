@@ -308,11 +308,17 @@
   margin-bottom: 72px;
 }
 
+.landing-puertas .tarjeta-icono {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  color: #22d3ee;
+}
+
 .landing-puertas .accesos a {
   display: flex;
-  min-height: 132px;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 8px;
   padding: 22px;
   text-decoration: none;
@@ -416,19 +422,40 @@
 }
 
 .landing-puertas .pasos li {
+  position: relative;
+  overflow: hidden;
   padding: 22px;
 }
 
+.landing-puertas .pasos li::after {
+  content: "";
+  position: absolute;
+  right: 18%;
+  bottom: -20px;
+  left: 18%;
+  height: 42px;
+  background: radial-gradient(ellipse at center, rgb(34 211 238 / 42%), transparent 72%);
+  pointer-events: none;
+}
+
+.landing-puertas .paso-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.landing-puertas .paso-icono {
+  width: 34px;
+  height: 34px;
+  color: #22d3ee;
+}
+
 .landing-puertas .pasos li span {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  place-items: center;
-  margin-bottom: 14px;
-  border-radius: 50%;
-  background: #2563eb;
-  color: #ffffff;
-  font-weight: 800;
+  color: #67e8f9;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .landing-puertas .semaforo {

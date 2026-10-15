@@ -5,17 +5,17 @@ import { useSesion } from '../lib/useSesion.js'
 import './LandingInicio.css'
 
 const pilares = [
-  ['Simulación', 'Campañas de phishing por correo, WhatsApp o SMS, con plantillas en español.'],
-  ['Explicación', 'Si alguien cae, ve en el momento qué tenía que mirar. Sin sanciones.'],
-  ['Semáforo', 'SafeLink responde verde, amarillo o rojo antes de abrir un enlace, un PDF o un correo.'],
-  ['En la nube', 'PhishGuard no se instala en cada equipo. SafeLink avisa: no bloquea la navegación.'],
+  ['simulacion', 'Simulación', 'Campañas de phishing por correo, WhatsApp o SMS, con plantillas en español.'],
+  ['explicacion', 'Explicación', 'Si alguien cae, ve en el momento qué tenía que mirar. Sin sanciones.'],
+  ['semaforo', 'Semáforo', 'SafeLink responde verde, amarillo o rojo antes de abrir un enlace, un PDF o un correo.'],
+  ['nube', 'En la nube', 'PhishGuard no se instala en cada equipo. SafeLink avisa: no bloquea la navegación.'],
 ]
 
 const accesos = [
-  ['Enlace', 'Revisá un link antes de abrirlo.', '/panel/enlaces'],
-  ['WhatsApp', 'Pegá un mensaje sospechoso.', '/panel/whatsapp'],
-  ['PDF', 'Subí un archivo y mirá si esconde algo.', '/panel/pdf'],
-  ['Correo', 'Comprobá si el remitente es real.', '/panel/correo'],
+  ['enlace', 'Enlace', 'Revisá un link antes de abrirlo.', '/panel/enlaces'],
+  ['whatsapp', 'WhatsApp', 'Pegá un mensaje sospechoso.', '/panel/whatsapp'],
+  ['pdf', 'PDF', 'Subí un archivo y mirá si esconde algo.', '/panel/pdf'],
+  ['correo', 'Correo', 'Comprobá si el remitente es real.', '/panel/correo'],
 ]
 
 const semaforo = [
@@ -30,6 +30,130 @@ const lugares = [
   ['En el portapapeles', 'Si copiás un enlace peligroso, SafeLink te avisa antes del clic.'],
   ['Con cuenta', 'Cada análisis queda en Mis enlaces. Sin cuenta, el chequeo no se guarda.'],
 ]
+
+function IconoPaso({ indice }) {
+  const comunes = {
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: '1.6',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': true,
+  }
+  if (indice === 0) {
+    return (
+      <svg className="paso-icono" {...comunes}>
+        <path d="m4.2 3 11.2 8.2H11L8.6 16.4 6.8 15.6 9.2 11.2 6.4 13.6 4.2 3Z" />
+        <path d="M16.4 4.6a2.6 2.6 0 0 1 0 3.4" />
+        <path d="M18.6 2.8a5 5 0 0 1 0 7" />
+      </svg>
+    )
+  }
+  if (indice === 1) {
+    return (
+      <svg className="paso-icono" {...comunes}>
+        <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+        <path d="m4.5 7 7.5 5.5L19.5 7" />
+      </svg>
+    )
+  }
+  if (indice === 2) {
+    return (
+      <svg className="paso-icono" {...comunes}>
+        <path d="M4 19V5" />
+        <path d="M4 19h16" />
+        <path d="M8 16v-3" />
+        <path d="M12 16V9" />
+        <path d="M16 16v-6" />
+      </svg>
+    )
+  }
+  return (
+    <svg className="paso-icono" {...comunes}>
+      <path d="M6 5.5h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H10l-4 3v-3H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" />
+      <path d="M12 13.4h.01" />
+      <path d="M12 8.2a1.8 1.8 0 0 1 1.8 1.8c0 1.3-1.8 1.6-1.8 2.8" />
+    </svg>
+  )
+}
+
+function IconoLinea({ nombre }) {
+  const comunes = {
+    className: 'tarjeta-icono',
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: '1.6',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': true,
+  }
+  if (nombre === 'simulacion') {
+    return (
+      <svg {...comunes}>
+        <circle cx="12" cy="12" r="8" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5" />
+      </svg>
+    )
+  }
+  if (nombre === 'explicacion') {
+    return (
+      <svg {...comunes}>
+        <path d="M9 18h6M10 21h4" />
+        <path d="M8.2 14.2A5.5 5.5 0 1 1 15.8 14c-.8.7-1.3 1.4-1.5 2.4h-4.6c-.2-1-.7-1.7-1.5-2.2Z" />
+      </svg>
+    )
+  }
+  if (nombre === 'semaforo') {
+    return (
+      <svg {...comunes}>
+        <rect x="8" y="2.5" width="8" height="19" rx="3" />
+        <circle cx="12" cy="7" r="1.3" />
+        <circle cx="12" cy="12" r="1.3" />
+        <circle cx="12" cy="17" r="1.3" />
+      </svg>
+    )
+  }
+  if (nombre === 'nube') {
+    return (
+      <svg {...comunes}>
+        <path d="M7 18h9.2a3.8 3.8 0 0 0 .6-7.6 5 5 0 0 0-9.6-1.2A3.4 3.4 0 0 0 7 18Z" />
+      </svg>
+    )
+  }
+  if (nombre === 'enlace') {
+    return (
+      <svg {...comunes}>
+        <path d="M10 13a4 4 0 0 0 5.7.4l2.3-2.3a4 4 0 0 0-5.7-5.6L11 6.8" />
+        <path d="M14 11a4 4 0 0 0-5.7-.4L6 12.9a4 4 0 0 0 5.7 5.6L13 17.2" />
+      </svg>
+    )
+  }
+  if (nombre === 'whatsapp') {
+    return (
+      <svg {...comunes}>
+        <path d="M6.5 17.5 5 20l2.6-1.2A8 8 0 1 0 6.5 17.5Z" />
+        <path d="M9 10.2c.2 1.6 1.6 3 3.2 3.4" />
+      </svg>
+    )
+  }
+  if (nombre === 'pdf') {
+    return (
+      <svg {...comunes}>
+        <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z" />
+        <path d="M14 3.5V8h4.5M9 13h6M9 16.5h4" />
+      </svg>
+    )
+  }
+  return (
+    <svg {...comunes}>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="m4.5 7 7.5 5.5L19.5 7" />
+    </svg>
+  )
+}
 
 function Marca() {
   return (
@@ -119,8 +243,9 @@ function Landing() {
           </section>
 
           <section className="pilares" aria-label="Qué cubre SafeGuard">
-            {pilares.map(([titulo, texto]) => (
+            {pilares.map(([icono, titulo, texto]) => (
               <article key={titulo}>
+                <IconoLinea nombre={icono} />
                 <h2>{titulo}</h2>
                 <p>{texto}</p>
               </article>
@@ -133,8 +258,9 @@ function Landing() {
               <h2>Revisá lo que te llega antes de abrirlo.</h2>
             </div>
             <div className="accesos-grilla">
-              {accesos.map(([titulo, texto, ruta]) => (
+              {accesos.map(([icono, titulo, texto, ruta]) => (
                 <Link key={titulo} to={sesion ? ruta : '/ingresar'}>
+                  <IconoLinea nombre={icono} />
                   <strong>{titulo}</strong>
                   <span>{texto}</span>
                 </Link>
@@ -171,7 +297,10 @@ function Landing() {
             <ol>
               {pasosCampana.map((paso, i) => (
                 <li key={paso.titulo}>
-                  <span>{i + 1}</span>
+                  <div className="paso-cabeza">
+                    <IconoPaso indice={i} />
+                    <span>{i + 1}</span>
+                  </div>
                   <h3>{paso.titulo}</h3>
                   <p>{paso.texto}</p>
                 </li>
