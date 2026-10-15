@@ -1,21 +1,22 @@
 :root {
-  --sg-bg: #0b1220;
-  --sg-surface: #131c2e;
-  --sg-text: #eef2f6;
-  --sg-muted: #8d98ab;
-  --sg-line: rgb(255 255 255 / 8%);
+  --sg-bg: #0b0f17;
+  --sg-surface: #131a26;
+  --sg-text: #f3f4f6;
+  --sg-muted: #9ca3af;
+  --sg-line: #26334d;
 
-  --sg-teal: #2a9a96;
-  --sg-blue: #4a74b8;
+  --sg-teal: #0d9488;
+  --sg-blue: #2563eb;
   --sg-accent: var(--sg-blue);
 
-  --sg-green: #2f9e6b;
-  --sg-yellow: #c4922a;
-  --sg-red: #d16b5a;
+  --sg-green: #34d399;
+  --sg-yellow: #fbbf24;
+  --sg-red: #f87171;
 
-  --sg-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sg-serif: Inter, system-ui, sans-serif;
   --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
-  --sg-radius: 8px;
+  --sg-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sg-radius: 10px;
   --sg-radius-sm: 6px;
   --sg-ease: 200ms ease;
 

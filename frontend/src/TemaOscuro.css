@@ -9,14 +9,14 @@ html[data-tema='claro'] {
 }
 
 html[data-tema='oscuro'] {
-  --sg-bg: #1b2836;
-  --sg-surface: #243444;
-  --sg-text: #e6eef4;
-  --sg-muted: #b4c4d0;
-  --sg-line: #3d5163;
-  --sg-accent: #8eb4ff;
+  --sg-bg: #0b0f17;
+  --sg-surface: #131a26;
+  --sg-text: #f3f4f6;
+  --sg-muted: #9ca3af;
+  --sg-line: #26334d;
+  --sg-accent: #2563eb;
   color-scheme: dark;
-  background: #1b2836;
+  background: #0b0f17;
 }
 
 .tema-control {

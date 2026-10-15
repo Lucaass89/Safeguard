@@ -12,32 +12,52 @@
 }
 
 .sim-leccion {
-  max-width: 36rem;
-  margin-inline: auto;
-  background: #f7f4ee;
-  color: #14213d;
-  min-height: 100vh;
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  min-height: 0;
+  background: #131a26;
+  color: #f3f4f6;
+  border: 1px solid #26334d;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 50%);
+  text-align: center;
 }
 
-.sim-marca {
-  font-size: 14px;
+.sim-leccion .sim-marca {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgb(245 158 11 / 30%);
+  border-radius: 999px;
+  background: rgb(245 158 11 / 15%);
+  color: #fbbf24;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #4b5563;
 }
 
-.sim-nota {
-  color: #4b5563;
+.sim-leccion h1 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.sim-leccion p {
+  color: #9ca3af;
+}
+
+.sim-leccion .sim-nota {
+  color: #9ca3af;
 }
 
 .sim-boton {
   min-height: 44px;
   padding: 0 18px;
   border: 0;
-  border-radius: 8px;
-  background: #1d4ed8;
+  border-radius: 6px;
+  background: #2563eb;
   color: white;
   font: inherit;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 }
 

@@ -1,52 +1,67 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+  --bg-main: #0b0f17;
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --border: #26334d;
 }
 
 body {
   margin: 0;
-  width: 320px;
-  background: #f3efe6;
-  color: #102a43;
+  width: 340px;
+  background: var(--bg-main);
+  color: var(--text-primary);
 }
 
 main {
-  padding: 16px 16px 18px;
-  border-top: 6px solid #8d98ab;
+  padding: 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-main);
 }
 
 main.verde {
-  border-top-color: #0c6b58;
+  background: rgb(16 185 129 / 12%);
+  border-top-color: rgb(16 185 129 / 35%);
 }
 
 main.amarillo {
-  border-top-color: #c48a00;
+  background: rgb(245 158 11 / 12%);
+  border-top-color: rgb(245 158 11 / 35%);
 }
 
 main.rojo {
-  border-top-color: #c24132;
+  background: rgb(239 68 68 / 12%);
+  border-top-color: rgb(239 68 68 / 35%);
 }
 
 .marca {
   margin: 0;
   font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #4a6278;
+  color: var(--text-secondary);
 }
 
 h1 {
   margin: 6px 0 0;
   font-size: 22px;
   line-height: 1.15;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
+
+main.verde h1 { color: #34d399; }
+main.amarillo h1 { color: #fbbf24; }
+main.rojo h1 { color: #f87171; }
 
 #dominio {
   margin: 8px 0 0;
-  font-size: 14px;
-  font-weight: 700;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
   word-break: break-all;
 }
 
@@ -55,6 +70,7 @@ h1 {
   padding-left: 18px;
   font-size: 14px;
   line-height: 1.4;
+  color: var(--text-primary);
 }
 
 #motivos li + li {
@@ -66,8 +82,9 @@ h1 {
   margin: 12px 0 0;
   font-size: 14px;
   line-height: 1.45;
+  color: var(--text-secondary);
 }
 
 #aviso {
-  color: #4a6278;
+  color: #6b7280;
 }
