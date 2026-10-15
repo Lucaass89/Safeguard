@@ -1,12 +1,12 @@
 .landing-puertas {
-  --sg-bg: #0b0f17;
-  --sg-surface: #131a26;
-  --sg-text: #f3f4f6;
-  --sg-muted: #9ca3af;
-  --sg-line: #26334d;
+  --sg-bg: #070b10;
+  --sg-surface: #10161e;
+  --sg-text: #f4f7fb;
+  --sg-muted: #93a0b3;
+  --sg-line: #1e2a3a;
   --sg-blue: #2563eb;
   --sg-magenta: #60a5fa;
-  --sg-teal: #0d9488;
+  --sg-teal: #22d3ee;
   --sg-accent: var(--sg-blue);
   --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
   --sg-serif: Inter, system-ui, sans-serif;
@@ -18,7 +18,10 @@
   flex: 1;
   min-height: 100vh;
   color: var(--sg-text);
-  background: var(--sg-bg);
+  background:
+    radial-gradient(ellipse 36% 28% at 8% 38%, rgb(8 90 100 / 20%), transparent 64%),
+    radial-gradient(ellipse 32% 22% at 82% 4%, rgb(24 60 140 / 22%), transparent 70%),
+    var(--sg-bg);
   font-family: var(--sg-sans);
   color-scheme: dark;
 }
@@ -32,8 +35,8 @@
   position: sticky;
   z-index: 5;
   top: 0;
-  border-bottom: 1px solid #26334d;
-  background: rgb(11 15 23 / 85%);
+  border-bottom: 1px solid #162033;
+  background: rgb(7 11 16 / 88%);
   backdrop-filter: blur(12px);
 }
 
@@ -98,8 +101,8 @@
 }
 
 .landing-puertas .door-cta-ghost {
-  border-color: #26334d;
-  background: transparent;
+  border-color: #1e2a3a;
+  background: #0c121b;
   color: #f3f4f6;
 }
 
@@ -175,7 +178,7 @@
   position: relative;
   z-index: 2;
   margin-bottom: 12px;
-  color: #0d9488;
+  color: #7dd3fc;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -210,7 +213,7 @@
   width: 72%;
   height: 72%;
   overflow: visible;
-  filter: none;
+  filter: drop-shadow(0 0 14px rgb(34 211 238 / 32%));
 }
 
 .landing-puertas .hero-shield span {
@@ -250,9 +253,9 @@
 .landing-puertas .accesos a,
 .landing-puertas .pasos li,
 .landing-puertas .tablero {
-  border: 1px solid #26334d;
+  border: 1px solid #1e2a3a;
   border-radius: 10px;
-  background: #131a26;
+  background: #10161e;
 }
 
 .landing-puertas .pilares article,
@@ -334,13 +337,13 @@
   gap: 28px;
   align-items: center;
   padding: 36px;
-  border: 1px solid #26334d;
+  border: 1px solid #1e2a3a;
   border-radius: 16px;
-  background: #131a26;
+  background: #10161e;
 }
 
 .landing-puertas .banda-inversa {
-  background: #131a26;
+  background: #10161e;
 }
 
 .landing-puertas .banda .door-cta {
@@ -356,6 +359,21 @@
   font-size: 16px;
 }
 
+.landing-puertas .tablero h3::after {
+  content: "";
+  display: block;
+  height: 72px;
+  margin-top: 14px;
+  border-radius: 8px;
+  background:
+    linear-gradient(#1d4ed8, #1d4ed8) 10% 100% / 9% 42% no-repeat,
+    linear-gradient(#2563eb, #2563eb) 26% 100% / 9% 68% no-repeat,
+    linear-gradient(#3b82f6, #3b82f6) 42% 100% / 9% 52% no-repeat,
+    linear-gradient(#60a5fa, #60a5fa) 58% 100% / 9% 86% no-repeat,
+    linear-gradient(#22d3ee, #22d3ee) 74% 100% / 9% 60% no-repeat,
+    #070b10;
+}
+
 .landing-puertas .tablero ul {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -368,7 +386,7 @@
 .landing-puertas .tablero li {
   padding: 16px;
   border-radius: 10px;
-  background: #0b0f17;
+  background: #070b10;
 }
 
 .landing-puertas .tablero strong {
@@ -407,7 +425,7 @@
   height: 32px;
   place-items: center;
   margin-bottom: 14px;
-  border-radius: 6px;
+  border-radius: 50%;
   background: #2563eb;
   color: #ffffff;
   font-weight: 800;
@@ -419,9 +437,22 @@
 }
 
 .landing-puertas .luz {
-  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 12px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 12px;
+  background: #0c121b;
+}
+
+.landing-puertas .luz::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  background: currentColor;
+  -webkit-mask: var(--luz-icono) center / contain no-repeat;
+  mask: var(--luz-icono) center / contain no-repeat;
 }
 
 .landing-puertas .luz h3,
@@ -437,28 +468,34 @@
 }
 
 .landing-puertas .luz-verde {
-  background: rgb(16 185 129 / 12%);
-  border-color: rgb(16 185 129 / 35%);
-  color: #34d399;
+  --luz-icono: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4zm-1.2 13.2-3.3-3.3 1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4-5.7 5.7z'/%3E%3C/svg%3E");
+  border-color: rgb(34 197 94 / 75%);
+  background: rgb(16 185 129 / 8%);
+  box-shadow: inset 0 0 28px rgb(16 185 129 / 14%), 0 0 16px rgb(16 185 129 / 16%);
+  color: #4ade80;
 }
 
 .landing-puertas .luz-amarillo {
-  background: rgb(245 158 11 / 12%);
-  border-color: rgb(245 158 11 / 35%);
-  color: #fbbf24;
+  --luz-icono: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 3.2 1.8 21h20.4L12 3.2zm1 13.3h-2v-2h2v2zm0-3.5h-2v-5h2v5z'/%3E%3C/svg%3E");
+  border-color: rgb(234 179 8 / 80%);
+  background: rgb(234 179 8 / 8%);
+  box-shadow: inset 0 0 28px rgb(234 179 8 / 12%), 0 0 16px rgb(234 179 8 / 14%);
+  color: #facc15;
 }
 
 .landing-puertas .luz-rojo {
-  background: rgb(239 68 68 / 12%);
-  border-color: rgb(239 68 68 / 35%);
+  --luz-icono: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2 4 5.2v6.4c0 5.2 3.3 9 8 10.4 4.7-1.4 8-5.2 8-10.4V5.2L12 2zm1 14h-2v-2h2v2zm0-4h-2V8h2v4z'/%3E%3C/svg%3E");
+  border-color: rgb(239 68 68 / 80%);
+  background: rgb(239 68 68 / 8%);
+  box-shadow: inset 0 0 28px rgb(239 68 68 / 14%), 0 0 16px rgb(239 68 68 / 16%);
   color: #f87171;
 }
 
 .landing-puertas .portal {
   padding: 48px 36px;
-  border: 1px solid #26334d;
+  border: 1px solid #1e2a3a;
   border-radius: 16px;
-  background: #131a26;
+  background: #10161e;
   box-shadow: 0 10px 25px -5px rgb(0 0 0 / 50%);
 }
 
@@ -481,9 +518,9 @@
   gap: 13px;
   overflow: visible;
   padding: 32px;
-  border: 1px solid #26334d;
+  border: 1px solid #1e2a3a;
   border-radius: 10px;
-  background: #131a26;
+  background: #10161e;
   box-shadow: 0 4px 14px rgb(0 0 0 / 40%);
   transition: transform var(--sg-ease), border-color var(--sg-ease), box-shadow var(--sg-ease);
 }
@@ -499,8 +536,8 @@
   outline-offset: 3px;
 }
 
-.landing-puertas .door-empresas { --door-accent: #2563eb; }
-.landing-puertas .door-personas { --door-accent: #0d9488; }
+.landing-puertas .door-empresas { --door-accent: #60a5fa; }
+.landing-puertas .door-personas { --door-accent: #22d3ee; }
 
 .landing-puertas .door-tag {
   color: var(--door-accent);
@@ -538,7 +575,7 @@
 }
 
 .landing-puertas .door-personas .door-cta {
-  border-color: #26334d;
+  border-color: #1e2a3a;
   background: transparent;
   color: #f3f4f6;
   box-shadow: none;
@@ -553,8 +590,8 @@
 
 .landing-puertas .footer {
   padding-block: 28px 32px;
-  border-top: 1px solid #1a2436;
-  background: #0b0f17;
+  border-top: 1px solid #162033;
+  background: #070b10;
   color: #9ca3af;
   font-size: 14px;
 }
@@ -587,6 +624,7 @@
 }
 
 @media (max-width: 820px) {
+  .landing-puertas .semaforo { grid-template-columns: 1fr; }
   .landing-puertas .doors,
   .landing-puertas .pilares,
   .landing-puertas .accesos-grilla,
