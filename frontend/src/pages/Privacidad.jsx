@@ -77,13 +77,20 @@ function Privacidad() {
         </p>
         <p>
           Abrir el enlace de la simulación deja <code>mail_abierto</code>. El botón
-          Entendido deja <code>completo_capacitacion</code>. Darkconsole solo se abre
-          para la cuenta que dio de alta la empresa, y el kit de enlaces llega al
-          correo de esa cuenta.
+          Entendido deja <code>completo_capacitacion</code>.
         </p>
         <p>
-          Pendiente de definir. El tablero de la app lista a cada persona por
-          nombre. No hay en este código un PDF mensual generado.
+          Si la persona toca el enlace, <code>phishguard-avisar-caida</code> manda un
+          aviso corto al correo del administrador y del técnico de esa organización.
+          El aviso dice el nombre, el área y cuántos del área tocaron el enlace en esa
+          campaña. Se manda una sola vez por persona y campaña. Si el correo no sale,
+          la simulación sigue igual.
+        </p>
+        <p>
+          El informe en <code>/panel/informe</code> usa los mismos datos del tablero.
+          Quien administra puede guardarlo o imprimirlo desde el navegador. Lista a
+          cada persona por nombre, para esa cuenta, y el texto dice que no es una
+          sanción.
         </p>
 
         <p>

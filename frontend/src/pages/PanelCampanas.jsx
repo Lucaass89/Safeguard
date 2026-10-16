@@ -351,8 +351,8 @@ function PanelCampanas() {
         </Link>
         <h1>Campañas</h1>
         <p className="panel-lead">
-          El CEO fraudulento y el paquete retenido se simulan por WhatsApp o SMS.
-          Quien cae recibe un refuerzo más difícil a las 3 semanas.
+          Hay plantillas de banco, ARCA, colegio, envío y Mercado Libre, por correo,
+          WhatsApp o SMS. Quien cae recibe un refuerzo más difícil a las 3 semanas.
         </p>
         <p className="panel-aviso">
           Al crear la campaña, los enlaces llegan por correo a la cuenta con la que

@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
+import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
 import './Panel.css'
-
-function cayo(ev) {
-  return ev.hizo_clic || ev.ingreso_datos
-}
 
 function claseResultado(persona) {
   if (persona.cayo) return 'persona-badge persona-badge-rechazado'
@@ -70,58 +67,9 @@ function PanelTablero() {
     }
   }, [])
 
-  const porPersona = useMemo(() => {
-    const refuerzoIds = new Set(campanas.filter((c) => c.es_refuerzo).map((c) => c.id))
-    return empleados
-      .map((emp) => {
-        const propios = eventos.filter((e) => e.empleado_id === emp.id)
-        const iniciales = propios.filter((e) => !refuerzoIds.has(e.campana_id))
-        const refuerzos = propios.filter((e) => refuerzoIds.has(e.campana_id))
-        const cayoAlguno = propios.some(cayo)
-        const capacitado = propios.some((e) => e.completo_capacitacion)
-        const reconocio = propios.some((e) => e.vio_reconocimiento && !e.hizo_clic)
-        const mejoro =
-          iniciales.some(cayo) && refuerzos.length > 0 && refuerzos.every((e) => !cayo(e))
-        return {
-          ...emp,
-          cayo: cayoAlguno,
-          capacitado,
-          reconocio,
-          mejoro,
-          participo: propios.length > 0,
-        }
-      })
-      .sort((a, b) => {
-        const area = (a.departamento || 'General').localeCompare(b.departamento || 'General')
-        if (area !== 0) return area
-        return (a.nombre || '').localeCompare(b.nombre || '')
-      })
-  }, [empleados, eventos, campanas])
-
-  const porArea = useMemo(() => {
-    const grupos = {}
-    for (const p of porPersona) {
-      const key = p.departamento || 'General'
-      if (!grupos[key]) {
-        grupos[key] = { area: key, total: 0, cayo: 0, noCayo: 0, cap: 0, mejoro: 0 }
-      }
-      grupos[key].total += 1
-      if (p.cayo) grupos[key].cayo += 1
-      else if (p.participo) grupos[key].noCayo += 1
-      if (p.capacitado) grupos[key].cap += 1
-      if (p.mejoro) grupos[key].mejoro += 1
-    }
-    return Object.values(grupos)
-  }, [porPersona])
-
-  const resumen = useMemo(
-    () => ({
-      personas: porPersona.length,
-      cayo: porPersona.filter((p) => p.cayo).length,
-      noCayo: porPersona.filter((p) => !p.cayo && p.participo).length,
-      cap: porPersona.filter((p) => p.capacitado).length,
-    }),
-    [porPersona],
+  const { porPersona, porArea, resumen } = useMemo(
+    () => resumirEquipo(empleados, eventos, campanas),
+    [empleados, eventos, campanas],
   )
 
   const sinEquipo = porPersona.length === 0
@@ -154,6 +102,11 @@ function PanelTablero() {
         <p className="panel-lead">
           {organizacion.nombre_empresa}. Medimos si la persona cayó, si se capacitó y si
           mejoró en el refuerzo.
+        </p>
+        <p className="panel-acciones">
+          <Link className="text-link" to="/panel/informe">
+            Ver el informe para guardar
+          </Link>
         </p>
       </header>
 

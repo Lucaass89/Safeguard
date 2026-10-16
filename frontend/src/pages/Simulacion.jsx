@@ -152,6 +152,13 @@ function Simulacion() {
     }
   }, [token])
 
+  function avisarCaida() {
+    return supabase.functions.invoke('phishguard-avisar-caida', { body: { token } }).then(
+      () => {},
+      () => {},
+    )
+  }
+
   async function registrar(evento, siguiente) {
     const { data, error: fallo } = await supabase.rpc('phishguard_registrar', {
       p_token: token,
@@ -163,6 +170,7 @@ function Simulacion() {
     }
     if (data) setFicha(data)
     setPaso(siguiente)
+    if (evento === 'clic' || evento === 'datos') avisarCaida()
   }
 
   if (error) {
@@ -222,6 +230,10 @@ function Simulacion() {
             setError(fallo.message)
             return
           }
+          await Promise.race([
+            avisarCaida(),
+            new Promise((resolve) => setTimeout(resolve, 2500)),
+          ])
           window.location.assign('https://www.mercadopago.com.ar')
         }}
       />
