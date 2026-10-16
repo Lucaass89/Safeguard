@@ -961,6 +961,7 @@
 
 .sg-landing .site-footer {
   padding: 32px 0;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
   background: #f3efe6;
   border-top: 1px solid var(--line);
 }
@@ -1273,5 +1274,33 @@
 @media (prefers-reduced-motion: reduce) {
   .sg-landing .button-primary:hover {
     background: var(--blue);
+  }
+}
+
+.sg-landing .site-header {
+  padding-top: calc(18px + env(safe-area-inset-top, 0px));
+}
+
+.sg-landing .hero {
+  padding-top: calc(150px + env(safe-area-inset-top, 0px));
+}
+
+@media (max-width: 850px) {
+  .sg-landing .hero {
+    padding-top: calc(125px + env(safe-area-inset-top, 0px));
+  }
+
+  .sg-landing .pagina-interior {
+    padding-top: calc(112px + env(safe-area-inset-top, 0px));
+  }
+}
+
+@media (min-width: 851px) {
+  .sg-landing .hero {
+    padding-top: calc(148px + env(safe-area-inset-top, 0px));
+  }
+
+  .sg-landing .pagina-interior {
+    padding-top: calc(140px + env(safe-area-inset-top, 0px));
   }
 }
