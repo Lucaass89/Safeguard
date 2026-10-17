@@ -16,7 +16,9 @@ const RUTAS_APP = {
 }
 
 export function esAppNativa() {
-  return navigator.userAgent.includes(MARCA)
+  if (navigator.userAgent.includes(MARCA)) return true
+  if (navigator.standalone === true) return true
+  return window.matchMedia('(display-mode: standalone)').matches
 }
 
 export function rutaEnApp(to) {
