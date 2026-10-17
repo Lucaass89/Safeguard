@@ -64,6 +64,58 @@
   gap: 16px;
 }
 
+.landing-puertas .header-acciones {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-puertas .tema-icono {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid #1e2a3a;
+  border-radius: 6px;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.landing-puertas .tema-glifo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.landing-puertas .tema-glifo-activo {
+  opacity: 1;
+  transform: none;
+}
+
+.landing-puertas .tema-icono svg {
+  width: 18px;
+  height: 18px;
+}
+
+.landing-puertas .tema-icono:hover {
+  border-color: #3b4f74;
+  color: #f3f4f6;
+}
+
+.landing-puertas .tema-icono:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
 .landing-puertas .brand {
   display: inline-flex;
   align-items: center;
@@ -698,14 +750,33 @@
 
   .landing-puertas .door,
   .landing-puertas .login-link,
-  .landing-puertas .door-cta {
+  .landing-puertas .door-cta,
+  .landing-puertas .tema-icono.tema-animado .tema-glifo {
     animation: none;
     transition: none;
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .landing-puertas .tema-icono.tema-animado .tema-glifo {
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out;
+  }
+}
+
 @media (max-width: 820px) and (prefers-reduced-motion: reduce) {
   .landing-puertas .hero-shield { transform: none; }
+}
+
+@media (max-width: 600px) {
+  .landing-puertas .header-acciones {
+    gap: 6px;
+  }
+
+  .landing-puertas .header-acciones .login-link {
+    padding: 8px 12px;
+  }
 }
 
 html[data-tema='claro'] .landing-puertas {
@@ -771,6 +842,21 @@ html[data-tema='claro'] .landing-puertas .brand:hover {
 html[data-tema='claro'] .landing-puertas .hero-shield svg path,
 html[data-tema='claro'] .landing-puertas .hero-shield svg circle {
   stroke: #c4b5a4;
+}
+
+html[data-tema='claro'] .landing-puertas .tema-icono {
+  border-color: #e4d9cc;
+  color: #6f655c;
+}
+
+html[data-tema='claro'] .landing-puertas .tema-icono:hover {
+  border-color: #d9c9b8;
+  background: #e6d9cc;
+  color: #3c342c;
+}
+
+html[data-tema='claro'] .landing-puertas .tema-icono:focus-visible {
+  outline-color: #7a6552;
 }
 
 html[data-tema='claro'] .landing-puertas .login-link,

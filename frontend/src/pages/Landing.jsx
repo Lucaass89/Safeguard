@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router'
+import TemaControl from '../components/TemaControl.jsx'
 import { pasosCampana } from '../lib/pasosCampana.js'
 import { useSesion } from '../lib/useSesion.js'
 import './LandingInicio.css'
@@ -212,9 +213,12 @@ function Landing() {
             <a href="#safelink">SafeLink</a>
             <Link to="/contacto">Contacto</Link>
           </nav>
-          <Link className="login-link" to={sesion ? '/panel' : '/ingresar'}>
-            {sesion ? 'Mi panel' : 'Ingresar'}
-          </Link>
+          <div className="header-acciones">
+            <Link className="login-link" to={sesion ? '/panel' : '/ingresar'}>
+              {sesion ? 'Mi panel' : 'Ingresar'}
+            </Link>
+            <TemaControl icono />
+          </div>
         </div>
       </header>
 
