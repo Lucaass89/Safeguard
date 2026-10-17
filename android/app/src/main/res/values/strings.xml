@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Safeguard</string>
+    <string name="app_name">SafeGuard</string>
+    <string name="sin_conexion">No hay conexión. Revisá internet y probá de nuevo.</string>
+    <string name="reintentar">Reintentar</string>
 </resources>
