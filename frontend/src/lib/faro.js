@@ -94,7 +94,8 @@ export function oraciones(texto) {
 }
 
 export function limitarOraciones(texto, max = 5) {
-  return oraciones(texto).slice(0, max).join(' ')
+  const completas = oraciones(texto).filter((parte) => /[.!?]$/.test(parte))
+  return completas.slice(0, max).join(' ')
 }
 
 export function nombreNivel(nivel) {

@@ -77,6 +77,12 @@ function oraciones(texto: string) {
     .filter(Boolean)
 }
 
+function cerradas(texto: string, modo: Modo) {
+  const completas = oraciones(texto).filter((parte) => /[.!?]$/.test(parte))
+  if (completas.length === 0) return ''
+  return completas.slice(0, tope(modo)).join(' ')
+}
+
 function afirma(frase: string, patron: RegExp) {
   const re = new RegExp(patron.source, 'g')
   let hallazgo = re.exec(frase)
@@ -163,6 +169,7 @@ function instrucciones(nivel: Nivel, motivos: string[], modo: Modo, caso: Caso) 
     'Un ejemplo es un caso parecido y genérico, sin pasos para armar un engaño.',
     'Un resumen es corto: qué se revisó, el color y la señal principal.',
     'Si piden analizar el caso, recorré las señales y cerrá con qué no hacer.',
+    'Cada respuesta tiene que terminar la última oración. No la dejes a la mitad.',
     forma(modo),
     'Si el nivel es Peligroso, no digas que se abra, se descargue, se responda, se pague ni que se carguen claves o datos. Decí que no siga el mensaje, que no cargue claves ni datos, y que avise por otro canal.',
     'Si el nivel es Dudoso, no digas que se siga el mensaje.',
@@ -200,43 +207,50 @@ async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, tu
     })),
     { role: 'user', parts: [{ text: pregunta }] },
   ]
-  const cuerpo = {
-    systemInstruction: { parts: [{ text: instrucciones(nivel, motivos, modo, caso) }] },
-    contents,
-    generationConfig: { maxOutputTokens: modo === 'avanzado' ? 700 : 500 },
-  }
+  const configs = [
+    { maxOutputTokens: 8192, thinkingConfig: { thinkingBudget: 0, includeThoughts: false } },
+    { maxOutputTokens: 8192 },
+  ]
 
   for (const modelo of modelos) {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,
-      {
-        method: 'POST',
-        signal: AbortSignal.timeout(20000),
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': clave,
+    for (const generationConfig of configs) {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,
+        {
+          method: 'POST',
+          signal: AbortSignal.timeout(20000),
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': clave,
+          },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: instrucciones(nivel, motivos, modo, caso) }] },
+            contents,
+            generationConfig,
+          }),
         },
-        body: JSON.stringify(cuerpo),
-      },
-    )
-    if (res.status === 404) continue
-    if (!res.ok) {
-      const detalle = await res.text()
-      console.log('faro-modelo', res.status, detalle.replace(/AIza[0-9A-Za-z_-]+/g, '').slice(0, 180))
-      return null
+      )
+      if (res.status === 404) break
+      if (res.status === 400) continue
+      if (!res.ok) {
+        const detalle = await res.text()
+        console.log('faro-modelo', res.status, detalle.replace(/AIza[0-9A-Za-z_-]+/g, '').slice(0, 180))
+        break
+      }
+      const data = await res.json()
+      const partes = data?.candidates?.[0]?.content?.parts
+      if (!Array.isArray(partes)) continue
+      const texto = sinEmojis(
+        partes
+          .filter((parte: { thought?: boolean; text?: string }) => !parte?.thought && typeof parte?.text === 'string')
+          .map((parte: { text?: string }) => parte.text ?? '')
+          .join(' '),
+      )
+      const corta = cerradas(texto, modo)
+      const cortada = data?.candidates?.[0]?.finishReason === 'MAX_TOKENS'
+      if (!corta || cortada || contradice(nivel, corta)) continue
+      return corta
     }
-    const data = await res.json()
-    const partes = data?.candidates?.[0]?.content?.parts
-    if (!Array.isArray(partes)) return null
-    const texto = sinEmojis(
-      partes
-        .filter((parte: { thought?: boolean; text?: string }) => !parte?.thought && typeof parte?.text === 'string')
-        .map((parte: { text?: string }) => parte.text ?? '')
-        .join(' '),
-    )
-    const corta = oraciones(texto).slice(0, tope(modo)).join(' ')
-    if (!corta || contradice(nivel, corta)) return null
-    return corta
   }
 
   return null
