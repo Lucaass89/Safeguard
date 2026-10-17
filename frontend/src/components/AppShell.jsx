@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router'
+import TemaControl from './TemaControl.jsx'
 import './AppShell.css'
 
 const DESTINOS = [
@@ -70,6 +71,7 @@ function AppShell({ children }) {
     <div className="app-shell">
       <header className="app-top">
         <p className="app-top-titulo">{tituloDe(pathname)}</p>
+        <TemaControl icono />
       </header>
       <main className="app-cuerpo">
         {children ?? <Outlet />}

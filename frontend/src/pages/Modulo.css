@@ -583,8 +583,8 @@
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda {
-  border: 1px solid #d2deee;
-  background: #f6f9fd;
+  border: 1px solid #7ea4d4;
+  background: #93b4e0;
   color: #243044;
 }
 
@@ -596,32 +596,32 @@ html[data-tema='claro'] .sg-landing .pg-tablero strong {
 
 html[data-tema='claro'] .sg-landing .pg-banda p,
 html[data-tema='claro'] .sg-landing .pg-tablero li span {
-  color: #5c6d84;
+  color: #24344c;
 }
 
 html[data-tema='claro'] .sg-landing .pg-tablero,
 html[data-tema='claro'] .sg-landing .pg-tablero li {
-  border-top-color: #d2deee;
+  border-top-color: #7ea4d4;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta,
 html[data-tema='claro'] .sg-landing .sl-lado a,
 html[data-tema='claro'] .sg-landing .sl-lado button,
 html[data-tema='claro'] .sg-landing .adquirir-precio {
-  background: #d7e5f8;
-  color: #243044;
+  background: #6f98d4;
+  color: #1e3354;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover,
 html[data-tema='claro'] .sg-landing .sl-lado a:hover,
 html[data-tema='claro'] .sg-landing .sl-lado button:hover,
 html[data-tema='claro'] .sg-landing .adquirir-precio:hover {
-  background: #c5d8f4;
-  color: #243044;
+  background: #5e8acc;
+  color: #1e3354;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta-secundario {
-  border-color: #c5d4e8;
+  border-color: #5e8acc;
   color: #243044;
 }
 
