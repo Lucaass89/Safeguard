@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
+import { esAppNativa } from '../lib/esAppNativa.js'
 import { escucharInstalacion, instalarPendiente, pedirInstalacion } from '../lib/instalar.js'
 import './InstalarApp.css'
 
@@ -44,7 +45,7 @@ export default function InstalarApp() {
     return escucharInstalacion(setEvento)
   }, [])
 
-  if (oculta || esSimulacion(pathname) || yaInstalada()) return null
+  if (oculta || esSimulacion(pathname) || esAppNativa() || yaInstalada()) return null
   if (!evento && !esSafariIOS()) return null
 
   async function instalar() {

@@ -31,6 +31,7 @@ const grupos = [
       { to: '/panel/whatsapp', icono: 'whatsapp', titulo: 'Pegar un WhatsApp', nota: 'Pegá un mensaje sospechoso y te avisamos' },
       { to: '/panel/pdf', icono: 'pdf', titulo: 'Revisar un PDF', nota: 'Subí un PDF y revisamos si esconde algo' },
       { to: '/panel/correo', icono: 'correo', titulo: 'Revisar un correo', nota: 'Pegá un correo y revisamos si el remitente es real' },
+      { to: '/panel/qr', icono: 'escaner', titulo: 'Escanear un QR', nota: 'Usá la cámara y revisamos el enlace antes de abrirlo' },
     ],
   },
   {
@@ -126,6 +127,18 @@ function Icono({ nombre }) {
         <path d="M7.5 19.5v-6.5" />
         <path d="M12 19.5V7" />
         <path d="M16.5 19.5v-4" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'escaner') {
+    return (
+      <svg {...trazo}>
+        <path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9" />
+        <path d="M15 4.5h2.5A2 2 0 0 1 19.5 6.5V9" />
+        <path d="M19.5 15v2.5a2 2 0 0 1-2 2H15" />
+        <path d="M9 19.5H6.5a2 2 0 0 1-2-2V15" />
+        <path d="M8 12h8" />
       </svg>
     )
   }

@@ -1,8 +1,10 @@
 package com.safeguard.app;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -25,6 +28,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView sitio;
     private ValueCallback<Uri[]> archivoPendiente;
+    private PermissionRequest permisoCamaraPendiente;
 
     private final ActivityResultLauncher<Intent> elegirArchivo = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -47,6 +52,19 @@ public class MainActivity extends AppCompatActivity {
                 if (callback != null) {
                     callback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(
                             resultado.getResultCode(), resultado.getData()));
+                }
+            });
+
+    private final ActivityResultLauncher<String> pedirPermisoCamara = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            concedido -> {
+                PermissionRequest pedido = permisoCamaraPendiente;
+                permisoCamaraPendiente = null;
+                if (pedido == null) return;
+                if (concedido) {
+                    pedido.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+                } else {
+                    pedido.deny();
                 }
             });
 
@@ -98,7 +116,9 @@ public class MainActivity extends AppCompatActivity {
         String agente = ajustes.getUserAgentString();
         if (agente != null) {
             // Google rechaza el inicio de sesión si el navegador se anuncia como WebView.
-            ajustes.setUserAgentString(agente.replace("; wv", ""));
+            agente = agente.replace("; wv", "");
+            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp";
+            ajustes.setUserAgentString(agente);
         }
 
         CookieManager cookies = CookieManager.getInstance();
@@ -152,10 +172,41 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             }
+
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                if (!esNuestroSitio(request.getOrigin()) || !pideCamara(request)) {
+                    request.deny();
+                    return;
+                }
+
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+                } else {
+                    permisoCamaraPendiente = request;
+                    pedirPermisoCamara.launch(Manifest.permission.CAMERA);
+                }
+            }
         });
 
         sitio.setDownloadListener((url, userAgent, contentDisposition, mimeType, contentLength) ->
                 guardarDescarga(url, userAgent, contentDisposition, mimeType));
+    }
+
+    private boolean esNuestroSitio(Uri origen) {
+        if (origen == null) return false;
+        Uri sitioUri = Uri.parse(SITIO);
+        return "https".equalsIgnoreCase(origen.getScheme())
+                && sitioUri.getHost() != null
+                && sitioUri.getHost().equalsIgnoreCase(origen.getHost());
+    }
+
+    private boolean pideCamara(PermissionRequest request) {
+        for (String recurso : request.getResources()) {
+            if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(recurso)) return true;
+        }
+        return false;
     }
 
     private boolean abrirAfuera(Uri uri) {

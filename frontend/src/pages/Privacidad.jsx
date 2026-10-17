@@ -25,7 +25,12 @@ function Privacidad() {
             dirección de la pestaña activa si es http o https. No lee el contenido
             de la página y no bloquea la navegación.
           </li>
-          <li>Códigos QR: pendiente. Eso queda para la app del celular, y ese código no está en este repositorio.</li>
+          <li>
+            Códigos QR, en <code>/panel/qr</code>: la cámara del celular lee el código
+            en el aparato con la API nativa del navegador (<code>BarcodeDetector</code>).
+            La imagen no se sube; solo la dirección que trae el código se manda a la
+            misma función que un enlace pegado a mano.
+          </li>
         </ul>
 
         <h2>SafeLink: qué sale del navegador</h2>
@@ -55,8 +60,8 @@ function Privacidad() {
           Con sesión, <code>guardarAnalisis</code> inserta en{' '}
           <code>safelink_analisis</code> el id del usuario, la URL analizada, el
           dominio, el nivel, la explicación (los motivos unidos), la puntuación
-          y el canal (<code>web</code>, <code>whatsapp</code>, <code>pdf</code> o{' '}
-          <code>correo</code>).
+          y el canal (<code>web</code>, <code>whatsapp</code>, <code>pdf</code>,{' '}
+          <code>correo</code> o <code>qr</code>).
         </p>
         <p>
           El panel exige iniciar sesión, así que desde la web el chequeo se
