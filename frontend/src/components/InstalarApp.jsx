@@ -24,6 +24,15 @@ function esSimulacion(pathname) {
   return pathname.startsWith('/simulacion') || pathname.startsWith('/bien')
 }
 
+function esSafariIOS() {
+  const agente = window.navigator.userAgent
+  const ios =
+    /iPad|iPhone|iPod/.test(agente) ||
+    (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1)
+  const otroNavegador = /CriOS|FxiOS|EdgiOS|OPiOS/.test(agente)
+  return ios && /Safari/.test(agente) && !otroNavegador
+}
+
 export default function InstalarApp() {
   const { pathname } = useLocation()
   const [evento, setEvento] = useState(null)
@@ -35,7 +44,8 @@ export default function InstalarApp() {
     return escucharInstalacion(setEvento)
   }, [])
 
-  if (!evento || oculta || esSimulacion(pathname) || yaInstalada()) return null
+  if (oculta || esSimulacion(pathname) || yaInstalada()) return null
+  if (!evento && !esSafariIOS()) return null
 
   async function instalar() {
     const resultado = await pedirInstalacion()
@@ -60,14 +70,20 @@ export default function InstalarApp() {
 
   return (
     <div className="instalar-app" role="region" aria-label="Instalar SafeGuard">
-      <p>Instalá SafeGuard en la pantalla de inicio.</p>
+      <p>
+        {evento
+          ? 'Instalá SafeGuard en la pantalla de inicio.'
+          : 'Tocá Compartir y después Agregar a inicio.'}
+      </p>
       <div className="instalar-app-acciones">
         <button className="instalar-app-no" type="button" onClick={ahoraNo}>
           Ahora no
         </button>
-        <button className="instalar-app-si" type="button" onClick={instalar}>
-          Instalar
-        </button>
+        {evento && (
+          <button className="instalar-app-si" type="button" onClick={instalar}>
+            Instalar
+          </button>
+        )}
       </div>
     </div>
   )
