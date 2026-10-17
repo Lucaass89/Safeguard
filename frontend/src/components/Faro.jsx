@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { consultarFaro } from '../lib/consultarFaro.js'
-import { PREGUNTAS_LISTAS, SALUDO, plano, recortarTexto } from '../lib/faro.js'
+import { MODOS, PREGUNTAS_LISTAS, SALUDO, modoValido, plano, recortarTexto } from '../lib/faro.js'
 import './Faro.css'
 
 function Robot({ pensando, grande }) {
@@ -32,11 +32,12 @@ function Robot({ pensando, grande }) {
   )
 }
 
-function Faro({ casoId, nivel, motivos }) {
+function Faro({ casoId, nivel, motivos, caso }) {
   const campoId = useId()
   const entrada = useRef(null)
   const casoActual = useRef(casoId)
   const [abierto, setAbierto] = useState(false)
+  const [modo, setModo] = useState('simple')
   const [mensajes, setMensajes] = useState([])
   const [borrador, setBorrador] = useState('')
   const [pensando, setPensando] = useState(false)
@@ -77,7 +78,7 @@ function Faro({ casoId, nivel, motivos }) {
     setMensajes((prev) => [...prev, { rol: 'vos', texto: visible }])
     setBorrador('')
     setPensando(true)
-    const respuesta = await consultarFaro(nivel, motivos, visible, previos)
+    const respuesta = await consultarFaro(nivel, motivos, visible, previos, modoValido(modo), caso)
     if (casoActual.current !== caso) return
     setMensajes((prev) => [...prev, { rol: 'faro', texto: respuesta }])
     setPensando(false)
@@ -95,7 +96,7 @@ function Faro({ casoId, nivel, motivos }) {
   return (
     <section className="faro" aria-label="Faro">
       <div className="faro-panel">
-        <p className="faro-nota">Faro no vuelve a leer el mensaje y no cambia el semáforo.</p>
+        <p className="faro-nota">Faro analiza este caso. No cambia el semáforo.</p>
         <div className="faro-cuerpo">
           <Robot pensando={pensando} grande />
           <div className="faro-dialogo" aria-busy={pensando}>
@@ -112,6 +113,19 @@ function Faro({ casoId, nivel, motivos }) {
               Faro está pensando…
             </p>
           )}
+          <div className="faro-modos" role="group" aria-label="Forma de responder">
+            {MODOS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-pressed={modo === item.id}
+                disabled={pensando}
+                onClick={() => setModo(item.id)}
+              >
+                {item.etiqueta}
+              </button>
+            ))}
+          </div>
           <ul className="faro-listas">
             {PREGUNTAS_LISTAS.map((pregunta) => (
               <li key={pregunta}>
@@ -135,7 +149,7 @@ function Faro({ casoId, nivel, motivos }) {
               id={campoId}
               ref={entrada}
               value={borrador}
-              maxLength={280}
+              maxLength={600}
               disabled={pensando}
               autoComplete="off"
               onChange={(evento) => setBorrador(evento.target.value)}

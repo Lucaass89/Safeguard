@@ -38,7 +38,8 @@ function Privacidad() {
           Al revisar un enlace, la función <code>safelink-enriquecer</code> pide
           esa URL (sigue hasta cinco redirecciones y no consulta direcciones
           privadas), lee solo el comienzo de la página (el título, si pide una
-          clave y si el destino es una descarga) y consulta el dominio en
+          clave o datos de pago, si el formulario o un script manda a otro sitio,
+          si incrusta otra página y si el destino es una descarga) y consulta el dominio en
           rdap.org y en crt.sh. No guarda el contenido de la página. También se
           busca el dominio en la tabla propia <code>amenazas</code>.
         </p>
@@ -49,10 +50,12 @@ function Privacidad() {
           guarda después es el resultado.
         </p>
         <p>
-          Faro explica el resultado que ya está. La función <code>safelink-faro</code> recibe
-          el nivel, los motivos, la pregunta y los últimos turnos del chat. No recibe el
-          mensaje original, el enlace ni el archivo. Si el modelo no responde, la respuesta
-          se arma en el navegador con ese mismo nivel y esos motivos.
+          Faro analiza el caso que ya está: nivel, motivos, dominio, puntaje, canal
+          y la dirección revisada. La función <code>safelink-faro</code> recibe eso, la
+          pregunta, la forma de responder (simple, técnica o avanzada) y los últimos
+          turnos del chat. No recibe el mensaje de WhatsApp, el cuerpo del correo ni el
+          PDF. Si el modelo no responde, la respuesta se arma en el navegador con ese
+          mismo caso.
         </p>
 
         <h2>SafeLink: qué se guarda con cuenta</h2>

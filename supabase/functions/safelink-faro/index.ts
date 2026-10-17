@@ -33,6 +33,8 @@ const SEGURO = [
 ]
 
 type Nivel = 'Seguro' | 'Dudoso' | 'Peligroso'
+type Modo = 'simple' | 'tecnico' | 'avanzado'
+type Caso = { url: string; dominio: string; puntuacion: number | null; canal: string }
 type Turno = { rol: 'faro' | 'vos'; texto: string }
 
 function json(cuerpo: unknown, status = 200) {
@@ -103,39 +105,71 @@ function leer(body: unknown) {
         .filter((motivo): motivo is string => typeof motivo === 'string')
         .map((motivo) => recortar(motivo, 240))
         .filter(Boolean)
-        .slice(0, 6)
+        .slice(0, 8)
     : []
 
-  const pregunta = typeof datos.pregunta === 'string' ? recortar(datos.pregunta, 280) : ''
+  const pregunta = typeof datos.pregunta === 'string' ? recortar(datos.pregunta, 600) : ''
   if (!pregunta || !/[a-z0-9]/i.test(plano(pregunta))) return null
+
+  const modo: Modo = datos.modo === 'tecnico' || datos.modo === 'avanzado' ? datos.modo : 'simple'
+  const crudo = datos.caso && typeof datos.caso === 'object' ? datos.caso as Record<string, unknown> : {}
+  const url = typeof crudo.url === 'string' ? crudo.url.replace(/\s+/g, ' ').trim().slice(0, 300) : ''
+  const dominio = typeof crudo.dominio === 'string' ? recortar(crudo.dominio, 120) : ''
+  const canal = crudo.canal === 'enlace' || crudo.canal === 'whatsapp' || crudo.canal === 'pdf' || crudo.canal === 'correo'
+    ? crudo.canal
+    : ''
+  const puntuacion = typeof crudo.puntuacion === 'number' && Number.isFinite(crudo.puntuacion)
+    ? Math.max(0, Math.min(100, Math.round(crudo.puntuacion)))
+    : null
+  const caso: Caso = { url, dominio, puntuacion, canal }
 
   const turnos = Array.isArray(datos.turnos)
     ? datos.turnos.slice(-6).flatMap((turno) => {
         if (!turno || typeof turno !== 'object') return []
         const fila = turno as { rol?: unknown; texto?: unknown }
         const rol = fila.rol === 'vos' ? 'vos' : fila.rol === 'faro' ? 'faro' : ''
-        const texto = typeof fila.texto === 'string' ? recortar(fila.texto, 500) : ''
+        const texto = typeof fila.texto === 'string' ? recortar(fila.texto, 700) : ''
         if (!rol || !texto) return []
         return [{ rol, texto }] satisfies Turno[]
       })
     : []
 
-  return { nivel, motivos, pregunta, turnos }
+  return { nivel, motivos, pregunta, turnos, modo, caso }
 }
 
-function instrucciones(nivel: Nivel, motivos: string[]) {
+function forma(modo: Modo) {
+  if (modo === 'tecnico') {
+    return 'Forma técnica: nombrá las señales con las palabras del caso (dominio, acortador, marca, SPF, puntaje). Hasta seis oraciones, sin emojis.'
+  }
+  if (modo === 'avanzado') {
+    return 'Forma avanzada: explicá cómo se suman las señales, qué prueba este caso y qué no prueba. Podés numerar las señales. Hasta ocho oraciones, sin emojis.'
+  }
+  return 'Forma simple: palabras de todos los días, sin jerga. Hasta cuatro oraciones, sin emojis y sin listas.'
+}
+
+function instrucciones(nivel: Nivel, motivos: string[], modo: Modo, caso: Caso) {
   const lista = motivos.length > 0 ? motivos.map((motivo) => `- ${motivo}`).join('\n') : '- No hay un motivo extra en este caso.'
+  const ficha = [
+    caso.dominio ? `Dominio: ${caso.dominio}` : 'Dominio: no informado',
+    caso.url ? `Entrada revisada: ${caso.url}` : 'Entrada revisada: no informada',
+    caso.canal ? `Canal: ${caso.canal}` : 'Canal: no informado',
+    caso.puntuacion == null ? 'Puntaje: no informado' : `Puntaje: ${caso.puntuacion}`,
+  ].join('\n')
   return [
-    'Sos Faro, el robot de SafeGuard. Explicás un resultado de SafeLink que ya está decidido.',
-    'No volvés a analizar nada: no te llega el mensaje original, el enlace ni el archivo, y no los pidas.',
-    'No cambies el veredicto. No sanciona ni expongas a nadie.',
-    'Respondé en español rioplatense, en hasta cinco oraciones, en prosa, sin emojis y sin listas.',
-    'Atá la respuesta a este caso, usando solo el nivel y los motivos de abajo.',
+    'Sos Faro, el robot de SafeGuard. Analizás el caso de SafeLink que ya está decidido y respondés la pregunta que te hagan sobre ese caso.',
+    'Podés explicar, resumir, dar un ejemplo parecido y contestar preguntas de hábito, de señales o de qué hacer ahora.',
+    'Si la pregunta se va del caso, respondé en una oración y volvé a este resultado. No cambies el veredicto. No sanciona ni expongas a nadie.',
+    'No te llega el mensaje de WhatsApp, el cuerpo del correo ni el PDF. No los pidas. Usá solo el caso de abajo.',
+    'Un ejemplo es un caso parecido y genérico, sin pasos para armar un engaño.',
+    'Un resumen es corto: qué se revisó, el color y la señal principal.',
+    'Si piden analizar el caso, recorré las señales y cerrá con qué no hacer.',
+    forma(modo),
     'Si el nivel es Peligroso, no digas que se abra, se descargue, se responda, se pague ni que se carguen claves o datos. Decí que no siga el mensaje, que no cargue claves ni datos, y que avise por otro canal.',
     'Si el nivel es Dudoso, no digas que se siga el mensaje.',
     'Si el nivel es Seguro, podés decir que no hubo señales fuertes, pero una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.',
-    'Si ya hizo clic o está por caer, la respuesta es corta: no seguir el mensaje, no cargar claves ni datos, y avisar por otro canal.',
     `Nivel: ${nivel}`,
+    'Caso:',
+    ficha,
     'Motivos:',
     lista,
   ].join('\n')
@@ -147,7 +181,13 @@ function claveGemini() {
     .find(Boolean) ?? ''
 }
 
-async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, turnos: Turno[]) {
+function tope(modo: Modo) {
+  if (modo === 'avanzado') return 8
+  if (modo === 'tecnico') return 6
+  return 4
+}
+
+async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, turnos: Turno[], modo: Modo, caso: Caso) {
   const clave = claveGemini()
   if (!clave) return null
 
@@ -161,9 +201,9 @@ async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, tu
     { role: 'user', parts: [{ text: pregunta }] },
   ]
   const cuerpo = {
-    systemInstruction: { parts: [{ text: instrucciones(nivel, motivos) }] },
+    systemInstruction: { parts: [{ text: instrucciones(nivel, motivos, modo, caso) }] },
     contents,
-    generationConfig: { maxOutputTokens: 400 },
+    generationConfig: { maxOutputTokens: modo === 'avanzado' ? 700 : 500 },
   }
 
   for (const modelo of modelos) {
@@ -194,7 +234,7 @@ async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, tu
         .map((parte: { text?: string }) => parte.text ?? '')
         .join(' '),
     )
-    const corta = oraciones(texto).slice(0, 5).join(' ')
+    const corta = oraciones(texto).slice(0, tope(modo)).join(' ')
     if (!corta || contradice(nivel, corta)) return null
     return corta
   }
@@ -220,7 +260,14 @@ Deno.serve(async (req) => {
   try {
     const consulta = leer(await req.json())
     if (!consulta) return json({ respuesta: null }, 400)
-    const respuesta = await pedirGemini(consulta.nivel, consulta.motivos, consulta.pregunta, consulta.turnos)
+    const respuesta = await pedirGemini(
+      consulta.nivel,
+      consulta.motivos,
+      consulta.pregunta,
+      consulta.turnos,
+      consulta.modo,
+      consulta.caso,
+    )
     return json({ respuesta })
   } catch {
     return json({ respuesta: null })

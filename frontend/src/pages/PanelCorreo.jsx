@@ -71,6 +71,10 @@ function PanelCorreo() {
           casoId={resultado.casoId}
           nivel={resultado.nivel}
           subtitulo={resultado.asunto || resultado.dominio}
+          url={resultado.url}
+          dominio={resultado.dominio}
+          puntuacion={resultado.puntuacion}
+          canal="correo"
           motivos={resultado.motivos}
         />
       )}

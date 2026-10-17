@@ -125,12 +125,29 @@ function unir(partes: Uint8Array[]) {
   return salida
 }
 
+function otroSitio(crudo: string | undefined, base: string) {
+  if (!crudo) return null
+  try {
+    const destino = new URL(crudo, base)
+    const origen = new URL(base)
+    if (destino.protocol !== 'http:' && destino.protocol !== 'https:') return null
+    if (hostProhibido(destino.hostname) || destino.hostname === origen.hostname) return null
+    return destino.hostname
+  } catch {
+    return null
+  }
+}
+
 async function mirarPagina(url: string) {
   const vacio = {
     titulo: null as string | null,
     formulario_clave: false,
     archivo_peligroso: false,
     meta_destino: null as string | null,
+    formulario_otro: null as string | null,
+    script_otro: null as string | null,
+    iframe_otro: null as string | null,
+    pide_datos: false,
   }
   try {
     const u = new URL(url)
@@ -172,6 +189,13 @@ async function mirarPagina(url: string) {
       /type\s*=\s*["']?password\b/.test(lower) ||
       /name\s*=\s*["']?(password|passwd|clave|otp)\b/.test(lower)
     const titulo = crudo.match(/<title[^>]*>([^<]{0,140})/i)?.[1]?.replace(/\s+/g, ' ').trim() || null
+    const action = crudo.match(/<form\b[^>]*\baction\s*=\s*["']([^"']+)/i)?.[1]
+    const script = crudo.match(
+      /(?:location\.(?:href|replace|assign)|window\.open)\s*\(\s*["'](https?:\/\/[^"']+)/i,
+    )?.[1]
+    const iframe = crudo.match(/<iframe\b[^>]*\bsrc\s*=\s*["']([^"']+)/i)?.[1]
+    const visible = crudo.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ')
+    const pide_datos = /\b(contrase[nñ]a|clave|cbu|cvu|cvv|n[uú]mero de tarjeta|dni)\b/i.test(visible)
     const metaCrudo =
       crudo.match(/http-equiv\s*=\s*["']refresh["'][^>]*content\s*=\s*["'][^"']*?\burl\s*=\s*([^"'\s>]+)/i)?.[1] ??
       crudo.match(/content\s*=\s*["'][^"']*?\burl\s*=\s*([^"'\s>]+)["'][^>]*http-equiv\s*=\s*["']refresh["']/i)?.[1] ??
@@ -191,7 +215,16 @@ async function mirarPagina(url: string) {
         meta_destino = null
       }
     }
-    return { titulo, formulario_clave: formulario, archivo_peligroso: false, meta_destino }
+    return {
+      titulo,
+      formulario_clave: formulario,
+      archivo_peligroso: false,
+      meta_destino,
+      formulario_otro: otroSitio(action, url),
+      script_otro: otroSitio(script, url),
+      iframe_otro: otroSitio(iframe, url),
+      pide_datos,
+    }
   } catch {
     return vacio
   }
@@ -295,6 +328,10 @@ Deno.serve(async (req) => {
       formulario_clave: pagina.formulario_clave,
       archivo_peligroso: pagina.archivo_peligroso,
       meta_destino: pagina.meta_destino,
+      formulario_otro: pagina.formulario_otro,
+      script_otro: pagina.script_otro,
+      iframe_otro: pagina.iframe_otro,
+      pide_datos: pagina.pide_datos,
     })
   } catch (error) {
     return json({ error: error instanceof Error ? error.message : 'No se pudo enriquecer' }, 400)

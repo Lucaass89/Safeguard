@@ -363,7 +363,8 @@ const RUTA_SENSIBLE =
 const EXT_PELIGROSA =
   /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|jse|vbs|vbe|ps1|docm|xlsm)(?=$|[?#])/i
 
-const PARAM_REDIR = /^(url|redirect|redir|next|dest|destination|goto|return|continue|rurl)$/i
+const PARAM_REDIR =
+  /^(url|redirect|redir|redirect_uri|next|dest|destination|goto|return|return_url|returnurl|continue|rurl|next_url)$/i
 
 const GENERICOS = new Set([
   'personal',
@@ -529,6 +530,9 @@ const HOMO = {
   ο: 'o',
   α: 'a',
   ε: 'e',
+  ν: 'v',
+  ј: 'j',
+  ԁ: 'd',
 }
 
 function aLatin(texto) {
@@ -587,11 +591,21 @@ function tokenEnTexto(token, palabras, compacto, grupo) {
   return token.length >= 8 && compacto.includes(token)
 }
 
+function decodificarSeguro(texto) {
+  try {
+    return decodeURIComponent(texto)
+  } catch {
+    return texto
+  }
+}
+
 export function marcaEnTexto(texto) {
-  const plano = (texto ?? '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
+  const plano = aLatin(
+    (texto ?? '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, ''),
+  )
   if (!plano) return null
   const palabras = plano.split(/[^a-z0-9]+/).filter(Boolean)
   const compacto = palabras.join('')
@@ -701,8 +715,13 @@ export function analizar(entrada) {
 
   const marca = suplantacion(host, base)
   if (marca) sumar(marca.como === 'parecido' ? 55 : 62, fraseMarca(marca))
-  else if (host.includes('xn--')) {
-    sumar(32, 'Usa caracteres disfrazados (punycode) para parecer otra marca.')
+  else if (host.includes('xn--') || /[^\u0000-\u007f]/.test(host.split('.').map(decodificarEtiqueta).join('.'))) {
+    sumar(
+      32,
+      host.includes('xn--')
+        ? 'Usa caracteres disfrazados (punycode) para parecer otra marca.'
+        : 'El nombre del sitio usa letras de otro alfabeto.',
+    )
   }
 
   if (!oficial && EXT_PELIGROSA.test(`${url.pathname}${url.search}`)) {
@@ -806,6 +825,56 @@ export function analizar(entrada) {
   const codificados = url.href.match(/%[0-9a-f]{2}/gi) ?? []
   if (!oficial && codificados.length >= 8) {
     sumar(12, 'La dirección esconde parte del texto con caracteres codificados.')
+  }
+
+  const camino = decodificarSeguro(`${url.pathname}${url.search}${url.hash}`)
+  if (!oficial) {
+    const marcaCamino = marcaEnTexto(camino)
+    if (marcaCamino) {
+      sumar(36, `El enlace nombra a ${marcaCamino.nombre}, pero el sitio no es el oficial.`)
+    }
+  }
+
+  if (/https?:\/\//i.test(url.pathname) || /https?:\/\//i.test(url.hash)) {
+    sumar(32, 'La dirección esconde otro enlace adentro.')
+  }
+
+  if (
+    /\.(pdf|jpg|jpeg|png|docx?|xlsx?|txt)\.(apk|exe|scr|bat|cmd|msi|hta|lnk|iso|js|html|htm)(?=$|[?#])/i.test(
+      camino,
+    )
+  ) {
+    sumar(48, 'El archivo muestra una extensión inofensiva y otra que puede ejecutarse.')
+  } else if (!oficial && /\.(html|htm|svg)(?=$|[?#])/i.test(url.pathname)) {
+    sumar(16, 'Abre una página suelta, no el sitio de siempre.')
+  }
+
+  if ([...url.searchParams.values()].some((valor) => /^[A-Za-z0-9+/_=-]{48,}$/.test(valor))) {
+    sumar(12, 'Un dato de la dirección viene codificado y no se puede leer.')
+  }
+
+  if (/[\u0000-\u001f\u007f]/.test(crudo)) {
+    sumar(18, 'La dirección incluye caracteres de control.')
+  }
+
+  if (url.pathname.includes('@')) {
+    sumar(25, 'Hay una arroba en el camino de la dirección.')
+  }
+
+  if (/(javascript|data|vbscript):/i.test(camino)) {
+    sumar(50, 'La dirección intenta ejecutar algo o incrustar datos, no abrir un sitio.')
+  }
+
+  if (/(?:^|[?&])(?:cbu|cvu|cvv|tarjeta|dni)=/i.test(url.search)) {
+    sumar(28, 'La dirección lleva datos de una cuenta, una tarjeta o un documento.')
+  }
+
+  if (!oficial && host.split('.').some((parte) => parte.length >= 28)) {
+    sumar(10, 'Una parte del nombre del sitio es demasiado larga para un dominio habitual.')
+  }
+
+  if (/(^|\.)-|-(\.|$)/.test(host) || host.includes('..')) {
+    sumar(15, 'El nombre del sitio está mal armado, con guiones o puntos de más.')
   }
 
   if (motivos.length === 0) {
@@ -932,6 +1001,26 @@ export function combinarConEnriquecimiento(local, extra) {
       extra.meta_destino,
       'La página se redirige sola hacia otro sitio.',
     )
+  }
+
+  if (!oficial && extra.formulario_otro) {
+    puntos += 40
+    actual.motivos.push(`El formulario envía lo que escribís a ${extra.formulario_otro}.`)
+  }
+
+  if (!oficial && extra.script_otro) {
+    puntos += 32
+    actual.motivos.push(`Un script de la página abre ${extra.script_otro}.`)
+  }
+
+  if (!oficial && extra.iframe_otro) {
+    puntos += 18
+    actual.motivos.push(`La página incrusta otro sitio (${extra.iframe_otro}).`)
+  }
+
+  if (!oficial && extra.pide_datos && !extra.formulario_clave) {
+    puntos += 14
+    actual.motivos.push('El texto de la página pide una clave, un CBU o datos de una tarjeta.')
   }
 
   if (!oficial && extra.formulario_clave) {

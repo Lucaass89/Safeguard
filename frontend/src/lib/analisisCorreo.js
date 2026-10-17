@@ -77,6 +77,26 @@ function enlacesVisibles(cuerpo) {
   return hallados.slice(0, 3)
 }
 
+function cuerpoLegible(headers, cuerpo) {
+  const cte = (headers['content-transfer-encoding'] ?? '').toLowerCase()
+  if (cte.includes('base64')) {
+    try {
+      const limpio = cuerpo.replace(/\s/g, '').slice(0, 80000)
+      const bin = atob(limpio)
+      return bin.slice(0, 20000)
+    } catch {
+      return cuerpo
+    }
+  }
+  if (cuerpo.includes('=3D') || /=[0-9A-F]{2}/i.test(cuerpo)) {
+    return cuerpo.replace(/=\r?\n/g, '').replace(/=([0-9A-F]{2})/gi, (todo, hex) => {
+      const n = Number.parseInt(hex, 16)
+      return n >= 32 && n <= 126 ? String.fromCharCode(n) : todo
+    })
+  }
+  return cuerpo
+}
+
 function nombreArchivo(valor) {
   const limpio = valor.replace(/"/g, '').trim()
   try {
@@ -90,7 +110,9 @@ export function analizarCorreo(crudo) {
   const texto = (crudo ?? '').trim()
   if (!texto) return null
 
-  const { headers, cuerpo } = separar(texto)
+  const separado = separar(texto)
+  const headers = separado.headers
+  const cuerpo = cuerpoLegible(headers, separado.cuerpo)
   const from = direccion(headers.from)
   const reply = direccion(headers['reply-to'])
   const auth = (headers['authentication-results'] ?? '').toLowerCase()
@@ -134,6 +156,32 @@ export function analizarCorreo(crudo) {
     if (auth.includes('dmarc=pass')) {
       senales.push('DMARC pasa porque el correo sale de ese dominio trucho, no del oficial.')
     }
+    if (!headers['authentication-results']) {
+      puntos += 12
+      senales.push('Se hace pasar por una marca y el correo no trae SPF, DKIM ni DMARC.')
+    }
+  }
+
+  if ((headers.from ?? '').match(/@/g)?.length > 1) {
+    puntos += 20
+    senales.push('El remitente trae más de una dirección.')
+  }
+
+  const mensajeId = (headers['message-id'] ?? '').match(/@([\w.-]+)/)?.[1]?.toLowerCase()
+  if (mensajeId && from.dominio && dominioBase(mensajeId) !== dominioBase(from.dominio)) {
+    puntos += 18
+    senales.push(`El Message-ID sale de ${mensajeId}, no de ${from.dominio}.`)
+  }
+
+  const fecha = headers.date ? new Date(headers.date) : null
+  if (fecha && !Number.isNaN(fecha.getTime()) && fecha.getTime() > Date.now() + 86_400_000) {
+    puntos += 12
+    senales.push('La fecha del correo está en el futuro.')
+  }
+
+  if (/display\s*:\s*none|font-size\s*:\s*0|visibility\s*:\s*hidden/i.test(cuerpo)) {
+    puntos += 16
+    senales.push('Hay texto oculto. Suele servir para disfrazar el mensaje.')
   }
 
   const retorno = direccion(headers['return-path'])
@@ -145,10 +193,15 @@ export function analizarCorreo(crudo) {
   const archivos = [...texto.matchAll(/filename\*?=(?:UTF-8''|"?)([^";\n]+)/gi)].map((m) =>
     nombreArchivo(m[1]),
   )
-  const peligroso = archivos.find((nombreArchivo) => EXT_ADJUNTO.test(nombreArchivo.toLowerCase()))
+  const peligroso = archivos.find((nombreDeArchivo) => EXT_ADJUNTO.test(nombreDeArchivo.toLowerCase()))
   if (peligroso) {
     puntos += 45
-    senales.push(`Trae un adjunto peligroso (${peligroso.split(/[/\\]/).pop()}).`)
+    const visible = peligroso.split(/[/\\]/).pop()
+    senales.push(`Trae un adjunto peligroso (${visible}).`)
+    if (/\.(pdf|jpg|jpeg|png|docx?|xlsx?)\.(apk|exe|scr|js|html|htm)$/i.test(visible)) {
+      puntos += 15
+      senales.push('El adjunto muestra una extensión inofensiva y otra que puede ejecutarse.')
+    }
   }
 
   for (const enlace of enlacesVisibles(cuerpo)) {

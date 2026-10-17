@@ -170,6 +170,10 @@ function PanelEnlaces() {
           casoId={resultado.casoId}
           nivel={resultado.nivel}
           subtitulo={resultado.dominioDestino ?? resultado.dominio}
+          url={resultado.url}
+          dominio={resultado.dominioDestino ?? resultado.dominio}
+          puntuacion={resultado.puntuacion}
+          canal="enlace"
           motivos={resultado.motivos}
         >
           {resultado.nivel !== 'verde' && (
@@ -193,7 +197,10 @@ function PanelEnlaces() {
             casoId={caso.id}
             nivel={caso.nivel_riesgo}
             subtitulo={caso.dominio}
-            motivos={caso.explicacion ? [caso.explicacion] : []}
+            url={caso.url_analizada}
+            dominio={caso.dominio}
+            canal="enlace"
+            motivos={caso.explicacion ? caso.explicacion.split(/(?<=\.)\s+/).filter(Boolean) : []}
           />
         )}
         {historial.length === 0 ? (

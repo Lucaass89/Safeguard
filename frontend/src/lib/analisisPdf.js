@@ -1,4 +1,4 @@
-import { analizar, nivelDesde, peorEnlace } from './analisis.js'
+import { analizar, dominioEsMarca, marcaEnTexto, nivelDesde, peorEnlace } from './analisis.js'
 
 const EXT_ADJUNTO = /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|js|jse|vbs|vbe|ps1|docm|xlsm|html|htm)$/i
 
@@ -11,6 +11,10 @@ export function inspeccionarBytes(datos) {
     launch: /\/Launch\b/.test(texto),
     embebido: /\/EmbeddedFile\b/.test(texto),
     envio: /\/SubmitForm\b|\/XFA\b/.test(texto),
+    automatico: /\/AA\b|\/OpenAction\b/.test(texto),
+    otroArchivo: /\/GoToR\b/.test(texto),
+    richMedia: /\/RichMedia\b/.test(texto),
+    cifrado: /\/Encrypt\b/.test(texto),
   }
 }
 
@@ -70,6 +74,22 @@ export async function analizarPdf(archivo) {
   if (marcas.javascript) javascript = true
   if (marcas.launch) lanzamiento = true
   if (marcas.envio) formulario = true
+  if (marcas.automatico) {
+    puntos += 25
+    senales.push('Tiene acciones que se disparan al abrir el archivo o al pasar el mouse.')
+  }
+  if (marcas.otroArchivo) {
+    puntos += 30
+    senales.push('Intenta abrir otro archivo.')
+  }
+  if (marcas.richMedia) {
+    puntos += 35
+    senales.push('Trae contenido embebido que puede ejecutarse.')
+  }
+  if (marcas.cifrado) {
+    puntos += 20
+    senales.push('El PDF está cifrado: no se ve qué hace hasta abrirlo con una clave.')
+  }
 
   const adjuntos = listar(await doc.getAttachments().catch(() => null))
   if (adjuntos.length > 0 || marcas.embebido) {
@@ -93,6 +113,8 @@ export async function analizarPdf(archivo) {
   if (apertura.includes('javascript')) javascript = true
   if (apertura.includes('launch')) lanzamiento = true
 
+  let planoTodo = ''
+
   for (let i = 1; i <= doc.numPages; i++) {
     try {
       const pagina = await doc.getPage(i)
@@ -106,6 +128,7 @@ export async function analizarPdf(archivo) {
       if (listar(await pagina.getJSActions()).length > 0) javascript = true
       const texto = await pagina.getTextContent()
       const plano = texto.items.map((it) => it.str).join(' ')
+      planoTodo += ` ${plano}`
       for (const m of plano.match(/https?:\/\/[^\s]+/g) ?? []) enlaces.push(m)
     } catch {
       continue
@@ -125,12 +148,23 @@ export async function analizarPdf(archivo) {
     senales.push('Tiene un formulario: puede pedir datos.')
   }
 
+  const marcaPdf = marcaEnTexto(planoTodo)
+  const apuro = /urgente|últimas horas|ultimas horas|verificar ahora|tu cuenta ser[aá]|bloqueamos/i.test(planoTodo)
+  if (apuro) {
+    puntos += 12
+    senales.push('El texto del PDF apura para que no lo leas con calma.')
+  }
+
   const unicos = [...new Set(enlaces)]
   const analizados = unicos
     .map((u) => analizar(u))
     .filter(Boolean)
     .sort((a, b) => b.puntuacion - a.puntuacion)
   const peor = peorEnlace(analizados)
+  if (marcaPdf && peor && !dominioEsMarca(peor.dominio, marcaPdf.marca)) {
+    puntos += 25
+    senales.push(`El PDF habla de ${marcaPdf.nombre}, pero el enlace va a ${peor.dominio}.`)
+  }
 
   const puntuacion = Math.min(100, puntos + (peor?.puntuacion ?? 0))
   if (senales.length === 0 && analizados.length === 0) {

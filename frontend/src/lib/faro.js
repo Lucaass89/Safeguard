@@ -1,15 +1,24 @@
 import { motivosLimpios } from './analisis.js'
 
-export const SALUDO = 'Hola. Soy Faro. Preguntame lo que necesites sobre este resultado.'
+export const SALUDO =
+  'Hola. Soy Faro. Puedo analizar este caso, resumirlo, dar un ejemplo o responder lo que preguntes. Elegí si lo querés simple, técnico o avanzado.'
+
+export const MODOS = [
+  { id: 'simple', etiqueta: 'Simple' },
+  { id: 'tecnico', etiqueta: 'Técnico' },
+  { id: 'avanzado', etiqueta: 'Avanzado' },
+]
 
 export const PREGUNTAS_LISTAS = [
+  'Analizá este caso',
+  'Hacé un resumen',
+  'Dame un ejemplo',
   '¿Por qué dio este resultado?',
   '¿Se puede abrir?',
   '¿Qué pasa si ya hice clic?',
-  '¿A quién aviso?',
 ]
 
-const TOPE_PREGUNTA = 280
+const TOPE_PREGUNTA = 600
 
 const PELIGROSO = [
   /\b(abrilo|abrila|abrelo|abrela|abrir(lo|la|los|las)?|abri el|abri la|abri este)\b/,
@@ -100,6 +109,92 @@ function codigoNivel(nivel) {
   if (nivel === 'amarillo' || nivel === 'Dudoso') return 'amarillo'
   if (nivel === 'verde' || nivel === 'Seguro') return 'verde'
   return ''
+}
+
+export function modoValido(modo) {
+  return modo === 'tecnico' || modo === 'avanzado' ? modo : 'simple'
+}
+
+function topeModo(modo) {
+  if (modo === 'avanzado') return 8
+  if (modo === 'tecnico') return 6
+  return 4
+}
+
+function intencion(pregunta) {
+  const p = plano(pregunta)
+  if (/\bejem/.test(p) || /por ejemplo|un caso parecido|como seria/.test(p)) return 'ejemplo'
+  if (/resum/.test(p) || /en corto|contame corto/.test(p)) return 'resumen'
+  if (/analiz/.test(p) || /este caso|el caso|ver caso/.test(p)) return 'analizar'
+  const duda = DUDAS.find(([, patron]) => patron.test(p))
+  return duda?.[0] ?? 'general'
+}
+
+function textoCaso(caso) {
+  const dominio = String(caso?.dominio ?? '').replace(/\s+/g, ' ').trim()
+  const url = String(caso?.url ?? '').replace(/\s+/g, ' ').trim().slice(0, 180)
+  const canal = String(caso?.canal ?? '').trim()
+  const partes = []
+  if (dominio) partes.push(`Dominio: ${dominio}.`)
+  if (url && url !== dominio) partes.push(`Lo revisado: ${url}.`)
+  if (canal) partes.push(`Canal: ${canal}.`)
+  if (Number.isFinite(caso?.puntuacion)) partes.push(`Puntaje de señales: ${Math.round(caso.puntuacion)}.`)
+  return partes.join(' ')
+}
+
+function analizarCaso(nivel, motivos, caso, resumen, modo) {
+  const nombre = nombreNivel(nivel)
+  const lista = motivosLimpios(motivos)
+  const cabeza = textoCaso(caso) || 'Este es el caso que está abierto.'
+  const primero = motivoDe(lista)
+  if (resumen || modo === 'simple') {
+    return `${cabeza} El semáforo quedó ${nombre}. ${primero} ${cuidado(nivel)}`
+  }
+  if (modo === 'tecnico') {
+    const senales = lista.length ? lista.join(' ') : 'No hay señales extra guardadas.'
+    return `${cabeza} Nivel ${nombre}. Señales que ya se sumaron: ${senales} ${cuidado(nivel)}`
+  }
+  const detalle = lista.length
+    ? lista.map((motivo, indice) => `${indice + 1}. ${motivoDe([motivo])}`).join(' ')
+    : 'No quedó una señal suelta para desarmar.'
+  return `${cabeza} El veredicto ${nombre} sale de sumar esas señales. No abre el archivo ni ejecuta nada. ${detalle} Eso no prueba el resto del sitio: solo lo que SafeLink pudo ver. ${cuidado(nivel)}`
+}
+
+function ejemploDe(nivel, modo) {
+  if (nivel === 'rojo') {
+    if (modo === 'tecnico') {
+      return 'Ejemplo del mismo tipo: un dominio que imita una marca, o un acortador que termina en una página que pide la clave. El rojo sale de esa señal. No se abre y no se cargan datos.'
+    }
+    if (modo === 'avanzado') {
+      return 'Ejemplo avanzado: el sitio no es el oficial, el camino nombra a la marca y la página pide una clave. Cada señal suma. Juntas cruzan el rojo. No hace falta el mensaje original para ver ese patrón, y el color no cambia.'
+    }
+    return 'Un ejemplo parecido: un mensaje que dice ser el banco y el enlace no es la página del banco. No se abre y no se cargan datos.'
+  }
+  if (nivel === 'amarillo') {
+    if (modo === 'tecnico') {
+      return 'Ejemplo del mismo tipo: un dominio nuevo, un final de dirección muy usado en sitios truchos, o un texto que apura. Alcanza para dudar, no para darlo por peligroso. No se sigue desde el mensaje.'
+    }
+    if (modo === 'avanzado') {
+      return 'Ejemplo avanzado: una sola señal floja, como un dominio de pocos días, deja el caso en dudoso. Si se suma otra, por ejemplo una marca en el camino, puede pasar a rojo. Con lo que hay ahora, no se sigue el mensaje.'
+    }
+    return 'Un ejemplo parecido: un enlace raro que apura, pero sin una prueba fuerte. No se abre desde el mensaje. Si es un banco o una tienda, se entra escribiendo la dirección oficial.'
+  }
+  if (modo === 'tecnico') {
+    return 'Ejemplo del mismo tipo: una dirección sin acortador, sin marca falsa y sin pedido de clave en el camino. El verde dice que no hubo esas señales. Una clave o un pago igual no se hacen desde un enlace que llegó en un mensaje.'
+  }
+  if (modo === 'avanzado') {
+    return 'Ejemplo avanzado: cero señales por encima del umbral deja el caso en seguro. Eso no revisa el interior de un archivo ni una marca que no esté en la lista. Por eso una clave, un código o un pago siguen fuera de ese enlace.'
+  }
+  return 'Un ejemplo parecido: un enlace común, sin apuro ni página de clave. No hubo señales fuertes. Igual, la clave no se escribe desde un enlace que llegó en un mensaje.'
+}
+
+function conModo(texto, modo, motivos) {
+  if (modo === 'simple') return texto
+  const senales = motivosLimpios(motivos).slice(0, 3).join(' ')
+  if (modo === 'tecnico') {
+    return senales ? `${texto} En la revisión, las señales fueron: ${senales}` : texto
+  }
+  return `${texto} Lectura avanzada: cada motivo ya está sumado. Faro no reabre el archivo ni cambia el color.${senales ? ` Señales: ${senales}` : ''}`
 }
 
 function motivoDe(motivos) {
@@ -212,20 +307,35 @@ function plantilla(nivel, motivo, id) {
   return `Este caso es ${nombre}. ${motivo} ${cuidado(nivel)}`
 }
 
-export function respuestaLocal(nivel, motivos, pregunta) {
+export function respuestaLocal(nivel, motivos, pregunta, modo = 'simple', caso = {}) {
   const codigo = codigoNivel(nivel)
   if (!codigo) return 'Este resultado no tiene un nivel para explicar.'
-  const duda = DUDAS.find(([, patron]) => patron.test(plano(pregunta)))
-  return limitarOraciones(plantilla(codigo, motivoDe(motivos), duda?.[0] ?? 'general'))
+  const tono = modoValido(modo)
+  const id = intencion(pregunta)
+  if (id === 'analizar') return limitarOraciones(analizarCaso(codigo, motivos, caso, false, tono), topeModo(tono))
+  if (id === 'resumen') return limitarOraciones(analizarCaso(codigo, motivos, caso, true, 'simple'), 4)
+  if (id === 'ejemplo') return limitarOraciones(ejemploDe(codigo, tono), topeModo(tono))
+  return limitarOraciones(conModo(plantilla(codigo, motivoDe(motivos), id), tono, motivos), topeModo(tono))
 }
 
-export function prepararRespuesta(nivel, motivos, pregunta, cruda) {
-  const limpia = limitarOraciones(sinEmojis(cruda))
-  if (!limpia || respuestaContradice(nivel, limpia)) return respuestaLocal(nivel, motivos, pregunta)
+export function prepararRespuesta(nivel, motivos, pregunta, cruda, modo = 'simple', caso) {
+  const limpia = limitarOraciones(sinEmojis(cruda), topeModo(modoValido(modo)))
+  if (!limpia || respuestaContradice(nivel, limpia)) return respuestaLocal(nivel, motivos, pregunta, modo, caso)
   return limpia
 }
 
-export function armarConsulta(nivel, motivos, pregunta, turnos) {
+function casoConsulta(caso) {
+  const origen = caso && typeof caso === 'object' ? caso : {}
+  const url = String(origen.url ?? '').replace(/\s+/g, ' ').trim().slice(0, 300)
+  const dominio = String(origen.dominio ?? '').replace(/\s+/g, ' ').trim().slice(0, 120)
+  const canal = ['enlace', 'whatsapp', 'pdf', 'correo'].includes(origen.canal) ? origen.canal : ''
+  const puntuacion = Number.isFinite(origen.puntuacion)
+    ? Math.max(0, Math.min(100, Math.round(origen.puntuacion)))
+    : null
+  return { url, dominio, puntuacion, canal }
+}
+
+export function armarConsulta(nivel, motivos, pregunta, turnos, modo = 'simple', caso) {
   const nombre = nombreNivel(nivel)
   const preguntaLimpia = recortarTexto(pregunta)
   if (!nombre || !preguntaLimpia || !/[a-z0-9]/i.test(plano(preguntaLimpia))) return null
@@ -233,13 +343,13 @@ export function armarConsulta(nivel, motivos, pregunta, turnos) {
   const lista = motivosLimpios(motivos)
     .map((motivo) => recortarTexto(motivo, 240))
     .filter(Boolean)
-    .slice(0, 6)
+    .slice(0, 8)
 
   const historial = (Array.isArray(turnos) ? turnos : [])
     .slice(-6)
     .map((turno) => ({
       rol: turno?.rol === 'vos' ? 'vos' : 'faro',
-      texto: recortarTexto(turno?.texto, 500),
+      texto: recortarTexto(turno?.texto, 700),
     }))
     .filter((turno) => turno.texto)
 
@@ -248,5 +358,7 @@ export function armarConsulta(nivel, motivos, pregunta, turnos) {
     motivos: lista,
     pregunta: preguntaLimpia,
     turnos: historial,
+    modo: modoValido(modo),
+    caso: casoConsulta(caso),
   }
 }

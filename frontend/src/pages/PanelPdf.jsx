@@ -75,6 +75,10 @@ function PanelPdf() {
           casoId={resultado.casoId}
           nivel={resultado.nivel}
           subtitulo={resultado.nombre}
+          url={resultado.url}
+          dominio={resultado.dominio}
+          puntuacion={resultado.puntuacion}
+          canal="pdf"
           motivos={resultado.motivos}
         />
       )}

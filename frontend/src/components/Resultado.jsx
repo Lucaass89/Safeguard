@@ -7,7 +7,7 @@ const titulos = {
   rojo: '✕ Rojo: no lo abras',
 }
 
-function Resultado({ nivel, subtitulo, motivos, casoId, children }) {
+function Resultado({ nivel, subtitulo, motivos, casoId, url, dominio, puntuacion, canal, children }) {
   const lista = motivosLimpios(motivos)
   return (
     <article className={`resultado nivel-${nivel}`}>
@@ -16,7 +16,17 @@ function Resultado({ nivel, subtitulo, motivos, casoId, children }) {
           <span className="resultado-punto" aria-hidden="true" />
           {titulos[nivel]}
         </p>
-        <Faro casoId={casoId ?? `${nivel}:${lista.join('|')}`} nivel={nivel} motivos={lista} />
+        <Faro
+          casoId={casoId ?? `${nivel}:${lista.join('|')}`}
+          nivel={nivel}
+          motivos={lista}
+          caso={{
+            url: url || '',
+            dominio: dominio || subtitulo || '',
+            puntuacion: typeof puntuacion === 'number' ? puntuacion : null,
+            canal: canal || '',
+          }}
+        />
       </div>
       {subtitulo && <p className="resultado-sub">{subtitulo}</p>}
       <p className="resultado-quehacer">{queHacer(nivel)}</p>

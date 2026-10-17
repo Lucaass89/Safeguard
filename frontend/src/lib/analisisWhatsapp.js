@@ -58,11 +58,37 @@ const CODIGO = [
 
 const APP_FALSA = ['.apk', 'instalá esta', 'instala esta', 'descargá la app', 'descarga la app', 'instalá la aplicación', 'instala la aplicacion']
 
+const PLATA = [
+  'hacé la transferencia',
+  'hace la transferencia',
+  'pasame el comprobante',
+  'mandame el comprobante',
+  'te deposité',
+  'te deposite',
+  'error en la transferencia',
+  'link de pago',
+  'link de cobro',
+  'tocá el enlace',
+  'toca el enlace',
+  'en 10 minutos',
+  'en diez minutos',
+  'antes de las',
+]
+
 const INVISIBLES = /\u200b|\u200c|\u200d|\u2060|\ufeff/
 
 const RE_URL = /(?:https?:\/\/|www\.)[^\s<>"']+/gi
 const RE_HOST = /\b(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
 const RE_TEL = /(?:\+|00)?[\d][\d\s().-]{7,18}\d/g
+
+function destapar(texto) {
+  return texto
+    .replace(/hxxps/gi, 'https')
+    .replace(/hxxp/gi, 'http')
+    .replace(/\[\.\]|\(\.\)/g, '.')
+    .replace(/\bh\s*t\s*t\s*p\s*s\s*:\s*\/\s*\//gi, 'https://')
+    .replace(/\bh\s*t\s*t\s*p\s*:\s*\/\s*\//gi, 'http://')
+}
 
 function extraerEnlaces(texto) {
   const hallados = []
@@ -158,7 +184,18 @@ export function analizarWhatsapp(crudo) {
     motivos.push('Tiene caracteres invisibles, usados para disfrazar una palabra o un enlace.')
   }
 
-  const crudos = extraerEnlaces(texto)
+  if (PLATA.some((p) => minuscula.includes(p))) {
+    puntos += 22
+    motivos.push('Pide una transferencia, un comprobante o que abras un enlace ya.')
+  }
+
+  const destapado = destapar(texto)
+  if (destapado !== texto) {
+    puntos += 16
+    motivos.push('Hay un enlace escrito camuflado para que no se lea de un vistazo.')
+  }
+
+  const crudos = [...new Set([...extraerEnlaces(texto), ...extraerEnlaces(destapado)])]
   const enlaces = crudos
     .map((e) => analizar(e))
     .filter(Boolean)

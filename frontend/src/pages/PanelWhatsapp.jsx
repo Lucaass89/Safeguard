@@ -85,6 +85,10 @@ function PanelWhatsapp() {
         <Resultado
           casoId={resultado.casoId}
           nivel={resultado.nivel}
+          url={resultado.url}
+          dominio={resultado.dominioDestino ?? resultado.dominio}
+          puntuacion={resultado.puntuacion}
+          canal="whatsapp"
           subtitulo={
             resultado.dominio === 'whatsapp'
               ? 'Mensaje sin enlace claro'

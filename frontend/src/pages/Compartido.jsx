@@ -50,6 +50,9 @@ function Compartido() {
         casoId={token}
         nivel={ficha.nivel_riesgo}
         subtitulo={ficha.dominio}
+        url={ficha.url_analizada || ficha.url || ''}
+        dominio={ficha.dominio}
+        canal="enlace"
         motivos={ficha.explicacion ? ficha.explicacion.split(/(?<=\.)\s+/).filter(Boolean) : []}
       />
 
