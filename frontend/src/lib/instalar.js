@@ -1,4 +1,5 @@
 let pendiente = null
+let instalada = false
 const oyentes = new Set()
 
 function avisar() {
@@ -7,6 +8,10 @@ function avisar() {
 
 export function instalarPendiente() {
   return pendiente
+}
+
+export function instalacionHecha() {
+  return instalada
 }
 
 export function escucharInstalacion(fn) {
@@ -21,6 +26,7 @@ export async function pedirInstalacion() {
   avisar()
   evento.prompt()
   const eleccion = await evento.userChoice
+  if (eleccion.outcome === 'accepted') instalada = true
   return eleccion.outcome
 }
 
@@ -33,6 +39,7 @@ if (typeof window !== 'undefined') {
   })
 
   window.addEventListener('appinstalled', () => {
+    instalada = true
     pendiente = null
     avisar()
   })

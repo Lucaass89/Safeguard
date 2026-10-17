@@ -28,44 +28,35 @@
   gap: 8px;
 }
 
-.instalar-app-si,
-.instalar-app-no {
-  min-height: 40px;
-  border: 0;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .instalar-app-si {
+  min-height: 48px;
   padding: 10px 16px;
+  border: 0;
   border-radius: 6px;
   background: var(--sg-blue);
   color: #fff;
-}
-
-.instalar-app-no {
-  padding: 10px 12px;
-  background: transparent;
-  color: var(--sg-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .instalar-app-si:hover {
   background: color-mix(in srgb, var(--sg-blue) 82%, #102a43);
 }
 
-.instalar-app-si:focus-visible,
-.instalar-app-no:focus-visible {
+.instalar-app-si:focus-visible {
   outline: 2px solid var(--sg-accent);
   outline-offset: 2px;
+}
+
+@media (max-width: 850px) {
+  body:has(.instalar-app) {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 body:has(.landing-puertas) .instalar-app {
   border-top-color: #1e2a3a;
   background: #10161e;
   color: #f4f7fb;
-}
-
-body:has(.landing-puertas) .instalar-app-no {
-  color: #93a0b3;
 }
