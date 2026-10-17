@@ -21,13 +21,13 @@ html[data-tema='oscuro'] .app-shell {
 }
 
 html[data-tema='claro'] .app-shell {
-  --sg-bg: #8fb4e4;
-  --sg-surface: #93b4e0;
-  --sg-text: #243044;
-  --sg-muted: #24344c;
-  --sg-line: #7ea4d4;
-  --sg-blue: #2f568c;
-  --sg-accent: #2f568c;
+  --sg-bg: #f3eee6;
+  --sg-surface: #faf6f1;
+  --sg-text: #3c342c;
+  --sg-muted: #6f655c;
+  --sg-line: #e4d9cc;
+  --sg-blue: #7a6552;
+  --sg-accent: #7a6552;
   color-scheme: light;
 }
 
@@ -126,16 +126,16 @@ html[data-tema='oscuro'] .app-nav {
 
 html[data-tema='claro'] .app-nav-activa .app-nav-icono,
 html[data-tema='claro'] .app-acceso-icono {
-  color: #2f568c;
+  color: #7a6552;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton {
-  background: #6f98d4;
-  color: #1e3354;
+  background: #e6d9cc;
+  color: #3c342c;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton:hover:not(:disabled) {
-  background: #5e8acc;
+  background: #d9c9b8;
 }
 
 .app-nav-item {

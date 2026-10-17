@@ -1062,18 +1062,18 @@ table.persona-tabla td:first-child,
 }
 
 .sg-landing .panel-lienzo {
-  --sg-bg: #8fb4e4;
-  --sg-surface: #93b4e0;
-  --sg-text: #243044;
-  --sg-muted: #24344c;
-  --sg-line: #7ea4d4;
-  --sg-teal: #5f9aaa;
-  --sg-blue: #2f568c;
+  --sg-bg: #f3eee6;
+  --sg-surface: #faf6f1;
+  --sg-text: #3c342c;
+  --sg-muted: #6f655c;
+  --sg-line: #e4d9cc;
+  --sg-teal: #8a7564;
+  --sg-blue: #7a6552;
   --sg-green: #3f9a78;
   --sg-yellow: #b0893e;
   --sg-red: #c46b62;
-  --sg-accent: #2f568c;
-  color: #243044;
+  --sg-accent: #7a6552;
+  color: #3c342c;
 }
 
 .sg-landing .panel-lienzo .panel-header h1,
@@ -1081,7 +1081,7 @@ table.persona-tabla td:first-child,
   font-family: 'Space Grotesk', var(--sg-sans);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #243044;
+  color: #3c342c;
   line-height: 1.15;
 }
 
@@ -1507,8 +1507,8 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .panel-boton,
 .sg-landing .panel-lienzo a.panel-boton {
-  background: #6f98d4;
-  color: #1e3354;
+  background: #e6d9cc;
+  color: #3c342c;
 }
 
 .sg-landing .panel-lienzo .panel-boton-borde {
@@ -2107,12 +2107,12 @@ table.persona-tabla td:first-child,
 
 html[data-tema='claro'] .check-empleado:has(input:checked) {
   border-color: #8eb0d8;
-  background: #93b4e0;
+  background: #faf6f1;
 }
 
 html[data-tema='claro'] .mesa-hoja a span:last-child {
-  background: #93b4e0;
-  color: #2f568c;
+  background: #faf6f1;
+  color: #7a6552;
 }
 
 html[data-tema='claro'] .mesa-grupos .panel-empresas {
@@ -2127,8 +2127,8 @@ html[data-tema='claro'] .panel-personas .panel-campo textarea,
 html[data-tema='claro'] .panel-empresas .panel-campo input,
 html[data-tema='claro'] .panel-empresas .panel-campo textarea,
 html[data-tema='claro'] .panel-empresas .panel-campo select {
-  background: #93b4e0;
-  color: #243044;
-  border-color: #7ea4d4;
+  background: #faf6f1;
+  color: #3c342c;
+  border-color: #e4d9cc;
 }
 

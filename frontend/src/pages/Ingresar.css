@@ -181,17 +181,17 @@
 }
 
 .sg-landing .acceso-caja {
-  background: #93b4e0;
-  border: 1px solid #7ea4d4;
+  background: #faf6f1;
+  border: 1px solid #e4d9cc;
   border-radius: 8px;
-  color: #243044;
+  color: #3c342c;
 }
 
 .sg-landing .acceso-caja h1 {
   font-family: 'Space Grotesk', var(--sg-sans);
   font-size: 40px;
   letter-spacing: -1.4px;
-  color: #243044;
+  color: #3c342c;
 }
 
 .sg-landing .acceso-texto,
@@ -201,14 +201,14 @@
 }
 
 .sg-landing .boton-google {
-  background: #86aad8;
-  color: #243044;
-  border-color: #7ea4d4;
+  background: #efe6da;
+  color: #3c342c;
+  border-color: #e4d9cc;
 }
 
 .sg-landing .boton-google:hover {
-  background: #8fb4e4;
-  border-color: #5e8acc;
+  background: #f3eee6;
+  border-color: #d9c9b8;
 }
 
 .sg-landing .separador::before,
@@ -217,36 +217,36 @@
 }
 
 .sg-landing .acceso-pestanas {
-  background: #8fb4e4;
+  background: #f3eee6;
 }
 
 .sg-landing .acceso-pestanas button {
-  color: #24344c;
+  color: #6f655c;
 }
 
 .sg-landing .acceso-pestanas button.activa {
-  background: #93b4e0;
-  color: #243044;
+  background: #faf6f1;
+  color: #3c342c;
 }
 
 .sg-landing .acceso-form input {
-  background: #86aad8;
-  color: #243044;
-  border-color: #7ea4d4;
+  background: #efe6da;
+  color: #3c342c;
+  border-color: #e4d9cc;
 }
 
 .sg-landing .acceso-form input:focus {
-  border-color: #2f568c;
+  border-color: #7a6552;
 }
 
 .sg-landing .acceso-boton {
-  background: #6f98d4;
-  color: #1e3354;
+  background: #e6d9cc;
+  color: #3c342c;
   font-weight: 700;
 }
 
 .sg-landing .acceso-boton:hover:not(:disabled) {
-  background: #5e8acc;
+  background: #d9c9b8;
 }
 
 .sg-landing .acceso-error {
@@ -256,9 +256,9 @@
 }
 
 .sg-landing .acceso-aviso {
-  background: #86aad8;
-  color: #243044;
-  border-color: #7ea4d4;
+  background: #efe6da;
+  color: #3c342c;
+  border-color: #e4d9cc;
 }
 
 @media (max-width: 700px) {

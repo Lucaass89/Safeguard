@@ -1,11 +1,11 @@
 .sg-landing {
-  --ink: #102a43;
+  --ink: #3c342c;
   --navy: #092238;
-  --blue: #2f568c;
+  --blue: #7a6552;
   --mint: #d7eee4;
-  --muted: #24344c;
-  --line: #7ea4d4;
-  --white: #93b4e0;
+  --muted: #6f655c;
+  --line: #e4d9cc;
+  --white: #faf6f1;
   --shadow: 0 12px 32px rgb(16 24 32 / 14%);
   --nav-activo: color-mix(in srgb, var(--ink) 14%, #fff);
   --tinta: #ddd2c0;
@@ -16,7 +16,7 @@
   margin: 0;
   font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   color: var(--ink);
-  background: #8fb4e4;
+  background: #f3eee6;
   line-height: 1.55;
 }
 
@@ -359,16 +359,16 @@
 
 .sg-landing .nav-fin .nav-cta {
   padding: 0 18px;
-  border-color: #6f98d4;
+  border-color: #e6d9cc;
   border-radius: 6px;
-  background: #6f98d4;
-  color: #1e3354;
+  background: #e6d9cc;
+  color: #3c342c;
 }
 
 .sg-landing .nav-fin .nav-cta:hover {
-  background: #5e8acc;
-  border-color: #5e8acc;
-  color: #1e3354;
+  background: #d9c9b8;
+  border-color: #d9c9b8;
+  color: #3c342c;
 }
 
 .sg-landing .nav-cuenta-menu {
@@ -571,12 +571,12 @@
 }
 
 .sg-landing .button-primary {
-  background: #6f98d4;
-  color: #1e3354;
+  background: #e6d9cc;
+  color: #3c342c;
 }
 
 .sg-landing .button-primary:hover {
-  background: #5e8acc;
+  background: #d9c9b8;
 }
 
 .sg-landing .button-ghost {
@@ -962,7 +962,7 @@
 .sg-landing .site-footer {
   padding: 32px 0;
   padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
-  background: #8fb4e4;
+  background: #f3eee6;
   border-top: 1px solid var(--line);
 }
 
@@ -1307,14 +1307,14 @@
 
 html[data-tema='claro'] .sg-landing .main-nav .nav-cta,
 html[data-tema='claro'] .sg-landing .nav-fin .nav-cta {
-  border-color: #6f98d4;
-  background: #6f98d4;
-  color: #1e3354;
+  border-color: #e6d9cc;
+  background: #e6d9cc;
+  color: #3c342c;
 }
 
 html[data-tema='claro'] .sg-landing .main-nav .nav-cta:hover,
 html[data-tema='claro'] .sg-landing .nav-fin .nav-cta:hover {
-  border-color: #5e8acc;
-  background: #5e8acc;
-  color: #1e3354;
+  border-color: #d9c9b8;
+  background: #d9c9b8;
+  color: #3c342c;
 }
