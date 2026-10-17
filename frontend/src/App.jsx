@@ -5,7 +5,7 @@ import Layout from './components/Layout.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import AppShell from './components/AppShell.jsx'
 import { esAppNativa } from './lib/esAppNativa.js'
-import DestinoApp from './pages/DestinoApp.jsx'
+import OpcionesApp, { PerfilSeccion } from './pages/OpcionesApp.jsx'
 import Inicio from './pages/Inicio.jsx'
 import Landing from './pages/Landing.jsx'
 import Empresas from './pages/Empresas.jsx'
@@ -54,9 +54,21 @@ function App() {
       <Route path="bien/:token" element={<Reconocimiento />} />
       <Route index element={<Entrada />} />
       <Route element={<MarcoApp />}>
-        <Route path="phishguard" element={<DestinoApp id="phishguard" />} />
-        <Route path="safelink" element={<DestinoApp id="safelink" />} />
-        <Route path="perfil" element={<DestinoApp id="perfil" />} />
+        <Route path="phishguard" element={<OpcionesApp id="phishguard" />} />
+        <Route path="safelink" element={<OpcionesApp id="safelink" />} />
+        <Route path="perfil" element={<OpcionesApp id="perfil" />} />
+        <Route element={<RutaPrivada />}>
+          <Route path="perfil/cuenta" element={<PerfilSeccion />} />
+          <Route path="safelink/enlaces" element={<PanelEnlaces />} />
+          <Route path="safelink/whatsapp" element={<PanelWhatsapp />} />
+          <Route path="safelink/pdf" element={<PanelPdf />} />
+          <Route path="safelink/correo" element={<PanelCorreo />} />
+          <Route path="safelink/qr" element={<PanelQr />} />
+          <Route path="phishguard/empresa" element={<PanelEmpresa />} />
+          <Route path="phishguard/campanas" element={<PanelCampanas />} />
+          <Route path="phishguard/tablero" element={<PanelTablero />} />
+          <Route path="phishguard/informe" element={<PanelInforme />} />
+        </Route>
       </Route>
       <Route path="empresas" element={<Empresas />} />
       <Route path="adquirir" element={<Adquirir />} />

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -128,7 +129,7 @@ function PerfilActividad({ usuarioId }) {
           </ul>
         )}
         {!cargando && !error && (
-          <Link className="perfil-historial" to="/panel/enlaces">Ver historial</Link>
+          <Link className="perfil-historial" to={rutaEnApp('/panel/enlaces')}>Ver historial</Link>
         )}
       </div>
     </section>

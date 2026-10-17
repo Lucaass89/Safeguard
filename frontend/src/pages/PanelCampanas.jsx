@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { copiarTexto } from '../lib/copiar.js'
 import { etiquetaEstado } from '../lib/estados.js'
 import { supabase } from '../lib/supabase.js'
@@ -332,7 +333,7 @@ function PanelCampanas() {
   if (!organizacion) {
     return (
       <div className="panel">
-        <Link className="panel-volver" to="/panel?app=phishguard">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         <p className="panel-vacio">
@@ -346,7 +347,7 @@ function PanelCampanas() {
   return (
     <div className="panel panel-empresas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel?app=phishguard">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         <h1>Campañas</h1>
@@ -372,7 +373,7 @@ function PanelCampanas() {
 
       {empleados.length === 0 ? (
         <p className="panel-vacio">
-          No hay empleados activos. <Link to="/panel/empresa">Cargalos acá</Link>.
+          No hay empleados activos. <Link to={rutaEnApp('/panel/empresa')}>Cargalos acá</Link>.
         </p>
       ) : (
         <form className="panel-form panel-pieza" onSubmit={crearCampana}>

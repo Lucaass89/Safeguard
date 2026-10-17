@@ -8,11 +8,11 @@ const DESTINOS = [
   { to: '/perfil', etiqueta: 'Perfil', icono: 'perfil' },
 ]
 
-const TITULOS = {
-  '/': 'Inicio',
-  '/phishguard': 'PhishGuard',
-  '/safelink': 'SafeLink',
-  '/perfil': 'Perfil',
+function tituloDe(pathname) {
+  if (pathname.startsWith('/phishguard')) return 'PhishGuard'
+  if (pathname.startsWith('/safelink')) return 'SafeLink'
+  if (pathname.startsWith('/perfil')) return 'Perfil'
+  return 'Inicio'
 }
 
 function Icono({ nombre }) {
@@ -69,7 +69,7 @@ function AppShell({ children }) {
   return (
     <div className="app-shell">
       <header className="app-top">
-        <p className="app-top-titulo">{TITULOS[pathname] ?? 'SafeGuard'}</p>
+        <p className="app-top-titulo">{tituloDe(pathname)}</p>
       </header>
       <main className="app-cuerpo">
         {children ?? <Outlet />}

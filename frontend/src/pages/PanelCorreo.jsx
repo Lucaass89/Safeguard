@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
 import { combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
 import { analizarCorreo } from '../lib/analisisCorreo.js'
@@ -40,7 +41,7 @@ function PanelCorreo() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel?app=safelink">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=safelink')}>
           ← Volver a las opciones
         </Link>
         <h1>Revisar un correo</h1>

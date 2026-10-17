@@ -4,10 +4,16 @@ import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 
 const ACCESOS = [
-  { to: '/panel/enlaces', titulo: 'Revisar un enlace', nota: 'Pegalo antes de abrirlo', icono: 'enlace' },
-  { to: '/panel/qr', titulo: 'Escanear un QR', nota: 'Leé el código con la cámara', icono: 'qr' },
-  { to: '/panel/whatsapp', titulo: 'Revisar un mensaje', nota: 'WhatsApp o un texto', icono: 'mensaje' },
-  { to: '/panel/campanas', titulo: 'Campañas', nota: 'Simulaciones del equipo', icono: 'campana' },
+  { to: '/safelink/enlaces', titulo: 'Revisar un enlace', nota: 'Pegalo antes de abrirlo', icono: 'enlace' },
+  { to: '/safelink/qr', titulo: 'Escanear un QR', nota: 'Leé el código con la cámara', icono: 'qr' },
+  { to: '/safelink/whatsapp', titulo: 'Revisar un mensaje', nota: 'WhatsApp o un texto', icono: 'mensaje' },
+  { to: '/phishguard/campanas', titulo: 'Campañas', nota: 'Simulaciones del equipo', icono: 'campana' },
+]
+
+const INFO = [
+  { titulo: 'PhishGuard', nota: 'Simulaciones por correo, WhatsApp o SMS.' },
+  { titulo: 'SafeLink', nota: 'Verde, amarillo o rojo antes de abrir.' },
+  { titulo: 'Explicación', nota: 'Si alguien cae, ve qué tenía que mirar.' },
 ]
 
 function Icono({ nombre }) {
@@ -132,6 +138,18 @@ function Inicio() {
           </Link>
         ))}
       </div>
+
+      <section className="app-info" aria-label="Qué cubre SafeGuard">
+        <h2>Qué cubre</h2>
+        <ul>
+          {INFO.map((item) => (
+            <li key={item.titulo}>
+              <strong>{item.titulo}</strong>
+              <span>{item.nota}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
     </section>
   )
 }

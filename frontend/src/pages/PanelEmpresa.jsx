@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { supabase } from '../lib/supabase.js'
@@ -459,7 +460,7 @@ function PanelEmpresa() {
   return (
     <div className="panel panel-empresas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel?app=phishguard">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         <h1>{organizacion ? organizacion.nombre_empresa : 'PhishGuard es pago'}</h1>

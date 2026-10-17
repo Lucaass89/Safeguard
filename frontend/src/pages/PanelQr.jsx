@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
 import { analizar, combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
 import { consultarPeorAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
@@ -165,7 +166,7 @@ function PanelQr() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel?app=safelink">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=safelink')}>
           ← Volver a las opciones
         </Link>
         <h1>Escanear un QR</h1>
@@ -177,7 +178,7 @@ function PanelQr() {
       {!soportado && (
         <p className="panel-aviso">
           Este navegador no puede leer el QR con la cámara. Pegá el enlace en{' '}
-          <Link to="/panel/enlaces">Revisar un enlace</Link>.
+          <Link to={rutaEnApp('/panel/enlaces')}>Revisar un enlace</Link>.
         </p>
       )}
 

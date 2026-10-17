@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
 import './Panel.css'
@@ -80,7 +81,7 @@ function PanelTablero() {
   if (!organizacion) {
     return (
       <div className="panel panel-empresas">
-        <Link className="panel-volver" to="/panel?app=phishguard">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         {error && <p className="panel-error">{error}</p>}
@@ -95,7 +96,7 @@ function PanelTablero() {
   return (
     <div className="panel panel-empresas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel?app=phishguard">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         <h1>Vulnerabilidad del equipo</h1>
@@ -104,7 +105,7 @@ function PanelTablero() {
           mejoró en el refuerzo.
         </p>
         <p className="panel-acciones">
-          <Link className="text-link" to="/panel/informe">
+          <Link className="text-link" to={rutaEnApp('/panel/informe')}>
             Ver el informe para guardar
           </Link>
         </p>
@@ -118,7 +119,7 @@ function PanelTablero() {
             <>
               <p>Todavía no cargaste a nadie.</p>
               <p>Cargá a tu equipo y después armá una campaña para ver resultados.</p>
-              <Link className="panel-boton" to="/panel/empresa">
+              <Link className="panel-boton" to={rutaEnApp('/panel/empresa')}>
                 Cargar empleados
               </Link>
             </>
@@ -126,7 +127,7 @@ function PanelTablero() {
             <>
               <p>Todavía no hay campañas con resultados.</p>
               <p>Armá una campaña para ver cómo responde tu equipo.</p>
-              <Link className="panel-boton" to="/panel/campanas">
+              <Link className="panel-boton" to={rutaEnApp('/panel/campanas')}>
                 Armar una campaña
               </Link>
             </>

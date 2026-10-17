@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import { analizar, combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
@@ -135,7 +136,7 @@ function PanelEnlaces() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <Link className="panel-volver" to="/panel?app=safelink">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=safelink')}>
           ← Volver a las opciones
         </Link>
         <h1>Revisar un enlace</h1>

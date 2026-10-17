@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
+import { rutaEnApp } from '../lib/esAppNativa.js'
 import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
 import './Panel.css'
@@ -88,7 +89,7 @@ function PanelInforme() {
   if (!organizacion) {
     return (
       <div className="panel panel-empresas">
-        <Link className="panel-volver" to="/panel?app=phishguard">
+        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         {error && <p className="panel-error">{error}</p>}
@@ -103,7 +104,7 @@ function PanelInforme() {
   return (
     <div className="panel panel-empresas informe">
       <header className="panel-header">
-        <Link className="panel-volver informe-no-imprimir" to="/panel?app=phishguard">
+        <Link className="panel-volver informe-no-imprimir" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
         <p className="informe-fecha">{fecha}</p>
@@ -116,7 +117,7 @@ function PanelInforme() {
           <button type="button" className="panel-boton" onClick={() => window.print()}>
             Guardar o imprimir
           </button>
-          <Link className="text-link" to="/panel/tablero">
+          <Link className="text-link" to={rutaEnApp('/panel/tablero')}>
             Ver el tablero
           </Link>
         </div>
@@ -130,7 +131,7 @@ function PanelInforme() {
             <>
               <p>Todavía no cargaste a nadie.</p>
               <p>Cargá al equipo y armá una campaña para tener un informe.</p>
-              <Link className="panel-boton" to="/panel/empresa">
+              <Link className="panel-boton" to={rutaEnApp('/panel/empresa')}>
                 Cargar empleados
               </Link>
             </>
@@ -138,7 +139,7 @@ function PanelInforme() {
             <>
               <p>Todavía no hay campañas con resultados.</p>
               <p>Cuando alguien reciba la simulación, el informe muestra qué pasó.</p>
-              <Link className="panel-boton" to="/panel/campanas">
+              <Link className="panel-boton" to={rutaEnApp('/panel/campanas')}>
                 Armar una campaña
               </Link>
             </>
