@@ -60,3 +60,18 @@ body:has(.landing-puertas) .instalar-app {
   background: #10161e;
   color: #f4f7fb;
 }
+
+html[data-tema='claro'] .instalar-app-si {
+  background: #d7e5f8;
+  color: #243044;
+}
+
+html[data-tema='claro'] .instalar-app-si:hover {
+  background: #c5d8f4;
+}
+
+html[data-tema='claro'] body:has(.landing-puertas) .instalar-app {
+  border-top-color: #d2deee;
+  background: #f6f9fd;
+  color: #243044;
+}

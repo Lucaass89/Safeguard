@@ -1,11 +1,11 @@
 .sg-landing {
   --ink: #102a43;
   --navy: #092238;
-  --blue: #2563eb;
-  --mint: #b8f5dc;
-  --muted: #4a6278;
-  --line: #e3d9cc;
-  --white: #faf7f2;
+  --blue: #3f689c;
+  --mint: #d7eee4;
+  --muted: #5c6d84;
+  --line: #d2deee;
+  --white: #f6f9fd;
   --shadow: 0 12px 32px rgb(16 24 32 / 14%);
   --nav-activo: color-mix(in srgb, var(--ink) 14%, #fff);
   --tinta: #ddd2c0;
@@ -16,7 +16,7 @@
   margin: 0;
   font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   color: var(--ink);
-  background: #f3efe6;
+  background: #e8f0fa;
   line-height: 1.55;
 }
 
@@ -359,16 +359,16 @@
 
 .sg-landing .nav-fin .nav-cta {
   padding: 0 18px;
-  border-color: var(--blue);
+  border-color: #d7e5f8;
   border-radius: 6px;
-  background: var(--blue);
-  color: var(--white);
+  background: #d7e5f8;
+  color: #243044;
 }
 
 .sg-landing .nav-fin .nav-cta:hover {
-  background: color-mix(in srgb, var(--blue) 82%, var(--ink));
-  border-color: color-mix(in srgb, var(--blue) 82%, var(--ink));
-  color: var(--white);
+  background: #c5d8f4;
+  border-color: #c5d8f4;
+  color: #243044;
 }
 
 .sg-landing .nav-cuenta-menu {
@@ -571,12 +571,12 @@
 }
 
 .sg-landing .button-primary {
-  background: var(--blue);
-  color: #fff;
+  background: #d7e5f8;
+  color: #243044;
 }
 
 .sg-landing .button-primary:hover {
-  background: color-mix(in srgb, var(--blue) 82%, #102a43);
+  background: #c5d8f4;
 }
 
 .sg-landing .button-ghost {
@@ -962,7 +962,7 @@
 .sg-landing .site-footer {
   padding: 32px 0;
   padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
-  background: #f3efe6;
+  background: #e8f0fa;
   border-top: 1px solid var(--line);
 }
 
@@ -1303,4 +1303,18 @@
   .sg-landing .pagina-interior {
     padding-top: calc(140px + env(safe-area-inset-top, 0px));
   }
+}
+
+html[data-tema='claro'] .sg-landing .main-nav .nav-cta,
+html[data-tema='claro'] .sg-landing .nav-fin .nav-cta {
+  border-color: #d7e5f8;
+  background: #d7e5f8;
+  color: #243044;
+}
+
+html[data-tema='claro'] .sg-landing .main-nav .nav-cta:hover,
+html[data-tema='claro'] .sg-landing .nav-fin .nav-cta:hover {
+  border-color: #c5d8f4;
+  background: #c5d8f4;
+  color: #243044;
 }

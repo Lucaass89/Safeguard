@@ -707,3 +707,142 @@
 @media (max-width: 820px) and (prefers-reduced-motion: reduce) {
   .landing-puertas .hero-shield { transform: none; }
 }
+
+html[data-tema='claro'] .landing-puertas {
+  --sg-bg: #e8f0fa;
+  --sg-surface: #f6f9fd;
+  --sg-text: #243044;
+  --sg-muted: #5c6d84;
+  --sg-line: #d2deee;
+  --sg-blue: #3f689c;
+  --sg-magenta: #6f93cc;
+  --sg-teal: #6aa8b8;
+  --sg-accent: #3f689c;
+  color: #243044;
+  color-scheme: light;
+  background:
+    radial-gradient(ellipse 36% 28% at 8% 38%, rgb(160 198 214 / 45%), transparent 64%),
+    radial-gradient(ellipse 32% 22% at 82% 4%, rgb(176 198 230 / 55%), transparent 70%),
+    var(--sg-bg);
+}
+
+html[data-tema='claro'] .landing-puertas .header {
+  border-bottom-color: #d2deee;
+  background: rgb(232 240 250 / 88%);
+}
+
+html[data-tema='claro'] .landing-puertas .header-nav a,
+html[data-tema='claro'] .landing-puertas .door-text,
+html[data-tema='claro'] .landing-puertas .hero-text,
+html[data-tema='claro'] .landing-puertas .pilares p,
+html[data-tema='claro'] .landing-puertas .lugares p,
+html[data-tema='claro'] .landing-puertas .accesos span,
+html[data-tema='claro'] .landing-puertas .pasos p,
+html[data-tema='claro'] .landing-puertas .banda-texto p,
+html[data-tema='claro'] .landing-puertas .portal p,
+html[data-tema='claro'] .landing-puertas .footer {
+  color: #5c6d84;
+}
+
+html[data-tema='claro'] .landing-puertas .header-nav a:hover,
+html[data-tema='claro'] .landing-puertas .brand,
+html[data-tema='claro'] .landing-puertas .hero h1,
+html[data-tema='claro'] .landing-puertas .pilares h2,
+html[data-tema='claro'] .landing-puertas .lugares h3,
+html[data-tema='claro'] .landing-puertas .accesos strong,
+html[data-tema='claro'] .landing-puertas .pasos h3,
+html[data-tema='claro'] .landing-puertas .bloque-cabeza h2,
+html[data-tema='claro'] .landing-puertas .banda h2,
+html[data-tema='claro'] .landing-puertas .portal h2,
+html[data-tema='claro'] .landing-puertas .door-title,
+html[data-tema='claro'] .landing-puertas .tablero h3,
+html[data-tema='claro'] .landing-puertas .tablero strong {
+  color: #243044;
+}
+
+html[data-tema='claro'] .landing-puertas .hero h1 span,
+html[data-tema='claro'] .landing-puertas .ceja,
+html[data-tema='claro'] .landing-puertas .brand-mark,
+html[data-tema='claro'] .landing-puertas .tarjeta-icono,
+html[data-tema='claro'] .landing-puertas .brand:hover {
+  color: #6f93cc;
+}
+
+html[data-tema='claro'] .landing-puertas .hero-shield svg path,
+html[data-tema='claro'] .landing-puertas .hero-shield svg circle {
+  stroke: #8eb0d8;
+}
+
+html[data-tema='claro'] .landing-puertas .login-link,
+html[data-tema='claro'] .landing-puertas .door-cta,
+html[data-tema='claro'] .landing-puertas .door-empresas .door-cta:hover,
+html[data-tema='claro'] .landing-puertas .banda .door-cta:hover,
+html[data-tema='claro'] .landing-puertas .portal .door-cta:hover {
+  background: #d7e5f8;
+  color: #243044;
+}
+
+html[data-tema='claro'] .landing-puertas .door-cta-ghost,
+html[data-tema='claro'] .landing-puertas .door-personas .door-cta,
+html[data-tema='claro'] .landing-puertas .door-cta-ghost:hover,
+html[data-tema='claro'] .landing-puertas .door-personas .door-cta:hover,
+html[data-tema='claro'] .landing-puertas .banda .door-cta-ghost:hover,
+html[data-tema='claro'] .landing-puertas .hero-acciones .door-cta-ghost:hover {
+  border-color: #c5d4e8;
+  background: transparent;
+  color: #243044;
+}
+
+html[data-tema='claro'] .landing-puertas .pilares article,
+html[data-tema='claro'] .landing-puertas .lugares article,
+html[data-tema='claro'] .landing-puertas .accesos a,
+html[data-tema='claro'] .landing-puertas .pasos li,
+html[data-tema='claro'] .landing-puertas .tablero,
+html[data-tema='claro'] .landing-puertas .banda,
+html[data-tema='claro'] .landing-puertas .banda-inversa,
+html[data-tema='claro'] .landing-puertas .door {
+  border-color: #d2deee;
+  background: #f6f9fd;
+}
+
+html[data-tema='claro'] .landing-puertas .accesos a:hover,
+html[data-tema='claro'] .landing-puertas .pilares article:hover,
+html[data-tema='claro'] .landing-puertas .lugares article:hover {
+  border-color: #b7cbeb;
+}
+
+html[data-tema='claro'] .landing-puertas .tablero li {
+  background: #e8f0fa;
+}
+
+html[data-tema='claro'] .landing-puertas .tablero li span,
+html[data-tema='claro'] .landing-puertas .tablero > p,
+html[data-tema='claro'] .landing-puertas .door-meta {
+  color: #5c6d84;
+}
+
+html[data-tema='claro'] .landing-puertas .tablero h3::after {
+  background:
+    linear-gradient(#c5d8f2, #c5d8f2) 10% 100% / 9% 42% no-repeat,
+    linear-gradient(#b7d0ef, #b7d0ef) 26% 100% / 9% 68% no-repeat,
+    linear-gradient(#a9c6ea, #a9c6ea) 42% 100% / 9% 52% no-repeat,
+    linear-gradient(#9bbce4, #9bbce4) 58% 100% / 9% 86% no-repeat,
+    linear-gradient(#b7d8e2, #b7d8e2) 74% 100% / 9% 60% no-repeat,
+    #e8f0fa;
+}
+
+html[data-tema='claro'] .landing-puertas .pasos li::after {
+  background: radial-gradient(ellipse at center, rgb(142 176 216 / 45%), transparent 72%);
+}
+
+html[data-tema='claro'] .landing-puertas .door-empresas { --door-accent: #6f93cc; }
+html[data-tema='claro'] .landing-puertas .door-personas { --door-accent: #6aa8b8; }
+
+html[data-tema='claro'] .landing-puertas .footer {
+  border-top-color: #d2deee;
+  background: #e8f0fa;
+}
+
+html[data-tema='claro'] .landing-puertas :focus-visible {
+  outline-color: #6f93cc;
+}

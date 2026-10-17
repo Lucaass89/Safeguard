@@ -217,7 +217,7 @@
 }
 
 .sg-landing .acceso-pestanas {
-  background: #f3efe6;
+  background: #e8f0fa;
 }
 
 .sg-landing .acceso-pestanas button {
@@ -236,17 +236,17 @@
 }
 
 .sg-landing .acceso-form input:focus {
-  border-color: #2563eb;
+  border-color: #8eb0d8;
 }
 
 .sg-landing .acceso-boton {
-  background: #2563eb;
-  color: #fff;
+  background: #d7e5f8;
+  color: #243044;
   font-weight: 700;
 }
 
 .sg-landing .acceso-boton:hover:not(:disabled) {
-  background: #1456d5;
+  background: #c5d8f4;
 }
 
 .sg-landing .acceso-error {

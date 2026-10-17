@@ -160,10 +160,20 @@ function Marco({ children, interior = false }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const { pathname, hash } = useLocation()
   const { sesion, cargando } = useSesion()
-  const noche = true
+  const [noche, setNoche] = useState(
+    () => document.documentElement.dataset.tema === 'oscuro',
+  )
   const conSesion = Boolean(sesion)
   const navegacion = useRef(null)
   const hamburguesa = useRef(null)
+
+  useEffect(() => {
+    function alCambiar() {
+      setNoche(document.documentElement.dataset.tema === 'oscuro')
+    }
+    window.addEventListener('sg-tema', alCambiar)
+    return () => window.removeEventListener('sg-tema', alCambiar)
+  }, [])
 
   useEffect(() => {
     if (!noche) return undefined

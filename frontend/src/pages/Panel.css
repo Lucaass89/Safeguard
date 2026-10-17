@@ -1062,18 +1062,18 @@ table.persona-tabla td:first-child,
 }
 
 .sg-landing .panel-lienzo {
-  --sg-bg: #f3efe6;
-  --sg-surface: #faf7f2;
-  --sg-text: #102a43;
-  --sg-muted: #4a6278;
-  --sg-line: #d5e2e4;
-  --sg-teal: #168b76;
-  --sg-blue: #2563eb;
-  --sg-green: #178c6c;
-  --sg-yellow: #b8860b;
-  --sg-red: #c45b4a;
-  --sg-accent: var(--sg-blue);
-  color: #102a43;
+  --sg-bg: #e8f0fa;
+  --sg-surface: #f6f9fd;
+  --sg-text: #243044;
+  --sg-muted: #5c6d84;
+  --sg-line: #d2deee;
+  --sg-teal: #6aa8b8;
+  --sg-blue: #3f689c;
+  --sg-green: #3f9a78;
+  --sg-yellow: #b0893e;
+  --sg-red: #c46b62;
+  --sg-accent: #3f689c;
+  color: #243044;
 }
 
 .sg-landing .panel-lienzo .panel-header h1,
@@ -1081,7 +1081,7 @@ table.persona-tabla td:first-child,
   font-family: 'Space Grotesk', var(--sg-sans);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #102a43;
+  color: #243044;
   line-height: 1.15;
 }
 
@@ -1507,8 +1507,8 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .panel-boton,
 .sg-landing .panel-lienzo a.panel-boton {
-  background: var(--sg-blue);
-  color: #fff;
+  background: #d7e5f8;
+  color: #243044;
 }
 
 .sg-landing .panel-lienzo .panel-boton-borde {
@@ -2103,5 +2103,19 @@ table.persona-tabla td:first-child,
     color: inherit;
     text-decoration: none;
   }
+}
+
+html[data-tema='claro'] .check-empleado:has(input:checked) {
+  border-color: #8eb0d8;
+  background: #e8f0fa;
+}
+
+html[data-tema='claro'] .mesa-hoja a span:last-child {
+  background: #e8f0fa;
+  color: #3f689c;
+}
+
+html[data-tema='claro'] .mesa-grupos .panel-empresas {
+  border-top-color: #8eb0d8;
 }
 

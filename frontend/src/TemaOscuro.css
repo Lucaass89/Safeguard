@@ -1,10 +1,11 @@
 html[data-tema='claro'] {
-  --sg-bg: #f3efe6;
-  --sg-surface: #faf7f2;
-  --sg-text: #102a43;
-  --sg-muted: #4a6278;
-  --sg-line: #e3d9cc;
-  --sg-blue: #2563eb;
+  --sg-bg: #e8f0fa;
+  --sg-surface: #f6f9fd;
+  --sg-text: #243044;
+  --sg-muted: #5c6d84;
+  --sg-line: #d2deee;
+  --sg-blue: #3f689c;
+  --sg-accent: #3f689c;
   color-scheme: light;
 }
 
@@ -24,15 +25,15 @@ html[data-tema='oscuro'] {
   flex-shrink: 0;
   margin-left: auto;
   padding: 3px;
-  border: 1px solid #e3d9cc;
+  border: 1px solid #d2deee;
   border-radius: 6px;
-  background: #faf7f2;
+  background: #f6f9fd;
 }
 
 .tema-control button {
   border: 0;
   background: transparent;
-  color: #4a6278;
+  color: #5c6d84;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -42,8 +43,8 @@ html[data-tema='oscuro'] {
 }
 
 .tema-control button[aria-pressed='true'] {
-  background: #2563eb;
-  color: #fff;
+  background: #d7e5f8;
+  color: #243044;
 }
 
 .tema-control button:focus-visible {

@@ -9,7 +9,7 @@ export function aplicarTema(tema) {
     /* el modo privado puede bloquear el almacenamiento */
   }
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.setAttribute('content', siguiente === 'oscuro' ? '#1b2836' : '#f3efe6')
+  if (meta) meta.setAttribute('content', siguiente === 'oscuro' ? '#1b2836' : '#e8f0fa')
   window.dispatchEvent(new CustomEvent('sg-tema', { detail: siguiente }))
   return siguiente
 }

@@ -185,9 +185,17 @@ function Landing() {
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]')
     const previo = meta?.getAttribute('content')
-    meta?.setAttribute('content', '#070b10')
+
+    function pintar() {
+      const claro = document.documentElement.dataset.tema !== 'oscuro'
+      meta?.setAttribute('content', claro ? '#e8f0fa' : '#070b10')
+    }
+
+    pintar()
+    window.addEventListener('sg-tema', pintar)
     return () => {
-      if (previo) meta.setAttribute('content', previo)
+      window.removeEventListener('sg-tema', pintar)
+      if (previo) meta?.setAttribute('content', previo)
     }
   }, [])
 

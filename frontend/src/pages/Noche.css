@@ -59,6 +59,15 @@ html[data-tema] .sg-landing.sg-noche,
   color: #fff;
 }
 
+.sg-landing.sg-noche .button-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.sg-landing.sg-noche .button-primary:hover {
+  background: #1d4ed8;
+}
+
 .sg-landing.sg-noche .nav-fin .nav-cta,
 .sg-landing.sg-noche .nav-cta {
   border-color: transparent;
