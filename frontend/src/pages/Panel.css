@@ -268,6 +268,99 @@
   scroll-margin-top: 76px;
 }
 
+.qr-marco-fijando {
+  border-color: #34d399;
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.25);
+}
+
+.qr-visor-estado {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(11, 15, 23, 0.72);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}
+
+.qr-vista {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--sg-line);
+  border-radius: var(--sg-radius-sm);
+  background: var(--sg-surface);
+}
+
+.qr-vista h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.qr-vista dl {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+
+.qr-vista dt {
+  margin-bottom: 2px;
+  color: var(--sg-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.qr-vista dd {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.qr-url {
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 14px;
+}
+
+.qr-dato {
+  overflow-wrap: anywhere;
+}
+
+.qr-url-tenue,
+.qr-vista-tenue {
+  color: var(--sg-muted);
+}
+
+.qr-vista-nota {
+  display: block;
+  margin: 6px 0 0;
+  color: var(--sg-muted);
+  font-size: 14px;
+}
+
+.qr-recorrido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.qr-recorrido li + li::before {
+  content: '→ ';
+  color: var(--sg-muted);
+}
+
+.qr-vista-peligro {
+  border-color: #e7a8a2;
+}
+
 .panel-modulos {
   display: grid;
   gap: 40px;
