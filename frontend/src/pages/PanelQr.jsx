@@ -22,8 +22,14 @@ function PanelQr() {
   const detectorRef = useRef(null)
   const activoRef = useRef(false)
   const cuadroRef = useRef(null)
+  const resultadoRef = useRef(null)
+  const lienzoRef = useRef(null)
+  const ultimoRef = useRef(0)
+  const intentoRef = useRef(0)
 
   const [escaneando, setEscaneando] = useState(false)
+  const [puedeLinterna, setPuedeLinterna] = useState(false)
+  const [linterna, setLinterna] = useState(false)
   const [analizando, setAnalizando] = useState(false)
   const [resultado, setResultado] = useState(null)
   const [codigoSinLink, setCodigoSinLink] = useState(null)
@@ -48,6 +54,8 @@ function PanelQr() {
     }
     if (videoRef.current) videoRef.current.srcObject = null
     setEscaneando(false)
+    setLinterna(false)
+    setPuedeLinterna(false)
   }
 
   async function procesarCodigo(valor) {
@@ -77,29 +85,74 @@ function PanelQr() {
     }
 
     setResultado({ ...final, casoId: crypto.randomUUID() })
-
-    const { error: falloGuardado } = await guardarAnalisis(sesion, final, 'qr')
     setAnalizando(false)
 
+    let { error: falloGuardado } = await guardarAnalisis(sesion, final, 'qr')
+    if (falloGuardado?.message?.includes('safelink_analisis_entrada_check')) {
+      const segundo = await guardarAnalisis(sesion, final, 'web')
+      falloGuardado = segundo.error
+    }
+
     if (falloGuardado) {
-      setError(`El análisis se hizo, pero no se pudo guardar: ${falloGuardado.message}`)
+      setError('El análisis se hizo, pero no se pudo guardar.')
     }
   }
 
-  function buscar() {
+  useEffect(() => {
+    if (!resultado) return
+    resultadoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [resultado])
+
+  function prepararLienzo(video, ajustado) {
+    const ancho = video.videoWidth
+    const alto = video.videoHeight
+    if (!ancho || !alto) return null
+
+    const lado = Math.min(ancho, alto)
+    const margen = ajustado ? Math.floor(lado * 0.18) : 0
+    const recorte = lado - margen * 2
+    const origenX = Math.floor((ancho - lado) / 2) + margen
+    const origenY = Math.floor((alto - lado) / 2) + margen
+    if (!lienzoRef.current) lienzoRef.current = document.createElement('canvas')
+
+    const lienzo = lienzoRef.current
+    const destino = 960
+    if (lienzo.width !== destino) {
+      lienzo.width = destino
+      lienzo.height = destino
+    }
+
+    const ctx = lienzo.getContext('2d')
+    if (!ctx) return null
+    ctx.drawImage(video, origenX, origenY, recorte, recorte, 0, 0, destino, destino)
+    return lienzo
+  }
+
+  function buscar(ahora) {
     if (!activoRef.current) return
 
-    if (!videoRef.current || videoRef.current.readyState < 2) {
+    const video = videoRef.current
+    if (!video || video.readyState < 2) {
       cuadroRef.current = requestAnimationFrame(buscar)
       return
     }
 
+    if (ahora - ultimoRef.current < 90) {
+      cuadroRef.current = requestAnimationFrame(buscar)
+      return
+    }
+
+    ultimoRef.current = ahora
+    const ajustado = intentoRef.current % 2 === 0
+    intentoRef.current += 1
+    const fuente = prepararLienzo(video, ajustado) ?? video
+
     detectorRef.current
-      .detect(videoRef.current)
+      .detect(fuente)
       .then((codigos) => {
         if (!activoRef.current) return
-        if (codigos.length > 0) {
-          const valor = codigos[0].rawValue
+        const valor = codigos.find((codigo) => codigo.rawValue)?.rawValue
+        if (valor) {
           detener()
           procesarCodigo(valor)
         } else {
@@ -111,15 +164,52 @@ function PanelQr() {
       })
   }
 
+  async function mejorarPista(pista) {
+    const capacidades = pista.getCapabilities?.() ?? {}
+    const avanzado = []
+    if (Array.isArray(capacidades.focusMode) && capacidades.focusMode.includes('continuous')) {
+      avanzado.push({ focusMode: 'continuous' })
+    }
+    if (Array.isArray(capacidades.exposureMode) && capacidades.exposureMode.includes('continuous')) {
+      avanzado.push({ exposureMode: 'continuous' })
+    }
+    if (avanzado.length > 0) {
+      try {
+        await pista.applyConstraints({ advanced: avanzado })
+      } catch {
+        // El celular no aplica el enfoque continuo.
+      }
+    }
+    return capacidades.torch === true
+  }
+
+  async function alternarLinterna() {
+    const pista = streamRef.current?.getVideoTracks()[0]
+    if (!pista) return
+    const siguiente = !linterna
+    try {
+      await pista.applyConstraints({ advanced: [{ torch: siguiente }] })
+      setLinterna(siguiente)
+    } catch {
+      setLinterna(false)
+    }
+  }
+
   async function iniciar() {
     setError(null)
     setResultado(null)
     setCodigoSinLink(null)
     setCierre(null)
+    ultimoRef.current = 0
+    intentoRef.current = 0
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+        },
         audio: false,
       })
 
@@ -129,11 +219,14 @@ function PanelQr() {
       }
 
       streamRef.current = stream
+      const pista = stream.getVideoTracks()[0]
+      const tieneLinterna = pista ? await mejorarPista(pista) : false
       videoRef.current.srcObject = stream
       await videoRef.current.play()
 
       detectorRef.current = new window.BarcodeDetector({ formats: ['qr_code'] })
       activoRef.current = true
+      setPuedeLinterna(tieneLinterna)
       setEscaneando(true)
       buscar()
     } catch (fallo) {
@@ -182,33 +275,45 @@ function PanelQr() {
         </p>
       )}
 
-      {soportado && (
-        <div className="panel-pieza">
-          <div className="qr-visor">
-            <video ref={videoRef} className="qr-video" autoPlay muted playsInline hidden={!escaneando} />
-            {escaneando ? (
-              <span className="qr-marco" aria-hidden="true" />
-            ) : (
-              <p className="qr-visor-vacio">La cámara aparece acá cuando la actives.</p>
-            )}
-          </div>
-
-          <div className="qr-acciones">
-            {escaneando ? (
-              <button type="button" className="panel-boton panel-boton-borde" onClick={detener}>
-                Detener
-              </button>
-            ) : (
-              <button type="button" className="panel-boton" onClick={iniciar}>
-                {yaEscaneo ? 'Escanear otro código' : 'Usar la cámara'}
-              </button>
-            )}
-          </div>
+      {analizando && (
+        <div className="qr-visor" aria-live="polite">
+          <p className="qr-visor-vacio">Analizando QR</p>
         </div>
       )}
 
-      {analizando && <p className="panel-estado">Analizando…</p>}
-      {error && <p className="panel-error">{error}</p>}
+      {soportado && !analizando && !resultado && (
+        <div className="qr-visor">
+          <video ref={videoRef} className="qr-video" autoPlay muted playsInline hidden={!escaneando} />
+          {escaneando ? (
+            <span className="qr-marco" aria-hidden="true" />
+          ) : (
+            <p className="qr-visor-vacio">La cámara aparece acá cuando la actives.</p>
+          )}
+        </div>
+      )}
+
+      {resultado && (
+        <div className="qr-resultado" ref={resultadoRef}>
+          <Resultado
+            casoId={resultado.casoId}
+            nivel={resultado.nivel}
+            subtitulo={resultado.dominioDestino ?? resultado.dominio}
+            motivos={resultado.motivos}
+          >
+            {resultado.nivel !== 'verde' && (
+              <div className="panel-acciones">
+                {cierre ? (
+                  <p className="resultado-aviso">{cierre}</p>
+                ) : (
+                  <button type="button" className="panel-boton panel-boton-borde" onClick={reportar}>
+                    Reportar este sitio
+                  </button>
+                )}
+              </div>
+            )}
+          </Resultado>
+        </div>
+      )}
 
       {codigoSinLink && (
         <p className="panel-aviso">
@@ -216,25 +321,27 @@ function PanelQr() {
         </p>
       )}
 
-      {resultado && (
-        <Resultado
-          casoId={resultado.casoId}
-          nivel={resultado.nivel}
-          subtitulo={resultado.dominioDestino ?? resultado.dominio}
-          motivos={resultado.motivos}
-        >
-          {resultado.nivel !== 'verde' && (
-            <div className="panel-acciones">
-              {cierre ? (
-                <p className="resultado-aviso">{cierre}</p>
-              ) : (
-                <button type="button" className="panel-boton panel-boton-borde" onClick={reportar}>
-                  Reportar este sitio
+      {error && <p className="panel-error">{error}</p>}
+
+      {soportado && (
+        <div className="qr-acciones">
+          {escaneando ? (
+            <>
+              <button type="button" className="panel-boton panel-boton-borde" onClick={detener}>
+                Detener
+              </button>
+              {puedeLinterna && (
+                <button type="button" className="panel-boton panel-boton-borde" onClick={alternarLinterna}>
+                  {linterna ? 'Apagar luz' : 'Prender luz'}
                 </button>
               )}
-            </div>
+            </>
+          ) : (
+            <button type="button" className="panel-boton" onClick={iniciar} disabled={analizando}>
+              {yaEscaneo ? 'Escanear otro código' : 'Usar la cámara'}
+            </button>
           )}
-        </Resultado>
+        </div>
       )}
     </div>
   )

@@ -264,6 +264,10 @@
   margin-top: 16px;
 }
 
+.qr-resultado {
+  scroll-margin-top: 76px;
+}
+
 .panel-modulos {
   display: grid;
   gap: 40px;
