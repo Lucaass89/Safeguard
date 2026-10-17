@@ -1,4 +1,5 @@
 import { StrictMode } from 'react'
+import './lib/instalar.js'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import SesionProvider from './components/SesionProvider.jsx'

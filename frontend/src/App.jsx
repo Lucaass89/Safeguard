@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router'
+import InstalarApp from './components/InstalarApp.jsx'
 import PanelShell from './components/PanelShell.jsx'
 import Layout from './components/Layout.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
@@ -26,7 +27,8 @@ import Reconocimiento from './pages/Reconocimiento.jsx'
 
 function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route path="simulacion/:token" element={<Simulacion />} />
       <Route path="bien/:token" element={<Reconocimiento />} />
       <Route index element={<Landing />} />
@@ -57,7 +59,9 @@ function App() {
         <Route path="c/:token" element={<Compartido />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
-    </Routes>
+      </Routes>
+      <InstalarApp />
+    </>
   )
 }
 
