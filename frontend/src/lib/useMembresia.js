@@ -13,7 +13,7 @@ function guardarCache(id, pertenece) {
   sessionStorage.setItem(`sg-acceso:${id}`, pertenece ? '1' : '0')
 }
 
-function esAdministrador(rol) {
+export function esAdministrador(rol) {
   return typeof rol === 'string' && rol.toLowerCase().startsWith('admin')
 }
 

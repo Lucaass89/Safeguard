@@ -1,4 +1,7 @@
 import { Link } from 'react-router'
+import { PhishGuardPago } from '../components/PhishGuardAcceso.jsx'
+import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
+import { useSesion } from '../lib/useSesion.js'
 import './PhishGuard.css'
 
 // TODO: reemplazar por la campaña en curso. null si no hay ninguna.
@@ -172,8 +175,14 @@ function CampanaActiva({ campana }) {
 }
 
 function PhishGuard() {
+  const { sesion, cargando } = useSesion()
+  const membresia = useMembresia()
+  const admin = Boolean(sesion) && esAdministrador(membresia.rol)
+  const listo = !cargando && !membresia.cargando
+
   return (
     <div className="phish">
+      {listo && !admin ? <PhishGuardPago /> : null}
       {CAMPANA ? (
         <CampanaActiva campana={CAMPANA} />
       ) : (

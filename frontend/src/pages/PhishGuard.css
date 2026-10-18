@@ -157,8 +157,59 @@ html[data-tema='claro'] .phish-vacio {
 .phish-armar {
   margin-top: 16px;
   padding: 0 16px;
+  border: 0;
   background: var(--phish-boton);
   color: var(--phish-boton-texto);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.phish-pago {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid var(--phish-hero-borde);
+  border-radius: 28px;
+  background: var(--phish-hero);
+}
+
+.phish-pago h2,
+.phish-pago p {
+  margin: 0;
+}
+
+.phish-pago p {
+  color: var(--phish-secundario);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.phish-pago .phish-pago-monto {
+  color: #3c342c;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+html[data-tema='oscuro'] .phish-pago .phish-pago-monto {
+  color: #f4f7fb;
+}
+
+.phish-pago .phish-armar {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.phish-pago-error,
+.phish-estado {
+  margin: 0;
+  color: var(--phish-secundario);
+}
+
+.phish-armar:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
 
 .phish-metricas {

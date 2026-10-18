@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import Bienvenida from '../components/Bienvenida.jsx'
 import { supabase } from '../lib/supabase.js'
-import { useMembresia } from '../lib/useMembresia.js'
+import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
 
@@ -179,11 +179,11 @@ function appPedida() {
 
 function Panel() {
   const { sesion } = useSesion()
-  const { pertenece, cargando: cargandoMembresia } = useMembresia()
+  const { rol, cargando: cargandoMembresia } = useMembresia()
   const yaEntro = recibido(sesion.user.id)
   const pedida = appPedida()
   const [tablero, setTablero] = useState(null)
-  const acceso = yaEntro || pedida || !cargandoMembresia ? pertenece : null
+  const acceso = cargandoMembresia ? null : esAdministrador(rol)
   const [fase, setFase] = useState(() => pedida ?? 'elegir')
   const [saludoVisible, setSaludoVisible] = useState(!yaEntro)
   const nombre =
@@ -195,6 +195,11 @@ function Panel() {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
     setSaludoVisible(false)
   }, [sesion.user.id])
+
+  useEffect(() => {
+    if (cargandoMembresia || acceso !== false) return
+    if (fase === 'phishguard') setFase('elegir')
+  }, [cargandoMembresia, acceso, fase])
 
   useEffect(() => {
     function ocultarSaludo() {

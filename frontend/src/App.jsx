@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import InstalarApp from './components/InstalarApp.jsx'
 import PanelShell from './components/PanelShell.jsx'
 import Layout from './components/Layout.jsx'
+import PhishGuardAcceso from './components/PhishGuardAcceso.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import AppShell from './components/AppShell.jsx'
 import { esAppNativa } from './lib/esAppNativa.js'
@@ -58,6 +59,12 @@ function App() {
       <Route element={<MarcoApp />}>
         <Route path="phishguard" element={<PhishGuard />} />
         <Route path="safelink" element={<SafeLink />} />
+        <Route element={<PhishGuardAcceso />}>
+          <Route path="phishguard/empresa" element={<PanelEmpresa />} />
+          <Route path="phishguard/campanas" element={<PanelCampanas />} />
+          <Route path="phishguard/tablero" element={<PanelTablero />} />
+          <Route path="phishguard/informe" element={<PanelInforme />} />
+        </Route>
         <Route element={<RutaPrivada />}>
           <Route path="perfil" element={<PanelPerfil variante="app" />} />
           <Route path="perfil/cuenta" element={<PerfilSeccion />} />
@@ -66,10 +73,6 @@ function App() {
           <Route path="safelink/pdf" element={<PanelPdf />} />
           <Route path="safelink/correo" element={<PanelCorreo />} />
           <Route path="safelink/qr" element={<PanelQr />} />
-          <Route path="phishguard/empresa" element={<PanelEmpresa />} />
-          <Route path="phishguard/campanas" element={<PanelCampanas />} />
-          <Route path="phishguard/tablero" element={<PanelTablero />} />
-          <Route path="phishguard/informe" element={<PanelInforme />} />
         </Route>
       </Route>
       <Route path="empresas" element={<Empresas />} />
@@ -88,10 +91,12 @@ function App() {
           <Route path="pdf" element={<PanelPdf />} />
           <Route path="correo" element={<PanelCorreo />} />
           <Route path="qr" element={<PanelQr />} />
-          <Route path="empresa" element={<PanelEmpresa />} />
-          <Route path="campanas" element={<PanelCampanas />} />
-          <Route path="tablero" element={<PanelTablero />} />
-          <Route path="informe" element={<PanelInforme />} />
+          <Route element={<PhishGuardAcceso />}>
+            <Route path="empresa" element={<PanelEmpresa />} />
+            <Route path="campanas" element={<PanelCampanas />} />
+            <Route path="tablero" element={<PanelTablero />} />
+            <Route path="informe" element={<PanelInforme />} />
+          </Route>
           <Route path="perfil" element={<PanelPerfil />} />
         </Route>
       </Route>
