@@ -17,11 +17,11 @@ const CAMPANA = {
 
 // TODO: reemplazar por los últimos análisis reales.
 const ACTIVIDAD = [
-  { id: '1', titulo: 'promo-banco.example/ingreso', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 12 min' },
-  { id: '2', titulo: 'Mensaje de un número desconocido', tipo: 'Mensaje', nivel: 'sospechoso', cuando: 'Hace 2 h' },
-  { id: '3', titulo: 'maps.google.com/lugar', tipo: 'Enlace', nivel: 'seguro', cuando: 'Ayer' },
-  { id: '4', titulo: 'factura-afip.example/pago', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 2 días' },
-  { id: '5', titulo: 'youtube.com/watch', tipo: 'Enlace', nivel: 'seguro', cuando: 'Hace 4 días' },
+  { id: '1', titulo: 'promo-banco.example', ruta: '/ingreso', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 12 min', to: '/safelink/enlaces' },
+  { id: '2', titulo: 'Mensaje de un número desconocido', tipo: 'Mensaje', nivel: 'sospechoso', cuando: 'Hace 2 h', to: '/safelink/whatsapp' },
+  { id: '3', titulo: 'maps.google.com', ruta: '/lugar', tipo: 'Enlace', nivel: 'seguro', cuando: 'Ayer', to: '/safelink/enlaces' },
+  { id: '4', titulo: 'factura-afip.example', ruta: '/pago', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 2 días', to: '/safelink/enlaces' },
+  { id: '5', titulo: 'youtube.com', ruta: '/watch', tipo: 'Enlace', nivel: 'seguro', cuando: 'Hace 4 días', to: '/safelink/enlaces' },
 ]
 
 // TODO: reemplazar por el consejo del día.
@@ -144,8 +144,12 @@ function Inicio() {
         <div className="inicio-hero-texto">
           <p className="inicio-kicker">Protección</p>
           <p className="inicio-frase">{PROTECCION.frase}</p>
+          <Link className="inicio-revisar-ahora" to="/safelink/whatsapp">
+            Revisar ahora
+          </Link>
         </div>
         <div className="inicio-campana">
+          <p className="inicio-campana-titulo">{CAMPANA.nombre}</p>
           <div
             className="inicio-barra"
             role="progressbar"
@@ -158,7 +162,7 @@ function Inicio() {
             <span />
           </div>
           <p>
-            {CAMPANA.nombre} · {CAMPANA.hecho} de {CAMPANA.total} ya la completaron
+            {CAMPANA.hecho} de {CAMPANA.total} ya la completaron
           </p>
         </div>
       </section>
@@ -201,17 +205,23 @@ function Inicio() {
         ) : (
           <ul className="inicio-lista">
             {ACTIVIDAD.map((item) => (
-              <li className="inicio-item" key={item.id}>
-                <span className="inicio-item-icono">
-                  <Icono nombre={item.tipo === 'Mensaje' ? 'mensaje' : 'enlace'} />
-                </span>
-                <span className="inicio-item-texto">
-                  <strong>{item.titulo}</strong>
-                  <span>
-                    {item.tipo} · {item.cuando}
+              <li key={item.id}>
+                <Link className="inicio-item" to={item.to}>
+                  <span className="inicio-item-icono">
+                    <Icono nombre={item.tipo === 'Mensaje' ? 'mensaje' : 'enlace'} />
                   </span>
-                </span>
-                <span className={`inicio-chip inicio-chip-${item.nivel}`}>{CHIP[item.nivel]}</span>
+                  <span className="inicio-item-texto">
+                    <strong className="inicio-dominio">{item.titulo}</strong>
+                    {item.ruta ? <span className="inicio-ruta">{item.ruta}</span> : null}
+                    <span>
+                      {item.tipo} · {item.cuando}
+                    </span>
+                  </span>
+                  <span className={`inicio-chip inicio-chip-${item.nivel}`}>{CHIP[item.nivel]}</span>
+                  <span className="inicio-ir" aria-hidden="true">
+                    <Icono nombre="flecha" />
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

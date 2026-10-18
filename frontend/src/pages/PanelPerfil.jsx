@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import TemaControl from '../components/TemaControl.jsx'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
@@ -676,6 +677,21 @@ function PanelPerfil({ variante }) {
           </div>
         </div>
       </section>
+
+      {enApp && (
+        <section className="ajuste perfil-preferencias" aria-labelledby="perfil-preferencias-titulo">
+          <div className="ajuste-cabeza">
+            <h2 id="perfil-preferencias-titulo">Preferencias</h2>
+          </div>
+          <div className="perfil-preferencia">
+            <div>
+              <strong>Tema</strong>
+              <p>Claro u oscuro, en este celular.</p>
+            </div>
+            <TemaControl icono />
+          </div>
+        </section>
+      )}
 
       {enApp && (
         <div className="perfil-salir-zona">

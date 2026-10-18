@@ -93,7 +93,7 @@ function AppShell({ children }) {
               <Icono nombre="empresa" />
             </Link>
           )}
-          <TemaControl icono />
+          {pathname !== '/' && <TemaControl icono />}
         </div>
       </header>
       <main className="app-cuerpo">

@@ -6,6 +6,8 @@
   --inicio-boton-texto: #faf6f1;
   display: grid;
   gap: 20px;
+  width: 100%;
+  min-width: 0;
   max-width: 520px;
   margin: 0 auto;
 }
@@ -100,9 +102,35 @@ html[data-tema='claro'] .inicio-hero {
   line-height: 1.35;
 }
 
+.inicio-revisar-ahora {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  margin-top: 4px;
+  color: var(--sg-accent);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.inicio-revisar-ahora:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 3px;
+}
+
 .inicio-campana {
   grid-column: 1 / -1;
   margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--inicio-hero-borde);
+}
+
+.inicio-campana-titulo {
+  margin: 0 0 8px;
+  color: var(--sg-text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .inicio-barra {
@@ -129,9 +157,12 @@ html[data-tema='claro'] .inicio-hero {
 }
 
 .inicio-revisar {
-  display: flex;
-  align-items: stretch;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  align-items: end;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .inicio-campo {
@@ -206,10 +237,9 @@ html[data-tema='claro'] .inicio-hero {
 }
 
 .inicio-qr {
-  align-self: stretch;
-  flex: 0 0 56px;
-  width: 56px;
-  min-height: 56px;
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
   border: 1px solid var(--sg-line);
   border-radius: 16px;
   background: color-mix(in srgb, var(--sg-accent) 18%, var(--sg-surface));
@@ -262,7 +292,7 @@ html[data-tema='oscuro'] .inicio-aviso {
 
 .inicio-item {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-columns: 48px minmax(0, 1fr) auto 24px;
   gap: 12px;
   align-items: center;
   min-height: 72px;
@@ -270,6 +300,8 @@ html[data-tema='oscuro'] .inicio-aviso {
   border: 1px solid var(--sg-line);
   border-radius: 16px;
   background: var(--sg-surface);
+  color: inherit;
+  text-decoration: none;
 }
 
 .inicio-item-icono,
@@ -287,15 +319,40 @@ html[data-tema='oscuro'] .inicio-aviso {
   min-width: 0;
 }
 
-.inicio-item-texto strong {
+.inicio-dominio {
   display: block;
-  overflow: hidden;
+  overflow-wrap: anywhere;
   color: var(--sg-text);
   font-size: 15px;
   font-weight: 650;
   line-height: 1.3;
+}
+
+.inicio-ruta {
+  display: block;
+  overflow: hidden;
+  color: var(--inicio-secundario);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.inicio-ir {
+  display: grid;
+  place-items: center;
+  color: var(--inicio-secundario);
+}
+
+.inicio-ir svg {
+  width: 18px;
+  height: 18px;
+}
+
+.inicio-item:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
 }
 
 .inicio-item-texto span,
