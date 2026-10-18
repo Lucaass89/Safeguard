@@ -180,9 +180,18 @@ function PhishGuard() {
   const admin = Boolean(sesion) && esAdministrador(membresia.rol)
   const listo = !cargando && !membresia.cargando
 
+  if (!listo) return <p className="phish-estado">Revisando tu plan…</p>
+
+  if (!admin) {
+    return (
+      <div className="phish">
+        <PhishGuardPago />
+      </div>
+    )
+  }
+
   return (
     <div className="phish">
-      {listo && !admin ? <PhishGuardPago /> : null}
       {CAMPANA ? (
         <CampanaActiva campana={CAMPANA} />
       ) : (

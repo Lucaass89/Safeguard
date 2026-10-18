@@ -1,6 +1,8 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import Bienvenida from './Bienvenida.jsx'
 import TemaControl from './TemaControl.jsx'
+import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
+import { useSesion } from '../lib/useSesion.js'
 import './AppShell.css'
 
 const DESTINOS = [
@@ -77,13 +79,16 @@ function Icono({ nombre }) {
 
 function AppShell({ children }) {
   const { pathname } = useLocation()
+  const { sesion, cargando } = useSesion()
+  const membresia = useMembresia()
+  const admin = Boolean(sesion) && !cargando && !membresia.cargando && esAdministrador(membresia.rol)
 
   return (
     <div className="app-shell">
       <header className="app-top">
         <p className="app-top-titulo">{tituloDe(pathname)}</p>
         <div className="app-top-acciones">
-          {pathname === '/phishguard' && (
+          {pathname === '/phishguard' && admin && (
             <Link className="app-top-equipo" to="/phishguard/empresa" aria-label="Tu empresa">
               <Icono nombre="empresa" />
             </Link>
