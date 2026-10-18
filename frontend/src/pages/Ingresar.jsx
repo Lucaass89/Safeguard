@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import { destinoTrasIngreso } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Ingresar.css'
@@ -78,7 +79,7 @@ function Ingresar() {
   const navegar = useNavigate()
 
   const crearCuenta = modo === 'crear'
-  const destino = destinoSeguro(params.get('volver'))
+  const destino = destinoTrasIngreso(destinoSeguro(params.get('volver')))
 
   async function manejarEnvio(evento) {
     evento.preventDefault()
