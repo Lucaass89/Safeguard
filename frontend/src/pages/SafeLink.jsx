@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useAnalisisPropios } from '../lib/useAnalisisPropios.js'
 import './SafeLink.css'
 
 const TIPOS = [
@@ -54,34 +55,6 @@ const RESULTADOS = {
     ],
   },
 }
-
-// TODO: reemplazar por los análisis de hoy.
-const REVISADOS = [
-  {
-    id: '1',
-    tipo: 'enlace',
-    texto: 'promo-banco.example/ingreso',
-    nivel: 'peligroso',
-    cuando: 'Hace 12 min',
-    motivos: RESULTADOS.enlace.motivos,
-  },
-  {
-    id: '2',
-    tipo: 'mensaje',
-    texto: 'WhatsApp de un número desconocido',
-    nivel: 'sospechoso',
-    cuando: 'Hace 1 h',
-    motivos: RESULTADOS.mensaje.motivos,
-  },
-  {
-    id: '3',
-    tipo: 'correo',
-    texto: 'factura@empresa.com.ar',
-    nivel: 'seguro',
-    cuando: 'Hace 3 h',
-    motivos: RESULTADOS.correo.motivos,
-  },
-]
 
 const VEREDICTO = {
   seguro: 'Seguro',
@@ -211,6 +184,7 @@ function SafeLink() {
   const [aviso, setAviso] = useState('')
   const [resultado, setResultado] = useState(null)
   const [reportado, setReportado] = useState(false)
+  const revisados = useAnalisisPropios({ limite: 10, soloHoy: true })
   const campo = CAMPOS[tipo]
 
   function elegirTipo(siguiente) {
@@ -398,17 +372,21 @@ function SafeLink() {
 
       <section className="sl-bloque" aria-labelledby="sl-hoy">
         <h2 id="sl-hoy">Revisados hoy</h2>
-        {REVISADOS.length === 0 ? (
+        {revisados.cargando ? (
+          <p className="sl-vacio">Buscando tus revisiones…</p>
+        ) : revisados.error ? (
+          <p className="sl-vacio">No se pudieron leer tus revisiones. Probá de nuevo en un rato.</p>
+        ) : revisados.items.length === 0 ? (
           <p className="sl-vacio">Hoy todavía no revisaste nada.</p>
         ) : (
           <ul className="sl-lista">
-            {REVISADOS.map((item) => (
+            {revisados.items.map((item) => (
               <li key={item.id}>
                 <button type="button" className="sl-item" onClick={() => abrirRevisado(item)}>
                   <span className="sl-item-texto">
                     <strong>{item.texto}</strong>
                     <span>
-                      {TIPOS.find((opcion) => opcion.id === item.tipo)?.etiqueta} · {item.cuando}
+                      {item.tipo} · {item.cuando}
                     </span>
                   </span>
                   <span className={`sl-chip sl-chip-${item.nivel}`}>

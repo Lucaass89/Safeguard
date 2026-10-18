@@ -1,33 +1,9 @@
 import { Link } from 'react-router'
 import { PhishGuardPago } from '../components/PhishGuardAcceso.jsx'
+import { cayo, useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './PhishGuard.css'
-
-// TODO: reemplazar por la campaña en curso. null si no hay ninguna.
-const CAMPANA = {
-  nombre: 'Factura de AFIP',
-  canal: 'Correo',
-  enviados: 48,
-  abiertos: 31,
-  clics: 9,
-  reportados: 6,
-}
-
-// TODO: reemplazar por las tasas reales de la última simulación.
-const METRICAS = [
-  { id: 'clic', etiqueta: 'Tasa de clic', valor: '19%', delta: '4 pts', direccion: 'sube', mejora: false },
-  { id: 'reporte', etiqueta: 'Tasa de reporte', valor: '28%', delta: '6 pts', direccion: 'sube', mejora: true },
-  { id: 'riesgo', etiqueta: 'En riesgo', valor: '9', delta: '2', direccion: 'baja', mejora: true },
-]
-
-// TODO: reemplazar por quienes cayeron en la última simulación.
-const REFORZAR = [
-  { id: '1', nombre: 'Marina López', detalle: 'Administración', nivel: 'alto', equipo: false },
-  { id: '2', nombre: 'Equipo de ventas', detalle: '4 personas', nivel: 'alto', equipo: true },
-  { id: '3', nombre: 'Julián Pereyra', detalle: 'Sistemas', nivel: 'medio', equipo: false },
-  { id: '4', nombre: 'Lucía Benítez', detalle: 'Recepción', nivel: 'medio', equipo: false },
-]
 
 const NIVEL = {
   alto: 'Alto',
@@ -67,16 +43,6 @@ function Icono({ nombre }) {
     return (
       <svg {...trazo}>
         <path d="M5 6.5h14v9H8.5L5 18.2V6.5Z" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'equipo') {
-    return (
-      <svg {...trazo}>
-        <circle cx="8" cy="9" r="2.2" />
-        <circle cx="16" cy="9" r="2.2" />
-        <path d="M4.8 17.2c.7-2 2.2-3 4-3s3.3 1 4 3M12.8 17.2c.5-1.4 1.6-2.3 3.2-2.3 1.8 0 3.3 1 4 3" />
       </svg>
     )
   }
@@ -130,13 +96,60 @@ function iconoCanal(canal) {
   return 'correo'
 }
 
+function porcentaje(parte, total) {
+  return total > 0 ? Math.round((parte / total) * 100) : 0
+}
+
+function tendencia(actual, anterior) {
+  if (anterior === null) return null
+  const diferencia = actual - anterior
+  if (diferencia === 0) return null
+  return {
+    delta: `${Math.abs(diferencia)} pts`,
+    direccion: diferencia > 0 ? 'sube' : 'baja',
+    mejora: diferencia < 0,
+  }
+}
+
+function armarMetricas(ultima, previa) {
+  const clic = porcentaje(ultima.clics, ultima.enviados)
+  const datos = porcentaje(ultima.datos, ultima.enviados)
+  return [
+    {
+      id: 'clic',
+      etiqueta: 'Tasa de clic',
+      valor: `${clic}%`,
+      tendencia: tendencia(clic, previa ? porcentaje(previa.clics, previa.enviados) : null),
+    },
+    {
+      id: 'datos',
+      etiqueta: 'Cargaron datos',
+      valor: `${datos}%`,
+      tendencia: tendencia(datos, previa ? porcentaje(previa.datos, previa.enviados) : null),
+    },
+    { id: 'capacitados', etiqueta: 'Se capacitaron', valor: String(ultima.capacitados), tendencia: null },
+  ]
+}
+
+function armarReforzar(ultima) {
+  return ultima.eventos
+    .filter(cayo)
+    .map((evento, indice) => ({
+      id: evento.empleados?.id ?? `${ultima.id}-${indice}`,
+      nombre: evento.empleados?.nombre || 'Sin nombre',
+      detalle: evento.empleados?.departamento || 'General',
+      nivel: evento.ingreso_datos ? 'alto' : 'medio',
+    }))
+    .sort((a, b) => (a.nivel === b.nivel ? 0 : a.nivel === 'alto' ? -1 : 1))
+}
+
 function CampanaActiva({ campana }) {
-  const avance = Math.round((campana.abiertos / campana.enviados) * 100)
+  const avance = porcentaje(campana.clics, campana.enviados)
   const conteos = [
     ['Enviados', campana.enviados],
-    ['Abiertos', campana.abiertos],
     ['Clics', campana.clics],
-    ['Reportados', campana.reportados],
+    ['Cargaron datos', campana.datos],
+    ['Lo reconocieron', campana.reconocieron],
   ]
 
   return (
@@ -151,16 +164,16 @@ function CampanaActiva({ campana }) {
       <div
         className="phish-barra"
         role="progressbar"
-        aria-valuenow={campana.abiertos}
+        aria-valuenow={campana.clics}
         aria-valuemin={0}
         aria-valuemax={campana.enviados}
-        aria-label={`${campana.abiertos} de ${campana.enviados} lo abrieron`}
+        aria-label={`${campana.clics} de ${campana.enviados} hicieron clic`}
         style={{ '--avance': `${avance}%` }}
       >
         <span />
       </div>
       <p className="phish-avance">
-        {campana.abiertos} de {campana.enviados} lo abrieron
+        {campana.clics} de {campana.enviados} hicieron clic
       </p>
       <ul className="phish-conteos">
         {conteos.map(([etiqueta, valor]) => (
@@ -179,6 +192,7 @@ function PhishGuard() {
   const membresia = useMembresia()
   const admin = Boolean(sesion) && esAdministrador(membresia.rol)
   const listo = !cargando && !membresia.cargando
+  const datos = useCampanas(listo && admin ? membresia.organizacionId : null)
 
   if (!listo) return <p className="phish-estado">Revisando tu plan…</p>
 
@@ -190,10 +204,19 @@ function PhishGuard() {
     )
   }
 
+  if (datos.cargando) return <p className="phish-estado">Buscando tus campañas…</p>
+
+  const [ultima, previa] = datos.campanas
+  const metricas = ultima ? armarMetricas(ultima, previa) : []
+  const reforzar = ultima ? armarReforzar(ultima) : []
+
   return (
     <div className="phish">
-      {CAMPANA ? (
-        <CampanaActiva campana={CAMPANA} />
+      {datos.error ? (
+        <p className="phish-estado">No se pudieron leer tus campañas. Probá de nuevo en un rato.</p>
+      ) : null}
+      {ultima ? (
+        <CampanaActiva campana={ultima} />
       ) : (
         <section className="phish-vacio" aria-label="Sin campaña activa">
           <h2>No hay una simulación en curso</h2>
@@ -204,46 +227,60 @@ function PhishGuard() {
         </section>
       )}
 
-      <ul className="phish-metricas">
-        {METRICAS.map((metrica) => (
-          <li key={metrica.id}>
-            <strong>{metrica.valor}</strong>
-            <span className="phish-metrica-etiqueta">{metrica.etiqueta}</span>
-            <span className={metrica.mejora ? 'phish-tendencia phish-mejora' : 'phish-tendencia phish-empeora'}>
-              <Icono nombre={metrica.direccion} />
-              <span>{metrica.delta}</span>
-              <span className="phish-solo">{metrica.direccion === 'sube' ? 'sube' : 'baja'}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <section className="phish-bloque" aria-labelledby="phish-reforzar">
-        <h2 id="phish-reforzar">Para reforzar</h2>
-        {REFORZAR.length === 0 ? (
-          <p className="phish-lista-vacia">En la última simulación no hubo que reforzar.</p>
-        ) : (
-          <ul className="phish-lista">
-            {REFORZAR.map((item) => (
-              <li className="phish-item" key={item.id}>
-                <span className="phish-item-icono">
-                  <Icono nombre={item.equipo ? 'equipo' : 'persona'} />
-                </span>
-                <span className="phish-item-texto">
-                  <strong>{item.nombre}</strong>
-                  <span>{item.detalle}</span>
-                </span>
-                <span className={`phish-chip phish-chip-${item.nivel}`}>{NIVEL[item.nivel]}</span>
+      {ultima ? (
+        <>
+          <ul className="phish-metricas">
+            {metricas.map((metrica) => (
+              <li key={metrica.id}>
+                <strong>{metrica.valor}</strong>
+                <span className="phish-metrica-etiqueta">{metrica.etiqueta}</span>
+                {metrica.tendencia ? (
+                  <span
+                    className={
+                      metrica.tendencia.mejora
+                        ? 'phish-tendencia phish-mejora'
+                        : 'phish-tendencia phish-empeora'
+                    }
+                  >
+                    <Icono nombre={metrica.tendencia.direccion} />
+                    <span>{metrica.tendencia.delta}</span>
+                    <span className="phish-solo">
+                      {metrica.tendencia.direccion === 'sube' ? 'sube' : 'baja'}
+                    </span>
+                  </span>
+                ) : null}
               </li>
             ))}
           </ul>
-        )}
-      </section>
 
-      <Link className="phish-exportar" to="/phishguard/informe">
-        <Icono nombre="informe" />
-        <span>Exportar informe</span>
-      </Link>
+          <section className="phish-bloque" aria-labelledby="phish-reforzar">
+            <h2 id="phish-reforzar">Para reforzar</h2>
+            {reforzar.length === 0 ? (
+              <p className="phish-lista-vacia">En la última simulación no hubo que reforzar.</p>
+            ) : (
+              <ul className="phish-lista">
+                {reforzar.map((item) => (
+                  <li className="phish-item" key={item.id}>
+                    <span className="phish-item-icono">
+                      <Icono nombre="persona" />
+                    </span>
+                    <span className="phish-item-texto">
+                      <strong>{item.nombre}</strong>
+                      <span>{item.detalle}</span>
+                    </span>
+                    <span className={`phish-chip phish-chip-${item.nivel}`}>{NIVEL[item.nivel]}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <Link className="phish-exportar" to="/phishguard/informe">
+            <Icono nombre="informe" />
+            <span>Exportar informe</span>
+          </Link>
+        </>
+      ) : null}
 
       <Link className="phish-fab" to="/phishguard/campanas">
         <Icono nombre="mas" />

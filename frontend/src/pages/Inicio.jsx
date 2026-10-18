@@ -1,28 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { useAnalisisPropios } from '../lib/useAnalisisPropios.js'
+import { useCampanas } from '../lib/useCampanas.js'
+import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
+import { useSesion } from '../lib/useSesion.js'
 import './Inicio.css'
 
-// TODO: reemplazar por el porcentaje real de protección.
-const PROTECCION = {
-  porcentaje: 72,
-  frase: 'Revisá el mensaje que te reenviaron. Es lo que más te baja la protección.',
-}
+// TODO: reemplazar por el porcentaje real y los mensajes pendientes de la cuenta.
+// Hasta que existan, la card solo se ve en desarrollo para que nadie vea números inventados.
+const PROTECCION = import.meta.env.DEV
+  ? { porcentaje: 72, pendientes: 1, pendienteTo: '/safelink/whatsapp' }
+  : null
 
-// TODO: reemplazar por el avance real de la campaña activa.
-const CAMPANA = {
-  nombre: 'Campaña de octubre',
-  hecho: 18,
-  total: 24,
+// TODO: ajustar los cortes cuando exista el cálculo real.
+function estadoDe(porcentaje) {
+  if (porcentaje >= 80) return { id: 'bien', texto: 'Bien' }
+  if (porcentaje >= 50) return { id: 'regular', texto: 'Regular' }
+  return { id: 'riesgo', texto: 'En riesgo' }
 }
-
-// TODO: reemplazar por los últimos análisis reales.
-const ACTIVIDAD = [
-  { id: '1', titulo: 'promo-banco.example', ruta: '/ingreso', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 12 min', to: '/safelink/enlaces' },
-  { id: '2', titulo: 'Mensaje de un número desconocido', tipo: 'Mensaje', nivel: 'sospechoso', cuando: 'Hace 2 h', to: '/safelink/whatsapp' },
-  { id: '3', titulo: 'maps.google.com', ruta: '/lugar', tipo: 'Enlace', nivel: 'seguro', cuando: 'Ayer', to: '/safelink/enlaces' },
-  { id: '4', titulo: 'factura-afip.example', ruta: '/pago', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 2 días', to: '/safelink/enlaces' },
-  { id: '5', titulo: 'youtube.com', ruta: '/watch', tipo: 'Enlace', nivel: 'seguro', cuando: 'Hace 4 días', to: '/safelink/enlaces' },
-]
 
 // TODO: reemplazar por el consejo del día.
 const CONSEJO = {
@@ -76,6 +71,54 @@ function Icono({ nombre }) {
     )
   }
 
+  if (nombre === 'info') {
+    return (
+      <svg {...trazo}>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 11v5" />
+        <path d="M12 8h.01" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'bien') {
+    return (
+      <svg {...trazo}>
+        <circle cx="12" cy="12" r="8" />
+        <path d="m8.5 12.2 2.3 2.3 4.7-5" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'regular') {
+    return (
+      <svg {...trazo}>
+        <path d="M12 4.5 20 19H4L12 4.5Z" />
+        <path d="M12 10v4.2" />
+        <path d="M12 16.8h.01" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'riesgo') {
+    return (
+      <svg {...trazo}>
+        <circle cx="12" cy="12" r="8" />
+        <path d="m9 9 6 6M15 9l-6 6" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'equipo') {
+    return (
+      <svg {...trazo}>
+        <circle cx="8" cy="9" r="2.2" />
+        <circle cx="16" cy="9" r="2.2" />
+        <path d="M4.8 17.2c.7-2 2.2-3 4-3s3.3 1 4 3M12.8 17.2c.5-1.4 1.6-2.3 3.2-2.3 1.8 0 3.3 1 4 3" />
+      </svg>
+    )
+  }
+
   if (nombre === 'consejo') {
     return (
       <svg {...trazo}>
@@ -95,13 +138,13 @@ function Icono({ nombre }) {
   )
 }
 
-function Anillo({ porcentaje }) {
+function Anillo({ porcentaje, estado }) {
   const radio = 52
   const circunferencia = 2 * Math.PI * radio
   const resto = circunferencia * (1 - porcentaje / 100)
 
   return (
-    <div className="inicio-anillo" role="img" aria-label={`Protección ${porcentaje} por ciento`}>
+    <div className={`inicio-anillo inicio-anillo-${estado}`} role="img" aria-label={`${porcentaje} por ciento`}>
       <svg viewBox="0 0 120 120">
         <circle className="inicio-anillo-pista" cx="60" cy="60" r={radio} />
         <circle
@@ -121,11 +164,112 @@ function Anillo({ porcentaje }) {
   )
 }
 
+function TarjetaProteccion({ proteccion }) {
+  const dialogo = useRef(null)
+  const [explicando, setExplicando] = useState(false)
+  const estado = estadoDe(proteccion.porcentaje)
+  const { pendientes } = proteccion
+
+  useEffect(() => {
+    if (!explicando) return undefined
+    const nodo = dialogo.current
+    nodo?.showModal()
+    return () => {
+      if (nodo?.open) nodo.close()
+    }
+  }, [explicando])
+
+  return (
+    <section className="inicio-proteccion" aria-labelledby="inicio-proteccion-titulo">
+      <div className="inicio-proteccion-cabeza">
+        <h2 id="inicio-proteccion-titulo">Tu protección</h2>
+        <button
+          type="button"
+          className="inicio-info"
+          aria-label="Qué mide tu protección"
+          onClick={() => setExplicando(true)}
+        >
+          <Icono nombre="info" />
+        </button>
+      </div>
+
+      <div className="inicio-proteccion-card">
+        <div className="inicio-medidor">
+          <Anillo porcentaje={proteccion.porcentaje} estado={estado.id} />
+          <p className={`inicio-estado inicio-estado-${estado.id}`}>
+            <Icono nombre={estado.id} />
+            <span>{estado.texto}</span>
+          </p>
+        </div>
+        <div className="inicio-proteccion-texto">
+          <p className="inicio-pendiente">
+            {pendientes > 0
+              ? `Tenés ${pendientes} ${pendientes === 1 ? 'mensaje' : 'mensajes'} sin revisar`
+              : 'Todo al día'}
+          </p>
+          {pendientes > 0 ? (
+            <Link className="inicio-revisar-ahora" to={proteccion.pendienteTo}>
+              Revisar ahora
+            </Link>
+          ) : null}
+        </div>
+      </div>
+
+      {explicando ? (
+        <dialog
+          ref={dialogo}
+          className="inicio-hoja"
+          aria-labelledby="inicio-hoja-titulo"
+          onCancel={(evento) => {
+            evento.preventDefault()
+            setExplicando(false)
+          }}
+          onClick={(evento) => {
+            if (evento.target === evento.currentTarget) setExplicando(false)
+          }}
+        >
+          <h2 id="inicio-hoja-titulo">Qué mide tu protección</h2>
+          {/* TODO: alinear este texto con el cálculo real del porcentaje. */}
+          <p>Muestra qué tan cuidado estás según lo que revisaste con SafeLink.</p>
+          <p>Sube cuando revisás lo que te llega antes de abrirlo.</p>
+          <button type="button" className="inicio-hoja-cerrar" onClick={() => setExplicando(false)}>
+            Entendido
+          </button>
+        </dialog>
+      ) : null}
+    </section>
+  )
+}
+
+function FilaEquipo() {
+  const { sesion } = useSesion()
+  const membresia = useMembresia()
+  const admin = Boolean(sesion) && !membresia.cargando && esAdministrador(membresia.rol)
+  const { campanas } = useCampanas(admin ? membresia.organizacionId : null)
+  const ultima = campanas[0]
+
+  if (!ultima || ultima.enviados === 0) return null
+
+  return (
+    <Link className="inicio-equipo" to="/phishguard">
+      <span className="inicio-equipo-icono">
+        <Icono nombre="equipo" />
+      </span>
+      <span className="inicio-equipo-texto">
+        Tu equipo: {ultima.completaron} de {ultima.enviados} completaron la simulación
+      </span>
+      <span className="inicio-ir" aria-hidden="true">
+        <Icono nombre="flecha" />
+      </span>
+    </Link>
+  )
+}
+
 function Inicio() {
   const navigate = useNavigate()
   const [enlace, setEnlace] = useState('')
   const [aviso, setAviso] = useState('')
-  const avance = Math.round((CAMPANA.hecho / CAMPANA.total) * 100)
+  const actividad = useAnalisisPropios({ limite: 5 })
 
   function revisar(evento) {
     evento.preventDefault()
@@ -139,33 +283,8 @@ function Inicio() {
 
   return (
     <div className="inicio">
-      <section className="inicio-hero" aria-label="Estado de protección">
-        <Anillo porcentaje={PROTECCION.porcentaje} />
-        <div className="inicio-hero-texto">
-          <p className="inicio-kicker">Protección</p>
-          <p className="inicio-frase">{PROTECCION.frase}</p>
-          <Link className="inicio-revisar-ahora" to="/safelink/whatsapp">
-            Revisar ahora
-          </Link>
-        </div>
-        <div className="inicio-campana">
-          <p className="inicio-campana-titulo">{CAMPANA.nombre}</p>
-          <div
-            className="inicio-barra"
-            role="progressbar"
-            aria-valuenow={CAMPANA.hecho}
-            aria-valuemin={0}
-            aria-valuemax={CAMPANA.total}
-            aria-label={`${CAMPANA.nombre}: ${CAMPANA.hecho} de ${CAMPANA.total} ya la completaron`}
-            style={{ '--avance': `${avance}%` }}
-          >
-            <span />
-          </div>
-          <p>
-            {CAMPANA.hecho} de {CAMPANA.total} ya la completaron
-          </p>
-        </div>
-      </section>
+      {PROTECCION ? <TarjetaProteccion proteccion={PROTECCION} /> : null}
+      <FilaEquipo />
 
       <form className="inicio-revisar" onSubmit={revisar}>
         <label className="inicio-campo">
@@ -198,17 +317,21 @@ function Inicio() {
 
       <section className="inicio-bloque" aria-labelledby="inicio-actividad">
         <h2 id="inicio-actividad">Actividad reciente</h2>
-        {ACTIVIDAD.length === 0 ? (
+        {actividad.cargando ? (
+          <p className="inicio-vacio">Buscando tus revisiones…</p>
+        ) : actividad.error ? (
+          <p className="inicio-vacio">No se pudo leer tu actividad. Probá de nuevo en un rato.</p>
+        ) : actividad.items.length === 0 ? (
           <p className="inicio-vacio">
             Todavía no revisaste nada. Pegá un enlace arriba y el resultado aparece acá.
           </p>
         ) : (
           <ul className="inicio-lista">
-            {ACTIVIDAD.map((item) => (
+            {actividad.items.map((item) => (
               <li key={item.id}>
                 <Link className="inicio-item" to={item.to}>
                   <span className="inicio-item-icono">
-                    <Icono nombre={item.tipo === 'Mensaje' ? 'mensaje' : 'enlace'} />
+                    <Icono nombre={item.tipo === 'Mensaje' ? 'mensaje' : item.tipo === 'QR' ? 'qr' : 'enlace'} />
                   </span>
                   <span className="inicio-item-texto">
                     <strong className="inicio-dominio">{item.titulo}</strong>
