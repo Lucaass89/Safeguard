@@ -161,6 +161,7 @@ function Marco({ children, interior = false }) {
     () => document.documentElement.dataset.tema === 'oscuro',
   )
   const conSesion = Boolean(sesion)
+  const enIngreso = pathname === '/ingresar'
   const navegacion = useRef(null)
   const hamburguesa = useRef(null)
 
@@ -249,7 +250,7 @@ function Marco({ children, interior = false }) {
             )}
           </div>
           <div className="nav-fin">
-            {!cargando && (
+            {!cargando && !enIngreso && (
               <button
                 ref={hamburguesa}
                 className="menu-toggle"
