@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
+import Logo from '../components/Logo.jsx'
 import TemaControl from '../components/TemaControl.jsx'
 import { pasosCampana } from '../lib/pasosCampana.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -160,28 +161,108 @@ function IconoLinea({ nombre }) {
 
 function Marca() {
   return (
-    <svg className="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 2.5 4.5 5.6v6.1c0 4.6 3.1 8.4 7.5 9.8 4.4-1.4 7.5-5.2 7.5-9.8V5.6L12 2.5Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path
-        d="m8.6 12.2 2.4 2.4 4.4-4.8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <span className="brand-placa">
+      {/* TODO: reemplazar por el logo final cuando haya un asset de escudo. */}
+      <svg className="brand-escudo" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 3.5 19 6.4v5.2c0 4.2-2.7 7.1-7 8.9-4.3-1.8-7-4.7-7-8.9V6.4L12 3.5Z"
+        />
+        <path
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m9.2 12.1 1.9 1.9 3.7-4"
+        />
+      </svg>
+    </span>
+  )
+}
+
+function IconoProducto({ nombre }) {
+  const trazo = {
+    viewBox: '0 0 24 24',
+    width: '22',
+    height: '22',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: '1.8',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': true,
+  }
+
+  if (nombre === 'phish') {
+    return (
+      <svg {...trazo}>
+        <path d="M12 3.5 19 6.4v5.2c0 4.2-2.7 7.1-7 8.9-4.3-1.8-7-4.7-7-8.9V6.4L12 3.5Z" />
+        <path d="m9.2 12.1 1.9 1.9 3.7-4" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg {...trazo}>
+      <path d="M10 13.5 13.5 10" />
+      <path d="M8.2 11.4 6.8 12.8a3.2 3.2 0 0 0 4.5 4.5l1.4-1.4" />
+      <path d="M15.8 12.6 17.2 11.2a3.2 3.2 0 0 0-4.5-4.5L11.3 8.1" />
     </svg>
+  )
+}
+
+function MenuProducto({ id, titulo, texto, href, icono, abierto, activo, onAbrir, onCerrar }) {
+  return (
+    <div
+      className="header-menu"
+      onMouseEnter={onAbrir}
+      onMouseLeave={onCerrar}
+      onBlur={(evento) => {
+        if (!evento.currentTarget.contains(evento.relatedTarget)) onCerrar()
+      }}
+    >
+      <button
+        type="button"
+        className={activo ? 'header-menu-disparador header-activo' : 'header-menu-disparador'}
+        aria-expanded={abierto}
+        aria-controls={id}
+        aria-current={activo ? 'true' : undefined}
+        onClick={() => (abierto ? onCerrar() : onAbrir())}
+      >
+        {titulo}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </button>
+      <div className="header-menu-panel" id={id} hidden={!abierto}>
+        <a href={href} onClick={onCerrar}>
+          <span className="header-menu-icono">
+            <IconoProducto nombre={icono} />
+          </span>
+          <span>
+            <strong>{titulo}</strong>
+            <span>{texto}</span>
+          </span>
+        </a>
+      </div>
+    </div>
   )
 }
 
 function Landing() {
   const { sesion } = useSesion()
+  const cabecera = useRef(null)
+  const [menu, setMenu] = useState(false)
+  const [producto, setProducto] = useState(null)
+  const [baja, setBaja] = useState(false)
+  const [seccion, setSeccion] = useState(() => window.location.hash)
+  const destino = sesion ? '/panel' : '/ingresar'
+  const etiqueta = sesion ? 'Mi panel' : 'Ingresar'
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]')
@@ -200,24 +281,109 @@ function Landing() {
     }
   }, [])
 
+  useEffect(() => {
+    function alBajar() {
+      setBaja(window.scrollY > 8)
+    }
+    function alHash() {
+      setSeccion(window.location.hash)
+    }
+    alBajar()
+    window.addEventListener('scroll', alBajar, { passive: true })
+    window.addEventListener('hashchange', alHash)
+    return () => {
+      window.removeEventListener('scroll', alBajar)
+      window.removeEventListener('hashchange', alHash)
+    }
+  }, [])
+
+  useEffect(() => {
+    function afuera(evento) {
+      if (cabecera.current?.contains(evento.target)) return
+      setMenu(false)
+      setProducto(null)
+    }
+    function alTecla(evento) {
+      if (evento.key !== 'Escape') return
+      setMenu(false)
+      setProducto(null)
+    }
+    document.addEventListener('mousedown', afuera)
+    window.addEventListener('keydown', alTecla)
+    return () => {
+      document.removeEventListener('mousedown', afuera)
+      window.removeEventListener('keydown', alTecla)
+    }
+  }, [])
+
+  function cerrar() {
+    setMenu(false)
+    setProducto(null)
+  }
+
   return (
     <div className="landing-puertas page">
-      <header className="header">
+      <header ref={cabecera} className={baja ? 'header header-baja' : 'header'}>
         <div className="shell header-inner">
-          <Link className="brand" to="/" aria-label="SafeGuard, inicio">
+          <Link className="brand" to="/" aria-label="SafeGuard, ir al inicio" onClick={cerrar}>
             <Marca />
-            SafeGuard
+            <span className="brand-nombre">
+              <span className="brand-safe">Safe</span>
+              <span className="brand-guard">Guard</span>
+            </span>
           </Link>
-          <nav className="header-nav" aria-label="Secciones">
-            <a href="#phishguard">PhishGuard</a>
-            <a href="#safelink">SafeLink</a>
-            <Link to="/contacto">Contacto</Link>
+          <nav
+            className={menu ? 'header-nav header-nav-abierta' : 'header-nav'}
+            id="nav-principal"
+            aria-label="Secciones"
+          >
+            <MenuProducto
+              id="menu-phishguard"
+              titulo="PhishGuard"
+              texto="Simulaciones de phishing para el equipo."
+              href="#phishguard"
+              icono="phish"
+              abierto={producto === 'phish'}
+              activo={seccion === '#phishguard'}
+              onAbrir={() => setProducto('phish')}
+              onCerrar={() => setProducto((actual) => (actual === 'phish' ? null : actual))}
+            />
+            <MenuProducto
+              id="menu-safelink"
+              titulo="SafeLink"
+              texto="Revisá enlaces y mensajes antes de abrirlos."
+              href="#safelink"
+              icono="enlace"
+              abierto={producto === 'safe'}
+              activo={seccion === '#safelink'}
+              onAbrir={() => setProducto('safe')}
+              onCerrar={() => setProducto((actual) => (actual === 'safe' ? null : actual))}
+            />
+            <Link to="/contacto" onClick={cerrar}>Contacto</Link>
+            <Link className="header-cta header-cta-menu" to={destino} onClick={cerrar}>
+              {etiqueta}
+            </Link>
           </nav>
           <div className="header-acciones">
-            <Link className="login-link" to={sesion ? '/panel' : '/ingresar'}>
-              {sesion ? 'Mi panel' : 'Ingresar'}
+            <Link className="header-cta" to={destino}>
+              {etiqueta}
             </Link>
             <TemaControl icono />
+            <button
+              type="button"
+              className="header-hamburguesa"
+              aria-label={menu ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={menu}
+              aria-controls="nav-principal"
+              onClick={() => {
+                setProducto(null)
+                setMenu((abierto) => !abierto)
+              }}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
           </div>
         </div>
       </header>
@@ -238,21 +404,7 @@ function Landing() {
               <a className="door-cta door-cta-ghost" href="#safelink">Conocer SafeLink</a>
             </div>
             <div className="hero-shield" aria-hidden="true">
-              <svg viewBox="0 0 200 220" fill="none">
-                <path
-                  d="M100 16 172 46v62c0 46-30 78-72 96-42-18-72-50-72-96V46L100 16Z"
-                  stroke="#22d3ee"
-                  strokeWidth="2.4"
-                />
-                <path
-                  d="M100 40 152 62v42c0 34-22 58-52 72-30-14-52-38-52-72V62L100 40Z"
-                  stroke="#3b82f6"
-                  strokeWidth="1.4"
-                  opacity="0.85"
-                />
-                <circle cx="100" cy="112" r="26" stroke="#67e8f9" strokeWidth="1.2" opacity="0.9" />
-              </svg>
-              <span>SG</span>
+              <Logo />
             </div>
           </section>
 

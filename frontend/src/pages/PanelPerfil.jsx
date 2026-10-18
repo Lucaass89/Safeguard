@@ -55,7 +55,7 @@ function textoMetodo(metodos) {
   return `Entrás con ${partes.slice(0, -1).join(', ')} y con ${ultimo}.`
 }
 
-function PerfilActividad({ usuarioId }) {
+function PerfilActividad({ usuarioId, variante }) {
   const [conteos, setConteos] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(false)
@@ -113,10 +113,10 @@ function PerfilActividad({ usuarioId }) {
             </button>
           </>
         )}
-        {!cargando && !error && vacio && (
+        {!cargando && !error && vacio && variante !== 'app' && (
           <p className="perfil-estado">Todavía no hay análisis ni reportes.</p>
         )}
-        {!cargando && !error && conteos && !vacio && (
+        {!cargando && !error && conteos && (variante === 'app' || !vacio) && (
           <ul className="perfil-cifras">
             <li>
               <strong>{conteos.analisis}</strong>
@@ -129,7 +129,14 @@ function PerfilActividad({ usuarioId }) {
           </ul>
         )}
         {!cargando && !error && (
-          <Link className="perfil-historial" to={rutaEnApp('/panel/enlaces')}>Ver historial</Link>
+          <Link className="perfil-historial" to={rutaEnApp('/panel/enlaces')}>
+            Ver historial
+            {variante === 'app' && (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            )}
+          </Link>
         )}
       </div>
     </section>
@@ -399,7 +406,7 @@ function nombreInicial(usuario) {
   return nombre
 }
 
-function PanelPerfil() {
+function PanelPerfil({ variante }) {
   const { sesion } = useSesion()
   const { pertenece, cargando: cargandoMembresia, rol, organizacionId, unicoAdmin } = useMembresia()
   const usuario = sesion.user
@@ -415,7 +422,11 @@ function PanelPerfil() {
   const [errorBorrar, setErrorBorrar] = useState(null)
   const [exportando, setExportando] = useState(false)
   const [errorExportar, setErrorExportar] = useState(null)
+  const [confirmarSalir, setConfirmarSalir] = useState(false)
+  const [saliendo, setSaliendo] = useState(false)
+  const [errorSalir, setErrorSalir] = useState(null)
   const dialogo = useRef(null)
+  const dialogoSalir = useRef(null)
   const campoConfirmar = useRef(null)
   const disparador = useRef(null)
   const cambio = nombre.trim() !== guardado
@@ -438,6 +449,38 @@ function PanelPerfil() {
     setNombre(evento.target.value)
     setError(null)
     setAviso(null)
+  }
+
+  useEffect(() => {
+    if (!confirmarSalir) return undefined
+    const nodo = dialogoSalir.current
+    nodo?.showModal()
+    return () => {
+      if (nodo?.open) nodo.close()
+    }
+  }, [confirmarSalir])
+
+  function abrirSalir() {
+    setErrorSalir(null)
+    setConfirmarSalir(true)
+  }
+
+  function cerrarSalir() {
+    if (saliendo) return
+    setConfirmarSalir(false)
+  }
+
+  async function salir() {
+    if (saliendo) return
+    setErrorSalir(null)
+    setSaliendo(true)
+    sessionStorage.removeItem('sg-recibido')
+    sessionStorage.removeItem(`sg-acceso:${usuario.id}`)
+    const { error: fallo } = await supabase.auth.signOut()
+    if (fallo) {
+      setSaliendo(false)
+      setErrorSalir('No se pudo cerrar la sesión. Probá de nuevo en un momento.')
+    }
   }
 
   function abrirBorrado() {
@@ -553,11 +596,21 @@ function PanelPerfil() {
     navegar('/')
   }
 
+  const enApp = variante === 'app'
+  const nombreVisible = guardado.trim()
+
   return (
-    <div className="panel panel-personas perfil">
+    <div className={enApp ? 'panel panel-personas perfil perfil-app' : 'panel panel-personas perfil'}>
       <header className="panel-header">
-        <span className="perfil-avatar" aria-hidden="true">{iniciales(nombre, correo)}</span>
-        <h1>Tu perfil</h1>
+        <span className="perfil-avatar" aria-hidden="true">{iniciales(nombreVisible, correo)}</span>
+        {enApp ? (
+          <div className="perfil-quien">
+            <h1>{nombreVisible || 'Tu perfil'}</h1>
+            {correo && <p>{correo}</p>}
+          </div>
+        ) : (
+          <h1>Tu perfil</h1>
+        )}
       </header>
 
       <section className="ajuste perfil-cuenta" aria-labelledby="perfil-cuenta-titulo">
@@ -605,7 +658,7 @@ function PanelPerfil() {
         </form>
       </section>
 
-      <PerfilActividad usuarioId={usuario.id} />
+      <PerfilActividad usuarioId={usuario.id} variante={variante} />
       {pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
       <PerfilSeguridad usuario={usuario} />
 
@@ -623,6 +676,46 @@ function PanelPerfil() {
           </div>
         </div>
       </section>
+
+      {enApp && (
+        <div className="perfil-salir-zona">
+          <button type="button" className="perfil-salir" onClick={abrirSalir}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 7V5.5A1.5 1.5 0 0 1 11.5 4h6A1.5 1.5 0 0 1 19 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-6A1.5 1.5 0 0 1 10 18.5V17" />
+              <path d="M13 12H4M6.5 9.5 4 12l2.5 2.5" />
+            </svg>
+            Cerrar sesión
+          </button>
+        </div>
+      )}
+
+      {enApp && confirmarSalir && (
+        <dialog
+          ref={dialogoSalir}
+          className="perfil-dialogo"
+          aria-modal="true"
+          aria-labelledby="perfil-salir-titulo"
+          aria-describedby="perfil-salir-texto"
+          onCancel={(evento) => {
+            evento.preventDefault()
+            cerrarSalir()
+          }}
+        >
+          <h2 id="perfil-salir-titulo">¿Cerrar sesión?</h2>
+          <p id="perfil-salir-texto">Vas a salir de SafeGuard en este celular.</p>
+          <div aria-live="polite">
+            {errorSalir && <p className="panel-error">{errorSalir}</p>}
+          </div>
+          <div className="perfil-modal-acciones">
+            <button type="button" className="panel-boton-borde" onClick={cerrarSalir} disabled={saliendo}>
+              Cancelar
+            </button>
+            <button type="button" className="panel-boton" onClick={salir} disabled={saliendo} aria-busy={saliendo}>
+              {saliendo ? 'Cerrando…' : 'Cerrar sesión'}
+            </button>
+          </div>
+        </dialog>
+      )}
 
       <section className="ajuste perfil-peligro" aria-labelledby="perfil-peligro-titulo">
         <div className="ajuste-cabeza">

@@ -1,26 +1,44 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
-import { supabase } from '../lib/supabase.js'
-import { useSesion } from '../lib/useSesion.js'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import './Inicio.css'
 
-const ACCESOS = [
-  { to: '/safelink/enlaces', titulo: 'Revisar un enlace', nota: 'Pegalo antes de abrirlo', icono: 'enlace' },
-  { to: '/safelink/qr', titulo: 'Escanear un QR', nota: 'Leé el código con la cámara', icono: 'qr' },
-  { to: '/safelink/whatsapp', titulo: 'Revisar un mensaje', nota: 'WhatsApp o un texto', icono: 'mensaje' },
-  { to: '/phishguard/campanas', titulo: 'Campañas', nota: 'Simulaciones del equipo', icono: 'campana' },
+// TODO: reemplazar por el porcentaje real de protección.
+const PROTECCION = {
+  porcentaje: 72,
+  frase: 'Revisá el mensaje que te reenviaron. Es lo que más te baja la protección.',
+}
+
+// TODO: reemplazar por el avance real de la campaña activa.
+const CAMPANA = {
+  nombre: 'Campaña de octubre',
+  hecho: 18,
+  total: 24,
+}
+
+// TODO: reemplazar por los últimos análisis reales.
+const ACTIVIDAD = [
+  { id: '1', titulo: 'promo-banco.example/ingreso', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 12 min' },
+  { id: '2', titulo: 'Mensaje de un número desconocido', tipo: 'Mensaje', nivel: 'sospechoso', cuando: 'Hace 2 h' },
+  { id: '3', titulo: 'maps.google.com/lugar', tipo: 'Enlace', nivel: 'seguro', cuando: 'Ayer' },
+  { id: '4', titulo: 'factura-afip.example/pago', tipo: 'Enlace', nivel: 'peligroso', cuando: 'Hace 2 días' },
+  { id: '5', titulo: 'youtube.com/watch', tipo: 'Enlace', nivel: 'seguro', cuando: 'Hace 4 días' },
 ]
 
-const INFO = [
-  { titulo: 'PhishGuard', nota: 'Simulaciones por correo, WhatsApp o SMS.' },
-  { titulo: 'SafeLink', nota: 'Verde, amarillo o rojo antes de abrir.' },
-  { titulo: 'Explicación', nota: 'Si alguien cae, ve qué tenía que mirar.' },
-]
+// TODO: reemplazar por el consejo del día.
+const CONSEJO = {
+  titulo: 'Consejo del día',
+  texto: 'Si un enlace te apura para pagar o te pide la clave, no lo abras. Pegalo acá y mirá el color.',
+}
+
+const CHIP = {
+  seguro: 'Seguro',
+  sospechoso: 'Sospechoso',
+  peligroso: 'Peligroso',
+}
 
 function Icono({ nombre }) {
   const trazo = {
     viewBox: '0 0 24 24',
-    width: '22',
-    height: '22',
     fill: 'none',
     stroke: 'currentColor',
     strokeWidth: '1.8',
@@ -32,11 +50,11 @@ function Icono({ nombre }) {
   if (nombre === 'qr') {
     return (
       <svg {...trazo}>
-        <path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9" />
-        <path d="M15 4.5h2.5A2 2 0 0 1 19.5 6.5V9" />
-        <path d="M19.5 15v2.5a2 2 0 0 1-2 2H15" />
-        <path d="M9 19.5H6.5a2 2 0 0 1-2-2V15" />
-        <path d="M8 12h8" />
+        <path d="M4.5 8.5V6.2A1.7 1.7 0 0 1 6.2 4.5H8.5" />
+        <path d="M15.5 4.5h2.3A1.7 1.7 0 0 1 19.5 6.2V8.5" />
+        <path d="M19.5 15.5v2.3a1.7 1.7 0 0 1-1.7 1.7H15.5" />
+        <path d="M8.5 19.5H6.2a1.7 1.7 0 0 1-1.7-1.7V15.5" />
+        <path d="M7.5 12h9" />
       </svg>
     )
   }
@@ -49,10 +67,21 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'campana') {
+  if (nombre === 'flecha') {
     return (
       <svg {...trazo}>
-        <path d="M4.5 11.5 20 5l-5.8 14.2-2.6-6.1L4.5 11.5Z" />
+        <path d="M5 12h14" />
+        <path d="m13 6 6 6-6 6" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'consejo') {
+    return (
+      <svg {...trazo}>
+        <path d="M9 18h6" />
+        <path d="M10 21h4" />
+        <path d="M12 3.5a6.2 6.2 0 0 0-3.2 11.5c.5.4.8 1 .8 1.6V17h4.8v-.4c0-.6.3-1.2.8-1.6A6.2 6.2 0 0 0 12 3.5Z" />
       </svg>
     )
   }
@@ -66,91 +95,139 @@ function Icono({ nombre }) {
   )
 }
 
-function numero(valor) {
-  if (valor == null) return '–'
-  return String(valor)
+function Anillo({ porcentaje }) {
+  const radio = 52
+  const circunferencia = 2 * Math.PI * radio
+  const resto = circunferencia * (1 - porcentaje / 100)
+
+  return (
+    <div className="inicio-anillo" role="img" aria-label={`Protección ${porcentaje} por ciento`}>
+      <svg viewBox="0 0 120 120">
+        <circle className="inicio-anillo-pista" cx="60" cy="60" r={radio} />
+        <circle
+          className="inicio-anillo-valor"
+          cx="60"
+          cy="60"
+          r={radio}
+          strokeDasharray={`${circunferencia} ${circunferencia}`}
+          strokeDashoffset={resto}
+        />
+      </svg>
+      <p className="inicio-porcentaje">
+        <strong>{porcentaje}</strong>
+        <span>%</span>
+      </p>
+    </div>
+  )
 }
 
 function Inicio() {
-  const { sesion, cargando: cargandoSesion } = useSesion()
-  const [enlaces, setEnlaces] = useState(null)
-  const [campanas, setCampanas] = useState(null)
-  const [cargando, setCargando] = useState(true)
+  const navigate = useNavigate()
+  const [enlace, setEnlace] = useState('')
+  const [aviso, setAviso] = useState('')
+  const avance = Math.round((CAMPANA.hecho / CAMPANA.total) * 100)
 
-  useEffect(() => {
-    if (cargandoSesion) return undefined
-    if (!sesion) {
-      setEnlaces(null)
-      setCampanas(null)
-      setCargando(false)
-      return undefined
+  function revisar(evento) {
+    evento.preventDefault()
+    const valor = enlace.trim()
+    if (!valor) {
+      setAviso('Pegá una dirección para revisarla.')
+      return
     }
-
-    let activo = true
-    setCargando(true)
-
-    Promise.all([
-      supabase.from('safelink_analisis').select('id', { count: 'exact', head: true }),
-      supabase.from('campanas').select('id', { count: 'exact', head: true }).eq('estado', 'en_proceso'),
-    ]).then(([links, activas]) => {
-      if (!activo) return
-      setEnlaces(links.error ? null : (links.count ?? 0))
-      setCampanas(activas.error ? null : (activas.count ?? 0))
-      setCargando(false)
-    })
-
-    return () => {
-      activo = false
-    }
-  }, [sesion, cargandoSesion])
+    navigate('/safelink/enlaces', { state: { entrada: valor } })
+  }
 
   return (
-    <section>
-      {cargando ? (
-        <p className="app-estado">Cargando tu resumen…</p>
-      ) : !sesion ? (
-        <p className="app-estado">
-          <Link to="/ingresar">Entrá</Link> para ver tus números.
-        </p>
-      ) : null}
-
-      <ul className="app-resumen">
-        <li>
-          <strong>{cargando ? '…' : numero(enlaces)}</strong>
-          <span>Enlaces revisados</span>
-        </li>
-        <li>
-          <strong>{cargando ? '…' : numero(campanas)}</strong>
-          <span>Campañas activas</span>
-        </li>
-      </ul>
-
-      <div className="app-accesos">
-        {ACCESOS.map((acceso) => (
-          <Link className="app-acceso" key={acceso.to} to={acceso.to}>
-            <span className="app-acceso-icono">
-              <Icono nombre={acceso.icono} />
-            </span>
-            <span>
-              <strong>{acceso.titulo}</strong>
-              <span>{acceso.nota}</span>
-            </span>
-          </Link>
-        ))}
-      </div>
-
-      <section className="app-info" aria-label="Qué cubre SafeGuard">
-        <h2>Qué cubre</h2>
-        <ul>
-          {INFO.map((item) => (
-            <li key={item.titulo}>
-              <strong>{item.titulo}</strong>
-              <span>{item.nota}</span>
-            </li>
-          ))}
-        </ul>
+    <div className="inicio">
+      <section className="inicio-hero" aria-label="Estado de protección">
+        <Anillo porcentaje={PROTECCION.porcentaje} />
+        <div className="inicio-hero-texto">
+          <p className="inicio-kicker">Protección</p>
+          <p className="inicio-frase">{PROTECCION.frase}</p>
+        </div>
+        <div className="inicio-campana">
+          <div
+            className="inicio-barra"
+            role="progressbar"
+            aria-valuenow={CAMPANA.hecho}
+            aria-valuemin={0}
+            aria-valuemax={CAMPANA.total}
+            aria-label={`${CAMPANA.nombre}: ${CAMPANA.hecho} de ${CAMPANA.total} ya la completaron`}
+            style={{ '--avance': `${avance}%` }}
+          >
+            <span />
+          </div>
+          <p>
+            {CAMPANA.nombre} · {CAMPANA.hecho} de {CAMPANA.total} ya la completaron
+          </p>
+        </div>
       </section>
-    </section>
+
+      <form className="inicio-revisar" onSubmit={revisar}>
+        <label className="inicio-campo">
+          <span className="inicio-etiqueta">Pegá un enlace para revisarlo</span>
+          <input
+            type="text"
+            name="enlace"
+            value={enlace}
+            onChange={(evento) => {
+              setEnlace(evento.target.value)
+              if (aviso) setAviso('')
+            }}
+            placeholder="ejemplo.com/promo"
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck="false"
+            inputMode="url"
+            enterKeyHint="go"
+          />
+          <button type="submit" className="inicio-enviar" aria-label="Revisar el enlace">
+            <Icono nombre="flecha" />
+          </button>
+        </label>
+        <Link className="inicio-qr" to="/safelink/qr" aria-label="Escanear un QR">
+          <Icono nombre="qr" />
+        </Link>
+      </form>
+      {aviso ? <p className="inicio-aviso">{aviso}</p> : null}
+
+      <section className="inicio-bloque" aria-labelledby="inicio-actividad">
+        <h2 id="inicio-actividad">Actividad reciente</h2>
+        {ACTIVIDAD.length === 0 ? (
+          <p className="inicio-vacio">
+            Todavía no revisaste nada. Pegá un enlace arriba y el resultado aparece acá.
+          </p>
+        ) : (
+          <ul className="inicio-lista">
+            {ACTIVIDAD.map((item) => (
+              <li className="inicio-item" key={item.id}>
+                <span className="inicio-item-icono">
+                  <Icono nombre={item.tipo === 'Mensaje' ? 'mensaje' : 'enlace'} />
+                </span>
+                <span className="inicio-item-texto">
+                  <strong>{item.titulo}</strong>
+                  <span>
+                    {item.tipo} · {item.cuando}
+                  </span>
+                </span>
+                <span className={`inicio-chip inicio-chip-${item.nivel}`}>{CHIP[item.nivel]}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <aside className="inicio-consejo">
+        <span className="inicio-consejo-icono">
+          <Icono nombre="consejo" />
+        </span>
+        <div>
+          <h2>{CONSEJO.titulo}</h2>
+          <p>{CONSEJO.texto}</p>
+        </div>
+      </aside>
+    </div>
   )
 }
 

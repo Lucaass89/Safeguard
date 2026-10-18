@@ -1,4 +1,5 @@
-import { NavLink, Outlet, useLocation } from 'react-router'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
+import Bienvenida from './Bienvenida.jsx'
 import TemaControl from './TemaControl.jsx'
 import './AppShell.css'
 
@@ -46,6 +47,16 @@ function Icono({ nombre }) {
     )
   }
 
+  if (nombre === 'empresa') {
+    return (
+      <svg {...trazo}>
+        <path d="M4 20V6.5A1.5 1.5 0 0 1 5.5 5H11v15" />
+        <path d="M11 9.5h7.5A1.5 1.5 0 0 1 20 11V20" />
+        <path d="M4 20h16M7.5 8.5h1.5M7.5 12h1.5M14 13h1.5M14 16.5h1.5" />
+      </svg>
+    )
+  }
+
   if (nombre === 'enlace') {
     return (
       <svg {...trazo}>
@@ -71,11 +82,19 @@ function AppShell({ children }) {
     <div className="app-shell">
       <header className="app-top">
         <p className="app-top-titulo">{tituloDe(pathname)}</p>
-        <TemaControl icono />
+        <div className="app-top-acciones">
+          {pathname === '/phishguard' && (
+            <Link className="app-top-equipo" to="/phishguard/empresa" aria-label="Tu empresa">
+              <Icono nombre="empresa" />
+            </Link>
+          )}
+          <TemaControl icono />
+        </div>
       </header>
       <main className="app-cuerpo">
         {children ?? <Outlet />}
       </main>
+      <Bienvenida />
       <nav className="app-nav" aria-label="Secciones">
         {DESTINOS.map((destino) => (
           <NavLink

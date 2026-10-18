@@ -3,19 +3,6 @@ import { Link, useLocation } from 'react-router'
 import PanelPerfil from './PanelPerfil.jsx'
 
 const OPCIONES = {
-  phishguard: [
-    { to: '/phishguard/empresa', titulo: 'Tu empresa', nota: 'Cargá a tu equipo', icono: 'empresa' },
-    { to: '/phishguard/campanas', titulo: 'Campañas', nota: 'Armá una simulación', icono: 'campana' },
-    { to: '/phishguard/tablero', titulo: 'Tablero', nota: 'Cómo viene el equipo', icono: 'tablero' },
-    { to: '/phishguard/informe', titulo: 'Informe', nota: 'Una página para guardar', icono: 'informe' },
-  ],
-  safelink: [
-    { to: '/safelink/enlaces', titulo: 'Revisar un enlace', nota: 'Pegalo antes de abrirlo', icono: 'enlace' },
-    { to: '/safelink/whatsapp', titulo: 'Pegar un WhatsApp', nota: 'Un mensaje sospechoso', icono: 'mensaje' },
-    { to: '/safelink/pdf', titulo: 'Revisar un PDF', nota: 'Si el archivo esconde algo', icono: 'pdf' },
-    { to: '/safelink/correo', titulo: 'Revisar un correo', nota: 'Si el remitente es real', icono: 'correo' },
-    { to: '/safelink/qr', titulo: 'Escanear un QR', nota: 'Leé el código con la cámara', icono: 'qr' },
-  ],
   perfil: [
     { to: '/perfil/cuenta#perfil-cuenta-titulo', titulo: 'Cuenta', nota: 'Nombre y correo', icono: 'perfil' },
     { to: '/perfil/cuenta#perfil-actividad-titulo', titulo: 'Actividad', nota: 'Lo que revisaste', icono: 'actividad' },
@@ -188,7 +175,7 @@ export function PerfilSeccion() {
     return undefined
   }, [hash])
 
-  return <PanelPerfil />
+  return <PanelPerfil variante="app" />
 }
 
 export default OpcionesApp

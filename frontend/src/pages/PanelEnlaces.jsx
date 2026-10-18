@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -21,7 +21,9 @@ function fecha(valor) {
 
 function PanelEnlaces() {
   const { sesion } = useSesion()
-  const [entrada, setEntrada] = useState('')
+  const { state } = useLocation()
+  const entradaInicial = typeof state?.entrada === 'string' ? state.entrada : ''
+  const [entrada, setEntrada] = useState(entradaInicial)
   const [resultado, setResultado] = useState(null)
   const [historial, setHistorial] = useState([])
   const [reportes, setReportes] = useState([])

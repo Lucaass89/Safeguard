@@ -1,29 +1,12 @@
 import { Link, Outlet } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
+import Logo from './Logo.jsx'
 import TemaControl from './TemaControl.jsx'
 import './Layout.css'
 
 function ShieldMark() {
-  return (
-    <svg className="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 2.5 4.5 5.6v6.1c0 4.6 3.1 8.4 7.5 9.8 4.4-1.4 7.5-5.2 7.5-9.8V5.6L12 2.5Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path
-        d="m8.6 12.2 2.4 2.4 4.4-4.8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
+  return <Logo className="brand-mark" />
 }
 
 function Layout() {

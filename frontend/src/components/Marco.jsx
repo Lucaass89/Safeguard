@@ -4,17 +4,14 @@ import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import Avatar from './Avatar.jsx'
+import Logo from './Logo.jsx'
 import TemaControl from './TemaControl.jsx'
 import '../pages/Landing.css'
 
 function Marca() {
   return (
     <span className="brand">
-      <span className="brand-mark" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </span>
+      <Logo className="brand-mark" />
       <span>
         Safe<span>Guard</span>
       </span>

@@ -15,7 +15,10 @@
       (function () {
         var tema = 'claro'
         try {
-          if (localStorage.getItem('sg-tema') === 'oscuro') tema = 'oscuro'
+          var guardado = null
+          try { guardado = localStorage.getItem('sg-tema') } catch (e) {}
+          if (guardado === 'oscuro') tema = 'oscuro'
+          if (guardado === 'sistema' && window.matchMedia('(prefers-color-scheme: dark)').matches) tema = 'oscuro'
         } catch (e) {}
         document.documentElement.dataset.tema = tema
         var meta = document.querySelector('meta[name="theme-color"]')

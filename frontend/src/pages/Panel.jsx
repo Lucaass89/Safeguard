@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import Bienvenida from '../components/Bienvenida.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -196,6 +197,14 @@ function Panel() {
   }, [sesion.user.id])
 
   useEffect(() => {
+    function ocultarSaludo() {
+      setSaludoVisible(false)
+    }
+    window.addEventListener('sg-recibido', ocultarSaludo)
+    return () => window.removeEventListener('sg-recibido', ocultarSaludo)
+  }, [])
+
+  useEffect(() => {
     let activo = true
 
     supabase.rpc('phishguard_tablero').then(({ data, error }) => {
@@ -223,6 +232,7 @@ function Panel() {
 
   return (
     <div className="panel mesa">
+      <Bienvenida />
       {fase === 'elegir' && (
         <section className="elegir">
           <header className="elegir-cabeza">

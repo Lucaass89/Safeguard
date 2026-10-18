@@ -5,7 +5,9 @@ import Layout from './components/Layout.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import AppShell from './components/AppShell.jsx'
 import { esAppNativa } from './lib/esAppNativa.js'
-import OpcionesApp, { PerfilSeccion } from './pages/OpcionesApp.jsx'
+import { PerfilSeccion } from './pages/OpcionesApp.jsx'
+import PhishGuard from './pages/PhishGuard.jsx'
+import SafeLink from './pages/SafeLink.jsx'
 import Inicio from './pages/Inicio.jsx'
 import Landing from './pages/Landing.jsx'
 import Empresas from './pages/Empresas.jsx'
@@ -54,10 +56,10 @@ function App() {
       <Route path="bien/:token" element={<Reconocimiento />} />
       <Route index element={<Entrada />} />
       <Route element={<MarcoApp />}>
-        <Route path="phishguard" element={<OpcionesApp id="phishguard" />} />
-        <Route path="safelink" element={<OpcionesApp id="safelink" />} />
-        <Route path="perfil" element={<OpcionesApp id="perfil" />} />
+        <Route path="phishguard" element={<PhishGuard />} />
+        <Route path="safelink" element={<SafeLink />} />
         <Route element={<RutaPrivada />}>
+          <Route path="perfil" element={<PanelPerfil variante="app" />} />
           <Route path="perfil/cuenta" element={<PerfilSeccion />} />
           <Route path="safelink/enlaces" element={<PanelEnlaces />} />
           <Route path="safelink/whatsapp" element={<PanelWhatsapp />} />
