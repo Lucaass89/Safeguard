@@ -160,29 +160,7 @@ function IconoLinea({ nombre }) {
 }
 
 function Marca() {
-  return (
-    <span className="brand-placa">
-      {/* TODO: reemplazar por el logo final cuando haya un asset de escudo. */}
-      <svg className="brand-escudo" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 3.5 19 6.4v5.2c0 4.2-2.7 7.1-7 8.9-4.3-1.8-7-4.7-7-8.9V6.4L12 3.5Z"
-        />
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="m9.2 12.1 1.9 1.9 3.7-4"
-        />
-      </svg>
-    </span>
-  )
+  return <Logo className="brand-escudo" />
 }
 
 function IconoProducto({ nombre }) {

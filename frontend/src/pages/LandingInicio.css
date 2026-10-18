@@ -128,23 +128,12 @@
   text-decoration: none;
 }
 
-.landing-puertas .brand-placa {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(160deg, #3b82f6 0%, #2563eb 58%, #1d4ed8 100%);
-  color: #ffffff;
-  transition:
-    box-shadow 160ms ease,
-    filter 160ms ease;
-}
-
 .landing-puertas .brand-escudo {
-  width: 32px;
-  height: 32px;
+  display: block;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  transition: filter 160ms ease;
 }
 
 .landing-puertas .brand-nombre {
@@ -387,9 +376,8 @@
   transform: translateY(0);
 }
 
-.landing-puertas .brand:hover .brand-placa {
-  box-shadow: 0 0 0 4px rgb(37 99 235 / 22%);
-  filter: brightness(1.12);
+.landing-puertas .brand:hover .brand-escudo {
+  filter: brightness(1.15);
 }
 
 .landing-puertas .main {
@@ -941,11 +929,6 @@
 
   .landing-puertas .brand {
     font-size: 18px;
-  }
-
-  .landing-puertas .brand-placa {
-    width: 36px;
-    height: 36px;
   }
 
   .landing-puertas .brand-escudo {
