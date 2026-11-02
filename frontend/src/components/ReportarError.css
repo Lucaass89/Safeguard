@@ -1,0 +1,121 @@
+.reportar-error {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--sg-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--sg-text) 4%, var(--sg-surface));
+  color: var(--sg-text);
+  text-align: left;
+}
+
+.reportar-error fieldset {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.reportar-error legend {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.reportar-error legend:focus {
+  outline: none;
+}
+
+.reportar-error-opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.reportar-error-opcion input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--sg-accent);
+}
+
+.reportar-error-campo {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.reportar-error textarea {
+  width: 100%;
+  min-height: 88px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--sg-line);
+  border-radius: 8px;
+  background: var(--sg-bg);
+  color: var(--sg-text);
+  font: inherit;
+  resize: vertical;
+}
+
+.reportar-error-nota {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.reportar-error-fallo {
+  margin: 0;
+  color: var(--sg-red);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+html[data-tema='claro'] .reportar-error-fallo {
+  color: #8c1d18;
+}
+
+.reportar-error-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reportar-error-enviar,
+.reportar-error-cancelar {
+  flex: 1 1 140px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reportar-error-enviar {
+  border: 0;
+  background: var(--sg-accent);
+  color: #fff;
+}
+
+.reportar-error-enviar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reportar-error-cancelar {
+  border: 1px solid var(--sg-line);
+  background: none;
+  color: var(--sg-text);
+}
+
+.reportar-error-enviar:focus-visible,
+.reportar-error-cancelar:focus-visible,
+.reportar-error-opcion input:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
+}

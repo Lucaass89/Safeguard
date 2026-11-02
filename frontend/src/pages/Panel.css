@@ -342,23 +342,93 @@
   font-size: 14px;
 }
 
-.qr-recorrido {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 6px;
+.qr-vista-peligro {
+  border-color: #e7a8a2;
+}
+
+.qr-crudo {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding: 10px 12px;
+  max-height: 240px;
+  overflow: auto;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--sg-text) 6%, transparent);
+  color: var(--sg-text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.qr-recorrido li + li::before {
-  content: '→ ';
-  color: var(--sg-muted);
+.qr-avisos {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding-left: 18px;
+  color: var(--sg-text);
+  font-weight: 600;
 }
 
-.qr-vista-peligro {
-  border-color: #e7a8a2;
+.qr-opciones {
+  display: grid;
+  gap: 16px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qr-opciones li {
+  display: grid;
+  gap: 8px;
+}
+
+.qr-opcion-tipo {
+  font-weight: 700;
+}
+
+.qr-datos-sueltos {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.qr-datos-sueltos dt {
+  color: var(--sg-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.qr-datos-sueltos dd {
+  margin: 0;
+}
+
+.qr-video {
+  cursor: crosshair;
+}
+
+.qr-foco {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border: 2px solid #fbbf24;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: qr-foco 0.35s ease-out;
+}
+
+@keyframes qr-foco {
+  from {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qr-foco {
+    animation: none;
+  }
 }
 
 .panel-modulos {
@@ -404,72 +474,8 @@
   color: var(--sg-muted);
 }
 
-.resultado {
-  padding: 20px;
-  border-radius: var(--sg-radius);
-  border: 1px solid var(--sg-line);
-  background: var(--sg-surface);
+.panel .veredicto {
   margin-bottom: 28px;
-}
-
-.resultado-cabeza {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px 16px;
-  margin-bottom: 6px;
-}
-
-.resultado-semaforo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.resultado-punto {
-  flex: 0 0 auto;
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--sg-green);
-}
-
-.resultado.nivel-amarillo .resultado-punto {
-  background: var(--sg-yellow);
-}
-
-.resultado.nivel-rojo .resultado-punto {
-  background: var(--sg-red);
-}
-
-.resultado.nivel-gris .resultado-punto {
-  background: var(--sg-muted);
-}
-
-.resultado-sub {
-  margin: 0 0 12px;
-  word-break: break-all;
-  color: var(--sg-muted);
-}
-
-.resultado-motivos {
-  margin: 0;
-  padding-left: 18px;
-}
-
-.resultado-quehacer {
-  margin: 0 0 14px;
-  font-size: 17px;
-  line-height: 1.45;
-}
-
-.resultado-aviso {
-  margin: 16px 0 0;
-  color: var(--sg-muted);
 }
 
 .historial,

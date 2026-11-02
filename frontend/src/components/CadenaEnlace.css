@@ -1,0 +1,56 @@
+.cadena {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--sg-surface) 80%, transparent);
+  text-align: left;
+}
+
+.cadena-titulo {
+  margin: 0;
+  color: var(--sg-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cadena-lista {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cadena-paso {
+  display: grid;
+  gap: 2px;
+  padding-left: 12px;
+  border-left: 2px solid color-mix(in srgb, var(--sg-text) 25%, transparent);
+}
+
+.cadena-etiqueta {
+  color: var(--sg-text);
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.cadena-url {
+  color: var(--sg-text);
+  font-family: ui-monospace, 'Roboto Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.cadena-resto {
+  opacity: 0.7;
+}
+
+.cadena-nota {
+  color: var(--sg-text);
+  font-size: 12px;
+  opacity: 0.75;
+}

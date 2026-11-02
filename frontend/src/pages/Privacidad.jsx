@@ -27,21 +27,25 @@ function Privacidad() {
           </li>
           <li>
             Códigos QR, en <code>/panel/qr</code>: la cámara del celular lee el código
-            en el aparato con la API nativa del navegador (<code>BarcodeDetector</code>).
-            La imagen no se sube; solo la dirección que trae el código se manda a la
-            misma función que un enlace pegado a mano.
+            en el aparato con ZXing (<code>zxing-wasm</code>), que se descarga de este mismo
+            sitio. La imagen de la cámara o de la galería no se sube; solo la dirección que
+            trae el código se manda a la misma función que un enlace pegado a mano.
           </li>
         </ul>
 
         <h2>SafeLink: qué sale del navegador</h2>
         <p>
           Al revisar un enlace, la función <code>safelink-enriquecer</code> pide
-          esa URL (sigue hasta cinco redirecciones y no consulta direcciones
-          privadas), lee solo el comienzo de la página (el título, si pide una
+          esa URL desde el servidor, nunca desde tu teléfono, sin cookies y sin el
+          fragmento (lo que va después de #). Sigue hasta cinco redirecciones y, antes
+          de cada una, revisa a qué IP apunta el nombre para no entrar a redes
+          privadas. Lee solo el comienzo de la página, sin ejecutar su código (el título, si pide una
           clave o datos de pago, si el formulario o un script manda a otro sitio,
-          si incrusta otra página y si el destino es una descarga) y consulta el dominio en
-          rdap.org y en crt.sh. No guarda el contenido de la página. También se
-          busca el dominio en la tabla propia <code>amenazas</code>.
+          si incrusta otra página y si el destino es una descarga) y consulta solo el dominio en
+          rdap.org y en crt.sh. Para confirmar que un dominio existe puede preguntar
+          el nombre del sitio, sin la ruta ni los datos de la dirección, al DNS público
+          de Cloudflare. No guarda el contenido de la página. También se
+          busca cada dominio del recorrido en la tabla propia <code>amenazas</code>.
         </p>
         <p>
           Pendiente de definir. El texto del WhatsApp, el correo y el PDF se leen
@@ -51,11 +55,21 @@ function Privacidad() {
         </p>
         <p>
           Faro analiza el caso que ya está: nivel, motivos, dominio, puntaje, canal
-          y la dirección revisada. La función <code>safelink-faro</code> recibe eso, la
+          y la dirección revisada sin la parte de la consulta (lo que va después de ? o #).
+          La función <code>safelink-faro</code> recibe eso, la
           pregunta, la forma de responder (simple, técnica o avanzada) y los últimos
           turnos del chat. No recibe el mensaje de WhatsApp, el cuerpo del correo ni el
           PDF. Si el modelo no responde, la respuesta se arma en el navegador con ese
           mismo caso.
+        </p>
+        <p>
+          “Reportar” manda solo si lo tocás y elegís qué está mal. La función{' '}
+          <code>safelink_reportar_error</code> guarda en <code>safelink_errores</code> el
+          nivel, los motivos, el dominio, el canal, lo que marcaste, el comentario si lo
+          escribiste, la dirección sin la parte de la consulta (lo que va después de ? o #),
+          el id del usuario si hay sesión y un identificador al azar del dispositivo. El
+          contenido de un QR que no es una dirección web no se manda. Una persona revisa cada
+          caso; el reporte no cambia el veredicto ni agrega el sitio a ninguna lista.
         </p>
 
         <h2>SafeLink: qué se guarda con cuenta</h2>

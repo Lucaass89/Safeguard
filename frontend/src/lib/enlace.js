@@ -116,6 +116,40 @@ export function partesDominio(host) {
   }
 }
 
+// El fragmento (#...) nunca viaja en un pedido HTTP, así que no hace falta para seguir el enlace.
+export function sinFragmento(direccion) {
+  const texto = String(direccion ?? '')
+  const corte = texto.indexOf('#')
+  return corte === -1 ? texto : texto.slice(0, corte)
+}
+
+// Para servicios de terceros: alcanza con el sitio y la ruta; la query puede traer datos personales o tokens.
+export function sinConsulta(direccion) {
+  const texto = String(direccion ?? '')
+  try {
+    const url = new URL(texto)
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return `${url.protocol}`
+    return `${url.protocol}//${url.host}${url.pathname}`
+  } catch {
+    return sinFragmento(texto).split('?')[0]
+  }
+}
+
+export function dominiosDelRecorrido(extra) {
+  if (!extra) return []
+  const pasos = [...(Array.isArray(extra.cadena) ? extra.cadena : []), extra.meta_destino]
+  const dominios = []
+  for (const paso of pasos) {
+    try {
+      const url = new URL(paso)
+      if (url.protocol === 'http:' || url.protocol === 'https:') dominios.push(dominioRegistrable(url.hostname))
+    } catch {
+      /* un paso que no es una URL no tiene dominio */
+    }
+  }
+  return [...new Set(dominios)]
+}
+
 const ESQUEMA = /^([a-z][a-z0-9+.-]*):(.*)$/is
 
 // Un texto sin esquema (ejemplo.com/promo) se lee como https://. Lo que tiene forma de esquema

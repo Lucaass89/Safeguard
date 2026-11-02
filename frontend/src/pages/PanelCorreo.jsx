@@ -60,13 +60,13 @@ function PanelCorreo() {
       {resultado && (
         <Resultado
           casoId={resultado.casoId}
-          nivel={resultado.nivel}
-          subtitulo={resultado.asunto || resultado.dominio}
-          url={resultado.url}
-          dominio={resultado.dominio}
-          puntuacion={resultado.puntuacion}
+          resultado={resultado}
+          subtitulo={resultado.asunto || undefined}
           canal="correo"
-          motivos={resultado.motivos}
+          onNoAbrir={() => {
+            setResultado(null)
+            setCrudo('')
+          }}
         />
       )}
     </div>

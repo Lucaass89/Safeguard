@@ -1,9 +1,10 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import DiferenciaDominio, { DominioMarcado } from '../components/DiferenciaDominio.jsx'
 import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
+import Resultado from '../components/Resultado.jsx'
 import { agruparActividad } from '../lib/agruparActividad.js'
-import { analizar, motivosLimpios, queHacer } from '../lib/analisis.js'
+import { veredictoDe } from '../lib/veredicto.js'
+import { analizar, motivosLimpios } from '../lib/analisis.js'
 import { guardarAnalisis, revisarEnlace, revisarWhatsapp } from '../lib/enriquecer.js'
 import { registrarRespuesta } from '../lib/entrenamiento.js'
 import { versionApp } from '../lib/esAppNativa.js'
@@ -15,13 +16,6 @@ import { useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Inicio.css'
-
-const VEREDICTOS = {
-  verde: { titulo: 'Seguro', icono: 'bien' },
-  amarillo: { titulo: 'Sospechoso', icono: 'regular' },
-  rojo: { titulo: 'Peligroso', icono: 'riesgo' },
-  gris: { titulo: 'No pudimos verificarlo', icono: 'duda' },
-}
 
 function Icono({ nombre }) {
   const trazo = {
@@ -51,44 +45,6 @@ function Icono({ nombre }) {
       <svg {...trazo}>
         <path d="M5 12h14" />
         <path d="m13 6 6 6-6 6" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'bien') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="m8.5 12.2 2.3 2.3 4.7-5" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'regular') {
-    return (
-      <svg {...trazo}>
-        <path d="M12 4.5 20 19H4L12 4.5Z" />
-        <path d="M12 10v4.2" />
-        <path d="M12 16.8h.01" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'riesgo') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="m9 9 6 6M15 9l-6 6" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'duda') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="M9.8 9.6a2.3 2.3 0 0 1 4.4.9c0 1.5-2.2 2-2.2 3.3" />
-        <path d="M12 16.8h.01" />
       </svg>
     )
   }
@@ -252,7 +208,7 @@ function EstafaOReal() {
           {safelink ? (
             <p className="inicio-juego-safelink">
               SafeLink marca <span className="inicio-juego-enlace">{mensaje.enlace}</span> como{' '}
-              <strong>{VEREDICTOS[safelink.nivel]?.titulo}</strong>. {motivosLimpios(safelink.motivos)[0]}
+              <strong>{veredictoDe(safelink).titulo}</strong>. {motivosLimpios(safelink.motivos)[0]}
             </p>
           ) : null}
           <button type="button" className="inicio-juego-otro" onClick={otro}>
@@ -274,56 +230,18 @@ function EstafaOReal() {
 }
 
 function Veredicto({ resultado, guardado, onOtro }) {
-  const titulo = useRef(null)
-  const veredicto = VEREDICTOS[resultado.nivel] ?? VEREDICTOS.gris
-  const motivos = motivosLimpios(resultado.motivos)
-  const diferencia =
-    resultado.diferencia && motivos.includes(resultado.diferencia.frase) ? resultado.diferencia : null
-
-  useEffect(() => {
-    titulo.current?.focus()
-  }, [resultado.id])
-
+  const mensaje = resultado.dominio === 'whatsapp'
   return (
-    <section
-      className={`inicio-veredicto inicio-veredicto-${resultado.nivel}`}
-      aria-labelledby="inicio-veredicto-titulo"
+    <Resultado
+      casoId={resultado.id}
+      resultado={resultado}
+      canal={mensaje ? 'whatsapp' : 'enlace'}
+      subtitulo={mensaje ? 'Mensaje sin enlaces' : undefined}
+      conFaro={false}
+      onNoAbrir={onOtro}
     >
-      <div className="inicio-veredicto-cabeza">
-        <span className="inicio-veredicto-icono">
-          <Icono nombre={veredicto.icono} />
-        </span>
-        <div className="inicio-veredicto-nombre">
-          <h2 id="inicio-veredicto-titulo" ref={titulo} tabIndex={-1}>
-            {veredicto.titulo}
-          </h2>
-          <p className="inicio-veredicto-dominio">
-            {diferencia ? (
-              <DominioMarcado tramos={diferencia.visto} />
-            ) : resultado.dominio === 'whatsapp' ? (
-              'Mensaje sin enlaces'
-            ) : (
-              (resultado.dominioDestino ?? resultado.dominio)
-            )}
-          </p>
-        </div>
-      </div>
-      {diferencia ? <DiferenciaDominio diferencia={diferencia} /> : null}
-      <p className="inicio-veredicto-consejo">{queHacer(resultado.nivel)}</p>
-      {motivos.length > 0 ? (
-        <ul className="inicio-veredicto-motivos">
-          {motivos.map((motivo) => (
-            <li key={motivo}>{motivo}</li>
-          ))}
-        </ul>
-      ) : null}
-      {guardado === false ? (
-        <p className="inicio-veredicto-nota">No se pudo guardar en tu historial.</p>
-      ) : null}
-      <button type="button" className="inicio-veredicto-otro" onClick={onOtro}>
-        Revisar otro
-      </button>
-    </section>
+      {guardado === false ? <p className="inicio-veredicto-nota">No se pudo guardar en tu historial.</p> : null}
+    </Resultado>
   )
 }
 

@@ -1,30 +1,32 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+import { parse as partirDominio } from 'npm:tldts@7.4.18'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const PRIVADO =
-  /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.|169\.254\.|0\.|\[::1\]|metadata\.google)/i
+const MAX_SALTOS = 5
+const TIEMPO_SALTO_MS = 4000
+const TIEMPO_TOTAL_MS = 12_000
+const MAX_PAGINA = 65_536
+const MAX_RDAP = 200_000
+const MAX_CRT = 200_000
+const AGENTE = 'SafeGuard-SafeLink/1.0 (+https://safeguardd.vercel.app)'
 
-const SUFIJOS_DOBLES = new Set([
-  'com.ar',
-  'gob.ar',
-  'gov.ar',
-  'org.ar',
-  'net.ar',
-  'edu.ar',
-  'com.br',
-  'com.mx',
-  'co.uk',
-  'com.co',
-  'com.uy',
-  'com.cl',
-  'com.pe',
-  'com.ec',
-  'com.ve',
-])
+type Fallo = 'no_resuelve' | 'dns' | 'bloqueado' | 'protocolo' | 'tls' | 'tiempo' | 'conexion' | 'saltos'
+
+// Siempre viaja con `error`: una versión vieja de la app lo trata como "no se pudo abrir" (fail-closed).
+const ERRORES: Record<Fallo, string> = {
+  no_resuelve: 'El dominio no existe o no tiene servidor',
+  dns: 'No se pudo resolver el dominio',
+  bloqueado: 'La dirección apunta a una red interna',
+  protocolo: 'La redirección sale de http o https',
+  tls: 'La conexión segura falló',
+  tiempo: 'El sitio tardó demasiado',
+  conexion: 'El sitio no aceptó la conexión',
+  saltos: 'Demasiadas redirecciones',
+}
 
 function json(cuerpo: unknown, status = 200) {
   return new Response(JSON.stringify(cuerpo), {
@@ -33,13 +35,158 @@ function json(cuerpo: unknown, status = 200) {
   })
 }
 
+function sinCorchetes(host: string) {
+  return host.replace(/^\[|\]$/g, '').toLowerCase()
+}
+
 function dominioRegistrable(host: string) {
-  const limpio = host.replace(/^www\./, '').toLowerCase()
-  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(limpio)) return limpio
-  const partes = limpio.split('.')
-  if (partes.length <= 2) return limpio
-  const dos = partes.slice(-2).join('.')
-  return SUFIJOS_DOBLES.has(dos) ? partes.slice(-3).join('.') : dos
+  const limpio = sinCorchetes(host).replace(/\.$/, '')
+  if (esIpv4(limpio) || limpio.includes(':')) return limpio
+  return partirDominio(limpio, { allowPrivateDomains: true }).domain ?? limpio
+}
+
+function esIpv4(texto: string) {
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(texto)
+}
+
+function ipv4Interna(ip: string) {
+  const [a, b, c] = ip.split('.').map(Number)
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 0 && (c === 0 || c === 2)) ||
+    (a === 192 && b === 168) ||
+    (a === 198 && (b === 18 || b === 19)) ||
+    (a === 198 && b === 51 && c === 100) ||
+    (a === 203 && b === 0 && c === 113) ||
+    a >= 224
+  )
+}
+
+function gruposIpv6(ip: string): number[] | null {
+  let texto = ip.split('%')[0]
+  const v4 = texto.match(/(\d{1,3}(?:\.\d{1,3}){3})$/)
+  if (v4) {
+    const [a, b, c, d] = v4[1].split('.').map(Number)
+    texto = texto.slice(0, -v4[1].length) + `${((a << 8) | b).toString(16)}:${((c << 8) | d).toString(16)}`
+  }
+  const [cabeza, cola, ...resto] = texto.split('::')
+  if (resto.length) return null
+  const izquierda = cabeza ? cabeza.split(':') : []
+  const derecha = cola === undefined ? [] : cola ? cola.split(':') : []
+  const faltan = 8 - izquierda.length - derecha.length
+  if (cola === undefined ? faltan !== 0 : faltan < 1) return null
+  const grupos = [...izquierda, ...Array(cola === undefined ? 0 : faltan).fill('0'), ...derecha]
+  const numeros = grupos.map((g) => (/^[0-9a-f]{1,4}$/i.test(g) ? parseInt(g, 16) : NaN))
+  return numeros.some(Number.isNaN) ? null : numeros
+}
+
+function ipv6Interna(ip: string) {
+  const g = gruposIpv6(ip)
+  if (!g) return true
+  const ceros = (desde: number, hasta: number) => g.slice(desde, hasta).every((x) => x === 0)
+  const v4 = (alto: number, bajo: number) => `${alto >> 8}.${alto & 255}.${bajo >> 8}.${bajo & 255}`
+  if (ceros(0, 7) && (g[7] === 0 || g[7] === 1)) return true
+  if (ceros(0, 5) && g[5] === 0xffff) return ipv4Interna(v4(g[6], g[7]))
+  if (g[0] === 0x64 && g[1] === 0xff9b && ceros(2, 6)) return ipv4Interna(v4(g[6], g[7]))
+  if (g[0] === 0x2002) return ipv4Interna(v4(g[1], g[2]))
+  return (
+    (g[0] & 0xfe00) === 0xfc00 ||
+    (g[0] & 0xffc0) === 0xfe80 ||
+    (g[0] & 0xff00) === 0xff00 ||
+    (g[0] === 0x2001 && g[1] === 0x0db8) ||
+    ceros(0, 6)
+  )
+}
+
+function ipInterna(ip: string) {
+  return ip.includes(':') ? ipv6Interna(ip) : ipv4Interna(ip)
+}
+
+function nombreInterno(host: string) {
+  return (
+    !host.includes('.') ||
+    host === 'localhost' ||
+    /\.(localhost|local|internal|intranet|lan|home|corp|arpa)$/.test(host) ||
+    host === 'metadata.google.internal'
+  )
+}
+
+type Resolucion = { estado: 'ok'; ips: string[] } | { estado: 'no_resuelve' } | { estado: 'fallo' }
+
+async function resolverConDeno(host: string): Promise<Resolucion | null> {
+  if (typeof Deno.resolveDns !== 'function') return null
+  const opciones = { signal: AbortSignal.timeout(3000) }
+  const [a, aaaa] = await Promise.allSettled([
+    Deno.resolveDns(host, 'A', opciones),
+    Deno.resolveDns(host, 'AAAA', opciones),
+  ])
+  const ips = [a, aaaa].flatMap((r) => (r.status === 'fulfilled' ? r.value : []))
+  if (ips.length) return { estado: 'ok', ips }
+  const noEncontrado = (r: PromiseSettledResult<string[]>) =>
+    r.status === 'rejected' && r.reason instanceof Deno.errors.NotFound
+  if (noEncontrado(a) && noEncontrado(aaaa)) return { estado: 'no_resuelve' }
+  return null
+}
+
+// Respaldo por DNS sobre HTTPS: a Cloudflare solo le llega el nombre del sitio, nunca la ruta ni la query.
+async function resolverConDoh(host: string): Promise<Resolucion> {
+  const consultas = await Promise.all(
+    ['A', 'AAAA'].map(async (tipo) => {
+      try {
+        const res = await fetch(
+          `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(host)}&type=${tipo}`,
+          { headers: { accept: 'application/dns-json' }, signal: AbortSignal.timeout(3000) },
+        )
+        if (!res.ok) return null
+        const texto = await leerAcotado(res, 20_000)
+        return texto ? (JSON.parse(texto) as { Status?: number; Answer?: { type: number; data: string }[] }) : null
+      } catch {
+        return null
+      }
+    }),
+  )
+  if (consultas.some((c) => !c)) return { estado: 'fallo' }
+  if (consultas.some((c) => c!.Status === 3)) return { estado: 'no_resuelve' }
+  if (consultas.some((c) => c!.Status !== 0)) return { estado: 'fallo' }
+  const ips = consultas.flatMap((c) => (c!.Answer ?? []).filter((r) => r.type === 1 || r.type === 28).map((r) => r.data))
+  return ips.length ? { estado: 'ok', ips } : { estado: 'no_resuelve' }
+}
+
+async function revisarHost(hostname: string): Promise<Fallo | null> {
+  const host = sinCorchetes(hostname).replace(/\.$/, '')
+  if (esIpv4(host) || host.includes(':')) return ipInterna(host) ? 'bloqueado' : null
+  if (nombreInterno(host)) return 'bloqueado'
+
+  let resolucion: Resolucion | null = null
+  try {
+    resolucion = await resolverConDeno(host)
+  } catch {
+    resolucion = null
+  }
+  // Un resolver que filtra puede negar un dominio que existe: antes de decir que no existe, se confirma por DoH.
+  if (!resolucion || resolucion.estado === 'no_resuelve') resolucion = await resolverConDoh(host)
+
+  if (resolucion.estado === 'no_resuelve') return 'no_resuelve'
+  if (resolucion.estado === 'fallo') return 'dns'
+  return resolucion.ips.some(ipInterna) ? 'bloqueado' : null
+}
+
+function clasificarError(error: unknown): Fallo {
+  const nombre = error instanceof Error ? error.name : ''
+  const partes: string[] = []
+  for (let actual: unknown = error; actual && partes.length < 4; actual = (actual as { cause?: unknown }).cause) {
+    partes.push(actual instanceof Error ? actual.message : String(actual))
+  }
+  const mensaje = partes.join(' ').toLowerCase()
+  if (nombre === 'TimeoutError' || nombre === 'AbortError' || mensaje.includes('timed out')) return 'tiempo'
+  if (/certificate|tls|ssl|handshake/.test(mensaje)) return 'tls'
+  if (/dns error|failed to lookup|name or service not known|no such host/.test(mensaje)) return 'dns'
+  return 'conexion'
 }
 
 async function cerrar(res: Response) {
@@ -50,68 +197,23 @@ async function cerrar(res: Response) {
   }
 }
 
-function hostProhibido(host: string) {
-  const h = host.replace(/\.+$/, '').toLowerCase()
-  return PRIVADO.test(h) || h.endsWith('.local') || h.endsWith('.internal')
-}
-
-async function seguir(urlInicial: string) {
-  const cadena: string[] = []
-  let actual = urlInicial
-
-  for (let i = 0; i < 5; i++) {
-    const u = new URL(actual)
-    if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-      throw new Error('Solo se pueden abrir direcciones http o https')
+async function leerAcotado(res: Response, maximo: number, cortar = false) {
+  const reader = res.body?.getReader()
+  if (!reader) return ''
+  const partes: Uint8Array[] = []
+  let total = 0
+  try {
+    while (total < maximo) {
+      const { done, value } = await reader.read()
+      if (done || !value) break
+      partes.push(value)
+      total += value.byteLength
     }
-    if (hostProhibido(u.hostname)) {
-      throw new Error('Ese destino no se puede consultar')
-    }
-
-    cadena.push(actual)
-
-    const ctrl = AbortSignal.timeout(5000)
-    let res = await fetch(actual, {
-      method: 'HEAD',
-      redirect: 'manual',
-      signal: ctrl,
-      headers: { 'User-Agent': 'SafeGuard/1.0' },
-    })
-
-    if (res.status === 405 || res.status === 501) {
-      res = await fetch(actual, {
-        method: 'GET',
-        redirect: 'manual',
-        signal: AbortSignal.timeout(5000),
-        headers: { 'User-Agent': 'SafeGuard/1.0' },
-      })
-    }
-
-    if (res.status >= 300 && res.status < 400) {
-      const loc = res.headers.get('location')
-      await cerrar(res)
-      if (!loc) break
-      actual = new URL(loc, actual).href
-      continue
-    }
-
-    await cerrar(res)
-    break
+  } finally {
+    await reader.cancel().catch(() => {})
   }
-
-  return { destino: actual, cadena }
-}
-
-function esArchivoPeligroso(tipo: string, disposicion: string, url: string) {
-  const nombre = `${disposicion} ${url}`.toLowerCase()
-  if (/\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|js|jse|vbs|vbe|ps1)(?:$|[?#\s"])/.test(nombre)) {
-    return true
-  }
-  return (
-    tipo.includes('android.package-archive') ||
-    tipo.includes('x-msdownload') ||
-    tipo.includes('x-msdos-program')
-  )
+  if (total > maximo && !cortar) return null
+  return new TextDecoder('utf-8', { fatal: false }).decode(unir(partes).slice(0, maximo))
 }
 
 function unir(partes: Uint8Array[]) {
@@ -125,65 +227,112 @@ function unir(partes: Uint8Array[]) {
   return salida
 }
 
+type Recorrido = { cadena: string[]; fallo: Fallo | null; res: Response | null }
+
+// Un GET por salto, sin cookies ni credenciales, y el DNS se vuelve a revisar antes de cada pedido.
+async function seguir(urlInicial: string): Promise<Recorrido> {
+  const cadena: string[] = []
+  const limite = Date.now() + TIEMPO_TOTAL_MS
+  let actual: URL
+  try {
+    actual = new URL(urlInicial)
+  } catch {
+    return { cadena, fallo: 'protocolo', res: null }
+  }
+
+  for (let salto = 0; ; salto++) {
+    actual.hash = ''
+    actual.username = ''
+    actual.password = ''
+    cadena.push(actual.href)
+    if (actual.protocol !== 'http:' && actual.protocol !== 'https:') {
+      return { cadena, fallo: 'protocolo', res: null }
+    }
+
+    const prohibido = await revisarHost(actual.hostname)
+    if (prohibido) return { cadena, fallo: prohibido, res: null }
+
+    const restante = limite - Date.now()
+    if (restante <= 0) return { cadena, fallo: 'tiempo', res: null }
+
+    let res: Response
+    try {
+      res = await fetch(actual.href, {
+        method: 'GET',
+        redirect: 'manual',
+        credentials: 'omit',
+        signal: AbortSignal.timeout(Math.min(TIEMPO_SALTO_MS, restante)),
+        headers: {
+          'User-Agent': AGENTE,
+          Accept: 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.1',
+        },
+      })
+    } catch (error) {
+      return { cadena, fallo: clasificarError(error), res: null }
+    }
+
+    const loc = res.status >= 300 && res.status < 400 ? res.headers.get('location') : null
+    if (!loc) return { cadena, fallo: null, res }
+
+    await cerrar(res)
+    if (salto >= MAX_SALTOS) return { cadena, fallo: 'saltos', res: null }
+    try {
+      actual = new URL(loc, actual)
+    } catch {
+      return { cadena, fallo: 'protocolo', res: null }
+    }
+  }
+}
+
+function esArchivoPeligroso(tipo: string, disposicion: string, url: string) {
+  const nombre = `${disposicion} ${new URL(url).pathname}`.toLowerCase()
+  if (/\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|js|jse|vbs|vbe|ps1)(?:$|[?#\s"])/.test(nombre)) {
+    return true
+  }
+  return (
+    tipo.includes('android.package-archive') ||
+    tipo.includes('x-msdownload') ||
+    tipo.includes('x-msdos-program')
+  )
+}
+
 function otroSitio(crudo: string | undefined, base: string) {
   if (!crudo) return null
   try {
     const destino = new URL(crudo, base)
     const origen = new URL(base)
     if (destino.protocol !== 'http:' && destino.protocol !== 'https:') return null
-    if (hostProhibido(destino.hostname) || destino.hostname === origen.hostname) return null
+    if (destino.hostname === origen.hostname) return null
     return destino.hostname
   } catch {
     return null
   }
 }
 
-async function mirarPagina(url: string) {
-  const vacio = {
-    titulo: null as string | null,
-    formulario_clave: false,
-    archivo_peligroso: false,
-    meta_destino: null as string | null,
-    formulario_otro: null as string | null,
-    script_otro: null as string | null,
-    iframe_otro: null as string | null,
-    pide_datos: false,
-  }
-  try {
-    const u = new URL(url)
-    if ((u.protocol !== 'http:' && u.protocol !== 'https:') || hostProhibido(u.hostname)) return vacio
+const PAGINA_VACIA = {
+  titulo: null as string | null,
+  formulario_clave: false,
+  archivo_peligroso: false,
+  meta_destino: null as string | null,
+  formulario_otro: null as string | null,
+  script_otro: null as string | null,
+  iframe_otro: null as string | null,
+  pide_datos: false,
+}
 
-    const res = await fetch(url, {
-      method: 'GET',
-      redirect: 'manual',
-      signal: AbortSignal.timeout(5000),
-      headers: {
-        'User-Agent': 'SafeGuard/1.0',
-        Accept: 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.1',
-      },
-    })
+// Solo se lee texto: la página no se renderiza ni se ejecuta su JavaScript.
+async function mirarPagina(res: Response, url: string) {
+  try {
     const tipo = (res.headers.get('content-type') ?? '').toLowerCase()
     const disposicion = res.headers.get('content-disposition') ?? ''
     const archivo = esArchivoPeligroso(tipo, disposicion, url)
     const esHtml = tipo.includes('html') || tipo.includes('text/plain')
     if (archivo || !esHtml) {
       await cerrar(res)
-      return { ...vacio, archivo_peligroso: archivo }
+      return { ...PAGINA_VACIA, archivo_peligroso: archivo }
     }
 
-    const reader = res.body?.getReader()
-    if (!reader) return vacio
-    const partes: Uint8Array[] = []
-    let total = 0
-    while (total < 65_536) {
-      const { done, value } = await reader.read()
-      if (done || !value) break
-      partes.push(value)
-      total += value.byteLength
-    }
-    await reader.cancel()
-
-    const crudo = new TextDecoder('utf-8', { fatal: false }).decode(partes.length ? unir(partes) : new Uint8Array())
+    const crudo = (await leerAcotado(res, MAX_PAGINA, true)) ?? ''
     const lower = crudo.toLowerCase()
     const formulario =
       /type\s*=\s*["']?password\b/.test(lower) ||
@@ -206,8 +355,7 @@ async function mirarPagina(url: string) {
         const destino = new URL(metaCrudo, url)
         if (
           (destino.protocol === 'http:' || destino.protocol === 'https:') &&
-          destino.hostname !== u.hostname &&
-          !hostProhibido(destino.hostname)
+          destino.hostname !== new URL(url).hostname
         ) {
           meta_destino = destino.href
         }
@@ -226,7 +374,8 @@ async function mirarPagina(url: string) {
       pide_datos,
     }
   } catch {
-    return vacio
+    await cerrar(res)
+    return PAGINA_VACIA
   }
 }
 
@@ -250,14 +399,20 @@ function fraseCert(dias: number | null) {
   return null
 }
 
+// A rdap.org y a crt.sh solo les llega el dominio registrable, sin ruta ni query.
 async function edadDominio(dominio: string) {
   try {
-    const res = await fetch(`https://rdap.org/domain/${dominio}`, {
+    const res = await fetch(`https://rdap.org/domain/${encodeURIComponent(dominio)}`, {
       signal: AbortSignal.timeout(6000),
-      headers: { Accept: 'application/rdap+json, application/json' },
+      headers: { Accept: 'application/rdap+json, application/json', 'User-Agent': AGENTE },
     })
-    if (!res.ok) return { edad_dias: null, registrado_en: null }
-    const data = await res.json()
+    if (!res.ok) {
+      await cerrar(res)
+      return { edad_dias: null, registrado_en: null }
+    }
+    const texto = await leerAcotado(res, MAX_RDAP)
+    if (!texto) return { edad_dias: null, registrado_en: null }
+    const data = JSON.parse(texto)
     const eventos = Array.isArray(data.events) ? data.events : []
     const alta = eventos.find((e: { eventAction?: string }) => e.eventAction === 'registration')
     if (!alta?.eventDate) return { edad_dias: null, registrado_en: null }
@@ -273,10 +428,14 @@ async function edadCertificado(dominio: string) {
   try {
     const res = await fetch(`https://crt.sh/?q=${encodeURIComponent(dominio)}&output=json`, {
       signal: AbortSignal.timeout(4000),
+      headers: { 'User-Agent': AGENTE },
     })
-    if (!res.ok) return { cert_dias: null }
-    const texto = await res.text()
-    if (texto.length > 200_000) return { cert_dias: null }
+    if (!res.ok) {
+      await cerrar(res)
+      return { cert_dias: null }
+    }
+    const texto = await leerAcotado(res, MAX_CRT)
+    if (!texto) return { cert_dias: null }
     const filas = JSON.parse(texto) as { not_before?: string }[]
     if (!Array.isArray(filas) || filas.length === 0) return { cert_dias: null }
     const fechas = filas
@@ -303,21 +462,27 @@ Deno.serve(async (req) => {
     }
 
     const partida = url.includes('://') ? url : `https://${url}`
-    const { destino, cadena } = await seguir(partida)
-    const host = new URL(destino).hostname
-    const dominio = dominioRegistrable(host)
-    const acortado = cadena.length > 1 || destino !== partida
+    const { cadena, fallo, res } = await seguir(partida)
+    const destino = cadena.at(-1) ?? null
+    const dominio = (destino && dominioRegistrable(new URL(destino).hostname)) || null
 
+    if (fallo || !res || !destino || !dominio) {
+      if (res) await cerrar(res)
+      const motivo = fallo ?? 'conexion'
+      return json({ error: ERRORES[motivo], fallo: motivo, cadena, destino, dominio })
+    }
+
+    const juzgable = !esIpv4(dominio) && !dominio.includes(':')
     const [rdap, cert, pagina] = await Promise.all([
-      edadDominio(dominio),
-      edadCertificado(dominio),
-      mirarPagina(destino),
+      juzgable ? edadDominio(dominio) : { edad_dias: null, registrado_en: null },
+      juzgable ? edadCertificado(dominio) : { cert_dias: null },
+      mirarPagina(res, destino),
     ])
 
     return json({
       destino,
       cadena,
-      acortado,
+      acortado: cadena.length > 1,
       dominio,
       registrado_en: rdap.registrado_en,
       edad_dias: rdap.edad_dias,

@@ -1,4 +1,5 @@
 import { motivosLimpios } from './analisis.js'
+import { sinConsulta } from './enlace.js'
 
 export const SALUDO =
   'Hola. Soy Faro. Puedo analizar este caso, resumirlo, dar un ejemplo o responder lo que preguntes. Elegí si lo querés simple, técnico o avanzado.'
@@ -343,7 +344,8 @@ export function prepararRespuesta(nivel, motivos, pregunta, cruda, modo = 'simpl
 
 function casoConsulta(caso) {
   const origen = caso && typeof caso === 'object' ? caso : {}
-  const url = String(origen.url ?? '').replace(/\s+/g, ' ').trim().slice(0, 300)
+  const crudo = String(origen.url ?? '').replace(/\s+/g, ' ').trim()
+  const url = (/^[a-z][a-z0-9+.-]*:/i.test(crudo) ? sinConsulta(crudo) : crudo).slice(0, 300)
   const dominio = String(origen.dominio ?? '').replace(/\s+/g, ' ').trim().slice(0, 120)
   const canal = ['enlace', 'whatsapp', 'pdf', 'correo'].includes(origen.canal) ? origen.canal : ''
   const puntuacion = Number.isFinite(origen.puntuacion)

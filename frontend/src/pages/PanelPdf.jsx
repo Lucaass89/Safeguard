@@ -70,13 +70,13 @@ function PanelPdf() {
       {resultado && (
         <Resultado
           casoId={resultado.casoId}
-          nivel={resultado.nivel}
+          resultado={resultado}
           subtitulo={resultado.nombre}
-          url={resultado.url}
-          dominio={resultado.dominio}
-          puntuacion={resultado.puntuacion}
           canal="pdf"
-          motivos={resultado.motivos}
+          onNoAbrir={() => {
+            setResultado(null)
+            setNombreArchivo('')
+          }}
         />
       )}
     </div>

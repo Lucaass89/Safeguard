@@ -51,6 +51,18 @@ function plano(texto: string) {
     .replace(/\p{M}/gu, '')
 }
 
+// A Gemini le llegan el sitio y la ruta; la query y el fragmento pueden traer datos personales o tokens.
+function sinConsulta(texto: string) {
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(texto)) return texto
+  try {
+    const url = new URL(texto)
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return url.protocol
+    return `${url.protocol}//${url.host}${url.pathname}`
+  } catch {
+    return texto.split(/[?#]/)[0]
+  }
+}
+
 function recortar(texto: string, tope: number) {
   return texto
     .replace(/https?:\/\/\S+/gi, ' ')
@@ -119,7 +131,7 @@ function leer(body: unknown) {
 
   const modo: Modo = datos.modo === 'tecnico' || datos.modo === 'avanzado' ? datos.modo : 'simple'
   const crudo = datos.caso && typeof datos.caso === 'object' ? datos.caso as Record<string, unknown> : {}
-  const url = typeof crudo.url === 'string' ? crudo.url.replace(/\s+/g, ' ').trim().slice(0, 300) : ''
+  const url = typeof crudo.url === 'string' ? sinConsulta(crudo.url.replace(/\s+/g, ' ').trim()).slice(0, 300) : ''
   const dominio = typeof crudo.dominio === 'string' ? recortar(crudo.dominio, 120) : ''
   const canal = crudo.canal === 'enlace' || crudo.canal === 'whatsapp' || crudo.canal === 'pdf' || crudo.canal === 'correo'
     ? crudo.canal

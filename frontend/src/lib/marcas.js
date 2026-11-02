@@ -71,14 +71,16 @@ const SENSIBLES = new Set([
 const DIGITOS = { 0: 'o', 3: 'e', 4: 'a', 5: 's', 7: 't', 8: 'b' }
 
 // Formas de leer un texto deshaciendo los trucos visuales. El 1 puede pasar por l o por i,
-// y una I mayúscula se ve igual que una l, por eso salen varias lecturas.
+// y una I mayúscula se ve igual que una l, por eso salen varias lecturas. La forma literal
+// también cuenta: deshacer "rn" en "narnjax" lo aleja de "naranjax" en vez de acercarlo.
 export function variantes(texto) {
-  const leido = plano(texto)
+  const literal = plano(texto)
+  const leido = literal
     .replace(/[034578]/g, (cifra) => DIGITOS[cifra])
     .replace(/rn/g, 'm')
     .replace(/vv/g, 'w')
   const conL = leido.replace(/1/g, 'l')
-  return [...new Set([conL, leido.replace(/1/g, 'i'), conL.replace(/i/g, 'l')])]
+  return [...new Set([conL, leido.replace(/1/g, 'i'), conL.replace(/i/g, 'l'), literal])]
 }
 
 // Damerau-Levenshtein en su forma de alineación óptima: cuenta como un solo error
@@ -168,8 +170,21 @@ function buscarEnEtiqueta(etiqueta, { exacto }) {
     }
     const comun = comunConRelleno(marca, partes)
     if (comun) anotar(marca, comun.candidato, comun.variante, comun.termino, 0)
+    const disfrazada = comunDisfrazada(marca, candidatos)
+    if (disfrazada) anotar(marca, disfrazada.candidato, disfrazada.variante, disfrazada.termino, 0)
   }
   return mejor
+}
+
+// Una palabra común sola no es una imitación ("claro", "ciudad"), pero escrita con trucos
+// ("c1aro", "rnacro") nadie la tipea por casualidad.
+function comunDisfrazada(marca, candidatos) {
+  for (const candidato of candidatos) {
+    const escrito = sinAcentos(candidato.toLowerCase())
+    const comun = variantes(candidato).find((variante) => variante !== escrito && marca.comunes.includes(variante))
+    if (comun) return { candidato, variante: comun, termino: comun }
+  }
+  return null
 }
 
 function hallazgo(encontrado, como, extra = {}) {

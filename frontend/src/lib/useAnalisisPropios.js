@@ -74,6 +74,9 @@ function armarItem(fila) {
     tipo: entrada.tipo,
     to: entrada.to,
     nivel: NIVELES[fila.nivel_riesgo] ?? 'sin_verificar',
+    nivelRiesgo: NIVELES[fila.nivel_riesgo] ? fila.nivel_riesgo : 'gris',
+    url: fila.url_analizada,
+    dominio: fila.dominio,
     cuando: haceCuanto(fila.fecha_analisis),
     motivos: fila.explicacion ? [fila.explicacion] : [],
   }

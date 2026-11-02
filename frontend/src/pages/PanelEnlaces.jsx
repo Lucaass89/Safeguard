@@ -4,7 +4,8 @@ import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import { analizar } from '../lib/analisis.js'
-import { guardarAnalisis, reportarDominio, revisarEnlace } from '../lib/enriquecer.js'
+import { guardarAnalisis, revisarEnlace } from '../lib/enriquecer.js'
+import { casoGuardado } from '../lib/veredicto.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -28,7 +29,6 @@ function PanelEnlaces() {
   const [historial, setHistorial] = useState([])
   const [reportes, setReportes] = useState([])
   const [analizando, setAnalizando] = useState(false)
-  const [cierre, setCierre] = useState(null)
   const [caso, setCaso] = useState(null)
   const [error, setError] = useState(null)
 
@@ -61,7 +61,6 @@ function PanelEnlaces() {
   async function manejarAnalisis(evento) {
     evento.preventDefault()
     setError(null)
-    setCierre(null)
 
     if (!analizar(entrada)) {
       setError('Eso no parece un enlace. Probá con algo como ejemplo.com/promo')
@@ -97,27 +96,9 @@ function PanelEnlaces() {
     )
   }
 
-  async function reportar() {
-    if (!resultado) return
-    setError(null)
-
-    const { data, error: fallo } = await reportarDominio(resultado, 'web')
-    if (fallo) {
-      setError(`No se pudo enviar el reporte: ${fallo.message}`)
-      return
-    }
-
-    setCierre(data.cierre)
-    setReportes((previo) => [
-      {
-        id: crypto.randomUUID(),
-        dominio: resultado.dominioDestino ?? resultado.dominio,
-        cierre: data.cierre,
-        estado: 'revisado',
-        fecha_reporte: new Date().toISOString(),
-      },
-      ...previo,
-    ])
+  function noAbrir() {
+    setResultado(null)
+    setEntrada('')
   }
 
   return (
@@ -153,28 +134,7 @@ function PanelEnlaces() {
       {error && <p className="panel-error">{error}</p>}
 
       {resultado && (
-        <Resultado
-          casoId={resultado.casoId}
-          nivel={resultado.nivel}
-          subtitulo={resultado.dominioDestino ?? resultado.dominio}
-          url={resultado.url}
-          dominio={resultado.dominioDestino ?? resultado.dominio}
-          puntuacion={resultado.puntuacion}
-          canal="enlace"
-          motivos={resultado.motivos}
-        >
-          {resultado.nivel !== 'verde' && !resultado.sinSitio && (
-            <div className="panel-acciones">
-              {cierre ? (
-                <p className="resultado-aviso">{cierre}</p>
-              ) : (
-                <button type="button" className="panel-boton panel-boton-borde" onClick={reportar}>
-                  Reportar este sitio
-                </button>
-              )}
-            </div>
-          )}
-        </Resultado>
+        <Resultado casoId={resultado.casoId} resultado={resultado} canal="enlace" onNoAbrir={noAbrir} />
       )}
 
       <section className="panel-seccion">
@@ -182,12 +142,9 @@ function PanelEnlaces() {
         {caso && (
           <Resultado
             casoId={caso.id}
-            nivel={caso.nivel_riesgo}
-            subtitulo={caso.dominio}
-            url={caso.url_analizada}
-            dominio={caso.dominio}
+            resultado={casoGuardado(caso)}
             canal="enlace"
-            motivos={caso.explicacion ? caso.explicacion.split(/(?<=\.)\s+/).filter(Boolean) : []}
+            onNoAbrir={() => setCaso(null)}
           />
         )}
         {historial.length === 0 ? (
@@ -225,11 +182,9 @@ function PanelEnlaces() {
         )}
       </section>
 
-      <section className="panel-seccion">
-        <h2>Tus reportes</h2>
-        {reportes.length === 0 ? (
-          <p className="panel-vacio">Cuando denuncies un sitio, el cierre aparece acá.</p>
-        ) : (
+      {reportes.length > 0 && (
+        <section className="panel-seccion">
+          <h2>Tus reportes</h2>
           <ul className="reportes">
             {reportes.map((item) => (
               <li className="reporte-item" key={item.id}>
@@ -242,8 +197,8 @@ function PanelEnlaces() {
               </li>
             ))}
           </ul>
-        )}
-      </section>
+        </section>
+      )}
     </div>
   )
 }

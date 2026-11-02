@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
 import { analizarWhatsapp } from '../lib/analisisWhatsapp.js'
-import { guardarAnalisis, reportarDominio, revisarWhatsapp } from '../lib/enriquecer.js'
+import { guardarAnalisis, revisarWhatsapp } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -12,13 +12,11 @@ function PanelWhatsapp() {
   const [texto, setTexto] = useState('')
   const [resultado, setResultado] = useState(null)
   const [analizando, setAnalizando] = useState(false)
-  const [cierre, setCierre] = useState(null)
   const [error, setError] = useState(null)
 
   async function manejarEnvio(evento) {
     evento.preventDefault()
     setError(null)
-    setCierre(null)
 
     const local = analizarWhatsapp(texto)
     if (!local) {
@@ -36,13 +34,6 @@ function PanelWhatsapp() {
     if (fallo) {
       setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)
     }
-  }
-
-  async function reportar() {
-    if (!resultado || resultado.dominio === 'whatsapp') return
-    const { data, error: fallo } = await reportarDominio(resultado, 'whatsapp')
-    if (fallo) setError(fallo.message)
-    else setCierre(data.cierre)
   }
 
   return (
@@ -77,30 +68,14 @@ function PanelWhatsapp() {
       {resultado && (
         <Resultado
           casoId={resultado.casoId}
-          nivel={resultado.nivel}
-          url={resultado.url}
-          dominio={resultado.dominioDestino ?? resultado.dominio}
-          puntuacion={resultado.puntuacion}
+          resultado={resultado}
           canal="whatsapp"
-          subtitulo={
-            resultado.dominio === 'whatsapp'
-              ? 'Mensaje sin enlace claro'
-              : (resultado.dominioDestino ?? resultado.dominio)
-          }
-          motivos={resultado.motivos}
-        >
-          {resultado.nivel !== 'verde' && resultado.dominio !== 'whatsapp' && (
-            <div className="panel-acciones">
-              {cierre ? (
-                <p className="resultado-aviso">{cierre}</p>
-              ) : (
-                <button type="button" className="panel-boton panel-boton-borde" onClick={reportar}>
-                  Reportar este sitio
-                </button>
-              )}
-            </div>
-          )}
-        </Resultado>
+          subtitulo={resultado.dominio === 'whatsapp' ? 'Mensaje sin enlace claro' : undefined}
+          onNoAbrir={() => {
+            setResultado(null)
+            setTexto('')
+          }}
+        />
       )}
     </div>
   )

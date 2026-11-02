@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router'
-import DiferenciaDominio from '../components/DiferenciaDominio.jsx'
 import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
+import Resultado from '../components/Resultado.jsx'
 import { agruparActividad } from '../lib/agruparActividad.js'
-import { analizar, motivosLimpios } from '../lib/analisis.js'
+import { analizar } from '../lib/analisis.js'
 import { analizarPdf } from '../lib/analisisPdf.js'
 import {
   cerrarRevision,
@@ -31,13 +31,6 @@ const CAMPOS = {
   correo: { etiqueta: 'Correo para revisar', placeholder: 'Pegá el correo acá' },
 }
 
-const NIVEL_DE = {
-  verde: 'seguro',
-  amarillo: 'sospechoso',
-  rojo: 'peligroso',
-  gris: 'sin_verificar',
-}
-
 const ENTRADA_DE = {
   enlace: 'web',
   mensaje: 'whatsapp',
@@ -45,11 +38,20 @@ const ENTRADA_DE = {
   pdf: 'pdf',
 }
 
-const VEREDICTO = {
-  seguro: 'Seguro',
-  sospechoso: 'Sospechoso',
-  peligroso: 'Peligroso',
-  sin_verificar: 'No pudimos verificarlo',
+const CANAL_DE = {
+  enlace: 'enlace',
+  mensaje: 'whatsapp',
+  correo: 'correo',
+  pdf: 'pdf',
+  qr: 'qr',
+}
+
+const ENTRADA_A_TIPO = {
+  web: 'enlace',
+  whatsapp: 'mensaje',
+  correo: 'correo',
+  pdf: 'pdf',
+  qr: 'qr',
 }
 
 async function revisarTipo(tipo, entrada, archivo) {
@@ -103,44 +105,6 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'seguro') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="m8.5 12.2 2.3 2.3 4.7-5" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'sospechoso') {
-    return (
-      <svg {...trazo}>
-        <path d="M12 4.5 20 19H4L12 4.5Z" />
-        <path d="M12 10v4.2" />
-        <path d="M12 16.8h.01" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'sin_verificar') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="M9.8 9.6a2.3 2.3 0 0 1 4.4.9c0 1.5-2.2 2-2.2 3.3" />
-        <path d="M12 16.8h.01" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'peligroso') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="m9 9 6 6M15 9l-6 6" />
-      </svg>
-    )
-  }
-
   return (
     <svg {...trazo}>
       <path d="M8 7h8M8 12h8M8 17h5" />
@@ -155,36 +119,6 @@ function resumenDe(tipo, entrada, archivo) {
   return linea.length > 72 ? `${linea.slice(0, 72)}…` : linea
 }
 
-function Resultado({ resultado, reportado, aviso, onCerrar, onReportar, onCompartir }) {
-  return (
-    <section className={`sl-resultado sl-resultado-${resultado.nivel}`} aria-labelledby="sl-veredicto">
-      <div className="sl-veredicto">
-        <Icono nombre={resultado.nivel} />
-      </div>
-      <h2 id="sl-veredicto">{VEREDICTO[resultado.nivel]}</h2>
-      <p className="sl-resultado-que">{resultado.resumen}</p>
-      {resultado.diferencia ? <DiferenciaDominio diferencia={resultado.diferencia} /> : null}
-      <ul className="sl-motivos">
-        {resultado.motivos.map((motivo) => (
-          <li key={motivo}>{motivo}</li>
-        ))}
-      </ul>
-      <div className="sl-acciones">
-        <button type="button" className="sl-revisar" onClick={onCerrar}>
-          No abrir
-        </button>
-        <button type="button" className="sl-secundario" onClick={onReportar} disabled={reportado}>
-          {reportado ? 'Reportado' : 'Reportar'}
-        </button>
-        <button type="button" className="sl-secundario" onClick={onCompartir}>
-          Compartir alerta
-        </button>
-      </div>
-      {aviso ? <p className="sl-aviso">{aviso}</p> : null}
-    </section>
-  )
-}
-
 function SafeLink() {
   const archivoRef = useRef(null)
   const [tipo, setTipo] = useState('enlace')
@@ -193,7 +127,6 @@ function SafeLink() {
   const [pdf, setPdf] = useState(null)
   const [aviso, setAviso] = useState('')
   const [resultado, setResultado] = useState(null)
-  const [reportado, setReportado] = useState(false)
   const [revisando, setRevisando] = useState(false)
   const { sesion } = useSesion()
   const revisados = useAnalisisPropios({ limite: 20 })
@@ -255,13 +188,11 @@ function SafeLink() {
       return
     }
 
-    const motivos = motivosLimpios(final.motivos)
-    setReportado(false)
     setResultado({
-      nivel: NIVEL_DE[final.nivel] ?? 'sin_verificar',
-      motivos,
-      resumen: resumenDe(tipo, entrada, archivo),
-      diferencia: final.diferencia && motivos.includes(final.diferencia.frase) ? final.diferencia : null,
+      id: crypto.randomUUID(),
+      caso: final,
+      canal: CANAL_DE[tipo],
+      subtitulo: tipo === 'enlace' ? undefined : resumenDe(tipo, entrada, archivo),
     })
 
     if (sesion) {
@@ -272,53 +203,36 @@ function SafeLink() {
   }
 
   function abrirRevisado(item) {
-    setReportado(false)
     setAviso('')
+    const mensaje = item.entrada === 'whatsapp'
     setResultado({
-      nivel: item.nivel,
-      motivos: item.motivos,
-      resumen: item.texto,
-      diferencia: item.diferencia,
+      id: item.id,
+      caso: {
+        nivel: item.nivelRiesgo,
+        url: item.url,
+        dominio: item.dominio,
+        motivos: item.motivos,
+        diferencia: item.diferencia,
+        sinVerificar: item.nivelRiesgo === 'gris',
+      },
+      canal: CANAL_DE[ENTRADA_A_TIPO[item.entrada]] ?? 'enlace',
+      subtitulo: mensaje || item.entrada === 'pdf' || item.entrada === 'correo' ? item.texto : undefined,
     })
-  }
-
-  function reportar() {
-    // TODO: enviar el reporte al servidor.
-    setReportado(true)
-    setAviso('Quedó el reporte. No lo abras.')
-  }
-
-  async function compartir() {
-    const texto = `SafeLink: ${VEREDICTO[resultado.nivel]}. ${resultado.motivos.join(' ')}`
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'Alerta de SafeLink', text: texto })
-        return
-      } catch (error) {
-        if (error?.name === 'AbortError') return
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(texto)
-      setAviso('Copiamos la alerta para que la compartas.')
-    } catch {
-      setAviso('No se pudo compartir desde este navegador.')
-    }
   }
 
   if (resultado) {
     return (
       <div className="sl">
         <Resultado
-          resultado={resultado}
-          reportado={reportado}
-          aviso={aviso}
-          onCerrar={() => {
+          casoId={resultado.id}
+          resultado={resultado.caso}
+          canal={resultado.canal}
+          subtitulo={resultado.subtitulo}
+          conFaro={false}
+          onNoAbrir={() => {
             setResultado(null)
             setAviso('')
           }}
-          onReportar={reportar}
-          onCompartir={compartir}
         />
       </div>
     )

@@ -7,18 +7,24 @@ import {
 } from './analisis.js'
 import { analizarCorreo } from './analisisCorreo.js'
 import { analizarWhatsapp } from './analisisWhatsapp.js'
+import { dominiosDelRecorrido, sinFragmento } from './enlace.js'
 import { guardarFragmento } from './fragmentos.js'
 import { supabase } from './supabase.js'
+import { SIN_ABRIR, SIN_BASE } from './veredicto.js'
 
+// Las redirecciones se siguen en el servidor, nunca desde el teléfono.
+// Una respuesta con `fallo` trae lo que se llegó a ver antes del corte.
 export async function enriquecer(url) {
   if (!url) return null
 
   try {
     const { data, error } = await supabase.functions.invoke('safelink-enriquecer', {
-      body: { url },
+      body: { url: sinFragmento(url) },
     })
 
-    if (error || data?.error) return null
+    if (error) return null
+    if (data?.fallo) return data
+    if (data?.error) return null
     return data
   } catch {
     return null
@@ -54,9 +60,6 @@ export async function consultarPeorAmenaza(dominios) {
   return { amenaza: amenazas[0] ?? null, fallo: amenazas.length ? null : fallo }
 }
 
-const SIN_ABRIR = 'No pudimos abrir el sitio para confirmarlo: puede que no exista o que no haya respondido.'
-const SIN_BASE = 'No pudimos consultar la base de amenazas.'
-
 export function marcarLoQueFalto(final, { abrio, fallo }) {
   let salida = final
   if (!abrio) salida = marcarSinVerificar(salida, SIN_ABRIR)
@@ -68,19 +71,27 @@ export function enlaceParaAbrir(enlaces) {
   return enlaces?.find((enlace) => !enlace.sinSitio && !enlace.demasiadoLarga) ?? null
 }
 
-export async function cerrarRevision(local, urlEnlace, dominios) {
-  if (local.sinSitio) return local
+export async function cerrarRevisionConDetalle(local, urlEnlace, dominios) {
+  if (local.sinSitio) return { final: local, extra: null }
   const extra = urlEnlace ? await enriquecer(urlEnlace) : null
-  const { amenaza, fallo } = await consultarPeorAmenaza([...dominios, extra?.dominio])
+  const { amenaza, fallo } = await consultarPeorAmenaza([...dominios, extra?.dominio, ...dominiosDelRecorrido(extra)])
 
   const final = combinarConEnriquecimiento(combinarConAmenaza(local, fallo ? null : amenaza), extra)
-  return marcarLoQueFalto(final, { abrio: !urlEnlace || Boolean(extra), fallo })
+  return { final: marcarLoQueFalto(final, { abrio: !urlEnlace || Boolean(extra), fallo }), extra }
+}
+
+export async function cerrarRevision(local, urlEnlace, dominios) {
+  return (await cerrarRevisionConDetalle(local, urlEnlace, dominios)).final
+}
+
+export function urlParaRevisar(local) {
+  return local.demasiadoLarga ? null : local.url
 }
 
 export async function revisarEnlace(entrada) {
   const local = analizar(entrada)
   if (!local) return null
-  return cerrarRevision(local, local.demasiadoLarga ? null : local.url, [local.dominio])
+  return cerrarRevision(local, urlParaRevisar(local), [local.dominio])
 }
 
 export async function revisarWhatsapp(texto) {
@@ -112,15 +123,4 @@ export async function guardarAnalisis(sesion, resultado, entrada, texto = null) 
   const respuesta = await consulta.select('id').single()
   if (!respuesta.error) guardarFragmento(respuesta.data?.id, texto)
   return respuesta
-}
-
-export async function reportarDominio(resultado, originType = 'web') {
-  return supabase.rpc('safelink_reportar', {
-    p_dominio: resultado.dominioDestino ?? resultado.dominio,
-    p_motivo: motivosLimpios(resultado.motivos)
-      .filter((motivo) => !motivo.startsWith('Este dominio ya fue denunciado'))
-      .slice(0, 3)
-      .join(' '),
-    p_origin_type: originType,
-  })
 }

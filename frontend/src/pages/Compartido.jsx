@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
+import { casoGuardado } from '../lib/veredicto.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
 function Compartido() {
   const { token } = useParams()
   const { sesion } = useSesion()
+  const navigate = useNavigate()
   const [ficha, setFicha] = useState(null)
   const [error, setError] = useState(null)
 
@@ -48,12 +50,9 @@ function Compartido() {
 
       <Resultado
         casoId={token}
-        nivel={ficha.nivel_riesgo}
-        subtitulo={ficha.dominio}
-        url={ficha.url_analizada || ficha.url || ''}
-        dominio={ficha.dominio}
+        resultado={casoGuardado({ ...ficha, url_analizada: ficha.url_analizada || ficha.url || '' })}
         canal="enlace"
-        motivos={ficha.explicacion ? ficha.explicacion.split(/(?<=\.)\s+/).filter(Boolean) : []}
+        onNoAbrir={() => navigate(sesion ? '/panel/enlaces' : '/')}
       />
 
       <p>

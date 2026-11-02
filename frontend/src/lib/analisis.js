@@ -290,6 +290,7 @@ function sinSitio(lectura) {
       puntuacion: 90,
       nivel: 'rojo',
       sinVerificar: false,
+      senales: [{ id: 'esquema_peligroso', puntos: 90 }],
       motivos: [
         ESQUEMA_PELIGROSO[lectura.esquema] ??
           `No abre un sitio: apunta a un archivo (${lectura.esquema}:), no a una página web.`,
@@ -303,6 +304,7 @@ function sinSitio(lectura) {
       puntuacion: 0,
       nivel: 'gris',
       sinVerificar: true,
+      senales: [{ id: 'otra_app', puntos: 0 }],
       motivos: [`No es una dirección web: abre otra aplicación (${lectura.esquema}:), así que no la podemos revisar.`],
     }
   }
@@ -319,6 +321,10 @@ function sinSitio(lectura) {
     sinVerificar: true,
     sinFormato: true,
     parecido: resumenMarca(marca),
+    senales: [
+      { id: 'sin_formato', puntos: 0 },
+      ...(marca ? [{ id: 'marca_en_enlace_invalido', puntos: PUNTOS_PARECIDO }] : []),
+    ],
     motivos: [
       SIN_FORMATO,
       lectura.motivo,
@@ -337,17 +343,24 @@ export function analizar(entrada) {
   const plataforma = plataformaDe(host)
   const oficial = esDominioOficial(base) && !plataforma
   const motivos = []
+  const senales = []
   let puntos = 0
   let fuertes = 0
 
-  const sumar = (cantidad, frase, fuerte = false) => {
+  const sumar = (id, cantidad, frase, fuerte = false) => {
     puntos += cantidad
     if (fuerte) fuertes += 1
     motivos.push(frase)
+    senales.push({ id, puntos: cantidad })
+  }
+  const anotar = (id, frase) => {
+    motivos.push(frase)
+    senales.push({ id, puntos: 0 })
   }
 
   if (lectura.usuario !== null) {
     sumar(
+      'arroba_userinfo',
       60,
       lectura.usuario
         ? `Lo que va antes de la arroba (${lectura.usuario}) no es el sitio: el enlace abre ${host}.`
@@ -357,18 +370,19 @@ export function analizar(entrada) {
   }
 
   if (lectura.barraInvertida) {
-    sumar(30, `Usa una barra invertida (\\) para confundir: el navegador abre ${host}.`, true)
+    sumar('barra_invertida', 30, `Usa una barra invertida (\\) para confundir: el navegador abre ${host}.`, true)
   }
 
   if (lectura.tipoHost !== 'dominio') {
-    sumar(40, 'Lleva a una dirección IP, no a un nombre de sitio.', true)
+    sumar('ip', 40, 'Lleva a una dirección IP, no a un nombre de sitio.', true)
     if (lectura.formaIp) {
-      sumar(25, `La IP está escrita ${FORMA_IP[lectura.formaIp]} para que no se reconozca: es ${host}.`, true)
+      sumar('ip_disfrazada', 25, `La IP está escrita ${FORMA_IP[lectura.formaIp]} para que no se reconozca: es ${host}.`, true)
     }
   }
 
   if (lectura.disfrazado && !oficial) {
     sumar(
+      'nombre_disfrazado',
       30,
       `El nombre del sitio está escrito disfrazado (${lectura.escrito}): el navegador lo abre como ${lectura.hostUnicode}.`,
       true,
@@ -376,14 +390,15 @@ export function analizar(entrada) {
   }
 
   const marca = lectura.tipoHost === 'dominio' ? parecidoAMarca(lectura) : null
-  if (marca) sumar(PUNTOS_PARECIDO, fraseMarca(marca))
+  if (marca) sumar(`marca_${marca.como}`, PUNTOS_PARECIDO, fraseMarca(marca))
 
   if (marca?.como === 'alfabeto') {
     fuertes += 1
   } else if (lectura.mezclaAlfabetos) {
-    sumar(45, 'Mezcla letras latinas con letras de otro alfabeto que se ven iguales.', true)
+    sumar('mezcla_alfabetos', 45, 'Mezcla letras latinas con letras de otro alfabeto que se ven iguales.', true)
   } else if (lectura.imitaLatinas) {
     sumar(
+      'imita_latinas',
       40,
       `Está escrito con letras de otro alfabeto que imitan a las latinas: parece "${aLatin(lectura.hostUnicode)}", pero no lo es.`,
       true,
@@ -391,56 +406,58 @@ export function analizar(entrada) {
   }
 
   if (!oficial && EXT_PELIGROSA.test(`${url.pathname}${url.search}`)) {
-    sumar(55, 'El enlace descarga un programa, una app o un archivo que puede ejecutarse.', true)
+    sumar('descarga_ejecutable', 55, 'El enlace descarga un programa, una app o un archivo que puede ejecutarse.', true)
   }
 
   if (url.protocol === 'http:') {
-    sumar(20, 'No tiene candado: es http, no https. Una página que pide datos no debería estar así.')
+    sumar('sin_https', 20, 'No tiene candado: es http, no https. Una página que pide datos no debería estar así.')
   }
 
   if (!oficial && TLD_BARATOS.has(tld)) {
-    sumar(20, `El final .${tld} se usa mucho en sitios truchos.`, true)
+    sumar('tld_barato', 20, `El final .${tld} se usa mucho en sitios truchos.`, true)
   }
 
   if (plataforma?.tipo === 'acortador') {
-    motivos.push(AVISO_ACORTADOR)
+    anotar('acortador', AVISO_ACORTADOR)
   } else if (plataforma?.tipo === 'temporal') {
     sumar(
+      'direccion_temporal',
       18,
       `Está en ${plataforma.plataforma}, un servicio de direcciones temporales: cualquiera arma una en minutos.`,
       true,
     )
   } else if (plataforma?.tipo === 'contenido') {
-    motivos.push(`${plataforma.plataforma} es un sitio conocido, pero el contenido lo creó otra persona.`)
+    anotar('contenido_de_terceros', `${plataforma.plataforma} es un sitio conocido, pero el contenido lo creó otra persona.`)
     if (marca) fuertes += 1
   }
 
   const { subdominios } = lectura
   if (!oficial && subdominios > 3) {
-    sumar(12, 'Tiene demasiados subdominios, un truco típico para parecer oficial.')
+    sumar('muchos_subdominios', 12, 'Tiene demasiados subdominios, un truco típico para parecer oficial.')
   }
 
   const prefijoW = subdominios > 0 ? host.match(/^(w{2}|w{4,})\./)?.[1] : null
   if (prefijoW) {
-    sumar(20, `Empieza con "${prefijoW}." en vez de "www.", un truco para que parezca una dirección real.`, true)
+    sumar('prefijo_www_falso', 20, `Empieza con "${prefijoW}." en vez de "www.", un truco para que parezca una dirección real.`, true)
   }
 
   const etiqueta = decodificarEtiqueta(base.split('.')[0])
   if (!oficial && etiqueta.split('-').length - 1 >= 3) {
-    sumar(15, 'El dominio está armado con muchos guiones, como un nombre inventado.')
+    sumar('muchos_guiones', 15, 'El dominio está armado con muchos guiones, como un nombre inventado.')
   }
 
   if (url.port && !['80', '443', '8080', '8443'].includes(url.port)) {
-    sumar(15, `Usa el puerto ${url.port}, que no es el de una página común.`)
+    sumar('puerto_raro', 15, `Usa el puerto ${url.port}, que no es el de una página común.`)
   }
 
   const texto = `${host}${url.pathname}${url.search}`.toLowerCase()
   if (!oficial && PALABRAS_GANCHO.some((p) => texto.includes(p))) {
-    sumar(10, 'El enlace usa palabras de urgencia o premio.')
+    sumar('palabras_gancho', 10, 'El enlace usa palabras de urgencia o premio.')
   }
 
   if (!oficial && RUTA_SENSIBLE.test(`${url.pathname}${url.search}`)) {
     sumar(
+      'ruta_sensible',
       12,
       'La dirección abre una página para entrar, verificar o recuperar una cuenta. En un sitio que no es el oficial, eso sirve para robar la clave.',
       true,
@@ -471,6 +488,7 @@ export function analizar(entrada) {
       /pagos|seguridad|verificacion|billetera/.test(nombrePegado))
   ) {
     sumar(
+      'nombre_senuelo',
       18,
       'El nombre del sitio habla de pagos, seguridad o una cuenta. Así se disfrazan las páginas que piden datos.',
       true,
@@ -487,7 +505,7 @@ export function analizar(entrada) {
           destino.hostname !== host &&
           (destino.protocol === 'http:' || destino.protocol === 'https:')
         ) {
-          sumar(32, `Un parámetro de la dirección manda a otro sitio (${destino.hostname}).`, true)
+          sumar('parametro_redireccion', 32, `Un parámetro de la dirección manda a otro sitio (${destino.hostname}).`, true)
           break
         }
       } catch {
@@ -497,12 +515,12 @@ export function analizar(entrada) {
   }
 
   if ([...url.searchParams.keys()].some((clave) => /password|passwd|clave/i.test(clave))) {
-    sumar(35, 'La dirección lleva una clave a la vista.', true)
+    sumar('clave_en_url', 35, 'La dirección lleva una clave a la vista.', true)
   }
 
   const codificados = url.href.match(/%[0-9a-f]{2}/gi) ?? []
   if (!oficial && codificados.length >= 8) {
-    sumar(12, 'La dirección esconde parte del texto con caracteres codificados.')
+    sumar('texto_codificado', 12, 'La dirección esconde parte del texto con caracteres codificados.')
   }
 
   if (!oficial) {
@@ -514,6 +532,7 @@ export function analizar(entrada) {
       (enCamino.sensible || enCamino.nombraOficial || plataforma?.tipo === 'contenido')
     ) {
       sumar(
+        'marca_en_camino',
         25,
         `Nombra a ${enCamino.nombre} en ${enCamino.donde === 'camino' ? 'el camino de la dirección' : 'un parámetro'}, pero el sitio es ${plataforma ? host : base}, no el oficial (${enCamino.oficial}).`,
       )
@@ -523,7 +542,7 @@ export function analizar(entrada) {
   const camino = decodificarSeguro(`${url.pathname}${url.search}${url.hash}`)
 
   if (/https?:\/\//i.test(url.pathname) || /https?:\/\//i.test(url.hash)) {
-    sumar(32, 'La dirección esconde otro enlace adentro.', true)
+    sumar('enlace_escondido', 32, 'La dirección esconde otro enlace adentro.', true)
   }
 
   if (
@@ -531,36 +550,41 @@ export function analizar(entrada) {
       camino,
     )
   ) {
-    sumar(48, 'El archivo muestra una extensión inofensiva y otra que puede ejecutarse.', true)
+    sumar('doble_extension', 48, 'El archivo muestra una extensión inofensiva y otra que puede ejecutarse.', true)
   } else if (!oficial && /\.(html|htm|svg)(?=$|[?#])/i.test(url.pathname)) {
-    sumar(16, 'Abre una página suelta, no el sitio de siempre.')
+    sumar('pagina_suelta', 16, 'Abre una página suelta, no el sitio de siempre.')
   }
 
   if ([...url.searchParams.values()].some((valor) => /^[A-Za-z0-9+/_=-]{48,}$/.test(valor))) {
-    sumar(12, 'Un dato de la dirección viene codificado y no se puede leer.')
+    sumar('dato_codificado', 12, 'Un dato de la dirección viene codificado y no se puede leer.')
   }
 
-  if (url.pathname.includes('@')) {
-    sumar(25, 'Hay una arroba en el camino de la dirección.', true)
+  // Solo cuenta si después viene algo con forma de dominio: "/@-34.60,-58.38" en Maps no lo es.
+  if (/@[\p{L}\p{N}-]+\.[\p{L}]{2,}/u.test(decodificarSeguro(url.pathname))) {
+    sumar('arroba_en_camino', 25, 'Hay una arroba en el camino de la dirección.', true)
   }
 
   if (/(javascript|data|vbscript):/i.test(camino)) {
-    sumar(50, 'La dirección intenta ejecutar algo o incrustar datos, no abrir un sitio.', true)
+    sumar('codigo_en_camino', 50, 'La dirección intenta ejecutar algo o incrustar datos, no abrir un sitio.', true)
   }
 
   if (/(?:^|[?&])(?:cbu|cvu|cvv|tarjeta|dni)=/i.test(url.search)) {
-    sumar(28, 'La dirección lleva datos de una cuenta, una tarjeta o un documento.', true)
+    sumar('datos_personales_en_url', 28, 'La dirección lleva datos de una cuenta, una tarjeta o un documento.', true)
   }
 
   if (!oficial && lectura.hostUnicode.split('.').some((parte) => parte.length >= 28)) {
-    sumar(10, 'Una parte del nombre del sitio es demasiado larga para un dominio habitual.')
+    sumar('etiqueta_larga', 10, 'Una parte del nombre del sitio es demasiado larga para un dominio habitual.')
   }
 
   if (lectura.demasiadoLarga) {
-    motivos.push(`Es una dirección muy larga (${lectura.entrada.length} caracteres), demasiado para abrir el sitio y revisarlo.`)
+    anotar('demasiado_larga', `Es una dirección muy larga (${lectura.entrada.length} caracteres), demasiado para abrir el sitio y revisarlo.`)
   }
 
-  if (marca && fuertes > 0) puntos = Math.max(puntos, PISO_PARECIDO_FUERTE)
+  if (marca && fuertes > 0) {
+    const antes = puntos
+    puntos = Math.max(puntos, PISO_PARECIDO_FUERTE)
+    if (puntos > antes) senales.push({ id: 'piso_marca_mas_senal_fuerte', puntos: puntos - antes })
+  }
 
   if (motivos.length === 0) {
     motivos.push('No aparecen señales fuertes en la dirección.')
@@ -578,6 +602,7 @@ export function analizar(entrada) {
     parecido: resumenMarca(marca),
     plataforma,
     motivos,
+    senales,
     diferencia: marca ? armarDiferencia(host, base, marca) : null,
   }
 }
@@ -652,6 +677,25 @@ function sumarDestino(actual, puntos, urlDestino, frase) {
   return Math.max(puntos, destino.puntuacion)
 }
 
+export const FALLO_AL_SEGUIR = {
+  no_resuelve: 'El dominio no existe o no apunta a ningún servidor, así que no hay un sitio para revisar.',
+  dns: 'No pudimos averiguar a qué servidor apunta el sitio.',
+  bloqueado: 'La dirección apunta a una red interna o privada (como un router o un servidor local), así que por seguridad no la abrimos.',
+  protocolo: 'Una redirección intenta abrir algo que no es una página web, así que no la seguimos.',
+  tls: 'La conexión segura con el sitio falló: el certificado no es válido o está mal configurado.',
+  tiempo: 'El sitio tardó demasiado en responder y cortamos la espera.',
+  conexion: 'El sitio no aceptó la conexión.',
+  saltos: 'El enlace redirige más de 5 veces seguidas, así que cortamos ahí sin llegar al destino.',
+}
+
+const sinSenales = (m) => m.startsWith('No aparecen')
+
+function recorridoDe(extra) {
+  const cadena = Array.isArray(extra.cadena) ? extra.cadena.filter((paso) => typeof paso === 'string') : []
+  if (extra.meta_destino && cadena.at(-1) !== extra.meta_destino) cadena.push(extra.meta_destino)
+  return cadena
+}
+
 export function combinarConEnriquecimiento(local, extra) {
   if (!extra) return local
 
@@ -660,6 +704,9 @@ export function combinarConEnriquecimiento(local, extra) {
   let fuertes = 0
   const desdeAcortador = local.plataforma?.tipo === 'acortador'
   const destino = extra.destino ? analizar(extra.destino) : null
+  const cadena = recorridoDe(extra)
+  if (cadena.length > 1) actual.cadena = cadena
+  if (extra.fallo) actual.falloAlSeguir = extra.fallo
 
   if (destino && destino.dominio !== local.dominio) {
     puntos = Math.max(puntos, destino.puntuacion)
@@ -673,13 +720,47 @@ export function combinarConEnriquecimiento(local, extra) {
     } else {
       actual.sinVerificar = Boolean(actual.sinVerificar || destino.sinVerificar)
     }
+    const aviso = destino.sinSitio
+      ? desdeAcortador
+        ? 'El acortador no lleva a una página web.'
+        : 'La redirección no lleva a una página web.'
+      : desdeAcortador
+        ? `El acortador lleva a ${destino.dominio}.`
+        : `La dirección te manda a otro sitio: ${destino.dominio}.`
     actual.motivos = [
       ...actual.motivos.filter((m) => m !== AVISO_ACORTADOR),
-      desdeAcortador ? `El acortador lleva a ${destino.dominio}.` : `La dirección te manda a otro sitio: ${destino.dominio}.`,
-      ...destino.motivos.filter((m) => !m.startsWith('No aparecen')),
+      aviso,
+      ...destino.motivos.filter((m) => !sinSenales(m) && (extra.fallo || m !== AVISO_ACORTADOR)),
     ]
   } else if (!destino && desdeAcortador && extra.destino) {
     actual.motivos.push(`El acortador termina en ${extra.destino}.`)
+  }
+
+  const vistos = new Set([local.dominio, destino?.dominio])
+  for (const paso of cadena.slice(1, -1)) {
+    const intermedio = analizar(paso)
+    if (!intermedio || vistos.has(intermedio.dominio)) continue
+    vistos.add(intermedio.dominio)
+    if (intermedio.nivel !== 'amarillo' && intermedio.nivel !== 'rojo') continue
+    puntos = Math.max(puntos, intermedio.puntuacion)
+    actual.parecido ??= intermedio.parecido
+    actual.motivos.push(
+      `En el camino pasa por ${intermedio.dominio}.`,
+      ...intermedio.motivos.filter((m) => m !== AVISO_ACORTADOR && !sinSenales(m)),
+    )
+  }
+
+  // Que un dominio parecido a una marca redirija al sitio real no lo limpia: queda en Sospechoso.
+  if (local.parecido && destino && !destino.sinSitio && destino.dominio !== local.dominio && esDominioOficial(destino.dominio)) {
+    puntos = Math.max(puntos, PUNTOS_PARECIDO)
+    actual.motivos.push(
+      `Termina en ${destino.dominio}, que es un sitio oficial, pero la dirección original imita a ${local.parecido.nombre}: que redirija a un sitio real no la vuelve confiable.`,
+    )
+  }
+
+  if (extra.fallo) {
+    actual.sinVerificar = true
+    actual.motivos.push(FALLO_AL_SEGUIR[extra.fallo] ?? FALLO_AL_SEGUIR.conexion)
   }
 
   const dominioFinal = extra.dominio || actual.dominioDestino || actual.dominio
