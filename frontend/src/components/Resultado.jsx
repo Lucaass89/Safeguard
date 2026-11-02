@@ -5,6 +5,7 @@ const titulos = {
   verde: '✓ Verde: sin señales fuertes',
   amarillo: '! Amarillo: revisá antes de seguir',
   rojo: '✕ Rojo: no lo abras',
+  gris: '? No pudimos verificarlo',
 }
 
 function Resultado({ nivel, subtitulo, motivos, casoId, url, dominio, puntuacion, canal, children }) {

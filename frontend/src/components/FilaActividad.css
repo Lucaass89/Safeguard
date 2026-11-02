@@ -1,0 +1,134 @@
+.lista-actividad {
+  display: grid;
+  margin: 0 -8px;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-actividad > li + li {
+  border-top: 1px solid color-mix(in srgb, var(--sg-line) 70%, transparent);
+}
+
+.fila-actividad {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 18px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--sg-text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fila-actividad:hover,
+.fila-actividad:active {
+  background: var(--sg-tonal, color-mix(in srgb, var(--sg-text) 6%, transparent));
+}
+
+.fila-actividad:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: -2px;
+}
+
+.fila-actividad-icono {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--sg-tonal, color-mix(in srgb, var(--sg-text) 6%, transparent));
+  color: var(--sg-text);
+}
+
+.fila-actividad-icono svg {
+  width: 22px;
+  height: 22px;
+}
+
+.fila-actividad-texto {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fila-actividad-titulo {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.fila-actividad-titulo strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.fila-actividad-titulo-texto strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fila-actividad-titulo .dif-dominio {
+  display: inline;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+}
+
+.fila-actividad-ruta {
+  flex: 1 1 0;
+  min-width: 2.5em;
+  overflow: hidden;
+  color: var(--sg-texto-2, var(--sg-muted));
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fila-actividad-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.fila-actividad-detalle {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--sg-texto-2, var(--sg-muted));
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fila-actividad-detalle .dif-lectura {
+  display: inline;
+  margin: 0;
+  font: inherit;
+}
+
+.fila-actividad-ir {
+  display: grid;
+  place-items: center;
+  color: var(--sg-texto-2, var(--sg-muted));
+}
+
+.fila-actividad-ir svg {
+  width: 18px;
+  height: 18px;
+}

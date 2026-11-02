@@ -1,5 +1,20 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router'
+import DiferenciaDominio from '../components/DiferenciaDominio.jsx'
+import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
+import { agruparActividad } from '../lib/agruparActividad.js'
+import { analizar, motivosLimpios } from '../lib/analisis.js'
+import { analizarPdf } from '../lib/analisisPdf.js'
+import {
+  cerrarRevision,
+  enlaceParaAbrir,
+  guardarAnalisis,
+  revisarCorreo,
+  revisarEnlace,
+  revisarWhatsapp,
+} from '../lib/enriquecer.js'
 import { useAnalisisPropios } from '../lib/useAnalisisPropios.js'
+import { useSesion } from '../lib/useSesion.js'
 import './SafeLink.css'
 
 const TIPOS = [
@@ -16,50 +31,34 @@ const CAMPOS = {
   correo: { etiqueta: 'Correo para revisar', placeholder: 'Pegá el correo acá' },
 }
 
-// TODO: reemplazar por el análisis real de cada tipo.
-const RESULTADOS = {
-  enlace: {
-    nivel: 'peligroso',
-    motivos: [
-      'El dominio se registró hace 4 días.',
-      'El camino imita el ingreso de un banco.',
-      'La página pide una clave.',
-    ],
-  },
-  mensaje: {
-    nivel: 'sospechoso',
-    motivos: [
-      'Te apura para pagar antes de hoy.',
-      'El enlace del mensaje no coincide con la marca que nombra.',
-    ],
-  },
-  pdf: {
-    nivel: 'sospechoso',
-    motivos: [
-      'El archivo esconde un enlace a otro sitio.',
-      'Pide abrir un programa al descargarlo.',
-    ],
-  },
-  correo: {
-    nivel: 'seguro',
-    motivos: [
-      'El remitente coincide con el dominio de la empresa.',
-      'No hay enlaces acortados ni pedido de clave.',
-    ],
-  },
-  qr: {
-    nivel: 'peligroso',
-    motivos: [
-      'El código lleva a un sitio distinto del que muestra.',
-      'Ese sitio pide datos de la tarjeta.',
-    ],
-  },
+const NIVEL_DE = {
+  verde: 'seguro',
+  amarillo: 'sospechoso',
+  rojo: 'peligroso',
+  gris: 'sin_verificar',
+}
+
+const ENTRADA_DE = {
+  enlace: 'web',
+  mensaje: 'whatsapp',
+  correo: 'correo',
+  pdf: 'pdf',
 }
 
 const VEREDICTO = {
   seguro: 'Seguro',
   sospechoso: 'Sospechoso',
   peligroso: 'Peligroso',
+  sin_verificar: 'No pudimos verificarlo',
+}
+
+async function revisarTipo(tipo, entrada, archivo) {
+  if (tipo === 'enlace') return revisarEnlace(entrada)
+  if (tipo === 'mensaje') return revisarWhatsapp(entrada)
+  if (tipo === 'correo') return revisarCorreo(entrada)
+  const analisis = await analizarPdf(archivo)
+  const peor = enlaceParaAbrir(analisis.enlaces)
+  return cerrarRevision(analisis, peor?.url, [peor?.dominio])
 }
 
 function Icono({ nombre }) {
@@ -123,6 +122,16 @@ function Icono({ nombre }) {
     )
   }
 
+  if (nombre === 'sin_verificar') {
+    return (
+      <svg {...trazo}>
+        <circle cx="12" cy="12" r="8" />
+        <path d="M9.8 9.6a2.3 2.3 0 0 1 4.4.9c0 1.5-2.2 2-2.2 3.3" />
+        <path d="M12 16.8h.01" />
+      </svg>
+    )
+  }
+
   if (nombre === 'peligroso') {
     return (
       <svg {...trazo}>
@@ -154,6 +163,7 @@ function Resultado({ resultado, reportado, aviso, onCerrar, onReportar, onCompar
       </div>
       <h2 id="sl-veredicto">{VEREDICTO[resultado.nivel]}</h2>
       <p className="sl-resultado-que">{resultado.resumen}</p>
+      {resultado.diferencia ? <DiferenciaDominio diferencia={resultado.diferencia} /> : null}
       <ul className="sl-motivos">
         {resultado.motivos.map((motivo) => (
           <li key={motivo}>{motivo}</li>
@@ -180,18 +190,24 @@ function SafeLink() {
   const [tipo, setTipo] = useState('enlace')
   const [entrada, setEntrada] = useState('')
   const [archivo, setArchivo] = useState('')
-  const [camaraLista, setCamaraLista] = useState(false)
+  const [pdf, setPdf] = useState(null)
   const [aviso, setAviso] = useState('')
   const [resultado, setResultado] = useState(null)
   const [reportado, setReportado] = useState(false)
-  const revisados = useAnalisisPropios({ limite: 10, soloHoy: true })
+  const [revisando, setRevisando] = useState(false)
+  const { sesion } = useSesion()
+  const revisados = useAnalisisPropios({ limite: 20 })
+  const ultimos = agruparActividad(revisados.items, 10)
   const campo = CAMPOS[tipo]
+  const vacio = campo ? !entrada.trim() : tipo === 'pdf' && !pdf
 
   function elegirTipo(siguiente) {
     setTipo(siguiente)
     setAviso('')
-    if (siguiente !== 'pdf') setArchivo('')
-    if (siguiente !== 'qr') setCamaraLista(false)
+    if (siguiente !== 'pdf') {
+      setArchivo('')
+      setPdf(null)
+    }
   }
 
   async function pegar() {
@@ -208,28 +224,51 @@ function SafeLink() {
     }
   }
 
-  function revisar(evento) {
+  async function revisar(evento) {
     evento.preventDefault()
-    if (tipo === 'pdf' && !archivo) {
+    if (revisando || tipo === 'qr') return
+    if (tipo === 'pdf' && !pdf) {
       setAviso('Elegí un PDF para revisarlo.')
-      return
-    }
-    if (tipo === 'qr' && !camaraLista) {
-      setAviso('Abrí la cámara para leer el código.')
       return
     }
     if (campo && !entrada.trim()) {
       setAviso('Pegá algo para revisarlo.')
       return
     }
-    const base = RESULTADOS[tipo]
-    setReportado(false)
+    if (tipo === 'enlace' && !analizar(entrada)) {
+      setAviso('Eso no parece un enlace. Pegá la dirección completa, por ejemplo https://sitio.com.ar.')
+      return
+    }
+
     setAviso('')
+    setRevisando(true)
+    let final
+    try {
+      final = await revisarTipo(tipo, entrada.trim(), pdf)
+    } catch {
+      final = null
+    }
+    setRevisando(false)
+
+    if (!final) {
+      setAviso(tipo === 'pdf' ? 'No se pudo leer el PDF.' : 'No se pudo revisar. Probá de nuevo en un momento.')
+      return
+    }
+
+    const motivos = motivosLimpios(final.motivos)
+    setReportado(false)
     setResultado({
-      nivel: base.nivel,
-      motivos: base.motivos,
+      nivel: NIVEL_DE[final.nivel] ?? 'sin_verificar',
+      motivos,
       resumen: resumenDe(tipo, entrada, archivo),
+      diferencia: final.diferencia && motivos.includes(final.diferencia.frase) ? final.diferencia : null,
     })
+
+    if (sesion) {
+      const texto = ENTRADA_DE[tipo] === 'whatsapp' ? entrada : null
+      const { error } = await guardarAnalisis(sesion, final, ENTRADA_DE[tipo], texto)
+      if (!error) revisados.recargar()
+    }
   }
 
   function abrirRevisado(item) {
@@ -239,6 +278,7 @@ function SafeLink() {
       nivel: item.nivel,
       motivos: item.motivos,
       resumen: item.texto,
+      diferencia: item.diferencia,
     })
   }
 
@@ -335,6 +375,7 @@ function SafeLink() {
             onChange={(evento) => {
               const elegido = evento.target.files?.[0]
               setArchivo(elegido ? elegido.name : '')
+              setPdf(elegido ?? null)
               setAviso('')
             }}
           />
@@ -346,57 +387,48 @@ function SafeLink() {
         </div>
       ) : (
         <div className="sl-entrada">
-          <button
-            type="button"
-            className="sl-grande"
-            aria-pressed={camaraLista}
-            onClick={() => {
-              setCamaraLista(true)
-              setAviso('')
-            }}
-          >
+          <Link className="sl-grande" to="/safelink/qr">
             <Icono nombre="qr" />
-            <span>{camaraLista ? 'Cámara lista' : 'Abrir la cámara'}</span>
-            <span className="sl-grande-nota">
-              {camaraLista ? 'Tocá Revisar para ver el código' : 'Leé el QR antes de abrirlo'}
-            </span>
-          </button>
+            <span>Abrir la cámara</span>
+            <span className="sl-grande-nota">Leé el QR antes de abrirlo</span>
+          </Link>
         </div>
       )}
 
-      {aviso ? <p className="sl-aviso">{aviso}</p> : null}
+      {aviso ? (
+        <p className="sl-aviso" role="status">
+          {aviso}
+        </p>
+      ) : null}
 
-      <button type="submit" className="sl-revisar">
-        Revisar
-      </button>
+      {tipo === 'qr' ? null : (
+        <button type="submit" className="sl-revisar" disabled={revisando || vacio} aria-busy={revisando}>
+          {revisando ? 'Revisando…' : 'Revisar'}
+        </button>
+      )}
 
-      <section className="sl-bloque" aria-labelledby="sl-hoy">
-        <h2 id="sl-hoy">Revisados hoy</h2>
+      <section className="sl-bloque" aria-labelledby="sl-ultimos">
+        <h2 id="sl-ultimos">Últimos revisados</h2>
         {revisados.cargando ? (
           <p className="sl-vacio">Buscando tus revisiones…</p>
         ) : revisados.error ? (
           <p className="sl-vacio">No se pudieron leer tus revisiones. Probá de nuevo en un rato.</p>
-        ) : revisados.items.length === 0 ? (
-          <p className="sl-vacio">Hoy todavía no revisaste nada.</p>
+        ) : ultimos.length === 0 ? (
+          <div className="sl-vacio">
+            <p className="sl-vacio-titulo">
+              {sesion ? 'Todavía no revisaste nada.' : 'Sin cuenta, lo que revisás no se guarda.'}
+            </p>
+            <p>
+              Probá con algo que te llegó: el enlace de un SMS, un WhatsApp que te pide datos, un PDF adjunto o
+              el QR de un cartel.
+            </p>
+          </div>
         ) : (
-          <ul className="sl-lista">
-            {revisados.items.map((item) => (
-              <li key={item.id}>
-                <button type="button" className="sl-item" onClick={() => abrirRevisado(item)}>
-                  <span className="sl-item-texto">
-                    <strong>{item.texto}</strong>
-                    <span>
-                      {item.tipo} · {item.cuando}
-                    </span>
-                  </span>
-                  <span className={`sl-chip sl-chip-${item.nivel}`}>
-                    <Icono nombre={item.nivel} />
-                    {VEREDICTO[item.nivel]}
-                  </span>
-                </button>
-              </li>
+          <ListaActividad>
+            {ultimos.map((item) => (
+              <FilaActividad key={item.id} item={item} onClick={() => abrirRevisado(item)} />
             ))}
-          </ul>
+          </ListaActividad>
         )}
       </section>
     </form>

@@ -3,8 +3,8 @@ import { Link, useLocation } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
-import { analizar, combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
-import { consultarPeorAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
+import { analizar } from '../lib/analisis.js'
+import { guardarAnalisis, reportarDominio, revisarEnlace } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -63,29 +63,14 @@ function PanelEnlaces() {
     setError(null)
     setCierre(null)
 
-    const local = analizar(entrada)
-    if (!local) {
+    if (!analizar(entrada)) {
       setError('Eso no parece un enlace. Probá con algo como ejemplo.com/promo')
       return
     }
 
     setAnalizando(true)
 
-    const extra = await enriquecer(local.url)
-    const { amenaza, fallo } = await consultarPeorAmenaza([local.dominio, extra?.dominio])
-
-    let final = combinarConAmenaza(local, fallo ? null : amenaza)
-    final = combinarConEnriquecimiento(final, extra)
-
-    if (fallo) {
-      final = {
-        ...final,
-        motivos: [
-          ...final.motivos,
-          'No se pudo consultar la base de amenazas, así que este resultado sale de la dirección y de lo que se pudo abrir.',
-        ],
-      }
-    }
+    const final = await revisarEnlace(entrada)
 
     setResultado({ ...final, casoId: crypto.randomUUID() })
 
@@ -178,7 +163,7 @@ function PanelEnlaces() {
           canal="enlace"
           motivos={resultado.motivos}
         >
-          {resultado.nivel !== 'verde' && (
+          {resultado.nivel !== 'verde' && !resultado.sinSitio && (
             <div className="panel-acciones">
               {cierre ? (
                 <p className="resultado-aviso">{cierre}</p>
@@ -225,7 +210,9 @@ function PanelEnlaces() {
                         ? '✓ Verde'
                         : item.nivel_riesgo === 'amarillo'
                           ? '! Amarillo'
-                          : '✕ Rojo'}
+                          : item.nivel_riesgo === 'gris'
+                            ? '? No verificado'
+                            : '✕ Rojo'}
                       {' · '}
                       {item.dominio} · {fecha(item.fecha_analisis)}
                       <span className="historial-ver">{caso?.id === item.id ? 'Caso abierto' : 'Ver caso'}</span>

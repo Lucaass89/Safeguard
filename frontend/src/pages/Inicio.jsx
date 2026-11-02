@@ -1,34 +1,26 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
-import { useAnalisisPropios } from '../lib/useAnalisisPropios.js'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router'
+import DiferenciaDominio, { DominioMarcado } from '../components/DiferenciaDominio.jsx'
+import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
+import { agruparActividad } from '../lib/agruparActividad.js'
+import { analizar, motivosLimpios, queHacer } from '../lib/analisis.js'
+import { guardarAnalisis, revisarEnlace, revisarWhatsapp } from '../lib/enriquecer.js'
+import { registrarRespuesta } from '../lib/entrenamiento.js'
+import { versionApp } from '../lib/esAppNativa.js'
+import { CANALES, elegirMensaje, marcarVisto } from '../lib/estafaOReal.js'
+import { edicionVigente, fechaLegible } from '../lib/estafasSemana.js'
+import { elegirPortapapeles, olvidarCopiado, usePortapapeles } from '../lib/portapapeles.js'
+import { useAnalisisPropios, useResumenSemana } from '../lib/useAnalisisPropios.js'
 import { useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Inicio.css'
 
-// TODO: reemplazar por el porcentaje real y los mensajes pendientes de la cuenta.
-// Hasta que existan, la card solo se ve en desarrollo para que nadie vea números inventados.
-const PROTECCION = import.meta.env.DEV
-  ? { porcentaje: 72, pendientes: 1, pendienteTo: '/safelink/whatsapp' }
-  : null
-
-// TODO: ajustar los cortes cuando exista el cálculo real.
-function estadoDe(porcentaje) {
-  if (porcentaje >= 80) return { id: 'bien', texto: 'Bien' }
-  if (porcentaje >= 50) return { id: 'regular', texto: 'Regular' }
-  return { id: 'riesgo', texto: 'En riesgo' }
-}
-
-// TODO: reemplazar por el consejo del día.
-const CONSEJO = {
-  titulo: 'Consejo del día',
-  texto: 'Si un enlace te apura para pagar o te pide la clave, no lo abras. Pegalo acá y mirá el color.',
-}
-
-const CHIP = {
-  seguro: 'Seguro',
-  sospechoso: 'Sospechoso',
-  peligroso: 'Peligroso',
+const VEREDICTOS = {
+  verde: { titulo: 'Seguro', icono: 'bien' },
+  amarillo: { titulo: 'Sospechoso', icono: 'regular' },
+  rojo: { titulo: 'Peligroso', icono: 'riesgo' },
+  gris: { titulo: 'No pudimos verificarlo', icono: 'duda' },
 }
 
 function Icono({ nombre }) {
@@ -54,29 +46,11 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'mensaje') {
-    return (
-      <svg {...trazo}>
-        <path d="M5 6.5h14v9H8.5L5 18.2V6.5Z" />
-      </svg>
-    )
-  }
-
   if (nombre === 'flecha') {
     return (
       <svg {...trazo}>
         <path d="M5 12h14" />
         <path d="m13 6 6 6-6 6" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'info') {
-    return (
-      <svg {...trazo}>
-        <circle cx="12" cy="12" r="8.5" />
-        <path d="M12 11v5" />
-        <path d="M12 8h.01" />
       </svg>
     )
   }
@@ -109,6 +83,16 @@ function Icono({ nombre }) {
     )
   }
 
+  if (nombre === 'duda') {
+    return (
+      <svg {...trazo}>
+        <circle cx="12" cy="12" r="8" />
+        <path d="M9.8 9.6a2.3 2.3 0 0 1 4.4.9c0 1.5-2.2 2-2.2 3.3" />
+        <path d="M12 16.8h.01" />
+      </svg>
+    )
+  }
+
   if (nombre === 'equipo') {
     return (
       <svg {...trazo}>
@@ -119,125 +103,12 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'consejo') {
-    return (
-      <svg {...trazo}>
-        <path d="M9 18h6" />
-        <path d="M10 21h4" />
-        <path d="M12 3.5a6.2 6.2 0 0 0-3.2 11.5c.5.4.8 1 .8 1.6V17h4.8v-.4c0-.6.3-1.2.8-1.6A6.2 6.2 0 0 0 12 3.5Z" />
-      </svg>
-    )
-  }
-
   return (
     <svg {...trazo}>
       <path d="M10 13.5 13.5 10" />
       <path d="M8.2 11.4 6.8 12.8a3.2 3.2 0 0 0 4.5 4.5l1.4-1.4" />
       <path d="M15.8 12.6 17.2 11.2a3.2 3.2 0 0 0-4.5-4.5L11.3 8.1" />
     </svg>
-  )
-}
-
-function Anillo({ porcentaje, estado }) {
-  const radio = 52
-  const circunferencia = 2 * Math.PI * radio
-  const resto = circunferencia * (1 - porcentaje / 100)
-
-  return (
-    <div className={`inicio-anillo inicio-anillo-${estado}`} role="img" aria-label={`${porcentaje} por ciento`}>
-      <svg viewBox="0 0 120 120">
-        <circle className="inicio-anillo-pista" cx="60" cy="60" r={radio} />
-        <circle
-          className="inicio-anillo-valor"
-          cx="60"
-          cy="60"
-          r={radio}
-          strokeDasharray={`${circunferencia} ${circunferencia}`}
-          strokeDashoffset={resto}
-        />
-      </svg>
-      <p className="inicio-porcentaje">
-        <strong>{porcentaje}</strong>
-        <span>%</span>
-      </p>
-    </div>
-  )
-}
-
-function TarjetaProteccion({ proteccion }) {
-  const dialogo = useRef(null)
-  const [explicando, setExplicando] = useState(false)
-  const estado = estadoDe(proteccion.porcentaje)
-  const { pendientes } = proteccion
-
-  useEffect(() => {
-    if (!explicando) return undefined
-    const nodo = dialogo.current
-    nodo?.showModal()
-    return () => {
-      if (nodo?.open) nodo.close()
-    }
-  }, [explicando])
-
-  return (
-    <section className="inicio-proteccion" aria-labelledby="inicio-proteccion-titulo">
-      <div className="inicio-proteccion-cabeza">
-        <h2 id="inicio-proteccion-titulo">Tu protección</h2>
-        <button
-          type="button"
-          className="inicio-info"
-          aria-label="Qué mide tu protección"
-          onClick={() => setExplicando(true)}
-        >
-          <Icono nombre="info" />
-        </button>
-      </div>
-
-      <div className="inicio-proteccion-card">
-        <div className="inicio-medidor">
-          <Anillo porcentaje={proteccion.porcentaje} estado={estado.id} />
-          <p className={`inicio-estado inicio-estado-${estado.id}`}>
-            <Icono nombre={estado.id} />
-            <span>{estado.texto}</span>
-          </p>
-        </div>
-        <div className="inicio-proteccion-texto">
-          <p className="inicio-pendiente">
-            {pendientes > 0
-              ? `Tenés ${pendientes} ${pendientes === 1 ? 'mensaje' : 'mensajes'} sin revisar`
-              : 'Todo al día'}
-          </p>
-          {pendientes > 0 ? (
-            <Link className="inicio-revisar-ahora" to={proteccion.pendienteTo}>
-              Revisar ahora
-            </Link>
-          ) : null}
-        </div>
-      </div>
-
-      {explicando ? (
-        <dialog
-          ref={dialogo}
-          className="inicio-hoja"
-          aria-labelledby="inicio-hoja-titulo"
-          onCancel={(evento) => {
-            evento.preventDefault()
-            setExplicando(false)
-          }}
-          onClick={(evento) => {
-            if (evento.target === evento.currentTarget) setExplicando(false)
-          }}
-        >
-          <h2 id="inicio-hoja-titulo">Qué mide tu protección</h2>
-          {/* TODO: alinear este texto con el cálculo real del porcentaje. */}
-          <p>Muestra qué tan cuidado estás según lo que revisaste con SafeLink.</p>
-          <p>Sube cuando revisás lo que te llega antes de abrirlo.</p>
-          <button type="button" className="inicio-hoja-cerrar" onClick={() => setExplicando(false)}>
-            Entendido
-          </button>
-        </dialog>
-      ) : null}
-    </section>
   )
 }
 
@@ -265,37 +136,309 @@ function FilaEquipo() {
   )
 }
 
+function TarjetaEstafas({ edicion }) {
+  return (
+    <section className="inicio-estafas" aria-labelledby="inicio-estafas-titulo">
+      <div className="inicio-estafas-cabeza">
+        <h2 id="inicio-estafas-titulo">Estafas de la semana</h2>
+        <p>
+          En Argentina · Actualizado el <time dateTime={edicion.fecha}>{fechaLegible(edicion.fecha)}</time>
+        </p>
+      </div>
+      <ul className="inicio-estafas-lista">
+        {edicion.estafas.map((estafa) => (
+          <li key={estafa.id} className="inicio-estafa">
+            <details>
+              <summary>
+                <span className="inicio-estafa-quien">
+                  {estafa.quien} · {estafa.canal}
+                </span>
+                <strong>{estafa.titulo}</strong>
+              </summary>
+              <div className="inicio-estafa-cuerpo">
+                <p className="inicio-estafa-etiqueta">Mensaje de ejemplo</p>
+                <blockquote className="inicio-estafa-ejemplo">{estafa.ejemplo}</blockquote>
+                <p className="inicio-estafa-etiqueta">Qué mirar</p>
+                <ul className="inicio-estafa-mirar">
+                  {estafa.mirar.map((punto) => (
+                    <li key={punto}>{punto}</li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+            <p className="inicio-estafa-fuente">
+              Fuente:{' '}
+              <a href={estafa.fuente.url} target="_blank" rel="noopener noreferrer">
+                {estafa.fuente.nombre}
+              </a>
+              , <time dateTime={estafa.fuente.fecha}>{fechaLegible(estafa.fuente.fecha)}</time>
+            </p>
+          </li>
+        ))}
+      </ul>
+      {versionApp() >= 2 ? (
+        <p className="inicio-estafas-nota">
+          ¿Te llegó uno parecido? En WhatsApp, mantené apretado el mensaje y tocá ⋮ → Compartir → SafeGuard.
+        </p>
+      ) : null}
+    </section>
+  )
+}
+
+function EstafaOReal() {
+  const [mensaje, setMensaje] = useState(() => elegirMensaje())
+  const [acerto, setAcerto] = useState(null)
+  const [foco, setFoco] = useState(null)
+  const explicacion = useRef(null)
+  const primerBoton = useRef(null)
+  const respondio = acerto !== null
+  const safelink = respondio && mensaje.enlace ? analizar(mensaje.enlace) : null
+
+  useEffect(() => {
+    if (foco === 'explicacion') {
+      explicacion.current?.focus({ preventScroll: true })
+      explicacion.current?.parentElement.scrollIntoView({ block: 'nearest' })
+    }
+    if (foco === 'pregunta') {
+      primerBoton.current?.focus({ preventScroll: true })
+      primerBoton.current?.closest('.inicio-juego').scrollIntoView({ block: 'start' })
+    }
+  }, [foco, mensaje.id])
+
+  function responder(dijoEstafa) {
+    if (respondio) return
+    const bien = dijoEstafa === mensaje.estafa
+    setAcerto(bien)
+    setFoco('explicacion')
+    marcarVisto(mensaje.id)
+    registrarRespuesta(mensaje.id, bien)
+  }
+
+  function otro() {
+    setMensaje(elegirMensaje(undefined, mensaje.id))
+    setAcerto(null)
+    setFoco('pregunta')
+  }
+
+  const resultado = mensaje.estafa
+    ? acerto
+      ? 'Bien visto: era una estafa.'
+      : 'Era una estafa.'
+    : acerto
+      ? 'Bien visto: era real.'
+      : 'Era real.'
+
+  return (
+    <section className="inicio-juego" aria-labelledby="inicio-juego-titulo">
+      <div className="inicio-juego-cabeza">
+        <h2 id="inicio-juego-titulo">¿Estafa o real?</h2>
+        <p>Mirá el mensaje y elegí. La explicación aparece al toque.</p>
+      </div>
+      <figure className="inicio-juego-mensaje">
+        <figcaption>
+          <span className="inicio-juego-canal">{CANALES[mensaje.canal]}</span>
+          <strong>{mensaje.remitente}</strong>
+          {mensaje.asunto ? <span className="inicio-juego-asunto">{mensaje.asunto}</span> : null}
+        </figcaption>
+        <p>{mensaje.texto}</p>
+      </figure>
+      {respondio ? (
+        <div className={`inicio-juego-explicacion inicio-juego-${mensaje.estafa ? 'estafa' : 'real'}`}>
+          <h3 ref={explicacion} tabIndex={-1}>
+            {resultado}
+          </h3>
+          <p className="inicio-juego-leccion">{mensaje.leccion.titulo}</p>
+          <p>{mensaje.leccion.cuerpo}</p>
+          {safelink ? (
+            <p className="inicio-juego-safelink">
+              SafeLink marca <span className="inicio-juego-enlace">{mensaje.enlace}</span> como{' '}
+              <strong>{VEREDICTOS[safelink.nivel]?.titulo}</strong>. {motivosLimpios(safelink.motivos)[0]}
+            </p>
+          ) : null}
+          <button type="button" className="inicio-juego-otro" onClick={otro}>
+            Otro mensaje
+          </button>
+        </div>
+      ) : (
+        <div className="inicio-juego-botones">
+          <button ref={primerBoton} type="button" className="inicio-juego-boton" onClick={() => responder(true)}>
+            Estafa
+          </button>
+          <button type="button" className="inicio-juego-boton" onClick={() => responder(false)}>
+            Real
+          </button>
+        </div>
+      )}
+    </section>
+  )
+}
+
+function Veredicto({ resultado, guardado, onOtro }) {
+  const titulo = useRef(null)
+  const veredicto = VEREDICTOS[resultado.nivel] ?? VEREDICTOS.gris
+  const motivos = motivosLimpios(resultado.motivos)
+  const diferencia =
+    resultado.diferencia && motivos.includes(resultado.diferencia.frase) ? resultado.diferencia : null
+
+  useEffect(() => {
+    titulo.current?.focus()
+  }, [resultado.id])
+
+  return (
+    <section
+      className={`inicio-veredicto inicio-veredicto-${resultado.nivel}`}
+      aria-labelledby="inicio-veredicto-titulo"
+    >
+      <div className="inicio-veredicto-cabeza">
+        <span className="inicio-veredicto-icono">
+          <Icono nombre={veredicto.icono} />
+        </span>
+        <div className="inicio-veredicto-nombre">
+          <h2 id="inicio-veredicto-titulo" ref={titulo} tabIndex={-1}>
+            {veredicto.titulo}
+          </h2>
+          <p className="inicio-veredicto-dominio">
+            {diferencia ? (
+              <DominioMarcado tramos={diferencia.visto} />
+            ) : resultado.dominio === 'whatsapp' ? (
+              'Mensaje sin enlaces'
+            ) : (
+              (resultado.dominioDestino ?? resultado.dominio)
+            )}
+          </p>
+        </div>
+      </div>
+      {diferencia ? <DiferenciaDominio diferencia={diferencia} /> : null}
+      <p className="inicio-veredicto-consejo">{queHacer(resultado.nivel)}</p>
+      {motivos.length > 0 ? (
+        <ul className="inicio-veredicto-motivos">
+          {motivos.map((motivo) => (
+            <li key={motivo}>{motivo}</li>
+          ))}
+        </ul>
+      ) : null}
+      {guardado === false ? (
+        <p className="inicio-veredicto-nota">No se pudo guardar en tu historial.</p>
+      ) : null}
+      <button type="button" className="inicio-veredicto-otro" onClick={onOtro}>
+        Revisar otro
+      </button>
+    </section>
+  )
+}
+
 function Inicio() {
-  const navigate = useNavigate()
+  const { sesion, cargando: cargandoSesion } = useSesion()
+  const campoEnlace = useRef(null)
   const [enlace, setEnlace] = useState('')
   const [aviso, setAviso] = useState('')
-  const actividad = useAnalisisPropios({ limite: 5 })
+  const [analizando, setAnalizando] = useState(false)
+  const [resultado, setResultado] = useState(null)
+  const [guardado, setGuardado] = useState(null)
+  const actividad = useAnalisisPropios({ limite: 20 })
+  const resumen = useResumenSemana()
+  const portapapeles = usePortapapeles()
+  const [parametros, setParametros] = useSearchParams()
+  const compartido = parametros.get('compartido')
+  const [estafas] = useState(() => edicionVigente())
+
+  async function ejecutar(que, trabajo, entrada, texto = null) {
+    setAviso('')
+    setResultado(null)
+    setGuardado(null)
+    setAnalizando(que)
+
+    let final
+    try {
+      final = await trabajo()
+    } catch {
+      final = null
+    }
+    setAnalizando(false)
+    if (!final) {
+      setAviso(`No se pudo revisar el ${que}. Probá de nuevo en un rato.`)
+      return
+    }
+    setResultado({ ...final, id: crypto.randomUUID() })
+
+    if (!sesion) return
+    const { error } = await guardarAnalisis(sesion, final, entrada, texto)
+    setGuardado(!error)
+    if (error) return
+    actividad.recargar()
+    resumen.recargar()
+  }
+
+  function revisarDireccion(valor) {
+    setEnlace(valor)
+    return ejecutar('enlace', () => revisarEnlace(valor), 'web')
+  }
 
   function revisar(evento) {
     evento.preventDefault()
+    if (analizando) return
     const valor = enlace.trim()
     if (!valor) {
       setAviso('Pegá una dirección para revisarla.')
       return
     }
-    navigate('/safelink/enlaces', { state: { entrada: valor } })
+    if (!analizar(valor)) {
+      setAviso('Eso no parece un enlace. Probá con algo como ejemplo.com/promo')
+      return
+    }
+    revisarDireccion(valor)
+  }
+
+  function revisarCopiado() {
+    const valor = portapapeles.enlace
+    olvidarCopiado()
+    if (valor) revisarDireccion(valor)
+  }
+
+  const alCompartir = useEffectEvent((texto) => {
+    setParametros({}, { replace: true })
+    const limpio = texto.trim()
+    if (!/\s/.test(limpio) && analizar(limpio)) {
+      revisarDireccion(limpio)
+      return
+    }
+    setEnlace('')
+    ejecutar('mensaje', () => revisarWhatsapp(limpio), 'whatsapp', limpio)
+  })
+
+  useEffect(() => {
+    if (cargandoSesion || !compartido?.trim()) return undefined
+    const espera = window.setTimeout(() => alCompartir(compartido), 0)
+    return () => window.clearTimeout(espera)
+  }, [compartido, cargandoSesion])
+
+  function revisarOtro() {
+    setResultado(null)
+    setGuardado(null)
+    setEnlace('')
+    campoEnlace.current?.focus()
   }
 
   return (
     <div className="inicio">
-      {PROTECCION ? <TarjetaProteccion proteccion={PROTECCION} /> : null}
+      {resumen.texto && actividad.items.length > 0 ? <p className="inicio-resumen">{resumen.texto}</p> : null}
       <FilaEquipo />
 
       <form className="inicio-revisar" onSubmit={revisar}>
-        <label className="inicio-campo">
-          <span className="inicio-etiqueta">Pegá un enlace para revisarlo</span>
+        <div className="inicio-campo">
+          <label className="inicio-etiqueta" htmlFor="inicio-enlace">
+            Pegá un enlace para revisarlo
+          </label>
           <input
+            ref={campoEnlace}
+            id="inicio-enlace"
             type="text"
             name="enlace"
             value={enlace}
             onChange={(evento) => {
               setEnlace(evento.target.value)
               if (aviso) setAviso('')
+              if (resultado) setResultado(null)
             }}
             placeholder="ejemplo.com/promo"
             autoComplete="off"
@@ -305,15 +448,58 @@ function Inicio() {
             inputMode="url"
             enterKeyHint="go"
           />
-          <button type="submit" className="inicio-enviar" aria-label="Revisar el enlace">
-            <Icono nombre="flecha" />
+          <Link className="inicio-qr" to="/safelink/qr" aria-label="Escanear un QR">
+            <Icono nombre="qr" />
+          </Link>
+          <button
+            type="submit"
+            className="inicio-enviar"
+            aria-label={analizando ? 'Revisando el enlace' : 'Revisar el enlace'}
+            aria-busy={analizando}
+            disabled={analizando}
+          >
+            {analizando ? <span className="inicio-girando" aria-hidden="true" /> : <Icono nombre="flecha" />}
           </button>
-        </label>
-        <Link className="inicio-qr" to="/safelink/qr" aria-label="Escanear un QR">
-          <Icono nombre="qr" />
-        </Link>
+        </div>
       </form>
       {aviso ? <p className="inicio-aviso">{aviso}</p> : null}
+      {analizando ? (
+        <p className="inicio-revisando" role="status">
+          Revisando el {analizando}…
+        </p>
+      ) : null}
+      {portapapeles.enlace && !analizando && !resultado ? (
+        <section className="inicio-copiado" aria-labelledby="inicio-copiado-titulo">
+          <h2 id="inicio-copiado-titulo">Copiaste un enlace, ¿lo revisamos?</h2>
+          <p className="inicio-copiado-enlace">{portapapeles.enlace}</p>
+          <div className="inicio-copiado-acciones">
+            <button type="button" className="inicio-copiado-si" onClick={revisarCopiado}>
+              Revisar
+            </button>
+            <button type="button" className="inicio-copiado-no" onClick={olvidarCopiado}>
+              No, gracias
+            </button>
+          </div>
+        </section>
+      ) : null}
+      {portapapeles.disponible && !portapapeles.preferencia && !analizando && !resultado ? (
+        <section className="inicio-copiado" aria-labelledby="inicio-ofrecer-titulo">
+          <h2 id="inicio-ofrecer-titulo">¿Te avisamos cuando copies un enlace?</h2>
+          <p>
+            Al abrir SafeGuard, miramos si copiaste un enlace y te ofrecemos revisarlo. Android te avisa cada vez
+            que se lee lo copiado. Lo podés cambiar en Perfil.
+          </p>
+          <div className="inicio-copiado-acciones">
+            <button type="button" className="inicio-copiado-si" onClick={() => elegirPortapapeles(true)}>
+              Activar
+            </button>
+            <button type="button" className="inicio-copiado-no" onClick={() => elegirPortapapeles(false)}>
+              Ahora no
+            </button>
+          </div>
+        </section>
+      ) : null}
+      {resultado ? <Veredicto resultado={resultado} guardado={guardado} onOtro={revisarOtro} /> : null}
 
       <section className="inicio-bloque" aria-labelledby="inicio-actividad">
         <h2 id="inicio-actividad">Actividad reciente</h2>
@@ -326,40 +512,16 @@ function Inicio() {
             Todavía no revisaste nada. Pegá un enlace arriba y el resultado aparece acá.
           </p>
         ) : (
-          <ul className="inicio-lista">
-            {actividad.items.map((item) => (
-              <li key={item.id}>
-                <Link className="inicio-item" to={item.to}>
-                  <span className="inicio-item-icono">
-                    <Icono nombre={item.tipo === 'Mensaje' ? 'mensaje' : item.tipo === 'QR' ? 'qr' : 'enlace'} />
-                  </span>
-                  <span className="inicio-item-texto">
-                    <strong className="inicio-dominio">{item.titulo}</strong>
-                    {item.ruta ? <span className="inicio-ruta">{item.ruta}</span> : null}
-                    <span>
-                      {item.tipo} · {item.cuando}
-                    </span>
-                  </span>
-                  <span className={`inicio-chip inicio-chip-${item.nivel}`}>{CHIP[item.nivel]}</span>
-                  <span className="inicio-ir" aria-hidden="true">
-                    <Icono nombre="flecha" />
-                  </span>
-                </Link>
-              </li>
+          <ListaActividad>
+            {agruparActividad(actividad.items).map((item) => (
+              <FilaActividad key={item.id} item={item} to={item.to} />
             ))}
-          </ul>
+          </ListaActividad>
         )}
       </section>
 
-      <aside className="inicio-consejo">
-        <span className="inicio-consejo-icono">
-          <Icono nombre="consejo" />
-        </span>
-        <div>
-          <h2>{CONSEJO.titulo}</h2>
-          <p>{CONSEJO.texto}</p>
-        </div>
-      </aside>
+      {estafas ? <TarjetaEstafas edicion={estafas} /> : null}
+      <EstafaOReal />
     </div>
   )
 }

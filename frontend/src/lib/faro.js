@@ -102,6 +102,7 @@ export function nombreNivel(nivel) {
   if (nivel === 'rojo' || nivel === 'Peligroso') return 'Peligroso'
   if (nivel === 'amarillo' || nivel === 'Dudoso') return 'Dudoso'
   if (nivel === 'verde' || nivel === 'Seguro') return 'Seguro'
+  if (nivel === 'gris' || nivel === 'No verificado') return 'No verificado'
   return ''
 }
 
@@ -109,7 +110,21 @@ function codigoNivel(nivel) {
   if (nivel === 'rojo' || nivel === 'Peligroso') return 'rojo'
   if (nivel === 'amarillo' || nivel === 'Dudoso') return 'amarillo'
   if (nivel === 'verde' || nivel === 'Seguro') return 'verde'
+  if (nivel === 'gris' || nivel === 'No verificado') return 'gris'
   return ''
+}
+
+export function sinVerificar(nivel) {
+  return codigoNivel(nivel) === 'gris'
+}
+
+function respuestaSinVerificar(motivos, id) {
+  const inicio = 'Este caso quedó como No verificado: SafeLink no pudo confirmar si es seguro.'
+  const motivo = motivoDe(motivos)
+  if (id === 'clic' || id === 'datos') {
+    return `${inicio} ${motivo} Si ya entraste, no cargues claves ni datos y cerrá esa página. Si ya los mandaste, avisá por otro canal.`
+  }
+  return `${inicio} ${motivo} No lo abras desde el mensaje. Si dice ser un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
 }
 
 export function modoValido(modo) {
@@ -217,7 +232,7 @@ function afirma(frase, patron) {
 
 export function respuestaContradice(nivel, texto) {
   const codigo = codigoNivel(nivel)
-  if (!codigo) return true
+  if (!codigo || codigo === 'gris') return true
   const patrones = codigo === 'rojo' ? PELIGROSO : codigo === 'amarillo' ? DUDOSO : SEGURO
   return oraciones(plano(sinEmojis(texto))).some((frase) => patrones.some((patron) => afirma(frase, patron)))
 }
@@ -313,6 +328,7 @@ export function respuestaLocal(nivel, motivos, pregunta, modo = 'simple', caso =
   if (!codigo) return 'Este resultado no tiene un nivel para explicar.'
   const tono = modoValido(modo)
   const id = intencion(pregunta)
+  if (codigo === 'gris') return limitarOraciones(respuestaSinVerificar(motivos, id), topeModo(tono))
   if (id === 'analizar') return limitarOraciones(analizarCaso(codigo, motivos, caso, false, tono), topeModo(tono))
   if (id === 'resumen') return limitarOraciones(analizarCaso(codigo, motivos, caso, true, 'simple'), 4)
   if (id === 'ejemplo') return limitarOraciones(ejemploDe(codigo, tono), topeModo(tono))

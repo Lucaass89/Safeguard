@@ -1,11 +1,12 @@
 import { supabase } from './supabase.js'
-import { armarConsulta, prepararRespuesta, respuestaLocal } from './faro.js'
+import { armarConsulta, prepararRespuesta, respuestaLocal, sinVerificar } from './faro.js'
 
 const SIN_PREGUNTA = 'Escribí la duda en una frase. No hace falta pegar el mensaje ni el enlace.'
 
 export async function consultarFaro(nivel, motivos, pregunta, turnos, modo, caso) {
   const consulta = armarConsulta(nivel, motivos, pregunta, turnos, modo, caso)
   if (!consulta) return SIN_PREGUNTA
+  if (sinVerificar(nivel)) return respuestaLocal(nivel, motivos, consulta.pregunta, consulta.modo, consulta.caso)
 
   try {
     const { data, error } = await supabase.functions.invoke('safelink-faro', {

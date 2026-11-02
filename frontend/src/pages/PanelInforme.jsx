@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
+import { nombreEmpresa } from '../lib/formato.js'
 import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
 import './Panel.css'
@@ -108,7 +109,7 @@ function PanelInforme() {
           ← Volver a las opciones
         </Link>
         <p className="informe-fecha">{fecha}</p>
-        <h1>Informe de {organizacion.nombre_empresa}</h1>
+        <h1>Informe de {nombreEmpresa(organizacion.nombre_empresa)}</h1>
         <p className="panel-lead">
           Quién tocó el enlace, quién se capacitó y quién mejoró en el refuerzo. Es para
           la empresa o la escuela. No es una sanción.

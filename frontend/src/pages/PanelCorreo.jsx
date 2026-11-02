@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
-import { combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
 import { analizarCorreo } from '../lib/analisisCorreo.js'
-import { consultarPeorAmenaza, enriquecer, guardarAnalisis } from '../lib/enriquecer.js'
+import { guardarAnalisis, revisarCorreo } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -17,21 +16,13 @@ function PanelCorreo() {
 
   async function manejarEnvio(evento) {
     evento.preventDefault()
-    const analisis = analizarCorreo(crudo)
-    if (!analisis) {
+    if (!analizarCorreo(crudo)) {
       setError('Pegá el contenido del correo para poder revisarlo.')
       return
     }
     setError(null)
     setAnalizando(true)
-    const peor = analisis.enlaces[0]
-    const extra = peor ? await enriquecer(peor.url) : null
-    const { amenaza } = await consultarPeorAmenaza([
-      analisis.dominio,
-      peor?.dominio,
-      extra?.dominio,
-    ])
-    const final = combinarConEnriquecimiento(combinarConAmenaza(analisis, amenaza), extra)
+    const final = await revisarCorreo(crudo)
     setResultado({ ...final, casoId: crypto.randomUUID() })
     const { error: fallo } = await guardarAnalisis(sesion, final, 'correo')
     setAnalizando(false)

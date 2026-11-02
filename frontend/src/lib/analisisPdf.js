@@ -176,7 +176,8 @@ export async function analizarPdf(archivo) {
     nombre: archivo.name,
     dominio: analizados[0]?.dominio ?? 'archivo-sin-enlaces',
     puntuacion,
-    nivel: nivelDesde(puntuacion),
+    nivel: nivelDesde(puntuacion, analizados.some((enlace) => enlace.sinVerificar)),
+    sinVerificar: analizados.some((enlace) => enlace.sinVerificar),
     motivos: [
       ...senales,
       ...analizados.flatMap((e) => e.motivos.filter((m) => !m.startsWith('No aparecen'))),

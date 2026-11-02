@@ -236,7 +236,8 @@ export function analizarCorreo(crudo) {
     asunto: headers.subject,
     dominio: from.dominio || enlaces[0]?.dominio || 'remitente-desconocido',
     puntuacion,
-    nivel: nivelDesde(puntuacion),
+    nivel: nivelDesde(puntuacion, enlaces.some((enlace) => enlace.sinVerificar)),
+    sinVerificar: enlaces.some((enlace) => enlace.sinVerificar),
     motivos: [
       ...senales,
       ...enlaces.flatMap((e) => e.motivos.filter((m) => !m.startsWith('No aparecen'))),

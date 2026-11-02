@@ -57,13 +57,12 @@ function lineaVcard(texto, clave) {
 }
 
 function web(crudo) {
-  const limpio = crudo.replace(INVISIBLES, '').trim()
-  if (!limpio || /\s/.test(limpio)) return null
-  const local = analizar(limpio)
+  const texto = crudo.trim()
+  if (!texto || /\s/.test(texto)) return null
+  const local = analizar(texto)
   if (!local) return null
-  const host = local.host ?? ''
-  if (!host.includes('.') && !host.includes(':')) return null
-  return { tipo: 'web', valor: limpio, invisibles: limpio !== crudo.trim(), local }
+  if (local.sinFormato && !/^https?:/i.test(texto) && !local.host.includes('.')) return null
+  return { tipo: 'web', valor: texto, invisibles: INVISIBLES.test(texto), local }
 }
 
 export function leerQr(valor) {

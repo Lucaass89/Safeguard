@@ -1,0 +1,59 @@
+.dif-dominio {
+  overflow-wrap: anywhere;
+}
+
+.dif-trucho,
+.dif-bien {
+  padding: 0 2px;
+  border-radius: 4px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.dif-trucho {
+  background: #c62f25;
+  color: #ffffff;
+}
+
+.dif-bien {
+  background: #146246;
+  color: #ffffff;
+}
+
+.dif-lectura {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dif {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--sg-surface) 80%, transparent);
+}
+
+.dif-fila {
+  display: grid;
+  gap: 2px;
+}
+
+.dif dt {
+  color: var(--sg-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dif dd {
+  margin: 0;
+  color: var(--sg-text);
+  font-family: ui-monospace, 'Roboto Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
+}

@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import TemaControl from '../components/TemaControl.jsx'
+import FilaAjuste from '../components/FilaAjuste.jsx'
+import TarjetaMetrica, { ListaMetricas } from '../components/TarjetaMetrica.jsx'
 import { rutaEnApp } from '../lib/esAppNativa.js'
+import { nombreEmpresa } from '../lib/formato.js'
+import { elegirPortapapeles, usePortapapeles } from '../lib/portapapeles.js'
 import { supabase } from '../lib/supabase.js'
+import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
@@ -102,7 +106,6 @@ function PerfilActividad({ usuarioId, variante }) {
     <section className="ajuste perfil-actividad" aria-labelledby="perfil-actividad-titulo" aria-busy={cargando}>
       <div className="ajuste-cabeza">
         <h2 id="perfil-actividad-titulo">Tu actividad</h2>
-        <p>Lo que revisaste y reportaste con SafeLink.</p>
       </div>
       <div className="ajuste-cuerpo">
         {cargando && <p className="perfil-estado">Cargando tu actividad…</p>}
@@ -118,16 +121,10 @@ function PerfilActividad({ usuarioId, variante }) {
           <p className="perfil-estado">Todavía no hay análisis ni reportes.</p>
         )}
         {!cargando && !error && conteos && (variante === 'app' || !vacio) && (
-          <ul className="perfil-cifras">
-            <li>
-              <strong>{conteos.analisis}</strong>
-              <span>Análisis</span>
-            </li>
-            <li>
-              <strong>{conteos.reportes}</strong>
-              <span>Reportes</span>
-            </li>
-          </ul>
+          <ListaMetricas columnas={2}>
+            <TarjetaMetrica valor={conteos.analisis} etiqueta="Análisis" />
+            <TarjetaMetrica valor={conteos.reportes} etiqueta="Reportes" />
+          </ListaMetricas>
         )}
         {!cargando && !error && (
           <Link className="perfil-historial" to={rutaEnApp('/panel/enlaces')}>
@@ -170,7 +167,7 @@ function PerfilOrganizacion({ organizacionId, rol }) {
           setCargando(false)
           return
         }
-        setNombre((data?.nombre_empresa ?? '').trim())
+        setNombre(nombreEmpresa(data?.nombre_empresa))
         setCargando(false)
       })
 
@@ -183,7 +180,6 @@ function PerfilOrganizacion({ organizacionId, rol }) {
     <section className="ajuste perfil-org" aria-labelledby="perfil-org-titulo" aria-busy={cargando}>
       <div className="ajuste-cabeza">
         <h2 id="perfil-org-titulo">Organización</h2>
-        <p>La empresa de PhishGuard a la que pertenece tu cuenta.</p>
       </div>
       <div className="ajuste-cuerpo">
         {cargando && <p className="perfil-estado">Cargando tu empresa…</p>}
@@ -357,15 +353,14 @@ function PerfilSeguridad({ usuario }) {
             </button>
           </form>
         )}
-        <div className="perfil-fila">
-          <div>
-            <h3>Cerrar sesión en todos los dispositivos</h3>
-            <p>Salís de SafeGuard en este navegador y en los demás.</p>
-          </div>
+        <FilaAjuste
+          titulo="Sesiones abiertas"
+          nota="Si perdiste el celular o entraste desde otro lado, salí de SafeGuard en este dispositivo y en todos los demás."
+        >
           <button type="button" className="panel-boton-borde" onClick={abrirCierre}>
-            Cerrar sesión
+            Cerrar sesión en todos los dispositivos
           </button>
-        </div>
+        </FilaAjuste>
         {confirmarCierre && (
           <dialog
             ref={dialogo}
@@ -378,9 +373,9 @@ function PerfilSeguridad({ usuario }) {
               cerrarDialogo()
             }}
           >
-            <h2 id="perfil-cierre-titulo">Cerrar sesión en todos lados</h2>
+            <h2 id="perfil-cierre-titulo">¿Cerrar sesión en todos los dispositivos?</h2>
             <p id="perfil-cierre-texto">
-              Vas a salir de SafeGuard en este dispositivo y en los demás. Después tenés que volver a entrar.
+              Vas a salir de SafeGuard en este dispositivo y en todos los demás donde entraste. Después tenés que volver a entrar en cada uno.
             </p>
             <div aria-live="polite">
               {errorCerrar && <p className="panel-error">{errorCerrar}</p>}
@@ -390,13 +385,76 @@ function PerfilSeguridad({ usuario }) {
                 Cancelar
               </button>
               <button type="button" className="panel-boton" onClick={cerrarEnTodos} disabled={cerrando} aria-busy={cerrando}>
-                {cerrando ? 'Cerrando…' : 'Cerrar sesión'}
+                {cerrando ? 'Cerrando…' : 'Cerrar en todos'}
               </button>
             </div>
           </dialog>
         )}
       </div>
     </section>
+  )
+}
+
+function PreferenciaPortapapeles() {
+  const { disponible, preferencia } = usePortapapeles()
+  if (!disponible) return null
+
+  return (
+    <FilaAjuste
+      tocable
+      titulo="Detectar enlaces copiados"
+      nota="Al abrir SafeGuard, te ofrece revisar el enlace que copiaste. Android avisa cada vez que se lee lo copiado."
+    >
+      <input
+        type="checkbox"
+        role="switch"
+        className="perfil-interruptor"
+        checked={preferencia === 'si'}
+        onChange={(evento) => elegirPortapapeles(evento.target.checked)}
+      />
+    </FilaAjuste>
+  )
+}
+
+const TEMAS = [
+  { id: 'claro', etiqueta: 'Claro' },
+  { id: 'oscuro', etiqueta: 'Oscuro' },
+  { id: 'sistema', etiqueta: 'Sistema' },
+]
+
+function PreferenciaTema() {
+  const [preferencia, setPreferencia] = useState(leerPreferencia)
+
+  function elegir(siguiente) {
+    aplicarTema(siguiente)
+    setPreferencia(siguiente)
+  }
+
+  return (
+    <FilaAjuste titulo="Tema" tituloId="perfil-tema-titulo" apilado>
+      <div className="perfil-tema-opciones" role="radiogroup" aria-labelledby="perfil-tema-titulo">
+        {TEMAS.map((tema) => (
+          <label key={tema.id} className="perfil-tema-opcion">
+            <input
+              type="radio"
+              name="perfil-tema"
+              value={tema.id}
+              checked={preferencia === tema.id}
+              onChange={() => elegir(tema.id)}
+            />
+            <span>{tema.etiqueta}</span>
+          </label>
+        ))}
+      </div>
+    </FilaAjuste>
+  )
+}
+
+function IconoBajar() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 4.5v10M7.5 10.5 12 15l4.5-4.5M5 19.5h14" />
+    </svg>
   )
 }
 
@@ -426,10 +484,14 @@ function PanelPerfil({ variante }) {
   const [confirmarSalir, setConfirmarSalir] = useState(false)
   const [saliendo, setSaliendo] = useState(false)
   const [errorSalir, setErrorSalir] = useState(null)
+  const [editando, setEditando] = useState(false)
   const dialogo = useRef(null)
   const dialogoSalir = useRef(null)
   const campoConfirmar = useRef(null)
   const disparador = useRef(null)
+  const campoNombre = useRef(null)
+  const botonEditar = useRef(null)
+  const volverAlBoton = useRef(false)
   const cambio = nombre.trim() !== guardado
   const correo = usuario.email ?? ''
   const puedeBorrar = confirmacion.trim().toLowerCase() === correo.trim().toLowerCase() && correo !== ''
@@ -446,10 +508,35 @@ function PanelPerfil({ variante }) {
     }
   }, [modalAbierto])
 
+  useEffect(() => {
+    if (editando) {
+      campoNombre.current?.focus()
+      return
+    }
+    if (volverAlBoton.current) {
+      volverAlBoton.current = false
+      botonEditar.current?.focus()
+    }
+  }, [editando])
+
   function alEscribir(evento) {
     setNombre(evento.target.value)
     setError(null)
     setAviso(null)
+  }
+
+  function editarNombre() {
+    setAviso(null)
+    setError(null)
+    setEditando(true)
+  }
+
+  function cancelarEdicion() {
+    if (guardando) return
+    setNombre(guardado)
+    setError(null)
+    volverAlBoton.current = true
+    setEditando(false)
   }
 
   useEffect(() => {
@@ -522,6 +609,10 @@ function PanelPerfil({ variante }) {
     setNombre(limpio)
     setGuardado(limpio)
     setAviso('Listo. Así te vamos a saludar cuando entres.')
+    if (editando) {
+      volverAlBoton.current = true
+      setEditando(false)
+    }
   }
 
   async function exportar() {
@@ -604,60 +695,87 @@ function PanelPerfil({ variante }) {
     <div className={enApp ? 'panel panel-personas perfil perfil-app' : 'panel panel-personas perfil'}>
       <header className="panel-header">
         <span className="perfil-avatar" aria-hidden="true">{iniciales(nombreVisible, correo)}</span>
-        {enApp ? (
+        {enApp && editando ? (
+          <form className="perfil-quien perfil-editar" onSubmit={guardar}>
+            <label className="panel-campo">
+              <span>Nombre</span>
+              <input
+                ref={campoNombre}
+                type="text"
+                value={nombre}
+                onChange={alEscribir}
+                onKeyDown={(evento) => {
+                  if (evento.key === 'Escape') cancelarEdicion()
+                }}
+                autoComplete="name"
+                required
+              />
+            </label>
+            <div className="perfil-editar-acciones">
+              <button type="button" className="panel-boton-borde" onClick={cancelarEdicion} disabled={guardando}>
+                Cancelar
+              </button>
+              <button type="submit" className="panel-boton" disabled={!cambio || guardando} aria-busy={guardando}>
+                {guardando ? 'Guardando…' : 'Guardar'}
+              </button>
+            </div>
+          </form>
+        ) : enApp ? (
           <div className="perfil-quien">
-            <h1>{nombreVisible || 'Tu perfil'}</h1>
+            <h1 id="perfil-cuenta-titulo">{nombreVisible || 'Tu perfil'}</h1>
             {correo && <p>{correo}</p>}
+            <button ref={botonEditar} type="button" className="perfil-editar-boton" onClick={editarNombre}>
+              {nombreVisible ? 'Editar nombre' : 'Agregar tu nombre'}
+            </button>
           </div>
         ) : (
           <h1>Tu perfil</h1>
         )}
       </header>
 
-      <section className="ajuste perfil-cuenta" aria-labelledby="perfil-cuenta-titulo">
-        <div className="ajuste-cabeza">
-          <h2 id="perfil-cuenta-titulo">Cuenta</h2>
-          <p>El nombre es el que ves al entrar al panel.</p>
+      {enApp && (
+        <div className="perfil-cuenta-estado" aria-live="polite">
+          {error && <p className="panel-error">{error}</p>}
+          {aviso && <p className="panel-aviso">{aviso}</p>}
         </div>
-        <form className="ajuste-cuerpo" onSubmit={guardar}>
-          <label className="panel-campo">
-            <span>Nombre</span>
-            <input
-              type="text"
-              value={nombre}
-              onChange={alEscribir}
-              autoComplete="name"
-              required
-            />
-          </label>
-          <label className="panel-campo">
-            <span>Correo</span>
-            <span className="perfil-correo">
-              <input
-                type="email"
-                value={usuario.email ?? ''}
-                readOnly
-                aria-readonly="true"
-                aria-describedby="perfil-correo-ayuda"
-              />
-              <svg className="perfil-candado" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </span>
-          </label>
-          <p id="perfil-correo-ayuda" className="perfil-nota">
-            El correo es el de la cuenta con la que entraste.
-          </p>
-          <div aria-live="polite">
-            {error && <p className="panel-error">{error}</p>}
-            {aviso && <p className="panel-aviso">{aviso}</p>}
+      )}
+
+      {!enApp && (
+        <section className="ajuste perfil-cuenta" aria-labelledby="perfil-cuenta-titulo">
+          <div className="ajuste-cabeza">
+            <h2 id="perfil-cuenta-titulo">Cuenta</h2>
           </div>
-          <button type="submit" className="panel-boton" disabled={!cambio || guardando} aria-busy={guardando}>
-            {guardando ? 'Guardando…' : 'Guardar'}
-          </button>
-        </form>
-      </section>
+          <form className="ajuste-cuerpo" onSubmit={guardar}>
+            <label className="panel-campo">
+              <span>Nombre</span>
+              <input
+                type="text"
+                value={nombre}
+                onChange={alEscribir}
+                autoComplete="name"
+                required
+              />
+            </label>
+            <label className="panel-campo">
+              <span>Correo</span>
+              <span className="perfil-correo">
+                <input type="email" value={usuario.email ?? ''} readOnly aria-readonly="true" />
+                <svg className="perfil-candado" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </span>
+            </label>
+            <div aria-live="polite">
+              {error && <p className="panel-error">{error}</p>}
+              {aviso && <p className="panel-aviso">{aviso}</p>}
+            </div>
+            <button type="submit" className="panel-boton" disabled={!cambio || guardando} aria-busy={guardando}>
+              {guardando ? 'Guardando…' : 'Guardar'}
+            </button>
+          </form>
+        </section>
+      )}
 
       <PerfilActividad usuarioId={usuario.id} variante={variante} />
       {pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
@@ -666,10 +784,10 @@ function PanelPerfil({ variante }) {
       <section className="ajuste perfil-datos" aria-labelledby="perfil-datos-titulo">
         <div className="ajuste-cabeza">
           <h2 id="perfil-datos-titulo">Tus datos</h2>
-          <p>Un archivo con tu cuenta, tus análisis y tus reportes.</p>
         </div>
         <div className="ajuste-cuerpo">
-          <button type="button" className="panel-boton-borde" onClick={exportar} disabled={exportando}>
+          <button type="button" className="perfil-exportar" onClick={exportar} disabled={exportando} aria-busy={exportando}>
+            <IconoBajar />
             {exportando ? 'Exportando…' : 'Exportar mis datos'}
           </button>
           <div aria-live="polite">
@@ -683,13 +801,8 @@ function PanelPerfil({ variante }) {
           <div className="ajuste-cabeza">
             <h2 id="perfil-preferencias-titulo">Preferencias</h2>
           </div>
-          <div className="perfil-preferencia">
-            <div>
-              <strong>Tema</strong>
-              <p>Claro u oscuro, en este celular.</p>
-            </div>
-            <TemaControl icono />
-          </div>
+          <PreferenciaTema />
+          <PreferenciaPortapapeles />
         </section>
       )}
 
@@ -718,7 +831,7 @@ function PanelPerfil({ variante }) {
           }}
         >
           <h2 id="perfil-salir-titulo">¿Cerrar sesión?</h2>
-          <p id="perfil-salir-texto">Vas a salir de SafeGuard en este celular.</p>
+          <p id="perfil-salir-texto">Vas a salir de SafeGuard en este dispositivo. En los demás seguís con la sesión abierta.</p>
           <div aria-live="polite">
             {errorSalir && <p className="panel-error">{errorSalir}</p>}
           </div>
@@ -736,29 +849,26 @@ function PanelPerfil({ variante }) {
       <section className="ajuste perfil-peligro" aria-labelledby="perfil-peligro-titulo">
         <div className="ajuste-cabeza">
           <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
-          <p>Estas acciones son definitivas.</p>
         </div>
         <div className="ajuste-cuerpo">
-          <div className="perfil-fila">
-            <div>
-              <h3>Eliminar cuenta</h3>
-              {textoBorrar && <p>{textoBorrar}</p>}
-            </div>
-            <button
-              type="button"
-              className="perfil-borrar"
-              onClick={abrirBorrado}
-              disabled={cargandoMembresia || bloqueado}
-              aria-describedby={bloqueado ? 'perfil-unico-admin' : undefined}
-            >
-              Eliminar cuenta
-            </button>
-          </div>
+          <p id="perfil-borrar-ayuda" className="perfil-ayuda">
+            {bloqueado ? AVISO_UNICO_ADMIN : [textoBorrar, 'No se puede deshacer.'].filter(Boolean).join(' ')}
+          </p>
+          {/* TODO: falta una función para asignar otro administrador; mientras tanto se pide por Contacto. */}
           {bloqueado && (
-            <p id="perfil-unico-admin" className="panel-error perfil-bloqueo">
-              {AVISO_UNICO_ADMIN}
-            </p>
+            <Link className="perfil-asignar" to="/contacto">
+              Pedir que asignemos otro administrador
+            </Link>
           )}
+          <button
+            type="button"
+            className="perfil-borrar"
+            onClick={abrirBorrado}
+            disabled={cargandoMembresia || bloqueado}
+            aria-describedby="perfil-borrar-ayuda"
+          >
+            Eliminar cuenta
+          </button>
         </div>
       </section>
 

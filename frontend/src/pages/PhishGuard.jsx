@@ -1,14 +1,16 @@
 import { Link } from 'react-router'
+import { Chip } from '../components/ChipEstado.jsx'
 import { PhishGuardPago } from '../components/PhishGuardAcceso.jsx'
+import TarjetaMetrica, { ListaMetricas } from '../components/TarjetaMetrica.jsx'
 import { cayo, useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './PhishGuard.css'
 
 const NIVEL = {
-  alto: 'Alto',
-  medio: 'Medio',
-  bajo: 'Bajo',
+  alto: { texto: 'Alto', tono: 'rojo', icono: 'mal' },
+  medio: { texto: 'Medio', tono: 'amarillo', icono: 'alerta' },
+  bajo: { texto: 'Bajo', tono: 'verde', icono: 'bien' },
 }
 
 function Icono({ nombre }) {
@@ -65,24 +67,6 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'sube') {
-    return (
-      <svg {...trazo}>
-        <path d="M12 19V6" />
-        <path d="m7 10 5-5 5 5" />
-      </svg>
-    )
-  }
-
-  if (nombre === 'baja') {
-    return (
-      <svg {...trazo}>
-        <path d="M12 5v13" />
-        <path d="m7 14 5 5 5-5" />
-      </svg>
-    )
-  }
-
   return (
     <svg {...trazo}>
       <path d="M12 5v14M5 12h14" />
@@ -123,11 +107,11 @@ function armarMetricas(ultima, previa) {
     },
     {
       id: 'datos',
-      etiqueta: 'Cargaron datos',
+      etiqueta: 'Dieron datos',
       valor: `${datos}%`,
       tendencia: tendencia(datos, previa ? porcentaje(previa.datos, previa.enviados) : null),
     },
-    { id: 'capacitados', etiqueta: 'Se capacitaron', valor: String(ultima.capacitados), tendencia: null },
+    { id: 'capacitados', etiqueta: 'Capacitados', valor: String(ultima.capacitados), tendencia: null },
   ]
 }
 
@@ -148,8 +132,8 @@ function CampanaActiva({ campana }) {
   const conteos = [
     ['Enviados', campana.enviados],
     ['Clics', campana.clics],
-    ['Cargaron datos', campana.datos],
-    ['Lo reconocieron', campana.reconocieron],
+    ['Dieron datos', campana.datos],
+    ['Leyeron la lección sin caer', campana.reconocieron],
   ]
 
   return (
@@ -161,20 +145,24 @@ function CampanaActiva({ campana }) {
           <span>{campana.canal}</span>
         </p>
       </div>
-      <div
-        className="phish-barra"
-        role="progressbar"
-        aria-valuenow={campana.clics}
-        aria-valuemin={0}
-        aria-valuemax={campana.enviados}
-        aria-label={`${campana.clics} de ${campana.enviados} hicieron clic`}
-        style={{ '--avance': `${avance}%` }}
-      >
-        <span />
-      </div>
-      <p className="phish-avance">
-        {campana.clics} de {campana.enviados} hicieron clic
-      </p>
+      {campana.enviados > 0 ? (
+        <>
+          <div
+            className="phish-barra"
+            role="progressbar"
+            aria-valuenow={campana.clics}
+            aria-valuemin={0}
+            aria-valuemax={campana.enviados}
+            aria-label={`${campana.clics} de ${campana.enviados} hicieron clic`}
+            style={{ '--avance': `${avance}%` }}
+          >
+            <span />
+          </div>
+          <p className="phish-avance">
+            {campana.clics} de {campana.enviados} hicieron clic
+          </p>
+        </>
+      ) : null}
       <ul className="phish-conteos">
         {conteos.map(([etiqueta, valor]) => (
           <li key={etiqueta}>
@@ -206,52 +194,54 @@ function PhishGuard() {
 
   if (datos.cargando) return <p className="phish-estado">Buscando tus campañas…</p>
 
-  const [ultima, previa] = datos.campanas
-  const metricas = ultima ? armarMetricas(ultima, previa) : []
-  const reforzar = ultima ? armarReforzar(ultima) : []
+  const [ultima, ...anteriores] = datos.campanas
+  const enviada = Boolean(ultima?.enviados)
+  const previa = anteriores.find((campana) => campana.enviados > 0) ?? null
+  const metricas = enviada ? armarMetricas(ultima, previa) : []
+  const reforzar = enviada ? armarReforzar(ultima) : []
+  const hayInforme = datos.campanas.some((campana) => campana.enviados > 0)
+  const hayCampanas = datos.campanas.length > 0
 
   return (
-    <div className="phish">
+    <div className={hayCampanas ? 'phish phish-con-fab' : 'phish'}>
       {datos.error ? (
         <p className="phish-estado">No se pudieron leer tus campañas. Probá de nuevo en un rato.</p>
       ) : null}
-      {ultima ? (
+      {enviada ? (
         <CampanaActiva campana={ultima} />
+      ) : ultima ? (
+        <section className="phish-vacio" aria-labelledby="phish-sin-envio">
+          <h2 id="phish-sin-envio">Todavía no enviaste esta simulación</h2>
+          <p>
+            {ultima.nombre} todavía no le llegó a nadie. Cuando la envíes, acá vas a ver quién hace clic y quién
+            lee la lección sin caer.
+          </p>
+          <Link className="phish-armar" to="/phishguard/campanas" state={{ abrir: ultima.id }}>
+            Enviar simulación
+          </Link>
+        </section>
       ) : (
         <section className="phish-vacio" aria-label="Sin campaña activa">
           <h2>No hay una simulación en curso</h2>
-          <p>Armá una y mirá quién abre, quién hace clic y quién la reporta.</p>
+          <p>Armá una y mirá quién hace clic, quién da datos y quién lee la lección sin caer.</p>
           <Link className="phish-armar" to="/phishguard/campanas">
             Armar una simulación
           </Link>
         </section>
       )}
 
-      {ultima ? (
+      {enviada ? (
         <>
-          <ul className="phish-metricas">
+          <ListaMetricas columnas={3}>
             {metricas.map((metrica) => (
-              <li key={metrica.id}>
-                <strong>{metrica.valor}</strong>
-                <span className="phish-metrica-etiqueta">{metrica.etiqueta}</span>
-                {metrica.tendencia ? (
-                  <span
-                    className={
-                      metrica.tendencia.mejora
-                        ? 'phish-tendencia phish-mejora'
-                        : 'phish-tendencia phish-empeora'
-                    }
-                  >
-                    <Icono nombre={metrica.tendencia.direccion} />
-                    <span>{metrica.tendencia.delta}</span>
-                    <span className="phish-solo">
-                      {metrica.tendencia.direccion === 'sube' ? 'sube' : 'baja'}
-                    </span>
-                  </span>
-                ) : null}
-              </li>
+              <TarjetaMetrica
+                key={metrica.id}
+                valor={metrica.valor}
+                etiqueta={metrica.etiqueta}
+                tendencia={metrica.tendencia}
+              />
             ))}
-          </ul>
+          </ListaMetricas>
 
           <section className="phish-bloque" aria-labelledby="phish-reforzar">
             <h2 id="phish-reforzar">Para reforzar</h2>
@@ -268,24 +258,38 @@ function PhishGuard() {
                       <strong>{item.nombre}</strong>
                       <span>{item.detalle}</span>
                     </span>
-                    <span className={`phish-chip phish-chip-${item.nivel}`}>{NIVEL[item.nivel]}</span>
+                    <Chip tono={NIVEL[item.nivel].tono} icono={NIVEL[item.nivel].icono}>
+                      {NIVEL[item.nivel].texto}
+                    </Chip>
                   </li>
                 ))}
               </ul>
             )}
           </section>
-
-          <Link className="phish-exportar" to="/phishguard/informe">
-            <Icono nombre="informe" />
-            <span>Exportar informe</span>
-          </Link>
         </>
       ) : null}
 
-      <Link className="phish-fab" to="/phishguard/campanas">
-        <Icono nombre="mas" />
-        <span>Nueva campaña</span>
-      </Link>
+      {hayInforme ? (
+        <Link className="phish-exportar" to="/phishguard/informe">
+          <Icono nombre="informe" />
+          <span>Exportar informe</span>
+        </Link>
+      ) : (
+        <div className="phish-exportar-bloque">
+          <button className="phish-exportar" type="button" disabled aria-describedby="phish-exportar-nota">
+            <Icono nombre="informe" />
+            <span>Exportar informe</span>
+          </button>
+          <p id="phish-exportar-nota">Vas a poder exportarlo cuando una simulación tenga envíos.</p>
+        </div>
+      )}
+
+      {hayCampanas ? (
+        <Link className="phish-fab" to="/phishguard/campanas">
+          <Icono nombre="mas" />
+          <span>Nueva campaña</span>
+        </Link>
+      ) : null}
     </div>
   )
 }

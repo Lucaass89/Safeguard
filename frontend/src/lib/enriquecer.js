@@ -1,4 +1,13 @@
-import { motivosLimpios } from './analisis.js'
+import {
+  analizar,
+  combinarConAmenaza,
+  combinarConEnriquecimiento,
+  marcarSinVerificar,
+  motivosLimpios,
+} from './analisis.js'
+import { analizarCorreo } from './analisisCorreo.js'
+import { analizarWhatsapp } from './analisisWhatsapp.js'
+import { guardarFragmento } from './fragmentos.js'
 import { supabase } from './supabase.js'
 
 export async function enriquecer(url) {
@@ -45,8 +54,51 @@ export async function consultarPeorAmenaza(dominios) {
   return { amenaza: amenazas[0] ?? null, fallo: amenazas.length ? null : fallo }
 }
 
-export async function guardarAnalisis(sesion, resultado, entrada) {
-  return supabase.from('safelink_analisis').insert({
+const SIN_ABRIR = 'No pudimos abrir el sitio para confirmarlo: puede que no exista o que no haya respondido.'
+const SIN_BASE = 'No pudimos consultar la base de amenazas.'
+
+export function marcarLoQueFalto(final, { abrio, fallo }) {
+  let salida = final
+  if (!abrio) salida = marcarSinVerificar(salida, SIN_ABRIR)
+  if (fallo) salida = marcarSinVerificar(salida, SIN_BASE)
+  return salida
+}
+
+export function enlaceParaAbrir(enlaces) {
+  return enlaces?.find((enlace) => !enlace.sinSitio && !enlace.demasiadoLarga) ?? null
+}
+
+export async function cerrarRevision(local, urlEnlace, dominios) {
+  if (local.sinSitio) return local
+  const extra = urlEnlace ? await enriquecer(urlEnlace) : null
+  const { amenaza, fallo } = await consultarPeorAmenaza([...dominios, extra?.dominio])
+
+  const final = combinarConEnriquecimiento(combinarConAmenaza(local, fallo ? null : amenaza), extra)
+  return marcarLoQueFalto(final, { abrio: !urlEnlace || Boolean(extra), fallo })
+}
+
+export async function revisarEnlace(entrada) {
+  const local = analizar(entrada)
+  if (!local) return null
+  return cerrarRevision(local, local.demasiadoLarga ? null : local.url, [local.dominio])
+}
+
+export async function revisarWhatsapp(texto) {
+  const local = analizarWhatsapp(texto)
+  if (!local) return null
+  const peor = enlaceParaAbrir(local.enlaces)
+  return cerrarRevision(local, peor?.url, [local.dominio !== 'whatsapp' ? local.dominio : null])
+}
+
+export async function revisarCorreo(texto) {
+  const local = analizarCorreo(texto)
+  if (!local) return null
+  const peor = enlaceParaAbrir(local.enlaces)
+  return cerrarRevision(local, peor?.url, [local.dominio, peor?.dominio])
+}
+
+export async function guardarAnalisis(sesion, resultado, entrada, texto = null) {
+  const consulta = supabase.from('safelink_analisis').insert({
     usuario_id: sesion.user.id,
     url_analizada: resultado.url,
     dominio: resultado.dominioDestino ?? resultado.dominio,
@@ -55,6 +107,11 @@ export async function guardarAnalisis(sesion, resultado, entrada) {
     puntuacion_riesgo: resultado.puntuacion,
     entrada,
   })
+  if (!texto) return consulta
+
+  const respuesta = await consulta.select('id').single()
+  if (!respuesta.error) guardarFragmento(respuesta.data?.id, texto)
+  return respuesta
 }
 
 export async function reportarDominio(resultado, originType = 'web') {

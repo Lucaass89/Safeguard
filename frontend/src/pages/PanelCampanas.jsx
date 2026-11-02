@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { copiarTexto } from '../lib/copiar.js'
 import { etiquetaEstado } from '../lib/estados.js'
@@ -173,6 +173,7 @@ async function cargar() {
 
 function PanelCampanas() {
   const { sesion } = useSesion()
+  const location = useLocation()
   const [organizacion, setOrganizacion] = useState(null)
   const [plantillas, setPlantillas] = useState([])
   const [empleados, setEmpleados] = useState([])
@@ -186,7 +187,7 @@ function PanelCampanas() {
   const [nombre, setNombre] = useState('')
   const [elegidos, setElegidos] = useState([])
   const [creando, setCreando] = useState(false)
-  const [abierta, setAbierta] = useState(null)
+  const [abierta, setAbierta] = useState(() => location.state?.abrir ?? null)
   const [copiado, setCopiado] = useState(null)
   const [mailtoKit, setMailtoKit] = useState(null)
 

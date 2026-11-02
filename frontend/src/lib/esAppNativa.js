@@ -22,6 +22,12 @@ export function esAppNativa() {
   return window.matchMedia('(display-mode: standalone)').matches
 }
 
+export function versionApp() {
+  const hallada = navigator.userAgent.match(new RegExp(`${MARCA}(?:/(\\d+))?`))
+  if (!hallada) return 0
+  return Number(hallada[1] ?? 1)
+}
+
 export function rutaEnApp(to) {
   if (!esAppNativa()) return to
   return RUTAS_APP[to] ?? to

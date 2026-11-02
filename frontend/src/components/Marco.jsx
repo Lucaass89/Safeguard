@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router'
+import { nombreEmpresa } from '../lib/formato.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -70,7 +71,7 @@ function MenuCuenta({ sesion }) {
           setEmpresa('')
           return
         }
-        setEmpresa((data?.nombre_empresa ?? '').trim())
+        setEmpresa(nombreEmpresa(data?.nombre_empresa))
       })
 
     return () => {

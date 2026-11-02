@@ -446,6 +446,10 @@
   background: var(--sg-red);
 }
 
+.resultado.nivel-gris .resultado-punto {
+  background: var(--sg-muted);
+}
+
 .resultado-sub {
   margin: 0 0 12px;
   word-break: break-all;
@@ -530,6 +534,10 @@
 .historial-item.nivel-rojo .historial-punto,
 .reporte-item.nivel-rojo .historial-punto {
   background: var(--sg-red);
+}
+
+.historial-item.nivel-gris .historial-punto {
+  background: var(--sg-muted);
 }
 
 .historial-url,
@@ -1346,11 +1354,6 @@ table.persona-tabla td:first-child,
   justify-self: start;
 }
 
-.ajuste-cuerpo > .perfil-fila:not(:first-child) {
-  padding-top: 20px;
-  border-top: 1px solid var(--sg-line);
-}
-
 .ajuste.perfil-peligro {
   border-top-color: color-mix(in srgb, var(--sg-red) 60%, var(--sg-line));
 }
@@ -1374,31 +1377,6 @@ table.persona-tabla td:first-child,
 .perfil-seguridad .panel-error,
 .perfil-dialogo .panel-error {
   margin: 0;
-}
-
-.perfil-cifras {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 48px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.perfil-cifras li {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-}
-
-.perfil-cifras strong {
-  color: var(--sg-text);
-  font: 700 32px/1 'Space Grotesk', var(--sg-sans);
-}
-
-.perfil-cifras span {
-  color: var(--sg-muted);
-  font-size: 14px;
 }
 
 .sg-landing .perfil-historial {
@@ -1496,12 +1474,6 @@ table.persona-tabla td:first-child,
   color: var(--sg-red);
 }
 
-.perfil-fila h3 {
-  margin: 0 0 4px;
-  font-size: 16px;
-}
-
-.perfil-fila p,
 .perfil-peligro > p,
 .perfil-modal p {
   margin: 0;
@@ -1510,20 +1482,68 @@ table.persona-tabla td:first-child,
   line-height: 1.45;
 }
 
-.perfil-fila {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.perfil-fila > div {
-  flex: 1 1 220px;
-}
-
-.perfil-bloqueo {
+.perfil-ayuda {
   margin: 0;
+  color: var(--sg-muted);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.perfil-asignar {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 44px;
+  color: var(--sg-accent);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.perfil-peligro .perfil-borrar {
+  justify-self: start;
+  width: fit-content;
+}
+
+.perfil-exportar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--sg-text);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.perfil-exportar svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.perfil-exportar:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.perfil-exportar:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.perfil-exportar:focus-visible,
+.perfil-asignar:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
 }
 
 .perfil-borrar {

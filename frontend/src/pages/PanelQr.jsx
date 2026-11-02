@@ -3,7 +3,13 @@ import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
 import { combinarConAmenaza, combinarConEnriquecimiento, dominioBase } from '../lib/analisis.js'
-import { consultarPeorAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
+import {
+  consultarPeorAmenaza,
+  enriquecer,
+  guardarAnalisis,
+  marcarLoQueFalto,
+  reportarDominio,
+} from '../lib/enriquecer.js'
 import { leerQr } from '../lib/qrContenido.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
@@ -274,24 +280,19 @@ function PanelQr() {
     setVista({ valor: local.url, invisibles: leido.invisibles, extra: null, sinServidor: false })
     setAnalizando(true)
 
-    const extra = await enriquecer(local.url)
-    const dominioMeta = extra?.meta_destino ? dominioBase(hostDe(extra.meta_destino)) : null
-    const { amenaza, fallo } = await consultarPeorAmenaza([local.dominio, extra?.dominio, dominioMeta])
-
-    let final = combinarConAmenaza(local, fallo ? null : amenaza)
-    final = combinarConEnriquecimiento(final, extra)
-
-    if (fallo) {
-      final = {
-        ...final,
-        motivos: [
-          ...final.motivos,
-          'No se pudo consultar la base de amenazas, así que este resultado sale de la dirección y de lo que se pudo abrir.',
-        ],
-      }
+    const abrir = !local.sinSitio && !local.demasiadoLarga
+    const extra = abrir ? await enriquecer(local.url) : null
+    let final = local
+    if (!local.sinSitio) {
+      const dominioMeta = extra?.meta_destino ? dominioBase(hostDe(extra.meta_destino)) : null
+      const { amenaza, fallo } = await consultarPeorAmenaza([local.dominio, extra?.dominio, dominioMeta])
+      final = marcarLoQueFalto(
+        combinarConEnriquecimiento(combinarConAmenaza(local, fallo ? null : amenaza), extra),
+        { abrio: !abrir || Boolean(extra), fallo },
+      )
     }
 
-    setVista({ valor: local.url, invisibles: leido.invisibles, extra, sinServidor: !extra })
+    setVista({ valor: local.url, invisibles: leido.invisibles, extra, sinServidor: abrir && !extra })
     setResultado({ ...final, casoId: crypto.randomUUID() })
     setAnalizando(false)
 
@@ -573,7 +574,7 @@ function PanelQr() {
               subtitulo={resultado.dominioDestino ?? resultado.dominio}
               motivos={resultado.motivos}
             >
-              {resultado.nivel !== 'verde' && (
+              {resultado.nivel !== 'verde' && !resultado.sinSitio && (
                 <div className="panel-acciones">
                   {cierre ? (
                     <p className="resultado-aviso">{cierre}</p>

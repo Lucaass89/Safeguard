@@ -3,6 +3,9 @@ package com.safeguard.app;
 import android.Manifest;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipDescription;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -12,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.textclassifier.TextClassifier;
 import android.webkit.CookieManager;
 import android.webkit.PermissionRequest;
 import android.webkit.URLUtil;
@@ -34,13 +38,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String SITIO = "https://safeguardd.vercel.app";
+    private static final int MAXIMO_COMPARTIDO = 4000;
+    private static final int MAXIMO_COPIADO = 2000;
+    private static final Pattern PARECE_ENLACE = Pattern.compile(
+            "https?://|www\\.|[a-z0-9-]+\\.[a-z]{2,}", Pattern.CASE_INSENSITIVE);
 
     private WebView sitio;
+    private long ultimoCopiado = -1;
     private ValueCallback<Uri[]> archivoPendiente;
     private PermissionRequest permisoCamaraPendiente;
 
@@ -89,7 +101,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         prepararSitio(aviso, carga);
-        sitio.loadUrl(SITIO);
+        String compartido = direccionCompartida(getIntent());
+        sitio.loadUrl(compartido != null ? compartido : SITIO);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -117,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
         if (agente != null) {
             // Google rechaza el inicio de sesión si el navegador se anuncia como WebView.
             agente = agente.replace("; wv", "");
-            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp";
+            // La versión le dice al sitio qué funciones nativas tiene esta app.
+            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp/2";
             ajustes.setUserAgentString(agente);
         }
 
@@ -128,12 +142,22 @@ public class MainActivity extends AppCompatActivity {
         sitio.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return abrirAfuera(request.getUrl());
+                Uri destino = request.getUrl();
+                if (destino != null && "safeguard".equalsIgnoreCase(destino.getScheme())) {
+                    if ("portapapeles".equalsIgnoreCase(destino.getHost())) revisarPortapapeles();
+                    return true;
+                }
+                return abrirAfuera(destino);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 aviso.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (hasWindowFocus()) revisarPortapapeles();
             }
 
             @Override
@@ -200,6 +224,64 @@ public class MainActivity extends AppCompatActivity {
         return "https".equalsIgnoreCase(origen.getScheme())
                 && sitioUri.getHost() != null
                 && sitioUri.getHost().equalsIgnoreCase(origen.getHost());
+    }
+
+    private boolean estaEnNuestroSitio() {
+        String actual = sitio != null ? sitio.getUrl() : null;
+        return actual != null && esNuestroSitio(Uri.parse(actual));
+    }
+
+    private String direccionCompartida(Intent intento) {
+        if (intento == null || !Intent.ACTION_SEND.equals(intento.getAction())) return null;
+        String tipo = intento.getType();
+        if (tipo == null || !tipo.startsWith("text/")) return null;
+        CharSequence texto = intento.getCharSequenceExtra(Intent.EXTRA_TEXT);
+        if (texto == null) return null;
+        String limpio = texto.toString().trim();
+        if (limpio.isEmpty()) return null;
+        if (limpio.length() > MAXIMO_COMPARTIDO) limpio = limpio.substring(0, MAXIMO_COMPARTIDO);
+        return SITIO + "/?compartido=" + Uri.encode(limpio);
+    }
+
+    private void revisarPortapapeles() {
+        if (!estaEnNuestroSitio()) return;
+        sitio.evaluateJavascript("localStorage.getItem('sg-portapapeles')", valor -> {
+            if ("\"si\"".equals(valor)) leerPortapapeles();
+        });
+    }
+
+    // Solo se lee con la opción activada en el sitio: Android avisa cada lectura.
+    private void leerPortapapeles() {
+        if (!hasWindowFocus() || !estaEnNuestroSitio()) return;
+        ClipboardManager portapapeles = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        if (portapapeles == null || !portapapeles.hasPrimaryClip()) return;
+        ClipDescription descripcion = portapapeles.getPrimaryClipDescription();
+        if (descripcion == null
+                || !(descripcion.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                || descripcion.hasMimeType(ClipDescription.MIMETYPE_TEXT_HTML))) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            long marca = descripcion.getTimestamp();
+            if (marca == ultimoCopiado) return;
+            ultimoCopiado = marca;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                && descripcion.getClassificationStatus() == ClipDescription.CLASSIFICATION_COMPLETE
+                && descripcion.getConfidenceScore(TextClassifier.TYPE_URL) <= 0f) {
+            return;
+        }
+
+        ClipData copiado = portapapeles.getPrimaryClip();
+        if (copiado == null || copiado.getItemCount() == 0) return;
+        CharSequence texto = copiado.getItemAt(0).coerceToText(this);
+        if (texto == null) return;
+        String limpio = texto.toString().trim();
+        if (limpio.isEmpty() || limpio.length() > MAXIMO_COPIADO || !PARECE_ENLACE.matcher(limpio).find()) return;
+
+        sitio.evaluateJavascript(
+                "window.dispatchEvent(new CustomEvent('sg-portapapeles',{detail:" + JSONObject.quote(limpio) + "}))",
+                null);
     }
 
     private boolean pideCamara(PermissionRequest request) {
@@ -272,6 +354,20 @@ public class MainActivity extends AppCompatActivity {
         if (sitio != null) {
             sitio.requestLayout();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intento) {
+        super.onNewIntent(intento);
+        setIntent(intento);
+        String compartido = direccionCompartida(intento);
+        if (compartido != null && sitio != null) sitio.loadUrl(compartido);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean foco) {
+        super.onWindowFocusChanged(foco);
+        if (foco) revisarPortapapeles();
     }
 
     @Override

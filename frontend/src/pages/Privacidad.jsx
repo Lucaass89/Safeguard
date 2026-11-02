@@ -67,6 +67,12 @@ function Privacidad() {
           <code>correo</code> o <code>qr</code>).
         </p>
         <p>
+          El texto de un mensaje de WhatsApp no va a la base. Para mostrarlo en la
+          actividad, se guarda un fragmento de hasta 80 caracteres solo en ese
+          dispositivo (<code>localStorage</code>). En otro aparato la fila dice
+          “Mensaje de WhatsApp”.
+        </p>
+        <p>
           El panel exige iniciar sesión, así que desde la web el chequeo se
           guarda. La extensión no escribe en <code>safelink_analisis</code>. Si{' '}
           <code>extension/config.js</code> tiene la clave publishable, manda la
@@ -75,6 +81,17 @@ function Privacidad() {
           solo de la dirección y no sale nada del navegador.
         </p>
         <p>Pendiente de definir.</p>
+
+        <h2>¿Estafa o real?: qué se guarda</h2>
+        <p>
+          En el inicio de la app, cada respuesta llama a{' '}
+          <code>entrenamiento_registrar</code>, que guarda en{' '}
+          <code>entrenamiento_respuestas</code> un identificador al azar del
+          dispositivo (se crea en el aparato y queda en <code>localStorage</code>),
+          qué mensaje se mostró, si la respuesta fue correcta y la fecha. No guarda
+          la cuenta, el nombre ni el texto del mensaje. Sirve para saber si alguien
+          vuelve a jugar.
+        </p>
 
         <h2>PhishGuard: qué se registra</h2>
         <p>

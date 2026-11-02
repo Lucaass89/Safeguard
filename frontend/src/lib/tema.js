@@ -36,6 +36,10 @@ function vigilar(preferencia) {
   media.addEventListener('change', alCambiarSistema)
 }
 
+export function seguirSistema() {
+  vigilar(leerPreferencia())
+}
+
 export function aplicarTema(tema) {
   const preferencia = tema === 'oscuro' || tema === 'sistema' ? tema : 'claro'
   try {

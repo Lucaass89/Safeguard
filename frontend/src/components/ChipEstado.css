@@ -1,0 +1,54 @@
+.sg-chip {
+  --chip-color: #6b7280;
+  --chip-tinta: #3f4652;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--chip-color) 14%, transparent);
+  color: var(--chip-tinta);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.sg-chip svg {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+}
+
+.sg-chip-verde {
+  --chip-color: #2f8f69;
+  --chip-tinta: #1d5c44;
+}
+
+.sg-chip-amarillo {
+  --chip-color: #b8892a;
+  --chip-tinta: #6e5214;
+}
+
+.sg-chip-rojo {
+  --chip-color: #b9554d;
+  --chip-tinta: #833a33;
+}
+
+html[data-tema='oscuro'] .sg-chip {
+  --chip-tinta: #c3c9d4;
+}
+
+html[data-tema='oscuro'] .sg-chip-verde {
+  --chip-tinta: #9ed3bb;
+}
+
+html[data-tema='oscuro'] .sg-chip-amarillo {
+  --chip-tinta: #e2c78a;
+}
+
+html[data-tema='oscuro'] .sg-chip-rojo {
+  --chip-tinta: #eab0aa;
+}

@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
-import { analizarWhatsapp, cerrarWhatsapp } from '../lib/analisisWhatsapp.js'
-import { consultarPeorAmenaza, enriquecer, guardarAnalisis, reportarDominio } from '../lib/enriquecer.js'
+import { analizarWhatsapp } from '../lib/analisisWhatsapp.js'
+import { guardarAnalisis, reportarDominio, revisarWhatsapp } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -28,17 +28,10 @@ function PanelWhatsapp() {
 
     setAnalizando(true)
 
-    const peor = local.enlaces[0]
-    const extra = peor ? await enriquecer(peor.url) : null
-    const { amenaza } = await consultarPeorAmenaza([
-      local.dominio !== 'whatsapp' ? local.dominio : null,
-      extra?.dominio,
-    ])
-
-    const final = cerrarWhatsapp(local, amenaza, extra)
+    const final = await revisarWhatsapp(texto)
     setResultado({ ...final, casoId: crypto.randomUUID() })
 
-    const { error: fallo } = await guardarAnalisis(sesion, final, 'whatsapp')
+    const { error: fallo } = await guardarAnalisis(sesion, final, 'whatsapp', texto)
     setAnalizando(false)
     if (fallo) {
       setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)

@@ -77,7 +77,7 @@ const PLATA = [
 
 const INVISIBLES = /\u200b|\u200c|\u200d|\u2060|\ufeff/
 
-const RE_URL = /(?:https?:\/\/|www\.)[^\s<>"']+/gi
+const RE_URL = /(?:https?:\/\/|\bw{2,}\.)[^\s<>"']+/gi
 const RE_HOST = /\b(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
 const RE_TEL = /(?:\+|00)?[\d][\d\s().-]{7,18}\d/g
 
@@ -100,6 +100,13 @@ function extraerEnlaces(texto) {
     if (!ya) hallados.push(limpio)
   }
   return hallados
+}
+
+export function enlacesEn(texto) {
+  const crudo = (texto ?? '').trim()
+  return [...new Set([...extraerEnlaces(crudo), ...extraerEnlaces(destapar(crudo))])].filter((enlace) =>
+    analizar(enlace),
+  )
 }
 
 function extraerNumeros(texto) {
@@ -201,11 +208,6 @@ export function analizarWhatsapp(crudo) {
     .filter(Boolean)
     .sort((a, b) => b.puntuacion - a.puntuacion)
 
-  if (crudos.length > 0 && enlaces.length === 0) {
-    puntos += 10
-    motivos.push('Hay algo que parece un enlace, pero no se pudo leer bien.')
-  }
-
   if (enlaces.length === 0 && motivos.length === 0) {
     motivos.push('No hay enlaces ni señales fuertes en el texto. Igual, si te pide un código, no lo pases.')
   }
@@ -219,6 +221,7 @@ export function analizarWhatsapp(crudo) {
   }
 
   const puntuacion = Math.min(100, puntos + peor.puntuacion)
+  const sinVerificar = enlaces.some((enlace) => enlace.sinVerificar)
   const todos = [
     ...motivos,
     ...enlaces.flatMap((e) => e.motivos.filter((m) => !m.startsWith('No aparecen'))),
@@ -228,7 +231,8 @@ export function analizarWhatsapp(crudo) {
     url: peor.url ?? 'mensaje-whatsapp',
     dominio: peor.dominio ?? 'whatsapp',
     puntuacion,
-    nivel: nivelDesde(puntuacion),
+    nivel: nivelDesde(puntuacion, sinVerificar),
+    sinVerificar,
     motivos: [...new Set(todos.length ? todos : motivos)],
     enlaces,
     numeros: raros,

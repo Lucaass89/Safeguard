@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import Bienvenida from './Bienvenida.jsx'
-import TemaControl from './TemaControl.jsx'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
+import '../lib/portapapeles.js'
 import { useSesion } from '../lib/useSesion.js'
 import './AppShell.css'
 
@@ -89,11 +89,11 @@ function AppShell({ children }) {
         <p className="app-top-titulo">{tituloDe(pathname)}</p>
         <div className="app-top-acciones">
           {pathname === '/phishguard' && admin && (
-            <Link className="app-top-equipo" to="/phishguard/empresa" aria-label="Tu empresa">
+            <Link className="app-top-equipo" to="/phishguard/empresa">
               <Icono nombre="empresa" />
+              <span>Tu empresa</span>
             </Link>
           )}
-          {pathname !== '/' && <TemaControl icono />}
         </div>
       </header>
       <main className="app-cuerpo">

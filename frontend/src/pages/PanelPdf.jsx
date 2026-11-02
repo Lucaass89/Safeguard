@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
-import { combinarConAmenaza, combinarConEnriquecimiento } from '../lib/analisis.js'
 import { analizarPdf } from '../lib/analisisPdf.js'
-import { consultarPeorAmenaza, enriquecer, guardarAnalisis } from '../lib/enriquecer.js'
+import { cerrarRevision, enlaceParaAbrir, guardarAnalisis } from '../lib/enriquecer.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
@@ -25,10 +24,8 @@ function PanelPdf() {
 
     try {
       const analisis = await analizarPdf(archivo)
-      const peor = analisis.enlaces[0]
-      const extra = peor ? await enriquecer(peor.url) : null
-      const { amenaza } = await consultarPeorAmenaza([peor?.dominio, extra?.dominio])
-      const final = combinarConEnriquecimiento(combinarConAmenaza(analisis, amenaza), extra)
+      const peor = enlaceParaAbrir(analisis.enlaces)
+      const final = await cerrarRevision(analisis, peor?.url, [peor?.dominio])
       setResultado({ ...final, casoId: crypto.randomUUID() })
       const { error: fallo } = await guardarAnalisis(sesion, final, 'pdf')
       if (fallo) setError(`El análisis se hizo, pero no se pudo guardar: ${fallo.message}`)

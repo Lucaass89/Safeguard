@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
+import { nombreEmpresa } from '../lib/formato.js'
 import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
 import './Panel.css'
@@ -101,7 +102,7 @@ function PanelTablero() {
         </Link>
         <h1>Vulnerabilidad del equipo</h1>
         <p className="panel-lead">
-          {organizacion.nombre_empresa}. Medimos si la persona cayó, si se capacitó y si
+          {nombreEmpresa(organizacion.nombre_empresa)}. Medimos si la persona cayó, si se capacitó y si
           mejoró en el refuerzo.
         </p>
         <p className="panel-acciones">

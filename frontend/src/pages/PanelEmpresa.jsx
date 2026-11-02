@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
+import { nombreEmpresa } from '../lib/formato.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -463,7 +464,7 @@ function PanelEmpresa() {
         <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
           ← Volver a las opciones
         </Link>
-        <h1>{organizacion ? organizacion.nombre_empresa : 'PhishGuard es pago'}</h1>
+        <h1>{organizacion ? nombreEmpresa(organizacion.nombre_empresa) : 'PhishGuard es pago'}</h1>
         <p className="panel-lead">
           {organizacion
             ? `Plan ${organizacion.plan_id}. Acá cargás a la gente que va a recibir las simulaciones.`
