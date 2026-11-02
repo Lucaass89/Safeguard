@@ -2,9 +2,26 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { nombreEmpresa } from '../lib/formato.js'
-import { resumirEquipo } from '../lib/tableroEquipo.js'
+import { historialCaidas, resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
 import './Panel.css'
+
+const CANAL_ETIQUETA = { email: 'Mail', whatsapp: 'WhatsApp', sms: 'SMS' }
+
+function etiquetaCanal(canal) {
+  return CANAL_ETIQUETA[canal] ?? canal ?? ''
+}
+
+function fechaHora(valor) {
+  if (!valor) return 'Sin fecha'
+  return new Date(valor).toLocaleString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
 function despues(persona) {
   const partes = [
@@ -74,6 +91,11 @@ function PanelInforme() {
 
   const { porPersona, porArea, resumen } = useMemo(
     () => resumirEquipo(empleados, eventos, campanas),
+    [empleados, eventos, campanas],
+  )
+
+  const historial = useMemo(
+    () => historialCaidas(empleados, eventos, campanas),
     [empleados, eventos, campanas],
   )
 
@@ -201,6 +223,45 @@ function PanelInforme() {
               </table>
             </div>
           </section>
+
+          {historial.length > 0 && (
+            <section className="panel-seccion">
+              <h2>Historial de caídas</h2>
+              <p className="panel-lead">
+                Cada vez que alguien tocó el enlace o cargó datos, con la fecha y la campaña.
+                De lo más reciente a lo más viejo.
+              </p>
+              <div className="tabla-wrap">
+                <table className="tabla-equipo">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Nombre</th>
+                      <th>Área</th>
+                      <th>Campaña</th>
+                      <th>Canal</th>
+                      <th>Qué hizo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {historial.map((caida) => (
+                      <tr key={caida.id}>
+                        <td>{fechaHora(caida.fecha)}</td>
+                        <td>{caida.nombre}</td>
+                        <td>{caida.area}</td>
+                        <td>
+                          {caida.campana}
+                          {caida.refuerzo ? ' · refuerzo' : ''}
+                        </td>
+                        <td>{etiquetaCanal(caida.canal)}</td>
+                        <td>{caida.accion}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
         </>
       )}
 

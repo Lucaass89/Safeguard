@@ -357,8 +357,9 @@ function PanelCampanas() {
           WhatsApp o SMS. Quien cae recibe un refuerzo más difícil a las 3 semanas.
         </p>
         <p className="panel-aviso">
-          Al crear la campaña, los enlaces llegan por correo a la cuenta con la que
-          entraste. También quedan en el listado.
+          Si el canal es Mail, la simulación se envía directo a cada empleado, con aspecto
+          de notificación real. Si es WhatsApp o SMS, te llega un kit a tu cuenta con el
+          mensaje y los enlaces para mandar vos. Todo queda en el listado.
         </p>
       </header>
 

@@ -2,6 +2,33 @@ function toco(ev) {
   return Boolean(ev.hizo_clic || ev.ingreso_datos)
 }
 
+export function historialCaidas(empleados, eventos, campanas) {
+  const porEmpleado = new Map(empleados.map((e) => [e.id, e]))
+  const porCampana = new Map(campanas.map((c) => [c.id, c]))
+
+  return eventos
+    .filter(toco)
+    .map((ev) => {
+      const persona = porEmpleado.get(ev.empleado_id)
+      const campana = porCampana.get(ev.campana_id)
+      return {
+        id: ev.id,
+        nombre: persona?.nombre ?? 'Empleado',
+        area: persona?.departamento || 'General',
+        campana: campana?.nombre_campana ?? 'Campaña',
+        canal: campana?.canal ?? '',
+        refuerzo: Boolean(campana?.es_refuerzo),
+        accion: ev.ingreso_datos ? 'Ingresó datos' : 'Tocó el enlace',
+        fecha: ev.fecha_evento ?? null,
+      }
+    })
+    .sort((a, b) => {
+      const fa = a.fecha ? new Date(a.fecha).getTime() : 0
+      const fb = b.fecha ? new Date(b.fecha).getTime() : 0
+      return fb - fa
+    })
+}
+
 export function resumirEquipo(empleados, eventos, campanas) {
   const refuerzoIds = new Set(campanas.filter((c) => c.es_refuerzo).map((c) => c.id))
 

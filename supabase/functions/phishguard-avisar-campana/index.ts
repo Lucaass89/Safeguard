@@ -49,22 +49,48 @@ function clavePublica() {
   }
 }
 
-function mensajeSimulacion(
-  canal: string,
-  plantilla: {
-    asunto_mail?: string | null
-    remitente_falso?: string | null
-    cuerpo_html?: string | null
-  } | null,
-  link: string,
-) {
-  const cuerpo = (plantilla?.cuerpo_html ?? 'Entrá acá: {link}').replaceAll('{link}', link)
-  if (canal === 'email') {
-    const de = plantilla?.remitente_falso ?? ''
-    const asunto = plantilla?.asunto_mail ?? ''
-    return `De: ${de}\nAsunto: ${asunto}\n\n${cuerpo}`
-  }
-  return cuerpo
+type Plantilla = {
+  titulo?: string | null
+  asunto_mail?: string | null
+  remitente_falso?: string | null
+  cuerpo_html?: string | null
+}
+
+// Nombre para mostrar en el "De". El correo sale igual desde la cuenta de
+// Gmail autenticada, así SPF, DKIM y DMARC quedan bien y el mail entra a la
+// bandeja en lugar de caer en spam.
+function remitenteVisible(plantilla: Plantilla | null) {
+  const crudo = (plantilla?.remitente_falso ?? '').trim()
+  const nombre = crudo.replaceAll('"', '').trim() || 'Notificaciones'
+  return nombre
+}
+
+function asuntoCreible(plantilla: Plantilla | null) {
+  const asunto = (plantilla?.asunto_mail ?? '').trim()
+  return asunto || 'Tenés una notificación pendiente'
+}
+
+// Arma el cuerpo del correo como una notificación real: el texto de la
+// plantilla, con el enlace como un botón, dentro de una tarjeta sobria.
+function correoHtml(plantilla: Plantilla | null, link: string) {
+  const crudo = plantilla?.cuerpo_html ?? 'Tenés una notificación pendiente. Ingresá para verla: {link}'
+  const boton = `<a href="${esc(link)}" style="display:inline-block;margin:18px 0;padding:12px 22px;background:#2563eb;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600;font-size:15px">Ingresar ahora</a>`
+  const cuerpo = crudo
+    .split('{link}')
+    .map((parte) => esc(parte).replaceAll('\n', '<br/>'))
+    .join(boton)
+  const incluyeBoton = crudo.includes('{link}')
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#1f2937;max-width:560px;margin:0 auto;padding:28px;border:1px solid #e5e7eb;border-radius:10px;background:#ffffff">
+    <p style="margin:0 0 4px">${cuerpo}</p>
+    ${incluyeBoton ? '' : boton}
+    <p style="margin:24px 0 0;font-size:12px;color:#9aa4b2">Si no esperabas este mensaje, ignoralo.</p>
+  </div>`
+}
+
+function correoTexto(plantilla: Plantilla | null, link: string) {
+  const crudo = plantilla?.cuerpo_html ?? 'Tenés una notificación pendiente. Ingresá para verla: {link}'
+  if (crudo.includes('{link}')) return crudo.replaceAll('{link}', link)
+  return `${crudo}\n\n${link}`
 }
 
 function credencialesGmail() {
@@ -81,7 +107,14 @@ function errorGmail(error: unknown) {
   return crudo
 }
 
-async function mandarGmail(from: string, to: string, subject: string, html: string, text: string) {
+async function mandarGmail(
+  from: string,
+  to: string,
+  subject: string,
+  html: string,
+  text: string,
+  replyTo: string,
+) {
   const { usuario, clave } = credencialesGmail()
   const client = new SMTPClient({
     connection: {
@@ -98,6 +131,7 @@ async function mandarGmail(from: string, to: string, subject: string, html: stri
     await client.send({
       from,
       to,
+      replyTo,
       subject,
       content: text,
       html,
@@ -159,7 +193,7 @@ Deno.serve(async (req) => {
         : Promise.resolve({ data: null }),
       supabase
         .from('eventos_simulacion')
-        .select('token_unico, empleados(nombre, email)')
+        .select('id, token_unico, empleados(nombre, email)')
         .eq('campana_id', campanaId),
     ])
 
@@ -173,66 +207,129 @@ Deno.serve(async (req) => {
     }
 
     const personas = (eventos ?? []).map(
-      (ev: { token_unico: string; empleados: { nombre?: string; email?: string } | null }) => {
+      (ev: {
+        id: string
+        token_unico: string
+        empleados: { nombre?: string; email?: string } | null
+      }) => {
         const persona = ev.empleados
-        const sim = `${origen}/simulacion/${ev.token_unico}`
-        const bien = `${origen}/bien/${ev.token_unico}`
-        const mensaje = mensajeSimulacion(campana.canal, plantilla, sim)
         return {
+          eventoId: ev.id,
           nombre: persona?.nombre ?? 'Empleado',
-          email: persona?.email ?? '',
-          sim,
-          bien,
-          mensaje,
+          email: (persona?.email ?? '').trim(),
+          sim: `${origen}/simulacion/${ev.token_unico}`,
+          bien: `${origen}/bien/${ev.token_unico}`,
         }
       },
     )
 
-    const filas = personas
+    // Canal Mail: el cebo va directo a la bandeja de cada empleado, con aspecto
+    // de notificación real. El remitente visible es el de la plantilla, pero el
+    // correo sale desde la cuenta de Gmail para no caer en spam.
+    if (campana.canal === 'email') {
+      const conMail = personas.filter((p) => p.email)
+      if (conMail.length === 0) {
+        return json({ ok: false, error: 'Los empleados de esta campaña no tienen correo cargado.' })
+      }
+
+      const asunto = asuntoCreible(plantilla)
+      const from = `${remitenteVisible(plantilla)} <${usuario}>`
+      let enviados = 0
+      let ultimoError = ''
+      const enviadosIds: string[] = []
+
+      for (const persona of conMail) {
+        try {
+          await mandarGmail(
+            from,
+            persona.email,
+            asunto,
+            correoHtml(plantilla, persona.sim),
+            correoTexto(plantilla, persona.sim),
+            usuario,
+          )
+          enviados += 1
+          enviadosIds.push(persona.eventoId)
+        } catch (error) {
+          ultimoError = errorGmail(error)
+          console.log(JSON.stringify({ destino: persona.email, campana: campanaId, ok: false }))
+        }
+      }
+
+      if (enviadosIds.length > 0) {
+        await supabase
+          .from('eventos_simulacion')
+          .update({ mail_enviado: true })
+          .in('id', enviadosIds)
+      }
+
+      if (enviados === 0) {
+        return json({ ok: false, error: ultimoError || 'No se pudo enviar ningún correo.' })
+      }
+
+      console.log(JSON.stringify({ campana: campanaId, enviados, total: conMail.length, ok: true }))
+      return json({
+        ok: true,
+        canal: 'email',
+        enviados,
+        total: conMail.length,
+        aviso:
+          enviados === conMail.length
+            ? `El correo salió a ${enviados} ${enviados === 1 ? 'empleado' : 'empleados'}.`
+            : `El correo salió a ${enviados} de ${conMail.length}. ${ultimoError}`,
+      })
+    }
+
+    // WhatsApp y SMS no se pueden mandar solos: la persona que administra recibe
+    // un kit limpio con el mensaje listo para copiar y los dos enlaces.
+    const bloques = personas
       .map(
-        (persona) => `<tr>
-          <td>${esc(persona.nombre)}<br/><span style="color:#667085">${esc(persona.email)}</span></td>
-          <td><a href="${esc(persona.sim)}">${esc(persona.sim)}</a><pre style="white-space:pre-wrap;font-family:inherit">${esc(persona.mensaje)}</pre></td>
-          <td><a href="${esc(persona.bien)}">${esc(persona.bien)}</a></td>
-        </tr>`,
+        (persona) => `<div style="margin:0 0 18px;padding:14px 16px;border:1px solid #e5e7eb;border-radius:10px;font-family:sans-serif;font-size:14px;color:#1f2937">
+          <p style="margin:0 0 6px;font-weight:600">${esc(persona.nombre)}${
+          persona.email ? ` · <span style="color:#667085;font-weight:400">${esc(persona.email)}</span>` : ''
+        }</p>
+          <p style="margin:0 0 4px"><strong>Para mandar:</strong> <a href="${esc(persona.sim)}">${esc(persona.sim)}</a></p>
+          <p style="margin:0"><strong>Lo hiciste bien:</strong> <a href="${esc(persona.bien)}">${esc(persona.bien)}</a></p>
+        </div>`,
       )
       .join('')
 
-    const texto = personas
+    const textoKit = personas
       .map(
         (persona) =>
-          `${persona.nombre} ${persona.email}\nSimulación: ${persona.sim}\nLo hiciste bien: ${persona.bien}\n${persona.mensaje}`,
+          `${persona.nombre}${persona.email ? ` (${persona.email})` : ''}\nPara mandar: ${persona.sim}\nLo hiciste bien: ${persona.bien}`,
       )
       .join('\n\n')
 
     const html = `
-      <p>Se creó la campaña <strong>${esc(campana.nombre_campana)}</strong> (${esc(campana.canal)}).</p>
-      <p>Estos son los enlaces para mandar a cada persona. El de simulación es el cebo; el de “lo hiciste bien” es para quien no tocó el enlace.</p>
-      <table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
-        <thead><tr><th>Persona</th><th>Simulación</th><th>Lo hiciste bien</th></tr></thead>
-        <tbody>${filas || '<tr><td colspan="3">Sin destinatarios.</td></tr>'}</tbody>
-      </table>
+      <p style="font-family:sans-serif;font-size:15px;color:#1f2937">Campaña <strong>${esc(campana.nombre_campana)}</strong> por ${esc(campana.canal)}.</p>
+      <p style="font-family:sans-serif;font-size:14px;color:#667085">Copiá el enlace de cada persona y mandáselo por el canal de la campaña. El de "lo hiciste bien" es para quien no caiga.</p>
+      ${bloques || '<p style="font-family:sans-serif">Sin destinatarios.</p>'}
     `
 
     const from = `PhishGuard <${usuario}>`
-    const destino = user.email
-    const asunto = `Campaña lista: ${campana.nombre_campana}`
+    const asunto = `Kit de campaña: ${campana.nombre_campana}`
     const plano = [
-      `Se creó la campaña ${campana.nombre_campana} (${campana.canal}).`,
-      'El enlace de simulación es el cebo. El de “lo hiciste bien” es para quien no tocó el enlace.',
+      `Campaña ${campana.nombre_campana} por ${campana.canal}.`,
+      'Copiá el enlace de cada persona y mandáselo por el canal de la campaña.',
       '',
-      texto || 'Sin destinatarios.',
+      textoKit || 'Sin destinatarios.',
     ].join('\n')
 
     try {
-      await mandarGmail(from, destino, asunto, html, plano)
+      await mandarGmail(from, user.email, asunto, html, plano, usuario)
     } catch (error) {
-      console.log(JSON.stringify({ destino, from: usuario, campana: campanaId, ok: false }))
+      console.log(JSON.stringify({ destino: user.email, campana: campanaId, ok: false }))
       return json({ ok: false, error: errorGmail(error) })
     }
 
-    console.log(JSON.stringify({ destino, from: usuario, campana: campanaId, ok: true }))
-    return json({ ok: true, destino })
+    console.log(JSON.stringify({ destino: user.email, campana: campanaId, ok: true }))
+    return json({
+      ok: true,
+      canal: campana.canal,
+      destino: user.email,
+      aviso: `Te mandamos el kit a ${user.email} para enviar por ${campana.canal}.`,
+    })
   } catch (error) {
     console.error(error)
     return json({
