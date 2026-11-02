@@ -607,6 +607,33 @@
   gap: 8px;
 }
 
+.azar-controles {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.azar-cantidad {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.azar-cantidad input {
+  width: 96px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #e3d9cc;
+  border-radius: 6px;
+  background: #fff;
+  color: #102a43;
+  font: inherit;
+}
+
 .panel-empresas fieldset.panel-campo legend {
   flex: 1 0 100%;
   margin-bottom: 4px;

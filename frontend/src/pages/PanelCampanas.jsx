@@ -186,6 +186,7 @@ function PanelCampanas() {
   const [plantillaId, setPlantillaId] = useState('')
   const [nombre, setNombre] = useState('')
   const [elegidos, setElegidos] = useState([])
+  const [cantidadAzar, setCantidadAzar] = useState(5)
   const [creando, setCreando] = useState(false)
   const [abierta, setAbierta] = useState(() => location.state?.abrir ?? null)
   const [copiado, setCopiado] = useState(null)
@@ -228,6 +229,17 @@ function PanelCampanas() {
     setElegidos((previo) =>
       previo.includes(id) ? previo.filter((x) => x !== id) : [...previo, id],
     )
+  }
+
+  function elegirAlAzar() {
+    if (empleados.length === 0) return
+    const cuantos = Math.max(1, Math.min(Number(cantidadAzar) || 1, empleados.length))
+    const mezclados = [...empleados]
+    for (let i = mezclados.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[mezclados[i], mezclados[j]] = [mezclados[j], mezclados[i]]
+    }
+    setElegidos(mezclados.slice(0, cuantos).map((e) => e.id))
   }
 
   async function crearCampana(evento) {
@@ -420,7 +432,37 @@ function PanelCampanas() {
           </label>
 
           <fieldset className="panel-campo">
-            <legend>Destinatarios</legend>
+            <legend>
+              Destinatarios{elegidos.length > 0 ? ` · ${elegidos.length} elegidos` : ''}
+            </legend>
+            <div className="azar-controles">
+              <label className="azar-cantidad">
+                <span>Cuántos al azar</span>
+                <input
+                  type="number"
+                  min="1"
+                  max={empleados.length}
+                  value={cantidadAzar}
+                  onChange={(e) => setCantidadAzar(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className="panel-boton panel-boton-borde"
+                onClick={elegirAlAzar}
+              >
+                Elegir al azar
+              </button>
+              {elegidos.length > 0 && (
+                <button
+                  type="button"
+                  className="panel-boton panel-boton-borde"
+                  onClick={() => setElegidos([])}
+                >
+                  Limpiar
+                </button>
+              )}
+            </div>
             {empleados.map((empleado) => (
               <label className="check-empleado" key={empleado.id}>
                 <input
