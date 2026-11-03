@@ -83,13 +83,54 @@ function claseCampana(estado) {
   return 'persona-badge persona-badge-inactivo'
 }
 
+function porcentaje(parte, total) {
+  if (total <= 0) return 0
+  return Math.round((parte / total) * 100)
+}
+
 function metricas(eventos) {
   const total = eventos.length
   const clic = eventos.filter((e) => e.hizo_clic).length
   const datos = eventos.filter((e) => e.ingreso_datos).length
   const cap = eventos.filter((e) => e.completo_capacitacion).length
   const bien = eventos.filter((e) => e.vio_reconocimiento && !e.hizo_clic).length
-  return { total, clic, datos, cap, bien }
+  const enviados = eventos.filter((e) => e.mail_enviado).length
+  const abiertos = eventos.filter((e) => e.mail_abierto).length
+  return {
+    total,
+    clic,
+    datos,
+    cap,
+    bien,
+    enviados,
+    abiertos,
+    pctClic: porcentaje(clic, total),
+    pctDatos: porcentaje(datos, total),
+    pctCap: porcentaje(cap, total),
+    pctBien: porcentaje(bien, total),
+  }
+}
+
+function fraseEstadistica(m, canal) {
+  if (m.total === 0) return 'Todavía no hay destinatarios en esta campaña.'
+  const clic = m.clic === 1 ? '1 persona tocó el enlace' : `${m.clic} tocaron el enlace`
+  const datos = m.datos === 1 ? '1 cargó datos' : `${m.datos} cargaron datos`
+  const cap = m.cap === 1 ? '1 se capacitó' : `${m.cap} se capacitaron`
+  const bien = m.bien === 1 ? '1 no tocó el enlace y vio el reconocimiento' : `${m.bien} no tocaron el enlace y vieron el reconocimiento`
+  const correo =
+    canal === 'email' && m.enviados > 0
+      ? ` El correo salió a ${m.enviados}${m.abiertos > 0 ? ` y se abrió ${m.abiertos} ${m.abiertos === 1 ? 'vez' : 'veces'}` : ''}.`
+      : ''
+  return `De ${m.total}, ${clic} (${m.pctClic}%). ${datos}. ${cap}. ${bien}.${correo}`
+}
+
+function estadoPersona(ev) {
+  if (ev.ingreso_datos) return 'Cargó datos'
+  if (ev.hizo_clic) return 'Tocó el enlace'
+  if (ev.vio_reconocimiento) return 'Reconoció el mensaje'
+  if (ev.completo_capacitacion) return 'Se capacitó'
+  if (ev.mail_enviado) return 'Correo enviado'
+  return 'Pendiente'
 }
 
 async function inspirarDesdeSafeLink() {
@@ -157,7 +198,7 @@ async function cargar() {
     supabase
       .from('campanas')
       .select(
-        'id, nombre_campana, estado, canal, es_refuerzo, fecha_inicio, creado_en, plantilla_id, extra, plantillas_phishing(titulo, asunto_mail, remitente_falso, cuerpo_html), eventos_simulacion(id, token_unico, hizo_clic, ingreso_datos, completo_capacitacion, vio_reconocimiento, empleados(nombre, email, departamento))',
+        'id, nombre_campana, estado, canal, es_refuerzo, fecha_inicio, creado_en, plantilla_id, extra, plantillas_phishing(titulo, asunto_mail, remitente_falso, cuerpo_html), eventos_simulacion(id, token_unico, hizo_clic, ingreso_datos, completo_capacitacion, vio_reconocimiento, mail_enviado, mail_abierto, fecha_evento, empleados(nombre, email, departamento))',
       )
       .order('creado_en', { ascending: false }),
   ])
@@ -191,6 +232,8 @@ function PanelCampanas() {
   const [abierta, setAbierta] = useState(() => location.state?.abrir ?? null)
   const [copiado, setCopiado] = useState(null)
   const [mailtoKit, setMailtoKit] = useState(null)
+  const [confirmarBorrar, setConfirmarBorrar] = useState(null)
+  const [borrando, setBorrando] = useState(null)
 
   const visibles = useMemo(
     () => plantillas.filter((p) => p.canal === canal || p.canal === 'todos'),
@@ -325,6 +368,23 @@ function PanelCampanas() {
     window.setTimeout(() => {
       setCopiado((actual) => (actual === clave ? null : actual))
     }, 2000)
+  }
+
+  async function borrarCampana(id) {
+    setError(null)
+    setAviso(null)
+    setBorrando(id)
+    const { error: fallo } = await supabase.from('campanas').delete().eq('id', id)
+    setBorrando(null)
+    if (fallo) {
+      setError(`No se pudo borrar la campaña: ${fallo.message}`)
+      return
+    }
+    setConfirmarBorrar(null)
+    if (abierta === id) setAbierta(null)
+    const estado = await cargar()
+    setCampanas(estado.campanas)
+    setAviso('La campaña se borró. Los clics de esa ronda ya no entran en el informe.')
   }
 
   async function lanzarRefuerzo(id) {
@@ -551,43 +611,105 @@ function PanelCampanas() {
                               : 'Sin destinatarios.'}
                           </p>
                         ) : (
-                          <ul className="enlaces-sim">
-                            {evs.map((ev) => (
-                              <li key={ev.id}>
-                                <p>
-                                  {ev.empleados?.nombre ?? 'Empleado'}
-                                  {ev.hizo_clic ? ' · cayó' : ''}
-                                  {ev.completo_capacitacion ? ' · capacitado' : ''}
-                                  {ev.vio_reconocimiento && !ev.hizo_clic
-                                    ? ' · reconoció'
-                                    : ''}
-                                </p>
-                                <p className="historial-meta">{enlace(ev.token_unico, 'sim')}</p>
-                                <div className="panel-acciones">
-                                  <button
-                                    type="button"
-                                    className="panel-boton panel-boton-borde"
-                                    onClick={() =>
-                                      copiarYMarcar(`${ev.id}-sim`, textoSimulacion(campana, ev.token_unico))
-                                    }
-                                  >
-                                    {copiado === `${ev.id}-sim` ? 'Copiado' : 'Copiar simulación'}
-                                  </button>
-                                  {!ev.hizo_clic && (
+                          <>
+                            <h3 className="campana-bloque-titulo">Estadísticas</h3>
+                            <ul className="metricas-franja campana-metricas">
+                              <li>
+                                <strong>{m.total}</strong>
+                                <span>Personas</span>
+                              </li>
+                              <li>
+                                <strong>{m.pctClic}%</strong>
+                                <span>Tocaron el enlace · {m.clic}</span>
+                              </li>
+                              <li>
+                                <strong>{m.pctDatos}%</strong>
+                                <span>Cargaron datos · {m.datos}</span>
+                              </li>
+                              <li>
+                                <strong>{m.pctCap}%</strong>
+                                <span>Se capacitaron · {m.cap}</span>
+                              </li>
+                            </ul>
+                            <p className="campana-lectura">{fraseEstadistica(m, campana.canal)}</p>
+                            <p className="panel-acciones">
+                              <Link className="text-link" to={rutaEnApp('/panel/informe')}>
+                                Ver el informe del equipo
+                              </Link>
+                            </p>
+
+                            <h3 className="campana-bloque-titulo">Personas</h3>
+                            <ul className="enlaces-sim">
+                              {evs.map((ev) => (
+                                <li key={ev.id}>
+                                  <p>
+                                    {ev.empleados?.nombre ?? 'Empleado'}
+                                    {' · '}
+                                    {estadoPersona(ev)}
+                                    {ev.hizo_clic && ev.fecha_evento ? ` · ${fecha(ev.fecha_evento)}` : ''}
+                                  </p>
+                                  <p className="historial-meta">{enlace(ev.token_unico, 'sim')}</p>
+                                  <div className="panel-acciones">
                                     <button
                                       type="button"
                                       className="panel-boton panel-boton-borde"
-                                      onClick={() => copiarYMarcar(`${ev.id}-bien`, textoBien(ev))}
+                                      onClick={() =>
+                                        copiarYMarcar(`${ev.id}-sim`, textoSimulacion(campana, ev.token_unico))
+                                      }
                                     >
-                                      {copiado === `${ev.id}-bien`
-                                        ? 'Copiado'
-                                        : 'Copiar “lo hiciste bien”'}
+                                      {copiado === `${ev.id}-sim` ? 'Copiado' : 'Copiar simulación'}
                                     </button>
-                                  )}
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
+                                    {!ev.hizo_clic && (
+                                      <button
+                                        type="button"
+                                        className="panel-boton panel-boton-borde"
+                                        onClick={() => copiarYMarcar(`${ev.id}-bien`, textoBien(ev))}
+                                      >
+                                        {copiado === `${ev.id}-bien`
+                                          ? 'Copiado'
+                                          : 'Copiar “lo hiciste bien”'}
+                                      </button>
+                                    )}
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
+
+                        {confirmarBorrar === campana.id ? (
+                          <div className="campana-borrar">
+                            <p>
+                              Se borra «{campana.nombre_campana}» y los clics de esta ronda. El
+                              informe deja de contarlos. Esta acción no se deshace.
+                            </p>
+                            <div className="panel-acciones">
+                              <button
+                                type="button"
+                                className="perfil-borrar"
+                                disabled={borrando === campana.id}
+                                onClick={() => borrarCampana(campana.id)}
+                              >
+                                {borrando === campana.id ? 'Borrando…' : 'Sí, borrar'}
+                              </button>
+                              <button
+                                type="button"
+                                className="panel-boton panel-boton-borde"
+                                disabled={borrando === campana.id}
+                                onClick={() => setConfirmarBorrar(null)}
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            className="panel-boton panel-boton-borde"
+                            onClick={() => setConfirmarBorrar(campana.id)}
+                          >
+                            Eliminar campaña
+                          </button>
                         )}
                       </div>
                     )}

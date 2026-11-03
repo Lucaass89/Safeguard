@@ -169,6 +169,9 @@
 
 .panel-boton,
 .panel-boton-borde {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 44px;
   padding: 0 18px;
   border-radius: var(--sg-radius-sm);
@@ -178,7 +181,25 @@
   transition:
     background-color var(--sg-ease),
     border-color var(--sg-ease),
-    color var(--sg-ease);
+    color var(--sg-ease),
+    box-shadow var(--sg-ease),
+    transform var(--sg-ease);
+}
+
+.panel-boton::before,
+.panel-boton-borde::before {
+  content: '';
+  position: absolute;
+  inset: -50% -70%;
+  z-index: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 32%,
+    rgb(255 255 255 / 28%) 50%,
+    transparent 68%
+  );
+  pointer-events: none;
+  translate: -130% 0;
 }
 
 .panel-boton {
@@ -187,8 +208,12 @@
   color: #fff;
 }
 
-.panel-boton:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--sg-blue) 82%, #102a43);
+.panel-boton:hover:not(:disabled),
+.panel-boton:focus-visible:not(:disabled) {
+  background: color-mix(in srgb, var(--sg-blue) 78%, white);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--sg-accent) 40%, transparent),
+    0 8px 22px color-mix(in srgb, var(--sg-blue) 42%, transparent);
 }
 
 .panel-form > .panel-boton {
@@ -213,8 +238,28 @@
   color: var(--sg-accent);
 }
 
-.panel-boton-borde:hover {
-  border-color: color-mix(in srgb, var(--sg-accent) 80%, white);
+.panel-boton-borde:hover:not(:disabled),
+.panel-boton-borde:focus-visible:not(:disabled) {
+  border-color: color-mix(in srgb, var(--sg-accent) 90%, white);
+  background: color-mix(in srgb, var(--sg-accent) 16%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--sg-accent) 34%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel-boton:hover:not(:disabled)::before,
+  .panel-boton:focus-visible:not(:disabled)::before,
+  .panel-boton-borde:hover:not(:disabled)::before,
+  .panel-boton-borde:focus-visible:not(:disabled)::before {
+    translate: 130% 0;
+    transition: translate 560ms ease;
+  }
+
+  .panel-boton:hover:not(:disabled),
+  .panel-boton:focus-visible:not(:disabled),
+  .panel-boton-borde:hover:not(:disabled),
+  .panel-boton-borde:focus-visible:not(:disabled) {
+    transform: translateY(-1px);
+  }
 }
 
 .panel-acciones {
@@ -722,6 +767,46 @@
   display: grid;
   gap: 12px;
   padding: 0 4px 20px;
+}
+
+.campana-bloque-titulo {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.campana-lectura {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--sg-muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.campana-metricas {
+  border-block: 1px solid var(--sg-line);
+}
+
+.campana-metricas strong {
+  font-size: 26px;
+}
+
+.campana-borrar {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--sg-red) 45%, var(--sg-line));
+  border-radius: var(--sg-radius-sm);
+  background: color-mix(in srgb, var(--sg-red) 10%, var(--sg-surface));
+}
+
+.campana-borrar p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--sg-text);
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 .enlaces-sim {
@@ -1592,8 +1677,10 @@ table.persona-tabla td:first-child,
   cursor: pointer;
 }
 
-.perfil-borrar:hover:not(:disabled) {
+.perfil-borrar:hover:not(:disabled),
+.perfil-borrar:focus-visible:not(:disabled) {
   background: color-mix(in srgb, var(--sg-red) 88%, var(--sg-text));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--sg-red) 45%, transparent);
 }
 
 .perfil-borrar:disabled {
@@ -1657,10 +1744,26 @@ table.persona-tabla td:first-child,
   color: #3c342c;
 }
 
+.sg-landing .panel-lienzo .panel-boton:hover:not(:disabled),
+.sg-landing .panel-lienzo a.panel-boton:hover:not(:disabled),
+.sg-landing .panel-lienzo .panel-boton:focus-visible:not(:disabled) {
+  background: #f3e9dc;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #c4b09a 55%, transparent),
+    0 8px 20px rgb(60 52 44 / 14%);
+}
+
 .sg-landing .panel-lienzo .panel-boton-borde {
   border-color: #bfd4d6;
   color: var(--sg-blue);
   background: #fff;
+}
+
+.sg-landing .panel-lienzo .panel-boton-borde:hover:not(:disabled),
+.sg-landing .panel-lienzo .panel-boton-borde:focus-visible:not(:disabled) {
+  border-color: #8eb4ff;
+  background: #f4f8ff;
+  box-shadow: 0 0 18px rgb(142 180 255 / 35%);
 }
 
 .mesa-tablero {
