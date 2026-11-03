@@ -1,4 +1,4 @@
-.sl {
+.app-shell .sl {
   --sl-secundario: #4a433c;
   --sl-hero: #fffdfb;
   --sl-hero-borde: #d4c4b0;
@@ -10,7 +10,7 @@
   margin: 0 auto;
 }
 
-html[data-tema='oscuro'] .sl {
+html[data-tema='oscuro'] .app-shell .sl {
   --sl-secundario: #d5deea;
   --sl-hero: #172033;
   --sl-hero-borde: #314664;
@@ -236,6 +236,6 @@ html[data-tema='oscuro'] .sl-aviso {
   font-weight: 700;
 }
 
-.sl > .veredicto {
+.app-shell .sl > .veredicto {
   margin-top: 0;
 }
