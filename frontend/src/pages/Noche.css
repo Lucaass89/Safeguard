@@ -143,6 +143,7 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .pg-precios span,
 .sg-landing.sg-noche .pg-precio-regla,
 .sg-landing.sg-noche .pg-precio-nota,
+.sg-landing.sg-noche .adquirir-acepto,
 .sg-landing.sg-noche .nota p,
 .sg-landing.sg-noche .nota li,
 .sg-landing.sg-noche .sl-lado p,
@@ -164,7 +165,10 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .sl-lugares a,
 .sg-landing.sg-noche .sl-cuerpo a,
 .sg-landing.sg-noche .nota a,
-.sg-landing.sg-noche .adquirir-vuelta a {
+.sg-landing.sg-noche .adquirir-vuelta a,
+.sg-landing.sg-noche .adquirir-acepto a,
+.sg-landing.sg-noche .pg-precio-nota a,
+.sg-landing.sg-noche .acceso-acepto a {
   color: #60a5fa;
 }
 
@@ -204,6 +208,7 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .acceso-texto,
 .sg-landing.sg-noche .acceso-estado,
 .sg-landing.sg-noche .separador,
+.sg-landing.sg-noche .acceso-acepto,
 .sg-landing.sg-noche .acceso-pestanas button {
   color: #9ca3af;
 }

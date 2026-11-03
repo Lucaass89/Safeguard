@@ -17,6 +17,8 @@ function Contacto() {
         <h2>WhatsApp</h2>
         <p>[COMPLETAR: número de WhatsApp]</p>
         <p>
+          <Link to="/terminos">Términos y condiciones</Link>
+          {' · '}
           <Link to="/privacidad">Privacidad</Link>
         </p>
       </div>

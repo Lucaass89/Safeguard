@@ -133,6 +133,8 @@ function Privacidad() {
         </p>
 
         <p>
+          <Link to="/terminos">Términos y condiciones</Link>
+          {' · '}
           <Link to="/contacto">Contacto</Link>
         </p>
       </div>

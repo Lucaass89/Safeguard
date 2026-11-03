@@ -34,9 +34,14 @@ function Adquirir() {
   const { sesion, cargando } = useSesion()
   const [error, setError] = useState(null)
   const [enviando, setEnviando] = useState(false)
+  const [acepta, setAcepta] = useState(false)
 
   async function pagar() {
     setError(null)
+    if (!acepta) {
+      setError('Para pagar tenés que aceptar los términos y condiciones de servicio.')
+      return
+    }
     setEnviando(true)
     const { data, error: fallo } = await supabase.functions.invoke('phishguard-mercadopago', {
       body: { accion: 'crear' },
@@ -66,6 +71,19 @@ function Adquirir() {
             con una tarjeta. Cuando el pago queda aprobado, se desbloquea
             PhishGuard.
           </p>
+          <label className="adquirir-acepto">
+            <input
+              type="checkbox"
+              checked={acepta}
+              onChange={(evento) => setAcepta(evento.target.checked)}
+            />
+            <span>
+              Acepto los{' '}
+              <Link to="/terminos">términos y condiciones de servicio</Link>
+              . PhishGuard es un ejercicio de capacitación: los resultados no se
+              usan para sancionar.
+            </span>
+          </label>
           {cargando ? (
             <p>Verificando tu sesión…</p>
           ) : sesion ? (
@@ -73,7 +91,7 @@ function Adquirir() {
               type="button"
               className="medio-pago"
               onClick={pagar}
-              disabled={enviando}
+              disabled={enviando || !acepta}
             >
               {enviando ? 'Abriendo Mercado Pago…' : 'Pagar con Mercado Pago'}
             </button>

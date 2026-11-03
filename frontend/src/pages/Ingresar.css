@@ -21,6 +21,28 @@
   color: var(--sg-muted);
 }
 
+.acceso-acepto {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--sg-muted);
+  font-size: 14px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.acceso-acepto input {
+  margin-top: 3px;
+  flex: 0 0 auto;
+}
+
+.acceso-acepto a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .acceso-estado {
   color: var(--sg-muted);
 }
@@ -47,9 +69,14 @@
     background-color var(--sg-ease);
 }
 
-.boton-google:hover {
+.boton-google:hover:not(:disabled) {
   border-color: rgb(255 255 255 / 22%);
   background: color-mix(in srgb, var(--sg-bg) 55%, var(--sg-surface));
+}
+
+.boton-google:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 .logo-google {
@@ -196,7 +223,8 @@
 
 .sg-landing .acceso-texto,
 .sg-landing .acceso-estado,
-.sg-landing .separador {
+.sg-landing .separador,
+.sg-landing .acceso-acepto {
   color: #60768b;
 }
 

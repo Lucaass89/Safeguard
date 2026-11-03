@@ -74,6 +74,7 @@ function Ingresar() {
   const [error, setError] = useState(errorDeRedirect)
   const [params] = useSearchParams()
   const [aviso, setAviso] = useState(() => avisosConocidos[params.get('aviso')] ?? null)
+  const [acepta, setAcepta] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const { sesion, cargando } = useSesion()
   const navegar = useNavigate()
@@ -85,6 +86,11 @@ function Ingresar() {
     evento.preventDefault()
     setError(null)
     setAviso(null)
+    if (crearCuenta && !acepta) {
+      setError('Para crear la cuenta tenés que aceptar los términos y condiciones.')
+      return
+    }
+
     setEnviando(true)
 
     const credenciales = {
@@ -115,6 +121,10 @@ function Ingresar() {
   async function entrarConGoogle() {
     setError(null)
     setAviso(null)
+    if (crearCuenta && !acepta) {
+      setError('Para crear la cuenta tenés que aceptar los términos y condiciones.')
+      return
+    }
 
     const { error: fallo } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -128,6 +138,7 @@ function Ingresar() {
     setModo(nuevoModo)
     setError(null)
     setAviso(null)
+    setAcepta(false)
   }
 
   if (cargando) {
@@ -153,11 +164,29 @@ function Ingresar() {
             : 'Entrá con el correo con el que te registraste.'}
         </p>
 
-        <button
-          type="button"
-          className="boton-google"
-          onClick={entrarConGoogle}
-        >
+        {crearCuenta && (
+          <label className="acceso-acepto">
+            <input
+              type="checkbox"
+              checked={acepta}
+              onChange={(evento) => setAcepta(evento.target.checked)}
+            />
+            <span>
+              Acepto los{' '}
+              <a href="/terminos" target="_blank" rel="noreferrer">
+                términos y condiciones de servicio
+              </a>
+              .
+            </span>
+          </label>
+        )}
+
+          <button
+            type="button"
+            className="boton-google"
+            onClick={entrarConGoogle}
+            disabled={crearCuenta && !acepta}
+          >
           <LogoGoogle />
           Continuar con Google
         </button>
@@ -233,7 +262,11 @@ function Ingresar() {
             </p>
           )}
 
-          <button type="submit" className="acceso-boton" disabled={enviando}>
+          <button
+            type="submit"
+            className="acceso-boton"
+            disabled={enviando || (crearCuenta && !acepta)}
+          >
             {enviando
               ? 'Un momento…'
               : crearCuenta

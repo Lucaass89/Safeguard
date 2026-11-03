@@ -327,6 +327,7 @@ function Marco({ children, interior = false }) {
           </Link>
           <p>La seguridad empieza con una mejor decisión.</p>
           <div className="footer-links">
+            <Link to="/terminos">Términos y condiciones</Link>
             <Link to="/privacidad">Privacidad</Link>
             <Link to="/contacto">Contacto</Link>
           </div>

@@ -112,6 +112,11 @@ function Empresas() {
           <p className="pg-precio-nota">
             Con 100 usuarios pagás USD 100; con 101, USD 85,85.
           </p>
+          <p className="pg-precio-nota">
+            Al adquirir PhishGuard aceptás los{' '}
+            <Link to="/terminos">términos y condiciones de servicio</Link>. El
+            ejercicio es de capacitación: los resultados no se usan para sancionar.
+          </p>
           <Link className="pg-cta adquirir-precio" to="/adquirir">
             Adquirir PhishGuard
           </Link>

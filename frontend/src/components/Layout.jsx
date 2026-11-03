@@ -69,6 +69,7 @@ function Layout() {
           <div className="footer-contacto">
             <p className="footer-rotulo">Contacto</p>
             <p className="footer-enlaces">
+              <Link to="/terminos">Términos y condiciones</Link>
               <Link to="/privacidad">Privacidad</Link>
               <Link to="/contacto">Contacto</Link>
             </p>

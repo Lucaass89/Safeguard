@@ -534,6 +534,7 @@ function Landing() {
         <div className="shell footer-linea">
           <p>SafeGuard no reemplaza al antivirus ni al firewall: protege el eslabón humano.</p>
           <p className="footer-enlaces">
+            <Link to="/terminos">Términos y condiciones</Link>
             <Link to="/privacidad">Privacidad</Link>
             <Link to="/contacto">Contacto</Link>
           </p>

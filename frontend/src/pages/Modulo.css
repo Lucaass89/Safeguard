@@ -600,6 +600,28 @@
   font-weight: 700;
 }
 
+.adquirir-acepto {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 20px 0 0;
+  max-width: 46ch;
+  color: #4a6278;
+  font-size: 16px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.adquirir-acepto input {
+  margin-top: 4px;
+  flex: 0 0 auto;
+}
+
+.adquirir-acepto a {
+  font-weight: 700;
+  color: #1c63cc;
+}
+
 html[data-tema='claro'] .sg-landing .pg-banda {
   border: 1px solid #e4d9cc;
   background: #faf6f1;
