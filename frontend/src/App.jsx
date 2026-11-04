@@ -17,6 +17,7 @@ import AdquirirVuelta from './pages/AdquirirVuelta.jsx'
 import Personas from './pages/Personas.jsx'
 import Privacidad from './pages/Privacidad.jsx'
 import Terminos from './pages/Terminos.jsx'
+import Funcion from './pages/Funcion.jsx'
 import Contacto from './pages/Contacto.jsx'
 import Ingresar from './pages/Ingresar.jsx'
 import Panel from './pages/Panel.jsx'
@@ -82,6 +83,7 @@ function App() {
       <Route path="personas" element={<Personas />} />
       <Route path="privacidad" element={<Privacidad />} />
       <Route path="terminos" element={<Terminos />} />
+      <Route path="funcion/:id" element={<Funcion />} />
       <Route path="contacto" element={<Contacto />} />
       <Route path="ingresar" element={<Ingresar />} />
 

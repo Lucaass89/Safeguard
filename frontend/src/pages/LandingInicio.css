@@ -579,6 +579,25 @@
   box-shadow: none;
 }
 
+.landing-puertas .pilar {
+  display: block;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.landing-puertas .pilar article {
+  height: 100%;
+  transition: transform var(--sg-ease), border-color var(--sg-ease);
+}
+
+.landing-puertas .pilar:hover article,
+.landing-puertas .pilar:focus-visible article,
+.landing-puertas .accesos a:hover,
+.landing-puertas .accesos a:focus-visible {
+  transform: translateY(-2px);
+}
+
 .landing-puertas .banda,
 .landing-puertas .portal {
   scroll-margin-top: 92px;

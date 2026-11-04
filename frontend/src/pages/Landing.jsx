@@ -14,10 +14,10 @@ const pilares = [
 ]
 
 const accesos = [
-  ['enlace', 'Enlace', 'Revisá un link antes de abrirlo.', '/panel/enlaces'],
-  ['whatsapp', 'WhatsApp', 'Pegá un mensaje sospechoso.', '/panel/whatsapp'],
-  ['pdf', 'PDF', 'Subí un archivo y mirá si esconde algo.', '/panel/pdf'],
-  ['correo', 'Correo', 'Comprobá si el remitente es real.', '/panel/correo'],
+  ['enlace', 'Enlace', 'Revisá un link antes de abrirlo.'],
+  ['whatsapp', 'WhatsApp', 'Pegá un mensaje sospechoso.'],
+  ['pdf', 'PDF', 'Subí un archivo y mirá si esconde algo.'],
+  ['correo', 'Correo', 'Comprobá si el remitente es real.'],
 ]
 
 const semaforo = [
@@ -388,11 +388,13 @@ function Landing() {
 
           <section className="pilares" aria-label="Qué cubre SafeGuard">
             {pilares.map(([icono, titulo, texto]) => (
-              <article key={titulo}>
-                <IconoLinea nombre={icono} />
-                <h2>{titulo}</h2>
-                <p>{texto}</p>
-              </article>
+              <Link key={titulo} className="pilar" to={`/funcion/${icono}`}>
+                <article>
+                  <IconoLinea nombre={icono} />
+                  <h2>{titulo}</h2>
+                  <p>{texto}</p>
+                </article>
+              </Link>
             ))}
           </section>
 
@@ -402,8 +404,8 @@ function Landing() {
               <h2>Revisá lo que te llega antes de abrirlo.</h2>
             </div>
             <div className="accesos-grilla">
-              {accesos.map(([icono, titulo, texto, ruta]) => (
-                <Link key={titulo} to={sesion ? ruta : '/ingresar'}>
+              {accesos.map(([icono, titulo, texto]) => (
+                <Link key={titulo} to={`/funcion/${icono}`}>
                   <IconoLinea nombre={icono} />
                   <strong>{titulo}</strong>
                   <span>{texto}</span>
