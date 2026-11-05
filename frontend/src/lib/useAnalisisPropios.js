@@ -5,7 +5,7 @@ import { inicioDeSemana, resumenSemana } from './resumenSemana.js'
 import { supabase } from './supabase.js'
 import { useSesion } from './useSesion.js'
 
-const COLUMNAS = 'id, url_analizada, dominio, nivel_riesgo, explicacion, entrada, fecha_analisis'
+const COLUMNAS = 'id, url_analizada, dominio, nivel_riesgo, explicacion, puntuacion_riesgo, entrada, fecha_analisis'
 
 const ENTRADAS = {
   web: { tipo: 'Enlace', to: '/safelink/enlaces' },

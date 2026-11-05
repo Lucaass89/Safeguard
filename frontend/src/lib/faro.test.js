@@ -51,6 +51,20 @@ test('el gasto de tokens se lee como un entero', () => {
   assert.equal(textoTokens(-3), '')
 })
 
+test('sin el desglose, Faro usa lo anotado y no dice que no hay señales', () => {
+  const caso = { url: 'https://afterpay-account.com/', dominio: 'afterpay-account.com', titulo: 'Peligroso', senales: [], puntuacion: null }
+  const motivos = [
+    'El dominio es muy reciente (se registró hoy): los sitios truchos suelen tener pocos días de vida.',
+    'Pide una clave en un dominio de menos de cuatro meses.',
+  ]
+  for (const modo of ['simple', 'tecnico', 'avanzado']) {
+    const texto = respuestaLocal('rojo', motivos, 'Analizá este caso', modo, caso)
+    assert.match(texto, /Peligroso/)
+    assert.ok(!/no hay una señal con peso|no hay señales con peso/i.test(texto), texto)
+    assert.match(texto, /se registró hoy/)
+  }
+})
+
 test('usa los mismos nombres de nivel que la tarjeta', () => {
   assert.equal(nombreNivel('amarillo'), 'Precaución')
   assert.equal(nombreNivel('verde'), 'Sin señales de riesgo')

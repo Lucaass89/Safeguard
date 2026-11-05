@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import Bienvenida from '../components/Bienvenida.jsx'
+import { esAppNativa } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -32,7 +33,7 @@ const grupos = [
       { to: '/panel/whatsapp', icono: 'whatsapp', titulo: 'Pegar un WhatsApp', nota: 'Pegá un mensaje sospechoso y te avisamos' },
       { to: '/panel/pdf', icono: 'pdf', titulo: 'Revisar un PDF', nota: 'Subí un PDF y revisamos si esconde algo' },
       { to: '/panel/correo', icono: 'correo', titulo: 'Revisar un correo', nota: 'Pegá un correo y revisamos si el remitente es real' },
-      { to: '/panel/qr', icono: 'escaner', titulo: 'Escanear un QR', nota: 'Usá la cámara y revisamos el enlace antes de abrirlo' },
+      { to: '/panel/qr', icono: 'escaner', titulo: 'Escanear un QR', nota: 'Usá la cámara y revisamos el enlace antes de abrirlo', soloMovil: true },
     ],
   },
   {
@@ -153,15 +154,33 @@ function Icono({ nombre }) {
   )
 }
 
-function Carta({ item, orden, onClick }) {
-  return (
-    <Link to={item.to} onClick={onClick} style={{ '--mesa-orden': orden }}>
+function esPantallaMovil() {
+  if (typeof navigator === 'undefined') return false
+  if (esAppNativa()) return true
+  return window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
+
+function Carta({ item, orden, onClick, quieta }) {
+  const cuerpo = (
+    <>
       <span className="mesa-carta-icono">
         <Icono nombre={item.icono} />
       </span>
       <strong>{item.titulo}</strong>
-      <span className="mesa-carta-nota">{item.nota}</span>
-      <span className="mesa-carta-ir" aria-hidden="true">→</span>
+      <span className="mesa-carta-nota">{quieta ? 'Solo en el celular' : item.nota}</span>
+      {!quieta && <span className="mesa-carta-ir" aria-hidden="true">→</span>}
+    </>
+  )
+  if (quieta) {
+    return (
+      <div className="mesa-carta-quieta" style={{ '--mesa-orden': orden }} aria-disabled="true">
+        {cuerpo}
+      </div>
+    )
+  }
+  return (
+    <Link to={item.to} onClick={onClick} style={{ '--mesa-orden': orden }}>
+      {cuerpo}
     </Link>
   )
 }
@@ -185,6 +204,7 @@ function Panel() {
   const [tablero, setTablero] = useState(null)
   const acceso = cargandoMembresia ? null : esAdministrador(rol)
   const [fase, setFase] = useState(() => pedida ?? 'elegir')
+  const [movil, setMovil] = useState(esPantallaMovil)
   const [saludoVisible, setSaludoVisible] = useState(!yaEntro)
   const nombre =
     sesion.user.user_metadata?.full_name ??
@@ -207,6 +227,13 @@ function Panel() {
     }
     window.addEventListener('sg-recibido', ocultarSaludo)
     return () => window.removeEventListener('sg-recibido', ocultarSaludo)
+  }, [])
+
+  useEffect(() => {
+    const media = window.matchMedia('(pointer: coarse)')
+    const alCambiar = () => setMovil(esPantallaMovil())
+    media.addEventListener('change', alCambiar)
+    return () => media.removeEventListener('change', alCambiar)
   }, [])
 
   useEffect(() => {
@@ -333,7 +360,7 @@ function Panel() {
           </header>
           <div className="mesa-cartas">
             {grupos[0].items.map((item, orden) => (
-              <Carta key={item.to} item={item} orden={orden} onClick={cerrarSaludo} />
+              <Carta key={item.to} item={item} orden={orden} onClick={cerrarSaludo} quieta={item.soloMovil && !movil} />
             ))}
           </div>
         </>
@@ -389,7 +416,7 @@ function Panel() {
           )}
           <div className="mesa-cartas mesa-cartas-empresa">
             {grupos[1].items.map((item, orden) => (
-              <Carta key={item.to} item={item} orden={orden} onClick={cerrarSaludo} />
+              <Carta key={item.to} item={item} orden={orden} onClick={cerrarSaludo} quieta={item.soloMovil && !movil} />
             ))}
           </div>
         </>

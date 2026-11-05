@@ -240,9 +240,16 @@ export function pideResumen(pregunta) {
 const FUERZA = { fuerte: 'fuerte', media: 'media', debil: 'débil' }
 const ORDEN = { fuerte: 0, media: 1, debil: 2 }
 
+function pesoDe(senal) {
+  const peso = Number(senal?.peso)
+  if (Number.isFinite(peso)) return peso
+  const puntos = Number(senal?.puntos)
+  return Number.isFinite(puntos) ? puntos : 0
+}
+
 function senalesActivas(caso) {
   return (Array.isArray(caso?.senales) ? caso.senales : [])
-    .filter((senal) => senal && typeof senal.texto === 'string' && senal.texto && Number(senal.peso) > 0)
+    .filter((senal) => senal && typeof senal.texto === 'string' && senal.texto && pesoDe(senal) > 0)
     .sort((a, b) => (ORDEN[a.fuerza] ?? 3) - (ORDEN[b.fuerza] ?? 3) || b.peso - a.peso)
 }
 
@@ -303,31 +310,47 @@ function umbralesDe(caso) {
   return Number.isFinite(u?.precaucion) && Number.isFinite(u?.peligroso) ? u : PUNTAJE.umbrales
 }
 
-function textoSimple(codigo, caso) {
+function notasGuardadas(motivos) {
+  return motivosLimpios(motivos).slice(0, 4)
+}
+
+function sinDesglose(motivos) {
+  const lista = notasGuardadas(motivos)
+  if (!lista.length) return 'No hay una señal con peso en este caso.'
+  return `El desglose de señales no vino con este resultado. Lo anotado es: ${lista.join(' ')}`
+}
+
+function textoSimple(codigo, caso, motivos) {
   const nombre = nombreNivel(codigo, caso?.titulo)
   const dominio = String(caso?.dominio ?? '').trim()
   const cabeza = dominio ? `Revisamos ${dominio} y quedó en ${nombre}.` : `Este caso quedó en ${nombre}.`
   const partes = senalesActivas(caso).slice(0, 2).map((senal) => decirSenal(senal, caso))
-  const medio = partes.length ? `Lo que arma ese nivel es que ${unir(partes)}.` : 'No hay una señal con peso en este caso.'
+  const medio = partes.length ? `Lo que arma ese nivel es que ${unir(partes)}.` : sinDesglose(motivos)
   return `${cabeza} ${medio}`
 }
 
-function textoPorque(codigo, caso, modo) {
+function textoPorque(codigo, caso, modo, motivos) {
   const nombre = nombreNivel(codigo, caso?.titulo)
   const activas = senalesActivas(caso)
   if (modo === 'tecnico' || modo === 'avanzado') {
     const lineas = [`Dio ${nombre} por estas señales:`]
-    if (!activas.length) lineas.push('No hay señales con peso.')
+    if (!activas.length) lineas.push(sinDesglose(motivos))
     activas.forEach((senal, indice) => {
       const fuerza = FUERZA[senal.fuerza] ?? 'sin fuerza'
-      const detalle = modo === 'avanzado' ? `${senal.id}, ${fuerza}, ${Math.round(senal.peso)} puntos` : `${fuerza}, ${Math.round(senal.peso)} puntos`
+      const detalle = modo === 'avanzado' ? `${senal.id}, ${fuerza}, ${Math.round(pesoDe(senal))} puntos` : `${fuerza}, ${Math.round(pesoDe(senal))} puntos`
       lineas.push(`${indice + 1}. ${detalle}. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`)
     })
-    if (modo === 'avanzado') lineas.push(`Puntaje: ${Number.isFinite(caso?.puntuacion) ? caso.puntuacion : 'no disponible'} de 100.`)
+    if (modo === 'avanzado') {
+      lineas.push(
+        Number.isFinite(caso?.puntuacion)
+          ? `Puntaje: ${caso.puntuacion} de 100.`
+          : 'Puntaje: no se guardó con este resultado.',
+      )
+    }
     return lineas.join('\n')
   }
   const partes = activas.slice(0, 3).map((senal) => decirSenal(senal, caso))
-  if (!partes.length) return `Dio ${nombre} y no hay una señal con peso para explicar.`
+  if (!partes.length) return `Dio ${nombre}. ${sinDesglose(motivos)}`
   const resto = activas.length - partes.length
   const extra = resto > 0 ? ` Hay ${resto} ${resto === 1 ? 'señal más' : 'señales más'}.` : ''
   return `Dio ${nombre} porque ${unir(partes)}.${extra}`
@@ -357,7 +380,7 @@ function textoEjemplo(codigo, caso) {
   return `Un caso parecido es un aviso que usa el nombre de una tienda en un dominio recién creado y pide entrar. Este quedó en ${nombre} por lo que vimos en esta dirección.`
 }
 
-function textoTecnico(codigo, caso) {
+function textoTecnico(codigo, caso, motivos) {
   const nombre = nombreNivel(codigo, caso?.titulo)
   const vt = contextoDe(caso, nombre).virustotal
   const conVt = vt.consultado
@@ -370,30 +393,30 @@ function textoTecnico(codigo, caso) {
     lista = lista.slice(0, Math.max(cupo - 1, 1))
   }
   const lineas = [`Quedó en ${nombre}.`]
-  if (!lista.length) lineas.push('No hay señales con peso en este caso.')
+  if (!lista.length) lineas.push(sinDesglose(motivos))
   lista.forEach((senal, indice) => {
     const fuerza = FUERZA[senal.fuerza] ?? 'sin fuerza'
-    lineas.push(`${indice + 1}. ${fuerza}, ${Math.round(senal.peso)} puntos. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`)
+    lineas.push(`${indice + 1}. ${fuerza}, ${Math.round(pesoDe(senal))} puntos. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`)
   })
   if (extra > 0) lineas.push(`Hay ${extra} ${extra === 1 ? 'señal más' : 'señales más'}, de menor peso.`)
   if (conVt) lineas.push(`VirusTotal: ${vt.motores_que_detectan} de ${vt.motores_totales} motores la marcan.`)
   return lineas.slice(0, 8).join('\n')
 }
 
-function textoAvanzado(codigo, caso) {
+function textoAvanzado(codigo, caso, motivos) {
   const nombre = nombreNivel(codigo, caso?.titulo)
   const ctx = contextoDe(caso, nombre)
   const u = umbralesDe(caso)
   const vt = ctx.virustotal
   const motores = Array.isArray(vt.ejemplos) && vt.ejemplos.length ? vt.ejemplos.join(', ') : 'no disponible'
   const lineas = [
-    `Nivel: ${ctx.nivel}. Puntaje: ${ctx.puntaje ?? 'no disponible'} de 100. Precaución desde ${u.precaucion}, Peligroso desde ${u.peligroso}.`,
+    `Nivel: ${ctx.nivel}. Puntaje: ${Number.isFinite(ctx.puntaje) ? `${ctx.puntaje} de 100` : 'no se guardó con este resultado'}. Precaución desde ${u.precaucion}, Peligroso desde ${u.peligroso}.`,
     'Desglose:',
   ]
-  if (!ctx.senales.length) lineas.push('No hay señales con peso.')
+  if (!ctx.senales.length) lineas.push(sinDesglose(motivos))
   ctx.senales.forEach((senal, indice) => {
     lineas.push(
-      `${indice + 1}. ${senal.id} | grupo ${senal.grupo || 'sin grupo'} | ${senal.fuerza || 'sin fuerza'} | ${senal.peso} puntos. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`,
+      `${indice + 1}. ${senal.id} | grupo ${senal.grupo || 'sin grupo'} | ${senal.fuerza || 'sin fuerza'} | ${Math.round(pesoDe(senal))} puntos. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`,
     )
   })
   lineas.push(
@@ -416,10 +439,10 @@ function textoAvanzado(codigo, caso) {
   return lineas.join('\n')
 }
 
-function analizarCaso(codigo, caso, modo) {
-  if (modo === 'tecnico') return textoTecnico(codigo, caso)
-  if (modo === 'avanzado') return textoAvanzado(codigo, caso)
-  return textoSimple(codigo, caso)
+function analizarCaso(codigo, caso, modo, motivos) {
+  if (modo === 'tecnico') return textoTecnico(codigo, caso, motivos)
+  if (modo === 'avanzado') return textoAvanzado(codigo, caso, motivos)
+  return textoSimple(codigo, caso, motivos)
 }
 
 function afirma(frase, patron) {
@@ -456,14 +479,14 @@ export function respuestaLocal(nivel, motivos, pregunta, modo = 'simple', caso =
   const tope = topesDelModo(tono)
   const crudo =
     pedido === 'porque'
-      ? textoPorque(codigo, caso, tono)
+      ? textoPorque(codigo, caso, tono, motivos)
       : pedido === 'abrir'
         ? textoAbrir(codigo, caso)
         : pedido === 'clic'
           ? textoClic(codigo, caso)
           : pedido === 'ejemplo'
             ? textoEjemplo(codigo, caso)
-            : analizarCaso(codigo, caso, tono)
+            : analizarCaso(codigo, caso, tono, motivos)
   return limitarOraciones(crudo, tope.oraciones, tope.lineas)
 }
 
@@ -507,7 +530,7 @@ function senalesConsulta(caso) {
       id: String(senal.id).slice(0, 60),
       grupo: String(senal.grupo ?? '').slice(0, 30),
       fuerza: ['fuerte', 'media', 'debil'].includes(senal.fuerza) ? senal.fuerza : '',
-      peso: Math.round(senal.peso),
+      peso: Math.round(pesoDe(senal)),
       texto: recortarTexto(senal.texto, 240),
     }))
 }

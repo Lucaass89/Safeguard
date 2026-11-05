@@ -95,19 +95,22 @@ export function motivosCortos(motivos, { abierto = false, conCausa = false, sena
 // y Resultado solo la muestra si su frase está entre los motivos que se guardaron.
 export function casoGuardado(fila) {
   const motivos = motivosLimpios(fila.explicacion ? [fila.explicacion] : [])
-  let diferencia
+  let base = null
   try {
-    diferencia = fila.url_analizada ? (analizar(fila.url_analizada)?.diferencia ?? null) : null
+    base = fila.url_analizada ? analizar(fila.url_analizada) : null
   } catch {
-    diferencia = null
+    base = null
   }
+  const guardada = Number(fila.puntuacion_riesgo)
   return {
     nivel: fila.nivel_riesgo,
     url: fila.url_analizada,
     dominio: fila.dominio,
     motivos,
-    diferencia,
+    diferencia: base?.diferencia ?? null,
     sinVerificar: fila.nivel_riesgo === 'gris',
+    puntuacion: Number.isFinite(guardada) ? guardada : (base?.puntuacion ?? null),
+    senales: base?.senales ?? [],
   }
 }
 

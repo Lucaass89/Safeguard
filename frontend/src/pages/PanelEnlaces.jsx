@@ -9,7 +9,7 @@ import { casoGuardado } from '../lib/veredicto.js'
 import Resultado from '../components/Resultado.jsx'
 import './Panel.css'
 
-const COLUMNAS = 'id, url_analizada, dominio, nivel_riesgo, explicacion, fecha_analisis'
+const COLUMNAS = 'id, url_analizada, dominio, nivel_riesgo, explicacion, puntuacion_riesgo, fecha_analisis'
 
 function fecha(valor) {
   return new Date(valor).toLocaleString('es-AR', {

@@ -1026,7 +1026,8 @@ table.persona-tabla td:first-child,
   border-bottom: 1px solid var(--sg-line);
 }
 
-.mesa-cartas a {
+.mesa-cartas a,
+.mesa-cartas .mesa-carta-quieta {
   position: relative;
   isolation: isolate;
   display: grid;
@@ -1058,6 +1059,7 @@ table.persona-tabla td:first-child,
 
 .mesa-carta-icono,
 .mesa-cartas a strong,
+.mesa-cartas .mesa-carta-quieta strong,
 .mesa-carta-nota,
 .mesa-carta-ir {
   position: relative;
@@ -1086,9 +1088,23 @@ table.persona-tabla td:first-child,
   display: block;
 }
 
-.mesa-cartas a strong {
+.mesa-cartas a strong,
+.mesa-cartas .mesa-carta-quieta strong {
   font: 700 22px/1.15 'Space Grotesk', var(--sg-sans);
   letter-spacing: -0.02em;
+}
+
+.mesa-cartas .mesa-carta-quieta {
+  cursor: default;
+  color: var(--sg-muted);
+}
+
+.mesa-cartas .mesa-carta-quieta strong {
+  color: var(--sg-muted);
+}
+
+.mesa-cartas .mesa-carta-quieta .mesa-carta-icono {
+  opacity: 0.55;
 }
 
 .mesa-carta-nota {
