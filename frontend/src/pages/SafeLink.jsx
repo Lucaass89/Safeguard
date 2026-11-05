@@ -222,7 +222,7 @@ function SafeLink() {
 
   if (resultado) {
     return (
-      <div className="sl">
+      <div className="slapp">
         <Resultado
           casoId={resultado.id}
           resultado={resultado.caso}
@@ -239,13 +239,13 @@ function SafeLink() {
   }
 
   return (
-    <form className="sl" onSubmit={revisar}>
-      <div className="sl-tipos" role="group" aria-label="Qué querés revisar">
+    <form className="slapp" onSubmit={revisar}>
+      <div className="slapp-tipos" role="group" aria-label="Qué querés revisar">
         {TIPOS.map((item) => (
           <button
             key={item.id}
             type="button"
-            className={tipo === item.id ? 'sl-tipo sl-tipo-activo' : 'sl-tipo'}
+            className={tipo === item.id ? 'slapp-tipo slapp-tipo-activo' : 'slapp-tipo'}
             aria-pressed={tipo === item.id}
             onClick={() => elegirTipo(item.id)}
           >
@@ -255,9 +255,9 @@ function SafeLink() {
       </div>
 
       {campo ? (
-        <div className="sl-entrada">
+        <div className="slapp-entrada">
           <label>
-            <span className="sl-etiqueta">{campo.etiqueta}</span>
+            <span className="slapp-etiqueta">{campo.etiqueta}</span>
             <textarea
               value={entrada}
               onChange={(evento) => {
@@ -272,16 +272,16 @@ function SafeLink() {
               spellCheck="false"
             />
           </label>
-          <button type="button" className="sl-pegar" onClick={pegar}>
+          <button type="button" className="slapp-pegar" onClick={pegar}>
             <Icono nombre="pegar" />
             Pegar
           </button>
         </div>
       ) : tipo === 'pdf' ? (
-        <div className="sl-entrada">
+        <div className="slapp-entrada">
           <input
             ref={archivoRef}
-            className="sl-archivo-input"
+            className="slapp-archivo-input"
             type="file"
             accept="application/pdf,.pdf"
             aria-hidden="true"
@@ -293,43 +293,43 @@ function SafeLink() {
               setAviso('')
             }}
           />
-          <button type="button" className="sl-grande" onClick={() => archivoRef.current?.click()}>
+          <button type="button" className="slapp-grande" onClick={() => archivoRef.current?.click()}>
             <Icono nombre="pdf" />
             <span>Elegir archivo</span>
-            <span className="sl-grande-nota">{archivo || 'Un PDF, antes de abrirlo'}</span>
+            <span className="slapp-grande-nota">{archivo || 'Un PDF, antes de abrirlo'}</span>
           </button>
         </div>
       ) : (
-        <div className="sl-entrada">
-          <Link className="sl-grande" to="/safelink/qr">
+        <div className="slapp-entrada">
+          <Link className="slapp-grande" to="/safelink/qr">
             <Icono nombre="qr" />
             <span>Abrir la cámara</span>
-            <span className="sl-grande-nota">Leé el QR antes de abrirlo</span>
+            <span className="slapp-grande-nota">Leé el QR antes de abrirlo</span>
           </Link>
         </div>
       )}
 
       {aviso ? (
-        <p className="sl-aviso" role="status">
+        <p className="slapp-aviso" role="status">
           {aviso}
         </p>
       ) : null}
 
       {tipo === 'qr' ? null : (
-        <button type="submit" className="sl-revisar" disabled={revisando || vacio} aria-busy={revisando}>
+        <button type="submit" className="slapp-revisar" disabled={revisando || vacio} aria-busy={revisando}>
           {revisando ? 'Revisando…' : 'Revisar'}
         </button>
       )}
 
-      <section className="sl-bloque" aria-labelledby="sl-ultimos">
-        <h2 id="sl-ultimos">Últimos revisados</h2>
+      <section className="slapp-bloque" aria-labelledby="slapp-ultimos">
+        <h2 id="slapp-ultimos">Últimos revisados</h2>
         {revisados.cargando ? (
-          <p className="sl-vacio">Buscando tus revisiones…</p>
+          <p className="slapp-vacio">Buscando tus revisiones…</p>
         ) : revisados.error ? (
-          <p className="sl-vacio">No se pudieron leer tus revisiones. Probá de nuevo en un rato.</p>
+          <p className="slapp-vacio">No se pudieron leer tus revisiones. Probá de nuevo en un rato.</p>
         ) : ultimos.length === 0 ? (
-          <div className="sl-vacio">
-            <p className="sl-vacio-titulo">
+          <div className="slapp-vacio">
+            <p className="slapp-vacio-titulo">
               {sesion ? 'Todavía no revisaste nada.' : 'Sin cuenta, lo que revisás no se guarda.'}
             </p>
             <p>

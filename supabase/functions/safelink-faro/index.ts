@@ -32,10 +32,25 @@ const SEGURO = [
   /\b(podes|puede)\b[^.]{0,40}\b(pagar|poner la clave|ingresar la clave|cargar los datos)\b/,
 ]
 
+// En ningún nivel se dice que un sitio es seguro o que algo está garantizado.
+const NUNCA = [/\bes seguro\b/, /\bgarantizad[oa]s?\b/, /\bdudoso\b/]
+
 type Nivel = 'Seguro' | 'Dudoso' | 'Peligroso'
 type Modo = 'simple' | 'tecnico' | 'avanzado'
-type Caso = { url: string; dominio: string; puntuacion: number | null; canal: string }
+type Caso = { url: string; dominio: string; puntuacion: number | null; canal: string; sinContenido: boolean }
 type Turno = { rol: 'faro' | 'vos'; texto: string }
+type Senal = { id: string; grupo: string; fuerza: string; peso: number; texto: string }
+type VirusTotal = { maliciosos: number; total: number } | null
+type Umbrales = { precaucion: number; peligroso: number }
+
+const TITULOS = ['Peligroso', 'Precaución', 'Seguro', 'Sin señales de riesgo']
+const TITULO_DE: Record<Nivel, string> = { Peligroso: 'Peligroso', Dudoso: 'Precaución', Seguro: 'Sin señales de riesgo' }
+const NIVEL_DE: Record<string, Nivel> = {
+  Peligroso: 'Peligroso',
+  Precaución: 'Dudoso',
+  Seguro: 'Seguro',
+  'Sin señales de riesgo': 'Seguro',
+}
 
 function json(cuerpo: unknown, status = 200) {
   return new Response(JSON.stringify(cuerpo), {
@@ -89,10 +104,37 @@ function oraciones(texto: string) {
     .filter(Boolean)
 }
 
+const ITEM = /^\d{1,2}[.)]\s+/
+
+// Una lista numerada pegada en un párrafo pasa a un ítem por línea, para que se muestre como lista.
+function separarItems(texto: string) {
+  return texto
+    .split('\n')
+    .flatMap((linea) => (/(^|\s)1[.)]\s/.test(linea) && /\s2[.)]\s/.test(linea) ? linea.split(/\s+(?=\d{1,2}[.)]\s+\S)/) : [linea]))
+    .map((linea) => linea.trim())
+    .filter(Boolean)
+}
+
+// Oraciones completas hasta el tope del modo, sin perder los saltos de línea ni partir los ítems.
 function cerradas(texto: string, modo: Modo) {
-  const completas = oraciones(texto).filter((parte) => /[.!?]$/.test(parte))
-  if (completas.length === 0) return ''
-  return completas.slice(0, tope(modo)).join(' ')
+  let quedan = tope(modo)
+  let items = 0
+  const lineas: string[] = []
+  for (const linea of separarItems(texto)) {
+    if (ITEM.test(linea)) {
+      if (items >= 10 || !/[.!?]$/.test(linea)) continue
+      items += 1
+      lineas.push(linea)
+      continue
+    }
+    if (quedan <= 0) continue
+    const completas = oraciones(linea)
+      .filter((parte, indice, todas) => /[.!?]$/.test(parte) || (indice === todas.length - 1 && /:$/.test(parte)))
+      .slice(0, quedan)
+    quedan -= completas.length
+    if (completas.length) lineas.push(completas.join(' '))
+  }
+  return lineas.join('\n')
 }
 
 function afirma(frase: string, patron: RegExp) {
@@ -108,7 +150,7 @@ function afirma(frase: string, patron: RegExp) {
 }
 
 function contradice(nivel: Nivel, texto: string) {
-  const patrones = nivel === 'Peligroso' ? PELIGROSO : nivel === 'Dudoso' ? DUDOSO : SEGURO
+  const patrones = [...(nivel === 'Peligroso' ? PELIGROSO : nivel === 'Dudoso' ? DUDOSO : SEGURO), ...NUNCA]
   return oraciones(plano(sinEmojis(texto))).some((frase) => patrones.some((patron) => afirma(frase, patron)))
 }
 
@@ -133,13 +175,44 @@ function leer(body: unknown) {
   const crudo = datos.caso && typeof datos.caso === 'object' ? datos.caso as Record<string, unknown> : {}
   const url = typeof crudo.url === 'string' ? sinConsulta(crudo.url.replace(/\s+/g, ' ').trim()).slice(0, 300) : ''
   const dominio = typeof crudo.dominio === 'string' ? recortar(crudo.dominio, 120) : ''
-  const canal = crudo.canal === 'enlace' || crudo.canal === 'whatsapp' || crudo.canal === 'pdf' || crudo.canal === 'correo'
-    ? crudo.canal
-    : ''
+  const canal = ['enlace', 'whatsapp', 'pdf', 'correo', 'qr'].includes(crudo.canal as string) ? crudo.canal as string : ''
   const puntuacion = typeof crudo.puntuacion === 'number' && Number.isFinite(crudo.puntuacion)
     ? Math.max(0, Math.min(100, Math.round(crudo.puntuacion)))
     : null
-  const caso: Caso = { url, dominio, puntuacion, canal }
+  const caso: Caso = { url, dominio, puntuacion, canal, sinContenido: crudo.sinContenido === true }
+
+  // El título tiene que corresponder al nivel; si no llega (frontend viejo), sale del nivel.
+  const titulo = typeof datos.titulo === 'string' && TITULOS.includes(datos.titulo) && NIVEL_DE[datos.titulo] === nivel
+    ? datos.titulo
+    : TITULO_DE[nivel]
+
+  const senales: Senal[] = Array.isArray(datos.senales)
+    ? datos.senales.slice(0, 12).flatMap((senal) => {
+        if (!senal || typeof senal !== 'object') return []
+        const s = senal as Record<string, unknown>
+        const id = typeof s.id === 'string' ? s.id.replace(/[^a-z0-9_]/gi, '').slice(0, 60) : ''
+        const peso = typeof s.peso === 'number' && Number.isFinite(s.peso) ? Math.max(0, Math.min(100, Math.round(s.peso))) : 0
+        const texto = typeof s.texto === 'string' ? recortar(s.texto, 240) : ''
+        if (!id || !texto) return []
+        return [{
+          id,
+          grupo: typeof s.grupo === 'string' ? s.grupo.replace(/[^a-z0-9_]/gi, '').slice(0, 30) : '',
+          fuerza: s.fuerza === 'fuerte' || s.fuerza === 'media' || s.fuerza === 'debil' ? s.fuerza : '',
+          peso,
+          texto,
+        }]
+      })
+    : []
+
+  const vt = datos.virusTotal as Record<string, unknown> | null | undefined
+  const virusTotal: VirusTotal = vt && typeof vt === 'object' && Number.isFinite(vt.maliciosos) && Number.isFinite(vt.total)
+    ? { maliciosos: Math.max(0, Math.round(vt.maliciosos as number)), total: Math.max(0, Math.round(vt.total as number)) }
+    : null
+
+  const u = datos.umbrales as Record<string, unknown> | undefined
+  const umbrales: Umbrales = u && Number.isFinite(u.precaucion) && Number.isFinite(u.peligroso)
+    ? { precaucion: u.precaucion as number, peligroso: u.peligroso as number }
+    : { precaucion: 20, peligroso: 55 }
 
   const turnos = Array.isArray(datos.turnos)
     ? datos.turnos.slice(-6).flatMap((turno) => {
@@ -152,26 +225,46 @@ function leer(body: unknown) {
       })
     : []
 
-  return { nivel, motivos, pregunta, turnos, modo, caso }
+  return { nivel, titulo, motivos, senales, virusTotal, umbrales, pregunta, turnos, modo, caso }
 }
 
-function forma(modo: Modo) {
+type Consulta = NonNullable<ReturnType<typeof leer>>
+
+function forma(modo: Modo, umbrales: Umbrales) {
   if (modo === 'tecnico') {
-    return 'Forma técnica: nombrá las señales con las palabras del caso (dominio, acortador, marca, SPF, puntaje). Hasta seis oraciones, sin emojis.'
+    return [
+      'Forma técnica: nombrá cada señal activa con su id, su fuerza y su peso, y el puntaje total contra los umbrales',
+      `(Precaución desde ${umbrales.precaucion}, Peligroso desde ${umbrales.peligroso}). Decí qué dio VirusTotal o que no se consultó.`,
+      'Las señales van en una lista numerada, un ítem por línea, que empiece con "1. ". Hasta seis oraciones además de la lista, sin emojis.',
+    ].join(' ')
   }
   if (modo === 'avanzado') {
-    return 'Forma avanzada: explicá cómo se suman las señales, qué prueba este caso y qué no prueba. Podés numerar las señales. Hasta ocho oraciones, sin emojis.'
+    return [
+      'Forma avanzada: no repitas los motivos tal cual, que el usuario ya los ve en pantalla; interpretalos.',
+      'Explicá cómo se combinan: las señales parecidas cuentan como un solo grupo con tope (palabras sospechosas hasta 15, rasgos débiles hasta 30),',
+      'y sin una señal fuerte o dos señales medias de grupos distintos el caso no puede pasar de Precaución.',
+      'Decí qué señal habilita el nivel, qué no se pudo revisar, qué aporta VirusTotal y qué tendría que pasar para que el nivel cambie.',
+      'Si enumerás, usá una lista numerada, un ítem por línea, que empiece con "1. ". Hasta diez oraciones además de la lista, sin emojis.',
+    ].join(' ')
   }
-  return 'Forma simple: palabras de todos los días, sin jerga. Hasta cuatro oraciones, sin emojis y sin listas.'
+  return 'Forma simple: palabras de todos los días, sin jerga, sin ids de señales, sin puntajes ni números de motores. Contá la señal más importante y qué hacer. Hasta cuatro oraciones, sin emojis y sin listas.'
 }
 
-function instrucciones(nivel: Nivel, motivos: string[], modo: Modo, caso: Caso) {
-  const lista = motivos.length > 0 ? motivos.map((motivo) => `- ${motivo}`).join('\n') : '- No hay un motivo extra en este caso.'
+const FUERZA: Record<string, string> = { fuerte: 'fuerte', media: 'media', debil: 'débil' }
+
+function instrucciones(c: Consulta) {
+  const lista = c.motivos.length > 0 ? c.motivos.map((motivo) => `- ${motivo}`).join('\n') : '- No hay un motivo extra en este caso.'
+  const senales = c.senales.length > 0
+    ? c.senales.map((s) => `- ${s.id} (grupo ${s.grupo || 'sin grupo'}, ${FUERZA[s.fuerza] ?? 'sin fuerza'}, ${s.peso} puntos): ${s.texto}`).join('\n')
+    : '- No hay señales con peso.'
   const ficha = [
-    caso.dominio ? `Dominio: ${caso.dominio}` : 'Dominio: no informado',
-    caso.url ? `Entrada revisada: ${caso.url}` : 'Entrada revisada: no informada',
-    caso.canal ? `Canal: ${caso.canal}` : 'Canal: no informado',
-    caso.puntuacion == null ? 'Puntaje: no informado' : `Puntaje: ${caso.puntuacion}`,
+    c.caso.dominio ? `Dominio: ${c.caso.dominio}` : 'Dominio: no informado',
+    c.caso.url ? `Entrada revisada: ${c.caso.url}` : 'Entrada revisada: no informada',
+    c.caso.canal ? `Canal: ${c.caso.canal}` : 'Canal: no informado',
+    c.caso.puntuacion == null ? 'Puntaje: no informado' : `Puntaje: ${c.caso.puntuacion} de 100`,
+    `Umbrales: Precaución desde ${c.umbrales.precaucion}, Peligroso desde ${c.umbrales.peligroso}`,
+    c.virusTotal ? `VirusTotal: ${c.virusTotal.maliciosos} de ${c.virusTotal.total} motores la marcan como peligrosa` : 'VirusTotal: no se consultó',
+    c.caso.sinContenido ? 'Contenido de la página: no se pudo revisar; el resultado sale solo de la dirección' : 'Contenido de la página: revisado si el sitio respondió',
   ].join('\n')
   return [
     'Sos Faro, el robot de SafeGuard. Analizás el caso de SafeLink que ya está decidido y respondés la pregunta que te hagan sobre ese caso.',
@@ -179,17 +272,21 @@ function instrucciones(nivel: Nivel, motivos: string[], modo: Modo, caso: Caso) 
     'Si la pregunta se va del caso, respondé en una oración y volvé a este resultado. No cambies el veredicto. No sanciona ni expongas a nadie.',
     'No te llega el mensaje de WhatsApp, el cuerpo del correo ni el PDF. No los pidas. Usá solo el caso de abajo.',
     'Un ejemplo es un caso parecido y genérico, sin pasos para armar un engaño.',
-    'Un resumen es corto: qué se revisó, el color y la señal principal.',
+    'Un resumen es corto: qué se revisó, el nivel y la señal principal.',
     'Si piden analizar el caso, recorré las señales y cerrá con qué no hacer.',
     'Cada respuesta tiene que terminar la última oración. No la dejes a la mitad.',
-    forma(modo),
+    forma(c.modo, c.umbrales),
+    `Nombrá el nivel exactamente como "${c.titulo}". No uses otros nombres como "Dudoso" o "Sospechoso".`,
+    'Nunca digas que el sitio es seguro ni que algo está garantizado. Si no hubo señales, decí que no encontramos señales de riesgo y que eso no garantiza que el sitio sea seguro.',
     'Si el nivel es Peligroso, no digas que se abra, se descargue, se responda, se pague ni que se carguen claves o datos. Decí que no siga el mensaje, que no cargue claves ni datos, y que avise por otro canal.',
-    'Si el nivel es Dudoso, no digas que se siga el mensaje.',
-    'Si el nivel es Seguro, podés decir que no hubo señales fuertes, pero una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.',
-    `Nivel: ${nivel}`,
+    'Si el nivel es Precaución, no digas que se siga el mensaje: explicá qué es raro y qué chequear antes de seguir.',
+    'Si no hubo señales de riesgo, recordá que una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.',
+    `Nivel: ${c.titulo}`,
     'Caso:',
     ficha,
-    'Motivos:',
+    'Señales calculadas por el motor:',
+    senales,
+    'Motivos que ya se ven en pantalla:',
     lista,
   ].join('\n')
 }
@@ -201,12 +298,13 @@ function claveGemini() {
 }
 
 function tope(modo: Modo) {
-  if (modo === 'avanzado') return 8
+  if (modo === 'avanzado') return 10
   if (modo === 'tecnico') return 6
   return 4
 }
 
-async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, turnos: Turno[], modo: Modo, caso: Caso) {
+async function pedirGemini(c: Consulta) {
+  const { nivel, pregunta, turnos, modo } = c
   const clave = claveGemini()
   if (!clave) return null
 
@@ -236,7 +334,7 @@ async function pedirGemini(nivel: Nivel, motivos: string[], pregunta: string, tu
             'x-goog-api-key': clave,
           },
           body: JSON.stringify({
-            systemInstruction: { parts: [{ text: instrucciones(nivel, motivos, modo, caso) }] },
+            systemInstruction: { parts: [{ text: instrucciones(c) }] },
             contents,
             generationConfig,
           }),
@@ -286,14 +384,7 @@ Deno.serve(async (req) => {
   try {
     const consulta = leer(await req.json())
     if (!consulta) return json({ respuesta: null }, 400)
-    const respuesta = await pedirGemini(
-      consulta.nivel,
-      consulta.motivos,
-      consulta.pregunta,
-      consulta.turnos,
-      consulta.modo,
-      consulta.caso,
-    )
+    const respuesta = await pedirGemini(consulta)
     return json({ respuesta })
   } catch {
     return json({ respuesta: null })

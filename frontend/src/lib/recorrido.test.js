@@ -108,14 +108,14 @@ describe('cuando el servidor no llega al final', () => {
     assert.ok(final.motivos.includes(FALLO_AL_SEGUIR.no_resuelve))
   })
 
-  test('un parecido a una marca que no responde sigue en Sospechoso', () => {
+  test('una imitación de marca que no responde no baja de nivel', () => {
     const final = combinarConEnriquecimiento(analizar('https://g0ogle.com/'), {
       fallo: 'tls',
       cadena: ['https://g0ogle.com/'],
       destino: 'https://g0ogle.com/',
       dominio: 'g0ogle.com',
     })
-    assert.equal(final.nivel, 'amarillo')
+    assert.equal(final.nivel, 'rojo')
     assert.ok(final.sinVerificar)
     assert.ok(final.motivos.includes(FALLO_AL_SEGUIR.tls))
   })

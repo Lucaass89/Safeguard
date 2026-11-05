@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { consultarFaro } from '../lib/consultarFaro.js'
-import { MODOS, PREGUNTAS_LISTAS, SALUDO, modoValido, plano, recortarTexto } from '../lib/faro.js'
+import { MODOS, PREGUNTAS_LISTAS, SALUDO, bloquesRespuesta, modoValido, plano, recortarTexto } from '../lib/faro.js'
 import './Faro.css'
 
 function Robot({ pensando, grande }) {
@@ -61,7 +61,7 @@ function Faro({ casoId, nivel, motivos, caso }) {
 
   async function preguntar(texto) {
     const visible = recortarTexto(texto)
-    const caso = casoId
+    const idCaso = casoId
     if (!visible || !/[a-z0-9]/i.test(plano(visible))) {
       setMensajes((prev) => [
         ...prev,
@@ -79,7 +79,7 @@ function Faro({ casoId, nivel, motivos, caso }) {
     setBorrador('')
     setPensando(true)
     const respuesta = await consultarFaro(nivel, motivos, visible, previos, modoValido(modo), caso)
-    if (casoActual.current !== caso) return
+    if (casoActual.current !== idCaso) return
     setMensajes((prev) => [...prev, { rol: 'faro', texto: respuesta }])
     setPensando(false)
   }
@@ -104,7 +104,17 @@ function Faro({ casoId, nivel, motivos, caso }) {
             {mensajes.map((mensaje, indice) => (
               <li key={`${mensaje.rol}-${indice}`} className={mensaje.rol === 'faro' ? 'faro-msg-faro' : 'faro-msg-vos'}>
                 <span className="faro-quien">{mensaje.rol === 'faro' ? 'Faro' : 'Vos'}</span>
-                <p>{mensaje.texto}</p>
+                {bloquesRespuesta(mensaje.texto).map((bloque, orden) =>
+                  bloque.tipo === 'lista' ? (
+                    <ol key={orden} className="faro-lista">
+                      {bloque.items.map((item, numero) => (
+                        <li key={numero}>{item}</li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <p key={orden}>{bloque.texto}</p>
+                  ),
+                )}
               </li>
             ))}
           </ol>

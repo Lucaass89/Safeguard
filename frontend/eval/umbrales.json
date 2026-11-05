@@ -4,7 +4,7 @@
     "Si un cambio mejora las tasas, ajustalos a mano en el mismo commit para que no se pueda volver atrás.",
     "La regla dura (ninguna imitación de marca en Sin señales) no se configura: siempre es cero."
   ],
-  "falsosPositivosMax": 0.0327,
+  "falsosPositivosMax": 0.0324,
   "deteccionMin": 0.9954,
   "maliciososSinVerificarMax": 0.0046
 }

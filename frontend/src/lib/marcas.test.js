@@ -111,9 +111,11 @@ describe('dominios parecidos a una marca', () => {
     assert.equal(nivel('xn--80ak6aa92e.com'), 'rojo')
   })
 
-  test('sin otra señal fuerte se queda en Sospechoso', () => {
-    assert.equal(nivel('mercadolibre-ar.com'), 'amarillo')
+  test('una marca de nombre largo es Peligroso sola; una corta y dudosa, Precaución', () => {
+    assert.equal(nivel('mercadolibre-ar.com'), 'rojo')
+    assert.equal(nivel('mercadollibre.com'), 'rojo')
     assert.equal(nivel('tikt0ok.com'), 'amarillo')
+    assert.equal(nivel('amazon.de'), 'amarillo')
   })
 
   test('un dominio nuevo suma como señal fuerte después de abrirlo', () => {
@@ -144,8 +146,8 @@ describe('marca en otra parte de la dirección', () => {
   })
 
   test('google.com.evil.com y mercadolibre.com.ar.evil.com no pasan como oficiales', () => {
-    assert.equal(nivel('google.com.evil.com'), 'amarillo')
-    assert.equal(nivel('mercadolibre.com.ar.evil.com'), 'amarillo')
+    assert.equal(nivel('google.com.evil.com'), 'rojo')
+    assert.equal(nivel('mercadolibre.com.ar.evil.com'), 'rojo')
   })
 
   test('la marca en el camino junto a una página de acceso', () => {

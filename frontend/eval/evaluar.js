@@ -5,7 +5,7 @@ import { analizar } from '../src/lib/analisis.js'
 import { construirCasos, TRANCO } from './casos.js'
 
 const NIVELES = ['verde', 'gris', 'amarillo', 'rojo']
-const NOMBRE = { verde: 'Sin señales', gris: 'No pudimos verificarlo', amarillo: 'Sospechoso', rojo: 'Peligroso' }
+const NOMBRE = { verde: 'Sin señales', gris: 'No pudimos verificarlo', amarillo: 'Precaución', rojo: 'Peligroso' }
 const DETECTA = new Set(['amarillo', 'rojo'])
 const SIN_VEREDICTO = 'sin_resultado'
 
@@ -147,8 +147,8 @@ export function armarReporte(resultado, umbrales, fallas) {
         ['Casos', totales.casos, ''],
         ['Legítimos', totales.legitimos, ''],
         ['Maliciosos', totales.maliciosos, ''],
-        ['Falsos positivos (legítimo en Sospechoso o Peligroso)', porciento(tasas.falsosPositivos), `≤ ${porciento(umbrales.falsosPositivosMax)}`],
-        ['Detección (malicioso en Sospechoso o Peligroso)', porciento(tasas.deteccion), `≥ ${porciento(umbrales.deteccionMin)}`],
+        ['Falsos positivos (legítimo en Precaución o Peligroso)', porciento(tasas.falsosPositivos), `≤ ${porciento(umbrales.falsosPositivosMax)}`],
+        ['Detección (malicioso en Precaución o Peligroso)', porciento(tasas.deteccion), `≥ ${porciento(umbrales.deteccionMin)}`],
         ['Maliciosos en No pudimos verificarlo', porciento(tasas.maliciososSinVerificar), `≤ ${porciento(umbrales.maliciososSinVerificarMax)}`],
         ['Legítimos en No pudimos verificarlo', porciento(tasas.legitimosSinVerificar), ''],
         ['Imitaciones de marca en Sin señales (regla dura)', resultado.violaciones.length, '= 0'],

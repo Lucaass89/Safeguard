@@ -1,0 +1,16 @@
+{
+  "_nota": "Ejemplo armado a mano con lo que mostró VirusTotal (13 de 93 motores). El reparto entre harmless y undetected no lo anotamos: reemplazalo por la respuesta real de GET /api/v3/urls/{id}.",
+  "data": {
+    "type": "url",
+    "attributes": {
+      "url": "https://stakelotemax7.click/",
+      "last_analysis_stats": {
+        "malicious": 13,
+        "suspicious": 0,
+        "harmless": 0,
+        "undetected": 80,
+        "timeout": 0
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@
     "dev": "vite",
     "build": "npm run eval && vite build",
     "eval": "node eval/evaluar.js",
+    "eval:urls": "node eval/evaluar_urls.js",
     "lint": "eslint .",
     "test": "node --test src/lib/*.test.js",
     "preview": "vite preview"

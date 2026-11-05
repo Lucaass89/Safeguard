@@ -1,0 +1,49 @@
+url,label,source,notes
+https://www.mercadolibre.com.ar/ayuda,legit,manual,Ayuda de Mercado Libre
+https://www.mercadopago.com.ar/ayuda/seguridad_1270,legit,manual,Página de seguridad de Mercado Pago
+https://articulo.mercadolibre.com.ar/MLA-1234567890-zapatillas-running-_JM,legit,manual,Subdominio legítimo de la marca
+https://www.arca.gob.ar/landing/default.asp,legit,manual,Trámites de ARCA
+https://auth.afip.gob.ar/contribuyente_/login.xhtml,legit,manual,Login de ARCA (ex AFIP) con clave fiscal
+https://www.anses.gob.ar/consultas/verificar-datos,legit,manual,Trámite de ANSES con verificar en el camino
+https://www.argentina.gob.ar/seguridad,legit,manual,Ministerio de Seguridad
+https://www.bna.com.ar/Personas/Seguridad,legit,manual,Seguridad del Banco Nación
+https://www.santander.com.ar/personas/seguridad,legit,manual,Seguridad de Santander
+https://www.bancoprovincia.com.ar/web/seguridad,legit,manual,Seguridad del Banco Provincia
+https://www.galicia.ar/personas/ayuda,legit,manual,Ayuda de Galicia
+https://www.uala.com.ar/ayuda,legit,manual,Ayuda de Ualá
+https://www.pagomiscuentas.com/,legit,manual,Pagos de servicios (Banelco)
+https://myaccount.google.com/security,legit,manual,Seguridad de la cuenta de Google
+https://help.netflix.com/es/node/65674,legit,manual,Ayuda de Netflix
+https://www.correoargentino.com.ar/formularios/e-commerce,legit,manual,Seguimiento de envíos
+https://ayuda.mercadolibre.com.ar/ayuda/seguridad,legit,manual,Paso 3: subdominio oficial con palabra de seguridad (allowlist)
+https://www.mercadopago.com.ar/verificar-cuenta,legit,manual,Paso 3: dominio oficial con ruta de verificar (allowlist)
+https://www.infobae.com/economia/2026/11/01/mercadolibre-ganancias/,legit,manual,Paso 3: URL armada a mano. Nota de diario que nombra a la marca en la ruta
+https://xn--espaa-rta.com/,legit,manual,Paso 3: URL armada a mano. Dominio con ñ (punycode): señal débil sola. Esperado: Sin señales de riesgo
+https://mercad0libre.com/,phishing,synthetic,SINTÉTICO: cero en lugar de o
+https://rnercadolibre.com.ar/,phishing,synthetic,SINTÉTICO: rn en lugar de m
+https://mercadollibre.com.ar/,phishing,synthetic,SINTÉTICO: letra repetida
+https://mercadolibre.com.ar.verificar-pago.xyz/,phishing,synthetic,SINTÉTICO: dominio oficial como subdominio de uno ajeno
+https://mercadolibre.pagos-seguridad.com/verificar,phishing,synthetic,SINTÉTICO: marca en subdominio sobre dominio ajeno
+https://mercadopago-ar.com/login,phishing,synthetic,SINTÉTICO: marca con guion y ruta de login
+https://xn--mercdolibre-1ij.com/,phishing,synthetic,SINTÉTICO: punycode con a cirílica (mercаdolibre.com)
+https://xn--mercadopgo-6qi.com.ar/,phishing,synthetic,SINTÉTICO: punycode con a cirílica (mercadopаgo.com.ar)
+https://www.bna.com.ar@192.168.0.10/login,phishing,synthetic,SINTÉTICO: arroba esconde una IP
+https://santander.com.ar.cuenta-segura.click/,phishing,synthetic,SINTÉTICO: banco como subdominio con final barato
+https://bancogalicia-seguridad.top/clave,phishing,synthetic,SINTÉTICO: marca con palabra de trámite y final barato
+https://arca-gob-ar.com/tramites/deuda,phishing,synthetic,SINTÉTICO: organismo con guiones
+https://anses.gob.ar.beneficio-bono.xyz/,phishing,synthetic,SINTÉTICO: organismo como subdominio
+https://netflix-pago-suscripcion.com/actualizar,phishing,synthetic,SINTÉTICO: marca con palabras de pago
+https://wwww.tikt0ok.-com,phishing,synthetic,SINTÉTICO: dominio malformado (regresión)
+https://mercadolibr3.com.ar/,phishing,synthetic,SINTÉTICO: Paso 3. 3 en lugar de e. Esperado: Peligroso
+https://mercadol1bre.com.ar/,phishing,synthetic,SINTÉTICO: Paso 3. 1 en lugar de i. Esperado: Peligroso
+https://rnercadopago.com/,phishing,synthetic,SINTÉTICO: Paso 3. rn en lugar de m. Esperado: Peligroso
+https://mercadolibe.com.ar/,phishing,synthetic,SINTÉTICO: Paso 3. falta una letra en marca larga. Esperado: Peligroso
+https://correoargentno.com.ar/,phishing,synthetic,SINTÉTICO: Paso 3. falta una letra en marca larga. Esperado: Peligroso
+https://pagos-seguridad.com/mercadopago,phishing,synthetic,SINTÉTICO: Paso 3. marca en la ruta de un dominio de trámite. Esperado: Peligroso
+https://afip.gob.ar.clave-fiscal.top/,phishing,synthetic,SINTÉTICO: Paso 3. dominio oficial como subdominio. Esperado: Peligroso
+https://correoargentino.envios-pendientes.com/,phishing,synthetic,SINTÉTICO: Paso 3. marca como subdominio. Esperado: Peligroso
+https://stakelotemax7.click/,phishing,real,PhishTank. Esperado: Peligroso. VirusTotal: 13 de 93 motores
+,phishing,real,Completar a mano desde PhishTank u OpenPhish
+,phishing,real,Completar a mano desde PhishTank u OpenPhish
+,phishing,real,Completar a mano desde PhishTank u OpenPhish
+,phishing,real,Completar a mano desde PhishTank u OpenPhish

@@ -1,0 +1,100 @@
+{
+  "sinVirusTotal": {
+    "total": {
+      "casos": 44,
+      "vp": 24,
+      "fp": 0,
+      "vn": 20,
+      "fn": 0,
+      "deteccion": 1,
+      "falsosPositivos": 0,
+      "phishingEnPeligroso": 0.875
+    },
+    "porFuente": {
+      "synthetic": {
+        "casos": 23,
+        "vp": 23,
+        "fp": 0,
+        "vn": 0,
+        "fn": 0,
+        "deteccion": 1,
+        "falsosPositivos": null,
+        "phishingEnPeligroso": 0.9130434782608695
+      },
+      "real": {
+        "casos": 1,
+        "vp": 1,
+        "fp": 0,
+        "vn": 0,
+        "fn": 0,
+        "deteccion": 1,
+        "falsosPositivos": null,
+        "phishingEnPeligroso": 0
+      },
+      "manual": {
+        "casos": 20,
+        "vp": 0,
+        "fp": 0,
+        "vn": 20,
+        "fn": 0,
+        "deteccion": null,
+        "falsosPositivos": 0,
+        "phishingEnPeligroso": null
+      }
+    },
+    "errores": [
+      {
+        "url": "https://stakelotemax7.click/",
+        "label": "phishing",
+        "source": "real",
+        "veredicto": "Precaución",
+        "esperado": "Peligroso"
+      }
+    ]
+  },
+  "conVirusTotal": {
+    "total": {
+      "casos": 44,
+      "vp": 24,
+      "fp": 0,
+      "vn": 20,
+      "fn": 0,
+      "deteccion": 1,
+      "falsosPositivos": 0,
+      "phishingEnPeligroso": 0.9166666666666666
+    },
+    "porFuente": {
+      "synthetic": {
+        "casos": 23,
+        "vp": 23,
+        "fp": 0,
+        "vn": 0,
+        "fn": 0,
+        "deteccion": 1,
+        "falsosPositivos": null,
+        "phishingEnPeligroso": 0.9130434782608695
+      },
+      "real": {
+        "casos": 1,
+        "vp": 1,
+        "fp": 0,
+        "vn": 0,
+        "fn": 0,
+        "deteccion": 1,
+        "falsosPositivos": null,
+        "phishingEnPeligroso": 1
+      },
+      "manual": {
+        "casos": 20,
+        "vp": 0,
+        "fp": 0,
+        "vn": 20,
+        "fn": 0,
+        "deteccion": null,
+        "falsosPositivos": 0,
+        "phishingEnPeligroso": null
+      }
+    },
+    "errores": []
+  }
+}

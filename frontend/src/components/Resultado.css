@@ -121,6 +121,13 @@ html[data-tema='claro'] .veredicto-peligroso {
   line-height: 1.4;
 }
 
+.veredicto-nota {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .veredicto-consejo {
   margin: 0;
   color: var(--sg-text);

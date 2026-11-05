@@ -2,7 +2,7 @@ import './ChipEstado.css'
 
 const ESTADOS = {
   seguro: { texto: 'Seguro', tono: 'verde', icono: 'bien' },
-  sospechoso: { texto: 'Sospechoso', tono: 'amarillo', icono: 'alerta' },
+  sospechoso: { texto: 'Precaución', tono: 'amarillo', icono: 'alerta' },
   peligroso: { texto: 'Peligroso', tono: 'rojo', icono: 'mal' },
   sin_verificar: { texto: 'No verificado', tono: 'gris', icono: 'duda' },
 }

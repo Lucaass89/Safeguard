@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { motivosLimpios, queHacer } from '../lib/analisis.js'
 import { claveReporte } from '../lib/reporteError.js'
-import { motivosCortos, porQueSinVerificar, textoAlerta, veredictoDe } from '../lib/veredicto.js'
+import { motivosCortos, notaSinContenido, porQueSinVerificar, textoAlerta, veredictoDe } from '../lib/veredicto.js'
 import CadenaEnlace from './CadenaEnlace.jsx'
 import DiferenciaDominio, { DominioMarcado } from './DiferenciaDominio.jsx'
 import Faro from './Faro.jsx'
@@ -72,8 +72,14 @@ function Tarjeta({ resultado, canal, subtitulo, casoId, porQue, conFaro, onNoAbr
   const { nivel } = resultado
   const veredicto = veredictoDe(resultado)
   const causa = porQue ?? porQueSinVerificar(resultado)
+  const nota = porQue ? null : notaSinContenido(resultado)
   const todos = motivosLimpios(resultado.motivos)
-  const { visibles, ocultos } = motivosCortos(todos, { abierto: verTodos, conCausa: Boolean(causa) })
+  const { visibles, ocultos } = motivosCortos(todos, {
+    abierto: verTodos,
+    conCausa: Boolean(causa),
+    senales: resultado.senales,
+    sinContenido: Boolean(nota),
+  })
   const diferencia = resultado.diferencia && todos.includes(resultado.diferencia.frase) ? resultado.diferencia : null
   const dominio = resultado.dominioDestino ?? resultado.dominio
   const linea = subtitulo ?? dominio
@@ -125,12 +131,16 @@ function Tarjeta({ resultado, canal, subtitulo, casoId, porQue, conFaro, onNoAbr
               dominio: caso.dominio || '',
               puntuacion: typeof resultado.puntuacion === 'number' ? resultado.puntuacion : null,
               canal: canal || '',
+              titulo: veredicto.titulo,
+              senales: resultado.senales ?? [],
+              virusTotal: resultado.virusTotal ?? null,
+              sinContenido: Boolean(nota),
             }}
           />
         )}
       </div>
 
-      {causa && <p className="veredicto-causa">{causa}</p>}
+      {causa && veredicto.clave === 'sin_verificar' && <p className="veredicto-causa">{causa}</p>}
       <p className="veredicto-consejo">{queHacer(nivel)}</p>
       {diferencia && <DiferenciaDominio diferencia={diferencia} />}
 
@@ -146,6 +156,9 @@ function Tarjeta({ resultado, canal, subtitulo, casoId, porQue, conFaro, onNoAbr
           {verTodos ? 'Ver menos motivos' : `Ver ${ocultos === 1 ? 'otro motivo' : `${ocultos} motivos más`}`}
         </button>
       )}
+
+      {causa && veredicto.clave !== 'sin_verificar' && <p className="veredicto-nota">{causa}</p>}
+      {nota && <p className="veredicto-nota">{nota}</p>}
 
       <CadenaEnlace cadena={resultado.cadena} cortada={Boolean(resultado.falloAlSeguir)} />
       {children}

@@ -4,12 +4,13 @@
     "oficiales: dominios registrables exactos de la marca (sin www ni subdominios). Solo estos cuentan como el sitio oficial.",
     "nombres: cómo se escribe la marca. Si tiene varias palabras, separalas con un espacio ('mercado libre'). Se comparan contra el nombre del dominio con letras cambiadas y errores de tipeo.",
     "comunes: palabras de la marca que también se usan en el habla diaria ('macro', 'claro'). Solo cuentan si el dominio las junta con palabras de anzuelo como 'login' o 'seguridad'.",
-    "excepciones: palabras reales que quedan a una letra de la marca y no son imitaciones ('finance' para Binance)."
+    "excepciones: palabras reales que quedan a una letra de la marca y no son imitaciones ('finance' para Binance).",
+    "revision: todos los dominios oficiales están sin revisar. Antes de usarlos en serio, confirmalos a mano en el sitio de cada marca; los que tienen todo, con más cuidado."
   ],
   "marcas": [
-    { "id": "tiktok", "nombre": "TikTok", "oficiales": ["tiktok.com"], "nombres": ["tiktok"] },
+    { "id": "tiktok", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "TikTok", "oficiales": ["tiktok.com"], "nombres": ["tiktok"] },
     {
-      "id": "google",
+      "id": "google", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Google",
       "oficiales": [
         "google.com",
@@ -28,11 +29,11 @@
       "nombres": ["google", "gmail", "youtube"],
       "excepciones": ["email", "goggles"]
     },
-    { "id": "whatsapp", "nombre": "WhatsApp", "oficiales": ["whatsapp.com", "whatsapp.net"], "nombres": ["whatsapp"] },
-    { "id": "instagram", "nombre": "Instagram", "oficiales": ["instagram.com"], "nombres": ["instagram"] },
-    { "id": "facebook", "nombre": "Facebook", "oficiales": ["facebook.com", "fb.com"], "nombres": ["facebook"] },
+    { "id": "whatsapp", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "WhatsApp", "oficiales": ["whatsapp.com", "whatsapp.net"], "nombres": ["whatsapp"] },
+    { "id": "instagram", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Instagram", "oficiales": ["instagram.com"], "nombres": ["instagram"] },
+    { "id": "facebook", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Facebook", "oficiales": ["facebook.com", "fb.com"], "nombres": ["facebook"] },
     {
-      "id": "mercadolibre",
+      "id": "mercadolibre", "revision": "verificar a mano antes de usar",
       "nombre": "Mercado Libre",
       "oficiales": [
         "mercadolibre.com.ar",
@@ -49,7 +50,7 @@
       "nombres": ["mercado libre"]
     },
     {
-      "id": "mercadopago",
+      "id": "mercadopago", "revision": "verificar a mano antes de usar",
       "nombre": "Mercado Pago",
       "oficiales": [
         "mercadopago.com.ar",
@@ -63,55 +64,55 @@
       ],
       "nombres": ["mercado pago"]
     },
-    { "id": "arca", "nombre": "ARCA (ex AFIP)", "oficiales": ["arca.gob.ar", "afip.gob.ar"], "nombres": ["arca", "afip"] },
-    { "id": "anses", "nombre": "ANSES", "oficiales": ["anses.gob.ar"], "nombres": ["anses"] },
+    { "id": "arca", "revision": "verificar a mano antes de usar", "nombre": "ARCA (ex AFIP)", "oficiales": ["arca.gob.ar", "afip.gob.ar"], "nombres": ["arca", "afip"] },
+    { "id": "anses", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "ANSES", "oficiales": ["anses.gob.ar"], "nombres": ["anses"] },
     {
-      "id": "nacion",
+      "id": "nacion", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Banco Nación",
       "oficiales": ["bna.com.ar"],
       "nombres": ["bna", "banco nacion"],
       "comunes": ["nacion"]
     },
     {
-      "id": "galicia",
+      "id": "galicia", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Banco Galicia",
       "oficiales": ["galicia.ar", "bancogalicia.com", "bancogalicia.com.ar"],
       "nombres": ["banco galicia"],
       "comunes": ["galicia"]
     },
     {
-      "id": "santander",
+      "id": "santander", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Santander",
       "oficiales": ["santander.com.ar", "santander.com", "santanderrio.com.ar", "bancosantander.es"],
       "nombres": ["santander", "santander rio"]
     },
-    { "id": "bbva", "nombre": "BBVA", "oficiales": ["bbva.com.ar", "bbva.com"], "nombres": ["bbva"] },
+    { "id": "bbva", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "BBVA", "oficiales": ["bbva.com.ar", "bbva.com"], "nombres": ["bbva"] },
     {
-      "id": "macro",
+      "id": "macro", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Banco Macro",
       "oficiales": ["macro.com.ar"],
       "nombres": ["banco macro"],
       "comunes": ["macro"]
     },
-    { "id": "brubank", "nombre": "Brubank", "oficiales": ["brubank.com", "brubank.com.ar"], "nombres": ["brubank"] },
+    { "id": "brubank", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Brubank", "oficiales": ["brubank.com", "brubank.com.ar"], "nombres": ["brubank"] },
     {
-      "id": "naranjax",
+      "id": "naranjax", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Naranja X",
       "oficiales": ["naranjax.com", "tarjetanaranja.com.ar"],
       "nombres": ["naranja x", "tarjeta naranja"],
       "comunes": ["naranja"]
     },
-    { "id": "uala", "nombre": "Ualá", "oficiales": ["uala.com.ar", "uala.com"], "nombres": ["uala"] },
+    { "id": "uala", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Ualá", "oficiales": ["uala.com.ar", "uala.com"], "nombres": ["uala"] },
     {
-      "id": "correoargentino",
+      "id": "correoargentino", "revision": "verificar a mano antes de usar",
       "nombre": "Correo Argentino",
       "oficiales": ["correoargentino.com.ar"],
       "nombres": ["correo argentino"]
     },
-    { "id": "andreani", "nombre": "Andreani", "oficiales": ["andreani.com"], "nombres": ["andreani"] },
-    { "id": "netflix", "nombre": "Netflix", "oficiales": ["netflix.com"], "nombres": ["netflix"] },
+    { "id": "andreani", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Andreani", "oficiales": ["andreani.com"], "nombres": ["andreani"] },
+    { "id": "netflix", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Netflix", "oficiales": ["netflix.com"], "nombres": ["netflix"] },
     {
-      "id": "microsoft",
+      "id": "microsoft", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Microsoft",
       "oficiales": [
         "microsoft.com",
@@ -127,75 +128,75 @@
       "nombres": ["microsoft", "outlook", "hotmail", "office365"]
     },
     {
-      "id": "apple",
+      "id": "apple", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Apple",
       "oficiales": ["apple.com", "icloud.com"],
       "nombres": ["apple", "icloud"],
       "excepciones": ["apply", "ample", "apples"]
     },
-    { "id": "paypal", "nombre": "PayPal", "oficiales": ["paypal.com", "paypal.me"], "nombres": ["paypal"] },
-    { "id": "pami", "nombre": "PAMI", "oficiales": ["pami.org.ar"], "nombres": ["pami"] },
+    { "id": "paypal", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "PayPal", "oficiales": ["paypal.com", "paypal.me"], "nombres": ["paypal"] },
+    { "id": "pami", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "PAMI", "oficiales": ["pami.org.ar"], "nombres": ["pami"] },
     {
-      "id": "provincia",
+      "id": "provincia", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Banco Provincia",
       "oficiales": ["bancoprovincia.com.ar"],
       "nombres": ["banco provincia"],
       "comunes": ["provincia"]
     },
     {
-      "id": "ciudad",
+      "id": "ciudad", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Banco Ciudad",
       "oficiales": ["bancociudad.com.ar"],
       "nombres": ["banco ciudad"],
       "comunes": ["ciudad"]
     },
     {
-      "id": "patagonia",
+      "id": "patagonia", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Banco Patagonia",
       "oficiales": ["bancopatagonia.com.ar"],
       "nombres": ["banco patagonia"],
       "comunes": ["patagonia"]
     },
-    { "id": "icbc", "nombre": "ICBC", "oficiales": ["icbc.com.ar"], "nombres": ["icbc"] },
-    { "id": "hsbc", "nombre": "HSBC", "oficiales": ["hsbc.com"], "nombres": ["hsbc"] },
-    { "id": "supervielle", "nombre": "Supervielle", "oficiales": ["supervielle.com.ar"], "nombres": ["supervielle"] },
+    { "id": "icbc", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "ICBC", "oficiales": ["icbc.com.ar"], "nombres": ["icbc"] },
+    { "id": "hsbc", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "HSBC", "oficiales": ["hsbc.com"], "nombres": ["hsbc"] },
+    { "id": "supervielle", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Supervielle", "oficiales": ["supervielle.com.ar"], "nombres": ["supervielle"] },
     {
-      "id": "credicoop",
+      "id": "credicoop", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Credicoop",
       "oficiales": ["bancocredicoop.coop"],
       "nombres": ["credicoop", "banco credicoop"]
     },
-    { "id": "modo", "nombre": "MODO", "oficiales": ["modo.com.ar"], "nombres": [], "comunes": ["modo"] },
-    { "id": "claro", "nombre": "Claro", "oficiales": ["claro.com.ar", "claro.com"], "nombres": [], "comunes": ["claro"] },
-    { "id": "personal", "nombre": "Personal", "oficiales": ["personal.com.ar"], "nombres": [], "comunes": ["personal"] },
-    { "id": "movistar", "nombre": "Movistar", "oficiales": ["movistar.com.ar"], "nombres": ["movistar"] },
-    { "id": "osde", "nombre": "OSDE", "oficiales": ["osde.com.ar"], "nombres": ["osde"] },
+    { "id": "modo", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "MODO", "oficiales": ["modo.com.ar"], "nombres": [], "comunes": ["modo"] },
+    { "id": "claro", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Claro", "oficiales": ["claro.com.ar", "claro.com"], "nombres": [], "comunes": ["claro"] },
+    { "id": "personal", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Personal", "oficiales": ["personal.com.ar"], "nombres": [], "comunes": ["personal"] },
+    { "id": "movistar", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Movistar", "oficiales": ["movistar.com.ar"], "nombres": ["movistar"] },
+    { "id": "osde", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "OSDE", "oficiales": ["osde.com.ar"], "nombres": ["osde"] },
     {
-      "id": "pedidosya",
+      "id": "pedidosya", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "PedidosYa",
       "oficiales": ["pedidosya.com.ar", "pedidosya.com"],
       "nombres": ["pedidos ya"]
     },
-    { "id": "rappi", "nombre": "Rappi", "oficiales": ["rappi.com.ar", "rappi.com"], "nombres": ["rappi"] },
-    { "id": "amazon", "nombre": "Amazon", "oficiales": ["amazon.com", "amazon.es", "amazon.com.br"], "nombres": ["amazon"] },
-    { "id": "linkedin", "nombre": "LinkedIn", "oficiales": ["linkedin.com"], "nombres": ["linkedin"] },
+    { "id": "rappi", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Rappi", "oficiales": ["rappi.com.ar", "rappi.com"], "nombres": ["rappi"] },
+    { "id": "amazon", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Amazon", "oficiales": ["amazon.com", "amazon.es", "amazon.com.br"], "nombres": ["amazon"] },
+    { "id": "linkedin", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "LinkedIn", "oficiales": ["linkedin.com"], "nombres": ["linkedin"] },
     {
-      "id": "binance",
+      "id": "binance", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Binance",
       "oficiales": ["binance.com"],
       "nombres": ["binance"],
       "excepciones": ["finance", "balance"]
     },
     {
-      "id": "steam",
+      "id": "steam", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Steam",
       "oficiales": ["steampowered.com", "steamcommunity.com"],
       "nombres": ["steampowered", "steamcommunity"],
       "comunes": ["steam"]
     },
-    { "id": "discord", "nombre": "Discord", "oficiales": ["discord.com", "discord.gg"], "nombres": ["discord"] },
+    { "id": "discord", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano", "nombre": "Discord", "oficiales": ["discord.com", "discord.gg"], "nombres": ["discord"] },
     {
-      "id": "telegram",
+      "id": "telegram", "revision": "verificar a mano antes de usar", "todo": "TODO: verificar dominios oficiales a mano",
       "nombre": "Telegram",
       "oficiales": ["telegram.org", "t.me"],
       "nombres": ["telegram"],

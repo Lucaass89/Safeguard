@@ -76,6 +76,15 @@
   line-height: 1.45;
 }
 
+.faro-mensajes .faro-lista {
+  list-style: decimal;
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding-left: 22px;
+  line-height: 1.45;
+}
+
 .faro-quien {
   display: block;
   font-size: 13px;

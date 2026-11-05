@@ -28,7 +28,7 @@ const grupos = [
     clase: 'panel-personas',
     lead: 'Revisá lo que te llega antes de abrirlo.',
     items: [
-      { to: '/panel/enlaces', icono: 'enlace', titulo: 'Revisar un enlace', nota: 'Pegá un link y te decimos si es seguro' },
+      { to: '/panel/enlaces', icono: 'enlace', titulo: 'Revisar un enlace', nota: 'Pegá un link y te decimos si tiene señales de riesgo' },
       { to: '/panel/whatsapp', icono: 'whatsapp', titulo: 'Pegar un WhatsApp', nota: 'Pegá un mensaje sospechoso y te avisamos' },
       { to: '/panel/pdf', icono: 'pdf', titulo: 'Revisar un PDF', nota: 'Subí un PDF y revisamos si esconde algo' },
       { to: '/panel/correo', icono: 'correo', titulo: 'Revisar un correo', nota: 'Pegá un correo y revisamos si el remitente es real' },

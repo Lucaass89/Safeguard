@@ -10,23 +10,23 @@ Legítimos de Tranco: top 1000 de la lista V354N (2026-11-01), https://tranco-li
 
 | Medida | Valor | Umbral |
 | --- | --- | --- |
-| Casos | 3281 |  |
-| Legítimos | 1102 |  |
-| Maliciosos | 2179 |  |
-| Falsos positivos (legítimo en Sospechoso o Peligroso) | 3.27 % | ≤ 3.27 % |
-| Detección (malicioso en Sospechoso o Peligroso) | 99.54 % | ≥ 99.54 % |
+| Casos | 3295 |  |
+| Legítimos | 1114 |  |
+| Maliciosos | 2181 |  |
+| Falsos positivos (legítimo en Precaución o Peligroso) | 3.23 % | ≤ 3.24 % |
+| Detección (malicioso en Precaución o Peligroso) | 99.54 % | ≥ 99.54 % |
 | Maliciosos en No pudimos verificarlo | 0.46 % | ≤ 0.46 % |
-| Legítimos en No pudimos verificarlo | 6.08 % |  |
+| Legítimos en No pudimos verificarlo | 6.01 % |  |
 | Imitaciones de marca en Sin señales (regla dura) | 0 | = 0 |
 
 **Pasa todos los umbrales.**
 
 ## Matriz de confusión
 
-| Esperado | verde (Sin señales) | gris (No pudimos verificarlo) | amarillo (Sospechoso) | rojo (Peligroso) |
+| Esperado | verde (Sin señales) | gris (No pudimos verificarlo) | amarillo (Precaución) | rojo (Peligroso) |
 | --- | --- | --- | --- | --- |
-| legitimo | 999 | 67 | 36 | 0 |
-| malicioso | 0 | 10 | 1850 | 319 |
+| legitimo | 1011 | 67 | 36 | 0 |
+| malicioso | 0 | 10 | 727 | 1444 |
 
 ## Por categoría
 
@@ -38,22 +38,24 @@ Legítimos de Tranco: top 1000 de la lista V354N (2026-11-01), https://tranco-li
 | legitimo | mapas | 6 | 4 | 2 | 0 | 0 |
 | legitimo | acortador | 9 | 0 | 9 | 0 | 0 |
 | legitimo | subdominio | 16 | 15 | 1 | 0 | 0 |
-| malicioso | typosquat | 2164 | 0 | 10 | 1845 | 309 |
+| legitimo | con-palabras | 12 | 12 | 0 | 0 | 0 |
+| malicioso | typosquat | 2164 | 0 | 10 | 722 | 1432 |
 | malicioso | borde | 11 | 0 | 0 | 1 | 10 |
 | legitimo | borde | 1 | 1 | 0 | 0 | 0 |
-| malicioso | regresion | 4 | 0 | 0 | 4 | 0 |
+| malicioso | reportado | 2 | 0 | 0 | 1 | 1 |
+| malicioso | regresion | 4 | 0 | 0 | 3 | 1 |
 
 ## Maliciosos por técnica
 
 | Técnica | Casos | verde | gris | amarillo | rojo | Detección |
 | --- | --- | --- | --- | --- | --- | --- |
-| leet | 212 | 0 | 0 | 212 | 0 | 100.00 % |
+| leet | 212 | 0 | 0 | 0 | 212 | 100.00 % |
 | homoglifo | 213 | 0 | 0 | 0 | 213 | 100.00 % |
-| omision | 383 | 0 | 0 | 383 | 0 | 100.00 % |
-| transposicion | 339 | 0 | 0 | 339 | 0 | 100.00 % |
-| insercion | 735 | 0 | 0 | 727 | 8 | 100.00 % |
+| omision | 383 | 0 | 0 | 149 | 234 | 100.00 % |
+| transposicion | 339 | 0 | 0 | 126 | 213 | 100.00 % |
+| insercion | 735 | 0 | 0 | 281 | 454 | 100.00 % |
 | malformado | 264 | 0 | 10 | 166 | 88 | 96.21 % |
-| pares | 18 | 0 | 0 | 18 | 0 | 100.00 % |
+| pares | 18 | 0 | 0 | 0 | 18 | 100.00 % |
 | userinfo | 2 | 0 | 0 | 0 | 2 | 100.00 % |
 | userinfo-codificado | 1 | 0 | 0 | 1 | 0 | 100.00 % |
 | ip-decimal | 1 | 0 | 0 | 0 | 1 | 100.00 % |
@@ -63,7 +65,9 @@ Legítimos de Tranco: top 1000 de la lista V354N (2026-11-01), https://tranco-li
 | unicode | 1 | 0 | 0 | 0 | 1 | 100.00 % |
 | subdominio-marca | 1 | 0 | 0 | 0 | 1 | 100.00 % |
 | barra-invertida | 1 | 0 | 0 | 0 | 1 | 100.00 % |
-| regresion | 4 | 0 | 0 | 4 | 0 | 100.00 % |
+| marca-en-subdominio | 1 | 0 | 0 | 0 | 1 | 100.00 % |
+| phishtank | 1 | 0 | 0 | 1 | 0 | 100.00 % |
+| regresion | 4 | 0 | 0 | 3 | 1 | 100.00 % |
 
 ## Qué señal produjo cada veredicto
 
@@ -78,17 +82,18 @@ El detalle de cada caso está en `eval/resultados.csv`.
 | `marca_alfabeto` | 0 | 216 | 216 |
 | `marca_en_enlace_invalido` | 0 | 169 | 169 |
 | `ip` | 0 | 4 | 3 |
+| `palabras_gancho` | 3 | 0 | 3 |
 | `arroba_userinfo` | 0 | 2 | 2 |
+| `marca_subdominio` | 0 | 2 | 2 |
+| `nombre_senuelo` | 2 | 11 | 2 |
+| `tld_barato` | 1 | 3 | 2 |
 | `barra_invertida` | 0 | 1 | 1 |
 | `dato_codificado` | 1 | 0 | 1 |
-| `marca_subdominio` | 0 | 1 | 1 |
 | `muchos_guiones` | 1 | 0 | 1 |
-| `tld_barato` | 1 | 2 | 1 |
+| `punycode` | 1 | 0 | 1 |
 | `arroba_en_camino` | 0 | 1 | 0 |
 | `ip_disfrazada` | 0 | 3 | 0 |
-| `nombre_senuelo` | 0 | 10 | 0 |
-| `palabras_gancho` | 0 | 1 | 0 |
-| `piso_marca_mas_senal_fuerte` | 0 | 312 | 0 |
+| `piso_marca_mas_senal_fuerte` | 0 | 216 | 0 |
 | `prefijo_www_falso` | 0 | 88 | 0 |
 | `ruta_sensible` | 0 | 1 | 0 |
 | `sin_https` | 0 | 3 | 0 |

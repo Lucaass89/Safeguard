@@ -70,10 +70,33 @@ const SUBDOMINIOS = [
   'https://docs.google.com/document/d/1AbCdEf/edit', 'https://www.bna.com.ar/Personas',
 ]
 
+// Sitios legítimos con palabras que también usan las páginas truchas (pagos, seguridad, factura).
+// Una palabra suelta no alcanza para sacarlos de verde.
+const CON_PALABRAS = [
+  'https://www.pagomiscuentas.com/',
+  'https://www.pagos360.com/',
+  'https://www.todopago.com.ar/',
+  'https://www.cuentadni.com.ar/',
+  'https://www.argentina.gob.ar/seguridad',
+  'https://www.minseg.gob.ar/',
+  'https://www.bancocomafi.com.ar/seguridad',
+  'https://seguridad.bancocomafi.com.ar/',
+  'https://www.edenor.com/factura-digital',
+  'https://www.metrogas.com.ar/factura/',
+  'https://www.aysa.com.ar/usuarios/factura?mes=10',
+  'https://www.pagos360.com/blog/como-verificar-un-pago',
+]
+
+// Casos reales probados a mano. Solo se mide lo que la dirección muestra: lo que sabe VirusTotal no entra acá.
+const REPORTADOS = [
+  { url: 'https://mercadolibre.pagos-seguridad.com/verificar', esperado: 'malicioso', niveles: ['rojo'], tecnica: 'marca-en-subdominio' },
+  { url: 'https://stakelotemax7.click/', esperado: 'malicioso', niveles: ['amarillo', 'rojo'], tecnica: 'phishtank' },
+]
+
 export const REGRESIONES = [
   { url: 'wwww.tikt0ok.-com', nivel: 'amarillo', marca: 'tiktok' },
   { url: "wwww.tikt'ok.-com", nivel: 'amarillo', marca: 'tiktok' },
-  { url: 'www.g0ogle.com', nivel: 'amarillo', marca: 'google' },
+  { url: 'www.g0ogle.com', nivel: 'rojo', marca: 'google' },
   { url: 'tikt0ok.com', nivel: 'amarillo', marca: 'tiktok' },
 ]
 
@@ -201,9 +224,13 @@ export function construirCasos() {
     ...MAPAS.map((url) => ({ url, categoria: 'mapas' })),
     ...ACORTADORES.map((url) => ({ url, categoria: 'acortador' })),
     ...SUBDOMINIOS.map((url) => ({ url, categoria: 'subdominio' })),
+    ...CON_PALABRAS.map((url) => ({ url, categoria: 'con-palabras' })),
   ].map((caso) => ({ ...caso, esperado: 'legitimo' }))
 
-  const bordes = BORDES.map((caso) => ({ ...caso, categoria: 'borde' }))
+  const bordes = [
+    ...BORDES.map((caso) => ({ ...caso, categoria: 'borde' })),
+    ...REPORTADOS.map((caso) => ({ ...caso, categoria: 'reportado' })),
+  ]
   const regresiones = REGRESIONES.map((caso) => ({
     url: caso.url,
     esperado: 'malicioso',

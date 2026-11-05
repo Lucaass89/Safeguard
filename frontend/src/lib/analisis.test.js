@@ -54,13 +54,13 @@ describe('doble w y letras cambiadas', () => {
     assert.notEqual(analizar('ww.mercadolibre.com.ar').nivel, 'verde')
   })
 
-  test('www.g0ogle.com y tikt0ok.com quedan igual: Sospechoso', () => {
-    assert.equal(analizar('www.g0ogle.com').nivel, 'amarillo')
+  test('una letra cambiada por un número es Peligroso; una letra de más en una marca corta, Precaución', () => {
+    assert.equal(analizar('www.g0ogle.com').nivel, 'rojo')
     assert.equal(analizar('tikt0ok.com').nivel, 'amarillo')
   })
 
-  test('paypa1.com es Sospechoso y con otra señal fuerte, Peligroso', () => {
-    assert.equal(analizar('https://paypa1.com').nivel, 'amarillo')
+  test('paypa1.com es Peligroso aun sin otra señal', () => {
+    assert.equal(analizar('https://paypa1.com').nivel, 'rojo')
     assert.equal(analizar('https://paypa1.com/login').nivel, 'rojo')
   })
 })

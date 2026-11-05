@@ -5,9 +5,12 @@ import {
   casoGuardado,
   desarmar,
   motivosCortos,
+  motivosOrdenados,
+  notaSinContenido,
   porQueSinVerificar,
   SIN_ABRIR,
   SIN_BASE,
+  SIN_CONTENIDO,
   textoAlerta,
   veredictoDe,
 } from './veredicto.js'
@@ -30,7 +33,7 @@ test('verde con algo sin verificar o en plataforma de terceros no es "Seguro"', 
 })
 
 test('los demás niveles y cualquier valor raro', () => {
-  assert.equal(veredictoDe({ nivel: 'amarillo' }).titulo, 'Sospechoso')
+  assert.equal(veredictoDe({ nivel: 'amarillo' }).titulo, 'Precaución')
   assert.equal(veredictoDe({ nivel: 'rojo' }).titulo, 'Peligroso')
   assert.equal(veredictoDe({ nivel: 'gris' }).titulo, 'No pudimos verificarlo')
   assert.equal(veredictoDe({ nivel: 'otro' }).titulo, 'No pudimos verificarlo')
@@ -48,10 +51,7 @@ test('por qué no se pudo verificar, en una línea', () => {
   assert.equal(porQueSinVerificar(analizar('wwww.tikt0ok.-com')), 'El enlace no es válido.')
   assert.equal(porQueSinVerificar(analizar('intent://algo#Intent;end')), 'No es una dirección web: abre otra aplicación.')
   assert.equal(porQueSinVerificar(analizar('https://bit.ly/abc123')), 'Es un acortador y no pudimos ver a dónde lleva.')
-  assert.equal(
-    porQueSinVerificar({ nivel: 'gris', sinVerificar: true, motivos: [SIN_ABRIR] }),
-    'No pudimos conectarnos con el sitio.',
-  )
+  assert.equal(porQueSinVerificar({ nivel: 'gris', sinVerificar: true, motivos: [SIN_ABRIR] }), null)
   assert.equal(
     porQueSinVerificar({ nivel: 'gris', sinVerificar: true, motivos: [SIN_BASE] }),
     'No pudimos consultar la base de amenazas.',
@@ -59,21 +59,46 @@ test('por qué no se pudo verificar, en una línea', () => {
   assert.equal(porQueSinVerificar(analizar('https://www.google.com')), null)
 })
 
-test('el fallo al seguir el enlace se explica con su causa', () => {
-  const local = analizar('https://bit.ly/abc123')
-  const final = combinarConEnriquecimiento(local, { fallo: 'tiempo', cadena: [] })
-  assert.equal(final.falloAlSeguir, 'tiempo')
-  assert.equal(porQueSinVerificar(final), 'El sitio tardó demasiado en responder.')
-  assert.equal(porQueSinVerificar({ nivel: 'gris', falloAlSeguir: 'tls' }), 'La conexión segura con el sitio falló.')
-  assert.equal(porQueSinVerificar({ nivel: 'gris', falloAlSeguir: 'inventado' }), 'No pudimos conectarnos con el sitio.')
+test('si el sitio no responde, no va arriba como error: va abajo como nota informativa', () => {
+  const local = analizar('https://ejemplo.com.ar/')
+  const final = combinarConEnriquecimiento(local, { fallo: 'conexion', cadena: [] })
+  assert.equal(porQueSinVerificar(final), null)
+  assert.equal(notaSinContenido(final), SIN_CONTENIDO)
+  assert.equal(notaSinContenido({ nivel: 'gris', motivos: [SIN_ABRIR] }), SIN_CONTENIDO)
+  assert.equal(notaSinContenido(local), null)
+  assert.ok(!/error|inocente|seguro/i.test(SIN_CONTENIDO))
+
+  const { lista } = motivosCortos(final.motivos, { senales: final.senales, sinContenido: true })
+  assert.ok(!lista.some((motivo) => /conexión/.test(motivo)))
+
+  const acortado = combinarConEnriquecimiento(analizar('https://bit.ly/abc123'), { fallo: 'tiempo', cadena: [] })
+  assert.equal(porQueSinVerificar(acortado), 'Es un acortador y no pudimos ver a dónde lleva.')
 })
 
-test('motivos cortos: tres a la vista y el resto plegado, sin repetir la causa', () => {
+test('motivos cortos: tres a la vista y el resto plegado, sin repetir la nota', () => {
   const motivos = ['Uno.', 'Dos.', 'Tres.', 'Cuatro.', SIN_ABRIR]
   assert.deepEqual(motivosCortos(motivos).visibles, ['Uno.', 'Dos.', 'Tres.'])
   assert.equal(motivosCortos(motivos).ocultos, 2)
   assert.equal(motivosCortos(motivos, { abierto: true }).visibles.length, 5)
-  assert.equal(motivosCortos(motivos, { conCausa: true }).lista.includes(SIN_ABRIR), false)
+  assert.equal(motivosCortos(motivos, { sinContenido: true }).lista.includes(SIN_ABRIR), false)
+})
+
+test('los motivos salen ordenados por fuerza y peso, con las frases de una señal juntas', () => {
+  const r = analizar('http://mercadolibre.pagos-seguridad.click/premio')
+  const orden = motivosOrdenados(r.motivos, r.senales)
+  assert.match(orden[0], /Mercado Libre/)
+  assert.ok(orden.findIndex((m) => m.startsWith('El final .click')) > orden.findIndex((m) => m.includes('"pagos"')))
+  assert.ok(orden.some((m) => m.startsWith('No tiene candado') && m.includes('Una página que pide datos')))
+  assert.equal(new Set(orden).size, orden.length)
+})
+
+test('ningún texto de la tarjeta dice que el sitio es seguro o está garantizado', async () => {
+  const { queHacer } = await import('./analisis.js')
+  for (const nivel of ['rojo', 'amarillo', 'verde', 'gris']) {
+    assert.ok(!/\bes seguro\b|garantizad/i.test(queHacer(nivel)), nivel)
+  }
+  assert.match(queHacer('verde'), /^No encontramos señales de riesgo\. Esto no garantiza que el sitio sea seguro/)
+  assert.match(queHacer('amarillo'), /algo raro/)
 })
 
 test('la alerta lleva el dominio desarmado para que no se vuelva un enlace', () => {

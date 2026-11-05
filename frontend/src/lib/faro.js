@@ -1,5 +1,6 @@
 import { motivosLimpios } from './analisis.js'
 import { sinConsulta } from './enlace.js'
+import { PUNTAJE } from './puntaje.js'
 
 export const SALUDO =
   'Hola. Soy Faro. Puedo analizar este caso, resumirlo, dar un ejemplo o responder lo que preguntes. Elegí si lo querés simple, técnico o avanzado.'
@@ -20,6 +21,7 @@ export const PREGUNTAS_LISTAS = [
 ]
 
 const TOPE_PREGUNTA = 600
+const TOPE_ITEMS = 10
 
 const PELIGROSO = [
   /\b(abrilo|abrila|abrelo|abrela|abrir(lo|la|los|las)?|abri el|abri la|abri este)\b/,
@@ -47,6 +49,9 @@ const SEGURO = [
   /\b(podes|puede)\b[^.]{0,40}\b(pagar|poner la clave|ingresar la clave|cargar los datos)\b/,
 ]
 
+// En ningún nivel se dice que un sitio es seguro o que algo está garantizado.
+const NUNCA = [/\bes seguro\b/, /\bgarantizad[oa]s?\b/, /\bdudoso\b/]
+
 const DUDAS = [
   ['clic', /ya (lo |la )?(hice clic|hice click|clique|entre|abri|descargue|pague|respondi|cargue|cai)|si ya (hice|entre|abri|clique|cai)/],
   ['datos', /clave|contrasena|password|cbu|tarjeta|\bcodigo\b|\botp\b|\bdatos\b/],
@@ -60,6 +65,8 @@ const DUDAS = [
   ['porque', /por que|porque/],
   ['hacer', /que hago|que tengo que|ahora que|que sigue|que deberia/],
 ]
+
+const TITULOS = ['Peligroso', 'Precaución', 'Seguro', 'Sin señales de riesgo', 'No pudimos verificarlo']
 
 export function plano(texto) {
   return String(texto ?? '')
@@ -94,24 +101,80 @@ export function oraciones(texto) {
     .filter(Boolean)
 }
 
-export function limitarOraciones(texto, max = 5) {
-  const completas = oraciones(texto).filter((parte) => /[.!?]$/.test(parte))
-  return completas.slice(0, max).join(' ')
+const ITEM = /^(\d{1,2})[.)]\s+/
+
+// Una lista numerada escrita dentro de un párrafo ("Señales: 1. X. 2. Y.") pasa a un ítem por línea.
+function separarItems(texto) {
+  return String(texto ?? '')
+    .split('\n')
+    .flatMap((linea) => {
+      if (!/(^|\s)1[.)]\s/.test(linea) || !/\s2[.)]\s/.test(linea)) return [linea]
+      return linea.split(/\s+(?=\d{1,2}[.)]\s+\S)/)
+    })
+    .map((linea) => linea.trim())
+    .filter(Boolean)
 }
 
-export function nombreNivel(nivel) {
-  if (nivel === 'rojo' || nivel === 'Peligroso') return 'Peligroso'
-  if (nivel === 'amarillo' || nivel === 'Dudoso') return 'Dudoso'
-  if (nivel === 'verde' || nivel === 'Seguro') return 'Seguro'
-  if (nivel === 'gris' || nivel === 'No verificado') return 'No verificado'
-  return ''
+// Una frase que presenta una lista ("Hay dos señales:") también cuenta como completa.
+const completa = (parte, indice, todas) => /[.!?]$/.test(parte) || (indice === todas.length - 1 && /:$/.test(parte))
+
+// Recorta a `max` oraciones completas sin perder los saltos de línea ni partir los ítems de una lista.
+export function limitarOraciones(texto, max = 5) {
+  let quedan = max
+  let items = 0
+  const lineas = []
+  for (const linea of separarItems(texto)) {
+    if (ITEM.test(linea)) {
+      if (items >= TOPE_ITEMS || !/[.!?]$/.test(linea)) continue
+      items += 1
+      lineas.push(linea)
+      continue
+    }
+    if (quedan <= 0) continue
+    const completas = oraciones(linea).filter(completa).slice(0, quedan)
+    quedan -= completas.length
+    if (completas.length) lineas.push(completas.join(' '))
+  }
+  return lineas.join('\n')
+}
+
+// Para mostrar: párrafos sueltos y listas numeradas como lista.
+export function bloquesRespuesta(texto) {
+  const bloques = []
+  for (const linea of separarItems(texto)) {
+    const item = linea.match(ITEM)
+    const ultimo = bloques.at(-1)
+    if (item && ultimo?.tipo === 'lista') ultimo.items.push(linea.slice(item[0].length))
+    else if (item) bloques.push({ tipo: 'lista', items: [linea.slice(item[0].length)] })
+    else bloques.push({ tipo: 'parrafo', texto: linea })
+  }
+  return bloques
 }
 
 function codigoNivel(nivel) {
   if (nivel === 'rojo' || nivel === 'Peligroso') return 'rojo'
-  if (nivel === 'amarillo' || nivel === 'Dudoso') return 'amarillo'
-  if (nivel === 'verde' || nivel === 'Seguro') return 'verde'
-  if (nivel === 'gris' || nivel === 'No verificado') return 'gris'
+  if (nivel === 'amarillo' || nivel === 'Dudoso' || nivel === 'Precaución') return 'amarillo'
+  if (nivel === 'verde' || nivel === 'Seguro' || nivel === 'Sin señales de riesgo') return 'verde'
+  if (nivel === 'gris' || nivel === 'No verificado' || nivel === 'No pudimos verificarlo') return 'gris'
+  return ''
+}
+
+// El mismo nombre que muestra la tarjeta. Si llega el título de la tarjeta, manda ese.
+export function nombreNivel(nivel, titulo) {
+  const codigo = codigoNivel(nivel)
+  if (titulo && TITULOS.includes(titulo) && codigoNivel(titulo) === codigo) return titulo
+  if (codigo === 'rojo') return 'Peligroso'
+  if (codigo === 'amarillo') return 'Precaución'
+  if (codigo === 'verde') return 'Sin señales de riesgo'
+  if (codigo === 'gris') return 'No pudimos verificarlo'
+  return ''
+}
+
+// El backend ya desplegado solo acepta estos tres nombres; el título de la tarjeta viaja aparte.
+function nivelServidor(codigo) {
+  if (codigo === 'rojo') return 'Peligroso'
+  if (codigo === 'amarillo') return 'Dudoso'
+  if (codigo === 'verde') return 'Seguro'
   return ''
 }
 
@@ -119,21 +182,12 @@ export function sinVerificar(nivel) {
   return codigoNivel(nivel) === 'gris'
 }
 
-function respuestaSinVerificar(motivos, id) {
-  const inicio = 'Este caso quedó como No verificado: SafeLink no pudo confirmar si es seguro.'
-  const motivo = motivoDe(motivos)
-  if (id === 'clic' || id === 'datos') {
-    return `${inicio} ${motivo} Si ya entraste, no cargues claves ni datos y cerrá esa página. Si ya los mandaste, avisá por otro canal.`
-  }
-  return `${inicio} ${motivo} No lo abras desde el mensaje. Si dice ser un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
-}
-
 export function modoValido(modo) {
   return modo === 'tecnico' || modo === 'avanzado' ? modo : 'simple'
 }
 
 function topeModo(modo) {
-  if (modo === 'avanzado') return 8
+  if (modo === 'avanzado') return 10
   if (modo === 'tecnico') return 6
   return 4
 }
@@ -147,76 +201,144 @@ function intencion(pregunta) {
   return duda?.[0] ?? 'general'
 }
 
-function textoCaso(caso) {
-  const dominio = String(caso?.dominio ?? '').replace(/\s+/g, ' ').trim()
-  const url = String(caso?.url ?? '').replace(/\s+/g, ' ').trim().slice(0, 180)
-  const canal = String(caso?.canal ?? '').trim()
-  const partes = []
-  if (dominio) partes.push(`Dominio: ${dominio}.`)
-  if (url && url !== dominio) partes.push(`Lo revisado: ${url}.`)
-  if (canal) partes.push(`Canal: ${canal}.`)
-  if (Number.isFinite(caso?.puntuacion)) partes.push(`Puntaje de señales: ${Math.round(caso.puntuacion)}.`)
-  return partes.join(' ')
+const FUERZA = { fuerte: 'fuerte', media: 'media', debil: 'débil' }
+const ORDEN = { fuerte: 0, media: 1, debil: 2 }
+
+function senalesActivas(caso) {
+  return (Array.isArray(caso?.senales) ? caso.senales : [])
+    .filter((senal) => senal && typeof senal.texto === 'string' && senal.texto && Number(senal.peso) > 0)
+    .sort((a, b) => (ORDEN[a.fuerza] ?? 3) - (ORDEN[b.fuerza] ?? 3) || b.peso - a.peso)
 }
 
-function analizarCaso(nivel, motivos, caso, resumen, modo) {
-  const nombre = nombreNivel(nivel)
-  const lista = motivosLimpios(motivos)
-  const cabeza = textoCaso(caso) || 'Este es el caso que está abierto.'
-  const primero = motivoDe(lista)
-  if (resumen || modo === 'simple') {
-    return `${cabeza} El semáforo quedó ${nombre}. ${primero} ${cuidado(nivel)}`
-  }
-  if (modo === 'tecnico') {
-    const senales = lista.length ? lista.join(' ') : 'No hay señales extra guardadas.'
-    return `${cabeza} Nivel ${nombre}. Señales que ya se sumaron: ${senales} ${cuidado(nivel)}`
-  }
-  const detalle = lista.length
-    ? lista.map((motivo, indice) => `${indice + 1}. ${motivoDe([motivo])}`).join(' ')
-    : 'No quedó una señal suelta para desarmar.'
-  return `${cabeza} El veredicto ${nombre} sale de sumar esas señales. No abre el archivo ni ejecuta nada. ${detalle} Eso no prueba el resto del sitio: solo lo que SafeLink pudo ver. ${cuidado(nivel)}`
+function conPunto(frase) {
+  const limpia = String(frase ?? '').trim()
+  return /[.!?]$/.test(limpia) ? limpia : `${limpia}.`
 }
 
-function ejemploDe(nivel, modo) {
-  if (nivel === 'rojo') {
-    if (modo === 'tecnico') {
-      return 'Ejemplo del mismo tipo: un dominio que imita una marca, o un acortador que termina en una página que pide la clave. El rojo sale de esa señal. No se abre y no se cargan datos.'
-    }
-    if (modo === 'avanzado') {
-      return 'Ejemplo avanzado: el sitio no es el oficial, el camino nombra a la marca y la página pide una clave. Cada señal suma. Juntas cruzan el rojo. No hace falta el mensaje original para ver ese patrón, y el color no cambia.'
-    }
-    return 'Un ejemplo parecido: un mensaje que dice ser el banco y el enlace no es la página del banco. No se abre y no se cargan datos.'
+function motivoPrincipal(motivos, caso) {
+  const senal = senalesActivas(caso)[0]
+  if (senal) return conPunto(motivosLimpios([senal.texto]).join(' '))
+  return conPunto(motivosLimpios(motivos)[0] ?? 'No hay un motivo extra en este caso.')
+}
+
+function umbralesDe(caso) {
+  const u = caso?.umbrales
+  return Number.isFinite(u?.precaucion) && Number.isFinite(u?.peligroso) ? u : PUNTAJE.umbrales
+}
+
+function lineaVirusTotal(caso) {
+  const vt = caso?.virusTotal
+  if (!vt || !Number.isFinite(vt.maliciosos) || !Number.isFinite(vt.total)) {
+    return 'VirusTotal no se consultó en este caso.'
   }
-  if (nivel === 'amarillo') {
+  return `VirusTotal: ${vt.maliciosos} de ${vt.total} motores la marcan como peligrosa.`
+}
+
+function lineaPuntaje(caso) {
+  if (!Number.isFinite(caso?.puntuacion)) return ''
+  const u = umbralesDe(caso)
+  return `Puntaje: ${Math.round(caso.puntuacion)} de 100 (Precaución desde ${u.precaucion}, Peligroso desde ${u.peligroso}).`
+}
+
+function listaTecnica(caso) {
+  return senalesActivas(caso)
+    .slice(0, TOPE_ITEMS)
+    .map((senal, indice) => {
+      const fuerza = FUERZA[senal.fuerza] ?? 'sin fuerza'
+      return `${indice + 1}. ${senal.id}, ${fuerza}, ${Math.round(senal.peso)} puntos: ${conPunto(motivosLimpios([senal.texto]).join(' '))}`
+    })
+}
+
+function porQueNivel(codigo, caso) {
+  const activas = senalesActivas(caso)
+  const fuertes = activas.filter((senal) => senal.fuerza === 'fuerte')
+  const gruposMedios = new Set(activas.filter((senal) => senal.fuerza === 'media').map((senal) => senal.grupo))
+  const recortado = (caso?.senales ?? []).some((senal) => senal?.id === 'tope_sin_senal_fuerte')
+  const t = PUNTAJE.topes
+  const partes = [
+    `Las señales parecidas se agrupan y cada grupo tiene un tope: las palabras sospechosas suman como máximo ${t.palabras} y los rasgos débiles, ${t.debiles}.`,
+  ]
+  if (fuertes.length) {
+    partes.push(`Hay ${fuertes.length === 1 ? 'una señal fuerte' : `${fuertes.length} señales fuertes`} (${fuertes.map((senal) => senal.id).join(', ')}), y eso habilita llegar a Peligroso.`)
+  } else if (gruposMedios.size >= 2) {
+    partes.push('No hay una señal fuerte, pero sí señales medias de grupos distintos, y esa combinación habilita llegar a Peligroso.')
+  } else {
+    partes.push('No hay una señal fuerte ni dos señales medias de grupos distintos, así que este caso no puede pasar de Precaución.')
+  }
+  if (recortado) partes.push('El puntaje sumaba más, pero se recortó justo debajo de Peligroso por esa regla.')
+  if (codigo === 'amarillo') {
+    partes.push('Pasaría a Peligroso con una señal fuerte, por ejemplo una marca imitada o 5 o más motores de VirusTotal.')
+  }
+  return partes
+}
+
+function queNoSeReviso(caso) {
+  return caso?.sinContenido
+    ? 'El contenido de la página no se pudo revisar: todo sale de la dirección del enlace.'
+    : 'Se revisó la dirección y, si se pudo abrir, lo que devolvió la página; eso no cubre todo lo que puede pasar después en el sitio.'
+}
+
+function analizarCaso(codigo, motivos, caso, modo) {
+  const nombre = nombreNivel(codigo, caso?.titulo)
+  const dominio = String(caso?.dominio ?? '').trim()
+  const cabeza = dominio ? `Revisamos ${dominio}: quedó en ${nombre}.` : `Este caso quedó en ${nombre}.`
+  if (modo === 'simple') return `${cabeza} ${motivoPrincipal(motivos, caso)} ${cuidado(codigo)}`
+
+  const lista = listaTecnica(caso)
+  if (modo === 'tecnico') {
+    return [
+      [cabeza, lineaPuntaje(caso)].filter(Boolean).join(' '),
+      ...(lista.length ? lista : ['No hay señales con peso en este caso.']),
+      lineaVirusTotal(caso),
+      cuidado(codigo),
+    ].join('\n')
+  }
+  return [
+    [cabeza, lineaPuntaje(caso)].filter(Boolean).join(' '),
+    porQueNivel(codigo, caso).join(' '),
+    ...lista,
+    `${lineaVirusTotal(caso)} ${queNoSeReviso(caso)}`,
+    cuidado(codigo),
+  ].join('\n')
+}
+
+function ejemploDe(codigo, modo) {
+  if (codigo === 'rojo') {
     if (modo === 'tecnico') {
-      return 'Ejemplo del mismo tipo: un dominio nuevo, un final de dirección muy usado en sitios truchos, o un texto que apura. Alcanza para dudar, no para darlo por peligroso. No se sigue desde el mensaje.'
+      return 'Ejemplo del mismo tipo: un dominio que cambia una letra de una marca por un número, o un subdominio con la marca sobre un dominio ajeno. Esas son señales fuertes y alcanzan para Peligroso. No se abre y no se cargan datos.'
     }
     if (modo === 'avanzado') {
-      return 'Ejemplo avanzado: una sola señal floja, como un dominio de pocos días, deja el caso en dudoso. Si se suma otra, por ejemplo una marca en el camino, puede pasar a rojo. Con lo que hay ahora, no se sigue el mensaje.'
+      return 'Ejemplo avanzado: el dominio no es el oficial, imita a la marca y la ruta abre una página para entrar a la cuenta. La marca imitada es una señal fuerte, la ruta suma como media, y juntas cruzan el umbral de Peligroso. El nivel no cambia aunque el sitio no responda.'
     }
-    return 'Un ejemplo parecido: un enlace raro que apura, pero sin una prueba fuerte. No se abre desde el mensaje. Si es un banco o una tienda, se entra escribiendo la dirección oficial.'
+    return 'Un ejemplo parecido: un mensaje que dice ser del banco, pero el enlace no es la página del banco. No se abre y no se cargan datos.'
+  }
+  if (codigo === 'amarillo') {
+    if (modo === 'tecnico') {
+      return 'Ejemplo del mismo tipo: un final de dirección muy usado en sitios truchos, o palabras como "pagos" o "premio" en un dominio cualquiera. Son señales débiles: alcanzan para Precaución, no para Peligroso. No se sigue desde el mensaje.'
+    }
+    if (modo === 'avanzado') {
+      return 'Ejemplo avanzado: un dominio .click con palabras de trámite suma puntos, pero las señales débiles tienen tope y solas no pasan de Precaución. Si apareciera una señal fuerte, como una marca imitada o varios motores de VirusTotal, pasaría a Peligroso.'
+    }
+    return 'Un ejemplo parecido: un enlace con algo raro, pero sin una prueba fuerte. No se abre desde el mensaje. Si es un banco o una tienda, se entra escribiendo la dirección oficial.'
   }
   if (modo === 'tecnico') {
-    return 'Ejemplo del mismo tipo: una dirección sin acortador, sin marca falsa y sin pedido de clave en el camino. El verde dice que no hubo esas señales. Una clave o un pago igual no se hacen desde un enlace que llegó en un mensaje.'
+    return 'Ejemplo del mismo tipo: una dirección sin acortador, sin marca imitada y sin página de clave en la ruta. Que no haya señales no garantiza nada sobre el sitio. Una clave o un pago igual no se hacen desde un enlace que llegó en un mensaje.'
   }
   if (modo === 'avanzado') {
-    return 'Ejemplo avanzado: cero señales por encima del umbral deja el caso en seguro. Eso no revisa el interior de un archivo ni una marca que no esté en la lista. Por eso una clave, un código o un pago siguen fuera de ese enlace.'
+    return 'Ejemplo avanzado: un puntaje por debajo del umbral de Precaución quiere decir que no encontramos señales de riesgo, no que el sitio sea confiable. Una marca que no está en la lista o una página que cambia después no se ven desde la dirección.'
   }
-  return 'Un ejemplo parecido: un enlace común, sin apuro ni página de clave. No hubo señales fuertes. Igual, la clave no se escribe desde un enlace que llegó en un mensaje.'
+  return 'Un ejemplo parecido: un enlace común, sin apuro ni página de clave. No encontramos señales de riesgo, pero la clave igual no se escribe desde un enlace que llegó en un mensaje.'
 }
 
-function conModo(texto, modo, motivos) {
+function conModo(texto, codigo, modo, caso) {
   if (modo === 'simple') return texto
-  const senales = motivosLimpios(motivos).slice(0, 3).join(' ')
+  const lista = listaTecnica(caso).slice(0, modo === 'tecnico' ? 3 : TOPE_ITEMS)
   if (modo === 'tecnico') {
-    return senales ? `${texto} En la revisión, las señales fueron: ${senales}` : texto
+    return [texto, lineaPuntaje(caso), ...lista].filter(Boolean).join('\n')
   }
-  return `${texto} Lectura avanzada: cada motivo ya está sumado. Faro no reabre el archivo ni cambia el color.${senales ? ` Señales: ${senales}` : ''}`
-}
-
-function motivoDe(motivos) {
-  const frase = motivosLimpios(motivos)[0] ?? 'No hay un motivo extra en este caso.'
-  return /[.!?]$/.test(frase) ? frase : `${frase}.`
+  return [texto, lineaPuntaje(caso), porQueNivel(codigo, caso).join(' '), ...lista, lineaVirusTotal(caso)]
+    .filter(Boolean)
+    .join('\n')
 }
 
 function afirma(frase, patron) {
@@ -234,94 +356,102 @@ function afirma(frase, patron) {
 export function respuestaContradice(nivel, texto) {
   const codigo = codigoNivel(nivel)
   if (!codigo || codigo === 'gris') return true
-  const patrones = codigo === 'rojo' ? PELIGROSO : codigo === 'amarillo' ? DUDOSO : SEGURO
+  const patrones = [...(codigo === 'rojo' ? PELIGROSO : codigo === 'amarillo' ? DUDOSO : SEGURO), ...NUNCA]
   return oraciones(plano(sinEmojis(texto))).some((frase) => patrones.some((patron) => afirma(frase, patron)))
 }
 
-function cuidado(nivel) {
-  if (nivel === 'rojo') return 'No sigas el mensaje, no cargues claves ni datos, y avisá por otro canal.'
-  if (nivel === 'amarillo') {
-    return 'No sigas el mensaje. Si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.'
+function cuidado(codigo) {
+  if (codigo === 'rojo') return 'No sigas el mensaje, no cargues claves ni datos, y avisá por otro canal.'
+  if (codigo === 'amarillo') {
+    return 'Antes de seguir, chequeá que la dirección sea la oficial. Si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección.'
   }
-  return 'No hubo señales fuertes, pero una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.'
+  return 'No encontramos señales de riesgo, pero una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.'
 }
 
-function plantilla(nivel, motivo, id) {
-  const nombre = nombreNivel(nivel)
-
-  if (id === 'clic' && nivel === 'rojo') {
+function plantilla(codigo, nombre, motivo, id) {
+  const verde = 'No encontramos señales de riesgo en este enlace, aunque eso no garantiza nada sobre el sitio.'
+  if (id === 'clic' && codigo === 'rojo') {
     return `Este caso es Peligroso. ${motivo} Si ya hiciste clic, cerrá esa página y no cargues claves ni datos. Avisá por otro canal, con un teléfono que ya tengas o en persona.`
   }
-  if (id === 'clic' && nivel === 'amarillo') {
-    return `Este caso es Dudoso. ${motivo} Si ya hiciste clic, no sigas el mensaje y no cargues claves ni datos. Cerrá esa página y, si hace falta, avisá por otro canal.`
+  if (id === 'clic' && codigo === 'amarillo') {
+    return `Este caso quedó en Precaución. ${motivo} Si ya hiciste clic, no sigas el mensaje y no cargues claves ni datos. Cerrá esa página y, si hace falta, avisá por otro canal.`
   }
   if (id === 'clic') {
-    return `Este caso es Seguro y no hubo señales fuertes. ${motivo} Si ya hiciste clic, igual no cargues una clave, un código ni un pago desde un enlace que llegó en un mensaje.`
+    return `${verde} ${motivo} Si ya hiciste clic, igual no cargues una clave, un código ni un pago desde un enlace que llegó en un mensaje.`
   }
-  if (id === 'abrir' && nivel === 'rojo') {
+  if (id === 'abrir' && codigo === 'rojo') {
     return `No. Este caso es Peligroso y no se abre. ${motivo} No lo descargues, no respondas y no cargues claves ni datos. Si necesitás confirmar algo, avisá por otro canal.`
   }
-  if (id === 'abrir' && nivel === 'amarillo') {
-    return `No lo abras desde este mensaje. Este caso es Dudoso. ${motivo} No sigas el mensaje: si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
+  if (id === 'abrir' && codigo === 'amarillo') {
+    return `No lo abras desde este mensaje. Este caso quedó en Precaución. ${motivo} No sigas el mensaje: si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
   }
   if (id === 'abrir') {
-    return `Este caso es Seguro y no hubo señales fuertes. ${motivo} Igual, una clave, un código o un pago no se hacen desde un enlace que llegó en un mensaje.`
+    return `${verde} ${motivo} Igual, una clave, un código o un pago no se hacen desde un enlace que llegó en un mensaje.`
   }
-  if (id === 'hacer' && nivel === 'rojo') {
+  if (id === 'hacer' && codigo === 'rojo') {
     return `No sigas el mensaje. Este caso es Peligroso. ${motivo} No cargues claves ni datos, y avisá por otro canal.`
   }
-  if (id === 'hacer' && nivel === 'amarillo') {
-    return `No sigas el mensaje. Este caso es Dudoso. ${motivo} Si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
+  if (id === 'hacer' && codigo === 'amarillo') {
+    return `No sigas el mensaje. Este caso quedó en Precaución. ${motivo} Si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
   }
   if (id === 'hacer') {
-    return `Este caso es Seguro y no hubo señales fuertes. ${motivo} Una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.`
+    return `${verde} ${motivo} Una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.`
   }
   if (id === 'avisar') {
-    return `Avisá por otro canal: un teléfono que ya tengas o en persona, no el número de este mensaje. Este caso es ${nombre}. ${motivo} No hace falta señalar a nadie para pedir esa confirmación.`
+    return `Avisá por otro canal: un teléfono que ya tengas o en persona, no el número de este mensaje. Este caso quedó en ${nombre}. ${motivo} No hace falta señalar a nadie para pedir esa confirmación.`
   }
-  if (id === 'datos' && nivel === 'verde') {
-    return `Aunque este caso es Seguro, una clave, un código o un pago no se hacen desde un enlace que llegó en un mensaje. ${motivo}`
+  if (id === 'datos' && codigo === 'verde') {
+    return `${verde} Una clave, un código o un pago no se hacen desde un enlace que llegó en un mensaje. ${motivo}`
   }
   if (id === 'datos') {
-    return `No cargues claves ni datos. Este caso es ${nombre}. ${motivo} Si ya los mandaste, avisá por otro canal.`
+    return `No cargues claves ni datos. Este caso quedó en ${nombre}. ${motivo} Si ya los mandaste, avisá por otro canal.`
   }
-  if (id === 'borrar' && nivel === 'verde') {
-    return `Borrar el mensaje no cambia este resultado. Este caso es Seguro y no hubo señales fuertes. ${motivo} Una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.`
+  if (id === 'borrar' && codigo === 'verde') {
+    return `Borrar el mensaje no cambia este resultado. ${verde} ${motivo} Una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.`
   }
   if (id === 'borrar') {
-    return `Borrar el mensaje no cambia este resultado ni deshace un clic o un dato ya enviado. Este caso es ${nombre}. ${motivo} ${nivel === 'rojo' ? 'No sigas el mensaje y no cargues claves ni datos.' : 'No sigas el mensaje.'}`
+    return `Borrar el mensaje no cambia este resultado ni deshace un clic o un dato ya enviado. Este caso quedó en ${nombre}. ${motivo} ${codigo === 'rojo' ? 'No sigas el mensaje y no cargues claves ni datos.' : 'No sigas el mensaje.'}`
   }
-  if (id === 'responder' && nivel === 'rojo') {
+  if (id === 'responder' && codigo === 'rojo') {
     return `No respondas. Este caso es Peligroso. ${motivo} Si hace falta avisar, hacelo por otro canal y no cargues claves ni datos.`
   }
-  if (id === 'responder' && nivel === 'amarillo') {
-    return `No respondas desde este mensaje. Este caso es Dudoso. ${motivo} No sigas lo que pide: si tenés que contestar, hacelo por un canal que ya uses.`
+  if (id === 'responder' && codigo === 'amarillo') {
+    return `No respondas desde este mensaje. Este caso quedó en Precaución. ${motivo} No sigas lo que pide: si tenés que contestar, hacelo por un canal que ya uses.`
   }
   if (id === 'responder') {
-    return `Este caso es Seguro y no hubo señales fuertes. ${motivo} Si respondés, igual no mandes una clave, un código ni un pago por un enlace que llegó en el mensaje.`
+    return `${verde} ${motivo} Si respondés, igual no mandes una clave, un código ni un pago por un enlace que llegó en el mensaje.`
   }
-  if (id === 'reenviar' && nivel === 'rojo') {
+  if (id === 'reenviar' && codigo === 'rojo') {
     return `No lo reenvíes. Este caso es Peligroso. ${motivo} Si querés avisar, contá lo que pasó por otro canal, sin pasar el mensaje.`
   }
-  if (id === 'reenviar' && nivel === 'amarillo') {
-    return `No lo reenvíes para que lo abran. Este caso es Dudoso. ${motivo} No sigas el mensaje ni se lo pases a nadie para que entre.`
+  if (id === 'reenviar' && codigo === 'amarillo') {
+    return `No lo reenvíes para que lo abran. Este caso quedó en Precaución. ${motivo} No sigas el mensaje ni se lo pases a nadie para que entre.`
   }
   if (id === 'reenviar') {
-    return `Este caso es Seguro y no hubo señales fuertes. ${motivo} Si lo compartís, avisá que una clave, un código o un pago no se hacen desde un enlace que llegó en un mensaje.`
+    return `${verde} ${motivo} Si lo compartís, avisá que una clave, un código o un pago no se hacen desde un enlace que llegó en un mensaje.`
   }
-  if (id === 'llamar' && nivel === 'verde') {
-    return `Este caso es Seguro y no hubo señales fuertes. ${motivo} Si llamás, usá un número que ya conozcas, no uno que haya llegado en el mensaje.`
+  if (id === 'llamar' && codigo === 'verde') {
+    return `${verde} ${motivo} Si llamás, usá un número que ya conozcas, no uno que haya llegado en el mensaje.`
   }
   if (id === 'llamar') {
-    return `No llames al número que vino en el mensaje. Este caso es ${nombre}. ${motivo} Si tenés que hablar con esa persona o esa empresa, usá un teléfono que ya tengas guardado.`
+    return `No llames al número que vino en el mensaje. Este caso quedó en ${nombre}. ${motivo} Si tenés que hablar con esa persona o esa empresa, usá un teléfono que ya tengas guardado.`
   }
   if (id === 'conocido') {
-    return `Que el nombre se parezca a alguien conocido no cambia este resultado. Este caso es ${nombre}. ${motivo} No es para señalar a esa persona: si querés confirmar, hablale por otro canal.`
+    return `Que el nombre se parezca a alguien conocido no cambia este resultado. Este caso quedó en ${nombre}. ${motivo} No es para señalar a esa persona: si querés confirmar, hablale por otro canal.`
   }
   if (id === 'porque') {
     return `Dio ${nombre} por esto: ${motivo} El semáforo queda como está.`
   }
-  return `Este caso es ${nombre}. ${motivo} ${cuidado(nivel)}`
+  return `Este caso quedó en ${nombre}. ${motivo} ${cuidado(codigo)}`
+}
+
+function respuestaSinVerificar(motivos, id, caso) {
+  const inicio = 'Este caso quedó en No pudimos verificarlo: con lo que pudimos ver no alcanza para dar un resultado.'
+  const motivo = motivoPrincipal(motivos, caso)
+  if (id === 'clic' || id === 'datos') {
+    return `${inicio} ${motivo} Si ya entraste, no cargues claves ni datos y cerrá esa página. Si ya los mandaste, avisá por otro canal.`
+  }
+  return `${inicio} ${motivo} No lo abras desde el mensaje. Si dice ser un banco, un organismo o una tienda, entrá escribiendo vos la dirección oficial.`
 }
 
 export function respuestaLocal(nivel, motivos, pregunta, modo = 'simple', caso = {}) {
@@ -329,11 +459,15 @@ export function respuestaLocal(nivel, motivos, pregunta, modo = 'simple', caso =
   if (!codigo) return 'Este resultado no tiene un nivel para explicar.'
   const tono = modoValido(modo)
   const id = intencion(pregunta)
-  if (codigo === 'gris') return limitarOraciones(respuestaSinVerificar(motivos, id), topeModo(tono))
-  if (id === 'analizar') return limitarOraciones(analizarCaso(codigo, motivos, caso, false, tono), topeModo(tono))
-  if (id === 'resumen') return limitarOraciones(analizarCaso(codigo, motivos, caso, true, 'simple'), 4)
-  if (id === 'ejemplo') return limitarOraciones(ejemploDe(codigo, tono), topeModo(tono))
-  return limitarOraciones(conModo(plantilla(codigo, motivoDe(motivos), id), tono, motivos), topeModo(tono))
+  const tope = topeModo(tono)
+  if (codigo === 'gris') return limitarOraciones(respuestaSinVerificar(motivos, id, caso), tope)
+  if (id === 'analizar' || (id === 'porque' && tono !== 'simple')) {
+    return limitarOraciones(analizarCaso(codigo, motivos, caso, tono), tope)
+  }
+  if (id === 'resumen') return limitarOraciones(analizarCaso(codigo, motivos, caso, 'simple'), 4)
+  if (id === 'ejemplo') return limitarOraciones(ejemploDe(codigo, tono), tope)
+  const nombre = nombreNivel(codigo, caso?.titulo)
+  return limitarOraciones(conModo(plantilla(codigo, nombre, motivoPrincipal(motivos, caso), id), codigo, tono, caso), tope)
 }
 
 export function prepararRespuesta(nivel, motivos, pregunta, cruda, modo = 'simple', caso) {
@@ -347,17 +481,37 @@ function casoConsulta(caso) {
   const crudo = String(origen.url ?? '').replace(/\s+/g, ' ').trim()
   const url = (/^[a-z][a-z0-9+.-]*:/i.test(crudo) ? sinConsulta(crudo) : crudo).slice(0, 300)
   const dominio = String(origen.dominio ?? '').replace(/\s+/g, ' ').trim().slice(0, 120)
-  const canal = ['enlace', 'whatsapp', 'pdf', 'correo'].includes(origen.canal) ? origen.canal : ''
+  const canal = ['enlace', 'whatsapp', 'pdf', 'correo', 'qr'].includes(origen.canal) ? origen.canal : ''
   const puntuacion = Number.isFinite(origen.puntuacion)
     ? Math.max(0, Math.min(100, Math.round(origen.puntuacion)))
     : null
-  return { url, dominio, puntuacion, canal }
+  const titulo = TITULOS.includes(origen.titulo) ? origen.titulo : ''
+  return { url, dominio, puntuacion, canal, titulo, sinContenido: Boolean(origen.sinContenido) }
+}
+
+function senalesConsulta(caso) {
+  return senalesActivas(caso)
+    .slice(0, 12)
+    .map((senal) => ({
+      id: String(senal.id).slice(0, 60),
+      grupo: String(senal.grupo ?? '').slice(0, 30),
+      fuerza: ['fuerte', 'media', 'debil'].includes(senal.fuerza) ? senal.fuerza : '',
+      peso: Math.round(senal.peso),
+      texto: recortarTexto(senal.texto, 240),
+    }))
+}
+
+function virusTotalConsulta(caso) {
+  const vt = caso?.virusTotal
+  if (!vt || !Number.isFinite(vt.maliciosos) || !Number.isFinite(vt.total)) return null
+  return { maliciosos: Math.max(0, Math.round(vt.maliciosos)), total: Math.max(0, Math.round(vt.total)) }
 }
 
 export function armarConsulta(nivel, motivos, pregunta, turnos, modo = 'simple', caso) {
-  const nombre = nombreNivel(nivel)
+  const codigo = codigoNivel(nivel)
+  const nombre = nivelServidor(codigo)
   const preguntaLimpia = recortarTexto(pregunta)
-  if (!nombre || !preguntaLimpia || !/[a-z0-9]/i.test(plano(preguntaLimpia))) return null
+  if (!codigo || !preguntaLimpia || !/[a-z0-9]/i.test(plano(preguntaLimpia))) return null
 
   const lista = motivosLimpios(motivos)
     .map((motivo) => recortarTexto(motivo, 240))
@@ -372,12 +526,17 @@ export function armarConsulta(nivel, motivos, pregunta, turnos, modo = 'simple',
     }))
     .filter((turno) => turno.texto)
 
+  const datosCaso = casoConsulta(caso)
   return {
     nivel: nombre,
+    titulo: datosCaso.titulo || nombreNivel(codigo),
     motivos: lista,
+    senales: senalesConsulta(caso),
+    virusTotal: virusTotalConsulta(caso),
+    umbrales: { ...PUNTAJE.umbrales },
     pregunta: preguntaLimpia,
     turnos: historial,
     modo: modoValido(modo),
-    caso: casoConsulta(caso),
+    caso: datosCaso,
   }
 }
