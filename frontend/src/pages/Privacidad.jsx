@@ -60,7 +60,8 @@ function Privacidad() {
           pregunta, la forma de responder (simple, técnica o avanzada) y los últimos
           turnos del chat. No recibe el mensaje de WhatsApp, el cuerpo del correo ni el
           PDF. Si el modelo no responde, la respuesta se arma en el navegador con ese
-          mismo caso.
+          mismo caso. Cada consulta al modelo guarda los tokens de esa respuesta
+          (entrada, salida y total) y con eso se suma lo que consumió el usuario.
         </p>
         <p>
           “Reportar” manda solo si lo tocás y elegís qué está mal. La función{' '}

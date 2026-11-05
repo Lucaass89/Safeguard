@@ -135,6 +135,11 @@ function Tarjeta({ resultado, canal, subtitulo, casoId, porQue, conFaro, onNoAbr
               senales: resultado.senales ?? [],
               virusTotal: resultado.virusTotal ?? null,
               sinContenido: Boolean(nota),
+              registradoEn: resultado.registradoEn ?? null,
+              edadDias: Number.isFinite(resultado.edadDias) ? resultado.edadDias : null,
+              destino: resultado.destino ?? null,
+              falloAlSeguir: resultado.falloAlSeguir ?? null,
+              contenidoRevisado: resultado.contenidoRevisado === true,
             }}
           />
         )}

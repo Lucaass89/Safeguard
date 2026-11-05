@@ -39,6 +39,10 @@ const TLD_BARATOS = new Set([
   'pw',
 ])
 
+export function esTldBarato(tld) {
+  return TLD_BARATOS.has(String(tld ?? '').toLowerCase().replace(/^\./, ''))
+}
+
 // Se buscan solo en el camino y los parámetros: en el nombre del sitio ya cuenta NOMBRES_SENUELO.
 const PALABRAS_GANCHO = [
   'premio',
@@ -801,6 +805,14 @@ export const FALLO_AL_SEGUIR = {
 const sinSenales = (m) => m.startsWith('No aparecen')
 
 // La edad solo suma cuando el dominio es de verdad nuevo: "hace 6 meses" no es una señal de riesgo.
+function fechaRegistro(valor) {
+  const texto = String(valor ?? '')
+  const dia = texto.match(/^(\d{4}-\d{2}-\d{2})/)
+  if (!dia) return null
+  const fecha = new Date(`${dia[1]}T00:00:00Z`)
+  return Number.isNaN(fecha.getTime()) ? null : texto
+}
+
 export function riesgoPorEdad(dias, config = PUNTAJE.edad) {
   if (dias >= config.recienteDias) return null
   const cuando = dias < 1 ? 'hoy' : dias === 1 ? 'ayer' : `hace ${dias} días`
@@ -832,6 +844,11 @@ export function combinarConEnriquecimiento(local, extra) {
   if (!extra) return local
 
   const actual = { ...local, motivos: [...local.motivos], senales: [...(local.senales ?? [])] }
+  // Datos para explicar, sin sumar puntaje: la edad solo pesa cuando es reciente, más arriba.
+  actual.registradoEn = fechaRegistro(extra.registrado_en)
+  actual.edadDias =
+    typeof extra.edad_dias === 'number' && Number.isFinite(extra.edad_dias) ? Math.max(0, Math.round(extra.edad_dias)) : null
+  actual.contenidoRevisado = !extra.fallo
   let puntos = actual.puntuacion
   let refuerzos = 0
   const sumar = (id, peso, texto, fuerza, grupo) => {

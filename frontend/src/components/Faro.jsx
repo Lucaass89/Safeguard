@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { consultarFaro } from '../lib/consultarFaro.js'
-import { MODOS, PREGUNTAS_LISTAS, SALUDO, bloquesRespuesta, modoValido, plano, recortarTexto } from '../lib/faro.js'
+import { MODOS, PREGUNTAS_LISTAS, SALUDO, bloquesRespuesta, modoValido, partesTexto, plano, recortarTexto, textoTokens } from '../lib/faro.js'
 import './Faro.css'
 
 function Robot({ pensando, grande }) {
@@ -32,6 +32,27 @@ function Robot({ pensando, grande }) {
   )
 }
 
+// Texto de React: la negrita es un nodo, el HTML del modelo se ve como texto y no se ejecuta.
+function Texto({ texto }) {
+  return partesTexto(texto).map((parte, indice) =>
+    parte.tipo === 'fuerte' ? <strong key={indice}>{parte.texto}</strong> : parte.texto,
+  )
+}
+
+function Lista({ bloque }) {
+  const Ordenada = bloque.tipo === 'lista'
+  const Etiqueta = Ordenada ? 'ol' : 'ul'
+  return (
+    <Etiqueta className={Ordenada ? 'faro-lista' : 'faro-lista faro-vinetas'}>
+      {bloque.items.map((item, numero) => (
+        <li key={numero}>
+          <Texto texto={item} />
+        </li>
+      ))}
+    </Etiqueta>
+  )
+}
+
 function Faro({ casoId, nivel, motivos, caso }) {
   const campoId = useId()
   const entrada = useRef(null)
@@ -41,6 +62,7 @@ function Faro({ casoId, nivel, motivos, caso }) {
   const [mensajes, setMensajes] = useState([])
   const [borrador, setBorrador] = useState('')
   const [pensando, setPensando] = useState(false)
+  const [uso, setUso] = useState(null)
 
   useEffect(() => {
     casoActual.current = casoId
@@ -48,6 +70,7 @@ function Faro({ casoId, nivel, motivos, caso }) {
     setMensajes([])
     setBorrador('')
     setPensando(false)
+    setUso(null)
   }, [casoId])
 
   useEffect(() => {
@@ -68,6 +91,7 @@ function Faro({ casoId, nivel, motivos, caso }) {
         {
           rol: 'faro',
           texto: 'Escribí la duda en una frase. No hace falta pegar el mensaje ni el enlace.',
+          tokens: null,
         },
       ])
       setBorrador('')
@@ -80,7 +104,8 @@ function Faro({ casoId, nivel, motivos, caso }) {
     setPensando(true)
     const respuesta = await consultarFaro(nivel, motivos, visible, previos, modoValido(modo), caso)
     if (casoActual.current !== idCaso) return
-    setMensajes((prev) => [...prev, { rol: 'faro', texto: respuesta }])
+    if (Number.isInteger(respuesta.tokensUsuario)) setUso(respuesta.tokensUsuario)
+    setMensajes((prev) => [...prev, { rol: 'faro', texto: respuesta.texto, tokens: respuesta.tokens }])
     setPensando(false)
   }
 
@@ -96,7 +121,10 @@ function Faro({ casoId, nivel, motivos, caso }) {
   return (
     <section className="faro" aria-label="Faro">
       <div className="faro-panel">
-        <p className="faro-nota">Faro analiza este caso. No cambia el semáforo.</p>
+        <p className="faro-nota">
+          Faro analiza este caso. No cambia el semáforo.
+          {textoTokens(uso) ? ` Usaste ${textoTokens(uso)}.` : ''}
+        </p>
         <div className="faro-cuerpo">
           <Robot pensando={pensando} grande />
           <div className="faro-dialogo" aria-busy={pensando}>
@@ -105,16 +133,15 @@ function Faro({ casoId, nivel, motivos, caso }) {
               <li key={`${mensaje.rol}-${indice}`} className={mensaje.rol === 'faro' ? 'faro-msg-faro' : 'faro-msg-vos'}>
                 <span className="faro-quien">{mensaje.rol === 'faro' ? 'Faro' : 'Vos'}</span>
                 {bloquesRespuesta(mensaje.texto).map((bloque, orden) =>
-                  bloque.tipo === 'lista' ? (
-                    <ol key={orden} className="faro-lista">
-                      {bloque.items.map((item, numero) => (
-                        <li key={numero}>{item}</li>
-                      ))}
-                    </ol>
+                  bloque.tipo === 'lista' || bloque.tipo === 'vinetas' ? (
+                    <Lista key={orden} bloque={bloque} />
                   ) : (
-                    <p key={orden}>{bloque.texto}</p>
+                    <p key={orden}>
+                      <Texto texto={bloque.texto} />
+                    </p>
                   ),
                 )}
+                {textoTokens(mensaje.tokens) ? <p className="faro-tokens">Esta respuesta: {textoTokens(mensaje.tokens)}.</p> : null}
               </li>
             ))}
           </ol>

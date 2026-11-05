@@ -77,12 +77,25 @@
 }
 
 .faro-mensajes .faro-lista {
-  list-style: decimal;
   display: grid;
   gap: 4px;
   margin: 6px 0 0;
   padding-left: 22px;
   line-height: 1.45;
+}
+
+.faro-mensajes ol.faro-lista {
+  list-style: decimal;
+}
+
+.faro-mensajes .faro-vinetas {
+  list-style: disc;
+}
+
+.faro-tokens {
+  margin: 4px 0 0;
+  color: #8d98ab;
+  font-size: 13px;
 }
 
 .faro-quien {
