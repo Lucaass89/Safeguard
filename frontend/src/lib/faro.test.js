@@ -74,7 +74,9 @@ test('Simple, Técnico y Avanzado cambian el contenido, en el análisis y en el 
   assert.ok(!/puntaje|\d+ puntos|virustotal|marca_subdominio/i.test(simple))
   assert.equal(simple.split(/(?<=[.!?])\s+/).length <= 3, true)
   assert.match(simple, /quedó en Peligroso/i)
-  assert.match(simple, /No sigas el mensaje/)
+  assert.ok(!simple.includes('No sigas el mensaje'))
+  assert.ok(!simple.includes('No lo abras'))
+  for (const motivo of r.motivos) assert.ok(!simple.includes(motivo), motivo)
 
   assert.match(tecnico, /fuerte, \d+ puntos/)
   assert.ok(!tecnico.includes('marca_subdominio'))
@@ -190,12 +192,17 @@ test('el resumen armado solo sale con los dos pedidos, y una pregunta libre no l
   assert.equal(pideResumen('Hacé un resumen.'), 'resumen')
   assert.equal(pideResumen('¿Qué es un dominio .click?'), '')
   assert.equal(pideResumen('analizá este caso y decime qué es un .click'), '')
-  assert.equal(pideResumen('¿Por qué dio este resultado?'), '')
+  assert.equal(pideResumen('¿Por qué dio este resultado?'), 'porque')
+  assert.equal(pideResumen('¿Se puede abrir?'), 'abrir')
 
   const { r, caso } = casoDe('https://stakelotemax7.click/')
   const libre = cerrarConsulta(r.nivel, r.motivos, '¿Qué es un dominio .click?', '', 'simple', caso, true)
   assert.equal(libre, FALLO_FARO)
   assert.ok(!libre.includes('.click se usa mucho'))
+
+  const porque = cerrarConsulta(r.nivel, r.motivos, '¿Por qué dio este resultado?', '', 'simple', caso, true)
+  assert.match(porque, /Precaución/)
+  assert.ok(!porque.includes('se usa mucho en sitios truchos'))
 
   const resumen = cerrarConsulta(r.nivel, r.motivos, 'Hacé un resumen', '', 'tecnico', caso, true)
   assert.match(resumen, /Precaución/)

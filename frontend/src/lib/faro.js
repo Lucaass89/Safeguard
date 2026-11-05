@@ -222,7 +222,7 @@ export function topesDelModo(modo) {
   return { oraciones: 3, lineas: 3 }
 }
 
-// El resumen armado solo se usa con estos dos pedidos, tal cual los botones. El resto va al modelo.
+// Estos botones se responden con el caso ya calculado. Una pregunta escrita va al modelo.
 export function pideResumen(pregunta) {
   const p = plano(pregunta)
     .replace(/[¿?¡!.,:;]/g, ' ')
@@ -230,6 +230,10 @@ export function pideResumen(pregunta) {
     .trim()
   if (p === 'analiza este caso') return 'analizar'
   if (p === 'hace un resumen') return 'resumen'
+  if (p === 'por que dio este resultado') return 'porque'
+  if (p === 'se puede abrir') return 'abrir'
+  if (p === 'que pasa si ya hice clic') return 'clic'
+  if (p === 'dame un ejemplo') return 'ejemplo'
   return ''
 }
 
@@ -247,10 +251,51 @@ function conPunto(frase) {
   return /[.!?]$/.test(limpia) ? limpia : `${limpia}.`
 }
 
-function motivoPrincipal(motivos, caso) {
-  const senal = senalesActivas(caso)[0]
-  if (senal) return conPunto(motivosLimpios([senal.texto]).join(' '))
-  return conPunto(motivosLimpios(motivos)[0] ?? 'No hay un motivo extra en este caso.')
+function conMayuscula(frase) {
+  const texto = String(frase ?? '').trim()
+  return texto ? texto.charAt(0).toUpperCase() + texto.slice(1) : ''
+}
+
+function unir(partes) {
+  if (partes.length <= 1) return partes[0] ?? ''
+  if (partes.length === 2) return `${partes[0]}, y ${partes[1]}`
+  return `${partes.slice(0, -1).join(', ')} y ${partes.at(-1)}`
+}
+
+// Otra redacción que la de la tarjeta. La tarjeta ya muestra senal.texto tal cual.
+function decirSenal(senal, caso) {
+  const id = String(senal?.id ?? '')
+  const dias = Number.isFinite(caso?.edadDias) ? Math.round(caso.edadDias) : null
+  if (id === 'dominio_reciente') {
+    if (dias != null && dias < 1) return 'el dominio se registró hoy'
+    if (dias === 1) return 'el dominio se registró ayer'
+    if (dias != null) return `el dominio tiene ${dias} días`
+    return 'el dominio es de los últimos días'
+  }
+  if (id === 'pide_clave_dominio_nuevo') return 'piden una clave y el dominio todavía no llega a los cuatro meses'
+  if (id === 'pide_clave' || id === 'pide_datos') return 'la página pide una clave o un dato de pago'
+  if (id === 'virustotal') {
+    const n = caso?.virusTotal?.maliciosos
+    const total = caso?.virusTotal?.total
+    return Number.isFinite(n) && Number.isFinite(total)
+      ? `${n} de ${total} motores de VirusTotal lo marcan`
+      : 'varios motores de VirusTotal lo marcan'
+  }
+  if (id === 'tld_barato') return 'el final del dominio aparece seguido en sitios armados para engañar'
+  if (id === 'sin_https') return 'la dirección no tiene https'
+  if (id.startsWith('marca_')) return 'el nombre imita una marca conocida y el dominio es otro'
+  if (id === 'nombre_senuelo') return 'el nombre parece un trámite o un pago'
+  if (id === 'denunciado_en_safelink' || id === 'senalado_en_safelink') return 'ese dominio ya figura en la base de SafeLink'
+  if (id === 'destino_descarga') return 'el destino es una descarga'
+  if (id === 'ip') return 'la dirección es un número, no un nombre de sitio'
+  if (id === 'enlace_escondido') return 'la dirección esconde otro enlace'
+  if (id === 'formulario_a_otro_sitio') return 'lo que se escribe en el formulario se va a otro sitio'
+  if (id === 'certificado_reciente') return 'el certificado es de estos días'
+  if (id === 'muchos_guiones') return 'el dominio está armado con muchos guiones'
+  if (id === 'muchos_subdominios') return 'hay varios subdominios uno detrás de otro'
+  if (id === 'palabras_gancho') return 'la dirección usa una palabra de apuro o de premio'
+  if (id === 'esquema_peligroso') return 'la dirección no es una página web común'
+  return 'hay otra revisión de la dirección que suma al resultado'
 }
 
 function umbralesDe(caso) {
@@ -258,11 +303,58 @@ function umbralesDe(caso) {
   return Number.isFinite(u?.precaucion) && Number.isFinite(u?.peligroso) ? u : PUNTAJE.umbrales
 }
 
-function textoSimple(codigo, motivos, caso) {
+function textoSimple(codigo, caso) {
   const nombre = nombreNivel(codigo, caso?.titulo)
   const dominio = String(caso?.dominio ?? '').trim()
   const cabeza = dominio ? `Revisamos ${dominio} y quedó en ${nombre}.` : `Este caso quedó en ${nombre}.`
-  return [cabeza, motivoPrincipal(motivos, caso), cuidado(codigo)].join(' ')
+  const partes = senalesActivas(caso).slice(0, 2).map((senal) => decirSenal(senal, caso))
+  const medio = partes.length ? `Lo que arma ese nivel es que ${unir(partes)}.` : 'No hay una señal con peso en este caso.'
+  return `${cabeza} ${medio}`
+}
+
+function textoPorque(codigo, caso, modo) {
+  const nombre = nombreNivel(codigo, caso?.titulo)
+  const activas = senalesActivas(caso)
+  if (modo === 'tecnico' || modo === 'avanzado') {
+    const lineas = [`Dio ${nombre} por estas señales:`]
+    if (!activas.length) lineas.push('No hay señales con peso.')
+    activas.forEach((senal, indice) => {
+      const fuerza = FUERZA[senal.fuerza] ?? 'sin fuerza'
+      const detalle = modo === 'avanzado' ? `${senal.id}, ${fuerza}, ${Math.round(senal.peso)} puntos` : `${fuerza}, ${Math.round(senal.peso)} puntos`
+      lineas.push(`${indice + 1}. ${detalle}. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`)
+    })
+    if (modo === 'avanzado') lineas.push(`Puntaje: ${Number.isFinite(caso?.puntuacion) ? caso.puntuacion : 'no disponible'} de 100.`)
+    return lineas.join('\n')
+  }
+  const partes = activas.slice(0, 3).map((senal) => decirSenal(senal, caso))
+  if (!partes.length) return `Dio ${nombre} y no hay una señal con peso para explicar.`
+  const resto = activas.length - partes.length
+  const extra = resto > 0 ? ` Hay ${resto} ${resto === 1 ? 'señal más' : 'señales más'}.` : ''
+  return `Dio ${nombre} porque ${unir(partes)}.${extra}`
+}
+
+function textoAbrir(codigo, caso) {
+  const nombre = nombreNivel(codigo, caso?.titulo)
+  if (codigo === 'rojo') return `No. Quedó en ${nombre}, así que este enlace no es para entrar.`
+  if (codigo === 'amarillo') return `Mejor no todavía. Quedó en ${nombre}: compará la dirección con la oficial, escrita por vos.`
+  if (codigo === 'gris') return `No hay forma de decirlo. Quedó en ${nombre}.`
+  return `El nivel es ${nombre}. En la dirección no vimos señales de riesgo, y eso no cierra el caso.`
+}
+
+function textoClic(codigo, caso) {
+  const nombre = nombreNivel(codigo, caso?.titulo)
+  if (codigo === 'rojo') {
+    return `Si ya entraste en un caso ${nombre}, no completes nada en esa página. Si escribiste una clave, cambiala desde el sitio oficial, entrando vos.`
+  }
+  if (codigo === 'amarillo' || codigo === 'gris') {
+    return `El nivel es ${nombre}. Si ya entraste, no completes datos. Una clave, si hace falta cambiarla, se cambia en el sitio oficial.`
+  }
+  return `El nivel es ${nombre}. Si igual escribiste una clave porque el enlace te lo pasó otra persona, cambiala desde el sitio oficial.`
+}
+
+function textoEjemplo(codigo, caso) {
+  const nombre = nombreNivel(codigo, caso?.titulo)
+  return `Un caso parecido es un aviso que usa el nombre de una tienda en un dominio recién creado y pide entrar. Este quedó en ${nombre} por lo que vimos en esta dirección.`
 }
 
 function textoTecnico(codigo, caso) {
@@ -281,11 +373,10 @@ function textoTecnico(codigo, caso) {
   if (!lista.length) lineas.push('No hay señales con peso en este caso.')
   lista.forEach((senal, indice) => {
     const fuerza = FUERZA[senal.fuerza] ?? 'sin fuerza'
-    lineas.push(`${indice + 1}. ${fuerza}, ${Math.round(senal.peso)} puntos. ${conPunto(motivosLimpios([senal.texto]).join(' '))}`)
+    lineas.push(`${indice + 1}. ${fuerza}, ${Math.round(senal.peso)} puntos. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`)
   })
   if (extra > 0) lineas.push(`Hay ${extra} ${extra === 1 ? 'señal más' : 'señales más'}, de menor peso.`)
   if (conVt) lineas.push(`VirusTotal: ${vt.motores_que_detectan} de ${vt.motores_totales} motores la marcan.`)
-  lineas.push(cuidado(codigo))
   return lineas.slice(0, 8).join('\n')
 }
 
@@ -302,7 +393,7 @@ function textoAvanzado(codigo, caso) {
   if (!ctx.senales.length) lineas.push('No hay señales con peso.')
   ctx.senales.forEach((senal, indice) => {
     lineas.push(
-      `${indice + 1}. ${senal.id} | grupo ${senal.grupo || 'sin grupo'} | ${senal.fuerza || 'sin fuerza'} | ${senal.peso} puntos. ${conPunto(senal.texto)}`,
+      `${indice + 1}. ${senal.id} | grupo ${senal.grupo || 'sin grupo'} | ${senal.fuerza || 'sin fuerza'} | ${senal.peso} puntos. ${conPunto(conMayuscula(decirSenal(senal, caso)))}`,
     )
   })
   lineas.push(
@@ -325,10 +416,10 @@ function textoAvanzado(codigo, caso) {
   return lineas.join('\n')
 }
 
-function analizarCaso(codigo, motivos, caso, modo) {
+function analizarCaso(codigo, caso, modo) {
   if (modo === 'tecnico') return textoTecnico(codigo, caso)
   if (modo === 'avanzado') return textoAvanzado(codigo, caso)
-  return textoSimple(codigo, motivos, caso)
+  return textoSimple(codigo, caso)
 }
 
 function afirma(frase, patron) {
@@ -357,21 +448,23 @@ export function revelaInstrucciones(texto) {
   return /contexto[_ ]?inicio|contexto[_ ]?fin|datos[_ ]?inicio|datos[_ ]?fin|prompt de sistema|instrucciones del sistema|system prompt/.test(p)
 }
 
-function cuidado(codigo) {
-  if (codigo === 'rojo') return 'No sigas el mensaje, no cargues claves ni datos, y avisá por otro canal.'
-  if (codigo === 'amarillo') {
-    return 'Antes de seguir, chequeá que la dirección sea la oficial. Si es un banco, un organismo o una tienda, entrá escribiendo vos la dirección.'
-  }
-  return 'No encontramos señales de riesgo, pero una clave, un código o un pago igual no se hacen desde un enlace que llegó en un mensaje.'
-}
-
 export function respuestaLocal(nivel, motivos, pregunta, modo = 'simple', caso = {}) {
   const pedido = pideResumen(pregunta)
   const codigo = codigoNivel(nivel)
   if (!pedido || !codigo) return FALLO_FARO
   const tono = modoValido(modo)
   const tope = topesDelModo(tono)
-  return limitarOraciones(analizarCaso(codigo, motivos, caso, tono), tope.oraciones, tope.lineas)
+  const crudo =
+    pedido === 'porque'
+      ? textoPorque(codigo, caso, tono)
+      : pedido === 'abrir'
+        ? textoAbrir(codigo, caso)
+        : pedido === 'clic'
+          ? textoClic(codigo, caso)
+          : pedido === 'ejemplo'
+            ? textoEjemplo(codigo, caso)
+            : analizarCaso(codigo, caso, tono)
+  return limitarOraciones(crudo, tope.oraciones, tope.lineas)
 }
 
 export function prepararRespuesta(nivel, motivos, pregunta, cruda, modo = 'simple', caso) {
