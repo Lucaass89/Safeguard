@@ -32,7 +32,6 @@ function Robot({ pensando, grande }) {
   )
 }
 
-// Texto de React: la negrita es un nodo, el HTML del modelo se ve como texto y no se ejecuta.
 function Texto({ texto }) {
   return partesTexto(texto).map((parte, indice) =>
     parte.tipo === 'fuerte' ? <strong key={indice}>{parte.texto}</strong> : parte.texto,

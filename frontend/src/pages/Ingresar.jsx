@@ -30,8 +30,6 @@ function destinoSeguro(valor) {
   return valor
 }
 
-// Cuando falla el proveedor externo, Supabase vuelve con el motivo en la query
-// o en el hash. Sin leerlo, el usuario solo ve el formulario otra vez.
 function errorDeRedirect() {
   const query = new URLSearchParams(window.location.search)
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''))

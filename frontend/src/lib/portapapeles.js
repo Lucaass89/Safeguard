@@ -2,7 +2,6 @@ import { useSyncExternalStore } from 'react'
 import { enlacesEn } from './analisisWhatsapp.js'
 import { versionApp } from './esAppNativa.js'
 
-// La app de Android lee esta clave antes de tocar el portapapeles.
 const PREFERENCIA = 'sg-portapapeles'
 const PENDIENTE = 'sg-copiado'
 const VISTO = 'sg-copiado-visto'

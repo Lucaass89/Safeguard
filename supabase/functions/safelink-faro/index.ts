@@ -6,9 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Los filtros buscan recomendaciones, no palabras sueltas: "antes de abrir un enlace, mirá la dirección" explica,
-// "abrilo" o "podés entrar" recomiendan. Un imperativo va al empezar la frase o después de una coma.
-// Mantener igual que frontend/src/lib/faro.js.
 const IMP = String.raw`(?:^|[,;:]\s*|\b(?:y|entonces|ahora|tranquilo|dale)\s+)`
 const recomienda = (verbos: string) => new RegExp(`${IMP}(?:${verbos})\\b`)
 const permite = (verbos: string) =>
@@ -36,7 +33,6 @@ const SEGURO = [
   permite('pagar|poner la clave|ingresar la clave|cargar los datos'),
 ]
 
-// En ningún nivel se dice que un sitio es seguro o que algo está garantizado.
 const NUNCA = [/\bes seguro\b/, /\bconfiable\b/, /\bgarantizad[oa]s?\b/]
 
 type Nivel = 'Seguro' | 'Dudoso' | 'Peligroso'
@@ -71,7 +67,6 @@ function plano(texto: string) {
     .replace(/\p{M}/gu, '')
 }
 
-// A Gemini le llegan el sitio y la ruta; la query y el fragmento pueden traer datos personales o tokens.
 function sinConsulta(texto: string) {
   if (!/^[a-z][a-z0-9+.-]*:/i.test(texto)) return texto
   try {
@@ -117,7 +112,6 @@ function oraciones(texto: string) {
 
 const ITEM = /^\d{1,2}[.)]\s+/
 
-// Una lista numerada pegada en un párrafo pasa a un ítem por línea, para que se muestre como lista.
 function separarItems(texto: string) {
   return texto
     .split('\n')
@@ -126,7 +120,6 @@ function separarItems(texto: string) {
     .filter(Boolean)
 }
 
-// Oraciones completas hasta el tope del modo, sin perder los saltos de línea ni partir los ítems.
 function cerradas(texto: string, modo: Modo) {
   const tope = topes(modo)
   let quedan = tope.oraciones
@@ -199,7 +192,6 @@ function leer(body: unknown) {
     : null
   const caso: Caso = { url, dominio, puntuacion, canal, sinContenido: crudo.sinContenido === true }
 
-  // El título tiene que corresponder al nivel; si no llega (frontend viejo), sale del nivel.
   const titulo = typeof datos.titulo === 'string' && TITULOS.includes(datos.titulo) && NIVEL_DE[datos.titulo] === nivel
     ? datos.titulo
     : TITULO_DE[nivel]
@@ -443,7 +435,6 @@ function numeroToken(valor: unknown) {
   return n
 }
 
-// Lo que Gemini informa en usageMetadata. El total es el que se cobra.
 function gastoDe(data: { usageMetadata?: Record<string, unknown> }): Gasto | null {
   const uso = data?.usageMetadata
   if (!uso) return null
@@ -532,7 +523,6 @@ async function pedirGemini(c: Consulta): Promise<{ texto: string | null; gasto: 
           .map((parte: { text?: string }) => parte.text ?? '')
           .join(' '),
       )
-      // Un nombre de nivel viejo se cambia por el de la tarjeta en vez de tirar la respuesta.
       const corta = cerradas(texto, modo).replace(/\b(Dudoso|Sospechoso)\b/g, c.titulo)
       const cortada = data?.candidates?.[0]?.finishReason === 'MAX_TOKENS'
       if (!corta || cortada || contradice(nivel, corta) || revelaInstrucciones(corta)) continue

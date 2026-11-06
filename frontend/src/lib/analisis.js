@@ -43,7 +43,6 @@ export function esTldBarato(tld) {
   return TLD_BARATOS.has(String(tld ?? '').toLowerCase().replace(/^\./, ''))
 }
 
-// Se buscan solo en el camino y los parámetros: en el nombre del sitio ya cuenta NOMBRES_SENUELO.
 const PALABRAS_GANCHO = [
   'premio',
   'ganaste',
@@ -377,7 +376,6 @@ export function analizar(entrada) {
   const motivos = []
   const senales = []
   let puntos = 0
-  // Señales fuertes o medias que acompañan a una marca imitada (la marca sola no cuenta).
   let refuerzos = 0
 
   const sumar = (id, peso, texto, fuerza, grupo) => {
@@ -447,7 +445,6 @@ export function analizar(entrada) {
       'engano',
     )
   } else if (!oficial && !lectura.disfrazado && host.split('.').some((parte) => parte.startsWith('xn--'))) {
-    // Las señales de arriba ya explican el caso cuando el nombre imita a otro; acá queda el resto (ñ, acentos).
     sumar(
       'punycode',
       PUNTAJE.punycode.peso,
@@ -538,7 +535,6 @@ export function analizar(entrada) {
     partesNombre.find((parte) => NOMBRES_SENUELO.has(parte)) ??
     nombrePegado.match(/pagos|seguridad|verificacion|billetera/)?.[0]
   if (!oficial && senuelo) {
-    // Junto a una marca imitada es el armado típico ("marca.pagos-seguridad.com"); sola es una palabra más.
     sumar(
       'nombre_senuelo',
       18,
@@ -594,7 +590,6 @@ export function analizar(entrada) {
       enCamino && enCamino.marca !== marca?.marca && marcaOficialDe(base)?.id !== enCamino.marca ? enCamino : null
     const donde = nombrada?.donde === 'camino' ? 'el camino de la dirección' : 'un parámetro'
     const sitio = plataforma ? host : base
-    // Una nota de un diario que nombra a la marca no cuenta; con un dominio de trámite o una página para entrar, sí.
     if (nombrada && (rutaSensible || senuelo)) {
       sumar(
         'marca_en_camino',
@@ -642,7 +637,6 @@ export function analizar(entrada) {
     sumar('dato_codificado', 12, 'Un dato de la dirección viene codificado y no se puede leer.', 'debil', 'debiles')
   }
 
-  // Solo cuenta si después viene algo con forma de dominio: "/@-34.60,-58.38" en Maps no lo es.
   if (/@[\p{L}\p{N}-]+\.[\p{L}]{2,}/u.test(decodificarSeguro(url.pathname))) {
     sumar('arroba_en_camino', 25, 'Hay una arroba en el camino de la dirección.', 'media', 'camino')
   }
@@ -714,7 +708,6 @@ export function analizar(entrada) {
   }
 }
 
-// Aplica la regla de que sin una señal fuerte (o dos medias) no se llega a Peligroso, y deja anotado el recorte.
 function cerrarPuntaje(puntos, senales) {
   const final = puntajeFinal(puntos, senales)
   if (final < Math.min(100, puntos)) {
@@ -804,7 +797,6 @@ export const FALLO_AL_SEGUIR = {
 
 const sinSenales = (m) => m.startsWith('No aparecen')
 
-// La edad solo suma cuando el dominio es de verdad nuevo: "hace 6 meses" no es una señal de riesgo.
 function fechaRegistro(valor) {
   const texto = String(valor ?? '')
   const dia = texto.match(/^(\d{4}-\d{2}-\d{2})/)
@@ -844,7 +836,6 @@ export function combinarConEnriquecimiento(local, extra) {
   if (!extra) return local
 
   const actual = { ...local, motivos: [...local.motivos], senales: [...(local.senales ?? [])] }
-  // Datos para explicar, sin sumar puntaje: la edad solo pesa cuando es reciente, más arriba.
   actual.registradoEn = fechaRegistro(extra.registrado_en)
   actual.edadDias =
     typeof extra.edad_dias === 'number' && Number.isFinite(extra.edad_dias) ? Math.max(0, Math.round(extra.edad_dias)) : null
@@ -909,8 +900,6 @@ export function combinarConEnriquecimiento(local, extra) {
     )
   }
 
-  // Que un dominio parecido a una marca redirija al sitio real no lo limpia, pero sin otra señal suele ser
-  // un dominio defensivo de la propia marca: queda en Precaución.
   if (local.parecido && destino && !destino.sinSitio && destino.dominio !== local.dominio && esDominioOficial(destino.dominio)) {
     const otraSenal = (local.senales ?? []).some(
       (senal) => senal.puntos > 0 && senal.grupo !== 'marca' && senal.fuerza !== 'debil',
@@ -932,7 +921,6 @@ export function combinarConEnriquecimiento(local, extra) {
   const hostFinal = hostDe(extra.destino) || local.host
   const deTerceros = Boolean(plataformaDe(hostFinal))
   const oficial = esDominioOficial(dominioFinal) && !deTerceros
-  // En una plataforma de terceros, la edad y el certificado son de la plataforma, no de quien armó el contenido.
   const juzgaDominio = !oficial && !deTerceros
 
   const edad = typeof extra.edad_dias === 'number' && juzgaDominio ? riesgoPorEdad(extra.edad_dias) : null

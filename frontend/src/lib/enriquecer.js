@@ -12,8 +12,6 @@ import { guardarFragmento } from './fragmentos.js'
 import { supabase } from './supabase.js'
 import { SIN_ABRIR, SIN_BASE } from './veredicto.js'
 
-// Las redirecciones se siguen en el servidor, nunca desde el teléfono.
-// Una respuesta con `fallo` trae lo que se llegó a ver antes del corte.
 export async function enriquecer(url) {
   if (!url) return null
 

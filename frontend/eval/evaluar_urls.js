@@ -1,5 +1,3 @@
-// Corre urls_eval.csv contra el detector, sin HTTP. VirusTotal sale de eval/virustotal/<host>.json, nunca de la API.
-// Uso: node eval/evaluar_urls.js [--guardar]   (--guardar reescribe la línea base)
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
@@ -68,12 +66,10 @@ export function leerVirusTotal(url, carpeta = new URL('./virustotal/', import.me
   return existsSync(archivo) ? JSON.parse(readFileSync(archivo, 'utf8')) : null
 }
 
-// "Marcado" = Precaución o Peligroso. "No pudimos verificarlo" no cuenta como detección.
 const marcado = (nivel) => nivel === 'amarillo' || nivel === 'rojo'
 
 const VEREDICTOS = ['Seguro', 'Sin señales de riesgo', 'Precaución', 'Peligroso', 'No pudimos verificarlo']
 
-// Una nota "Esperado: Peligroso" pide ese veredicto exacto, además de acertar la etiqueta.
 export function esperadoDe(notas) {
   const pedido = notas.match(/Esperado:\s*([^.;]+)/i)?.[1]?.trim().toLowerCase()
   return VEREDICTOS.find((veredicto) => veredicto.toLowerCase() === pedido) ?? null

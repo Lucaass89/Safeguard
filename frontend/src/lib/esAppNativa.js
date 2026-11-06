@@ -33,7 +33,6 @@ export function rutaEnApp(to) {
   return RUTAS_APP[to] ?? to
 }
 
-// En la app, /panel es la web. El inicio de sesión vuelve a la pantalla de la app.
 export function destinoTrasIngreso(to) {
   if (!esAppNativa()) return to
   if (typeof to !== 'string' || !to.startsWith('/')) return '/'

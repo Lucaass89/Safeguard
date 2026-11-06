@@ -25,7 +25,6 @@ export const MARCAS = datosMarcas.marcas.map((marca) => ({
 
 const OFICIALES = new Map(MARCAS.flatMap((marca) => marca.oficiales.map((dominio) => [dominio, marca])))
 
-// Recibe un dominio registrable y solo acepta la coincidencia exacta.
 export function marcaOficialDe(dominio) {
   return OFICIALES.get((dominio ?? '').toLowerCase()) ?? null
 }
@@ -70,9 +69,6 @@ const SENSIBLES = new Set([
 
 const DIGITOS = { 0: 'o', 3: 'e', 4: 'a', 5: 's', 7: 't', 8: 'b' }
 
-// Formas de leer un texto deshaciendo los trucos visuales. El 1 puede pasar por l o por i,
-// y una I mayúscula se ve igual que una l, por eso salen varias lecturas. La forma literal
-// también cuenta: deshacer "rn" en "narnjax" lo aleja de "naranjax" en vez de acercarlo.
 export function variantes(texto) {
   const literal = plano(texto)
   const leido = literal
@@ -83,8 +79,6 @@ export function variantes(texto) {
   return [...new Set([conL, leido.replace(/1/g, 'i'), conL.replace(/i/g, 'l'), literal])]
 }
 
-// Damerau-Levenshtein en su forma de alineación óptima: cuenta como un solo error
-// cambiar, agregar, sacar o invertir dos letras vecinas.
 export function distanciaDL(a, b) {
   const x = [...a]
   const y = [...b]
@@ -102,8 +96,6 @@ export function distanciaDL(a, b) {
   return d[x.length][y.length]
 }
 
-// Con cuatro letras o menos, un error de distancia ya es otra palabra (arca, area); ahí solo vale
-// la coincidencia exacta después de deshacer los trucos.
 export function umbral(largo) {
   if (largo <= 4) return 0
   if (largo <= 8) return 1
@@ -176,8 +168,6 @@ function buscarEnEtiqueta(etiqueta, { exacto }) {
   return mejor
 }
 
-// Una palabra común sola no es una imitación ("claro", "ciudad"), pero escrita con trucos
-// ("c1aro", "rnacro") nadie la tipea por casualidad.
 function comunDisfrazada(marca, candidatos) {
   for (const candidato of candidatos) {
     const escrito = sinAcentos(candidato.toLowerCase())
@@ -202,10 +192,6 @@ function hallazgo(encontrado, como, extra = {}) {
   }
 }
 
-// Busca una imitación de marca en un dominio que no es el oficial. Primero en el nombre del
-// dominio registrable (con errores de tipeo y letras cambiadas) y después en los subdominios,
-// donde solo vale el nombre exacto de la marca. Un enlace inválido nunca es el sitio oficial,
-// aunque al compararlo quede igual.
 export function parecidoAMarca({ dominio, etiqueta, subdominio }, { invalido = false } = {}) {
   if (!etiqueta || (!invalido && marcaOficialDe(dominio))) return null
 
@@ -256,8 +242,6 @@ function decodificar(texto) {
   }
 }
 
-// Marca nombrada en el camino o en los parámetros. Los de seguimiento (utm_source=facebook)
-// no cuentan: los agrega cualquier sitio que comparte en redes.
 export function marcaEnCamino(url) {
   const camino = decodificar(`${url.pathname} ${url.hash}`)
   const parametros = [...url.searchParams]
@@ -283,8 +267,6 @@ export function marcaEnCamino(url) {
   return null
 }
 
-// Para un host que no se puede abrir: saca lo que no puede ir en un dominio solo para comparar
-// contra las marcas. El enlace no se arregla ni se abre.
 export function hostParaComparar(escrito) {
   const etiquetas = (escrito ?? '')
     .toLowerCase()

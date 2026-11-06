@@ -11,7 +11,6 @@ const OPCIONES = {
 
 let modulo = null
 
-// El WASM sale de nuestro propio sitio: la librería, sola, lo baja de un CDN de terceros.
 function cargar() {
   modulo ??= import('zxing-wasm/reader')
     .then(async (zxing) => {
@@ -34,7 +33,6 @@ export function prepararLector() {
   return cargar().then(() => true)
 }
 
-// Devuelve cada texto distinto que se leyó, del código más grande al más chico.
 export async function leerCodigos(fuente) {
   const zxing = await cargar()
   const lecturas = await zxing.readBarcodes(fuente, OPCIONES)

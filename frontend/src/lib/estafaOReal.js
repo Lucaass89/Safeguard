@@ -1,5 +1,3 @@
-// Las estafas copian plantillas de PhishGuard (supabase/migrations) con su metadata.lesson.
-// El {link} se reemplaza por un dominio que SafeLink marca, para que su veredicto coincida.
 export const MENSAJES = [
   {
     id: 'bna-clave',
@@ -206,6 +204,6 @@ export function marcarVisto(id) {
   try {
     localStorage.setItem(VISTOS, JSON.stringify(quedan > 0 ? vistos : []))
   } catch {
-    // Sin almacenamiento, el juego sigue eligiendo al azar.
+    void 0
   }
 }

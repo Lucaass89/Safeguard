@@ -70,8 +70,6 @@ const SUBDOMINIOS = [
   'https://docs.google.com/document/d/1AbCdEf/edit', 'https://www.bna.com.ar/Personas',
 ]
 
-// Sitios legítimos con palabras que también usan las páginas truchas (pagos, seguridad, factura).
-// Una palabra suelta no alcanza para sacarlos de verde.
 const CON_PALABRAS = [
   'https://www.pagomiscuentas.com/',
   'https://www.pagos360.com/',
@@ -87,7 +85,6 @@ const CON_PALABRAS = [
   'https://www.pagos360.com/blog/como-verificar-un-pago',
 ]
 
-// Casos reales probados a mano. Solo se mide lo que la dirección muestra: lo que sabe VirusTotal no entra acá.
 const REPORTADOS = [
   { url: 'https://mercadolibre.pagos-seguridad.com/verificar', esperado: 'malicioso', niveles: ['rojo'], tecnica: 'marca-en-subdominio' },
   { url: 'https://stakelotemax7.click/', esperado: 'malicioso', niveles: ['amarillo', 'rojo'], tecnica: 'phishtank' },
@@ -102,7 +99,6 @@ export const REGRESIONES = [
 
 const punycode = (unicode) => new URL(`https://${unicode}/`).hostname
 
-// Casos de la fase 1. `niveles` es lo único aceptable para cada uno.
 const BORDES = [
   { url: 'https://www.bna.com.ar@192.168.0.10/login', esperado: 'malicioso', niveles: ['rojo'], tecnica: 'userinfo' },
   { url: 'https://mercadopago.com.ar@pagos-seguros.xyz/', esperado: 'malicioso', niveles: ['rojo'], tecnica: 'userinfo' },
@@ -118,7 +114,6 @@ const BORDES = [
   { url: `https://${punycode('münchen.de')}/`, esperado: 'legitimo', niveles: ['verde'], tecnica: 'idn-latino' },
 ]
 
-// Sustituciones que el motor sabe deshacer (números y pares de letras) y homóglifos cirílicos.
 const LEET = { o: '0', i: '1', l: '1', e: '3', a: '4', s: '5', t: '7', b: '8' }
 const PARES = { m: 'rn', w: 'vv' }
 const CIRILICAS = { a: 'а', e: 'е', o: 'о', p: 'р', c: 'с', x: 'х', y: 'у', i: 'і', s: 'ѕ', j: 'ј' }
@@ -158,15 +153,12 @@ function sufijoDe(dominio) {
   return dominio.slice(dominio.indexOf('.') + 1)
 }
 
-// Por debajo de cinco letras, un error de tipeo ya es otra palabra: el motor solo acepta la
-// coincidencia exacta (ver umbral() en marcas.js), así que ahí solo se generan sustituciones.
 const LARGO_MINIMO_EDICION = 5
 
 export function typosquats() {
   const oficiales = new Set(datosMarcas.marcas.flatMap((marca) => marca.oficiales))
   const casos = []
   const vistos = new Set()
-  // `dominio` es el host bien armado; los malformados no lo tienen y se evalúan tal cual.
   const agregar = (marca, tecnica, url, dominio = null) => {
     const clave = url.toLowerCase()
     if (vistos.has(clave)) return

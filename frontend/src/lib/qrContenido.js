@@ -1,8 +1,6 @@
 import { analizar } from './analisis.js'
 
-// eslint-disable-next-line no-control-regex
 const INVISIBLES = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u00AD\u200B-\u200F\u202A-\u202E\u2060-\u2064\uFEFF]/
-// eslint-disable-next-line no-control-regex
 const BINARIO = /[\uFFFD\u0000-\u0008\u000E-\u001F]/
 const ENLACE_EN_TEXTO = /\bhttps?:\/\/[^\s<>"']+/i
 
@@ -61,7 +59,6 @@ function sinVerificar(crudo, titulo, motivo) {
   return { tipo: 'desconocido', titulo, datos: [], consejo: motivo, crudo, sinVerificar: true }
 }
 
-// --- Pagos con el estándar EMVCo (QR interoperable de Argentina, Mercado Pago y otros) ---
 
 export function leerTlv(texto) {
   const salida = []
@@ -189,7 +186,6 @@ function leerCripto(crudo, esquema) {
   }
 }
 
-// --- Otros formatos ---
 
 function leerWifi(crudo) {
   const datos = campos(crudo.slice(5))

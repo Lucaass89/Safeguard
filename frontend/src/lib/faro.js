@@ -2,10 +2,8 @@ import { motivosLimpios } from './analisis.js'
 import { sinConsulta } from './enlace.js'
 import { PUNTAJE } from './puntaje.js'
 
-// Cuando el modelo no responde, se dice eso. No se inventa un análisis con texto armado.
 export const FALLO_FARO = 'Faro no pudo responder ahora, probá de nuevo.'
 
-// "12.400 tokens". Vacío si el número no es un entero que hayamos medido.
 export function textoTokens(cantidad) {
   if (!Number.isInteger(cantidad) || cantidad < 0) return ''
   const cifra = String(cantidad).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -33,8 +31,6 @@ export const PREGUNTAS_LISTAS = [
 
 const TOPE_PREGUNTA = 600
 
-// Los filtros buscan recomendaciones, no palabras sueltas: "antes de abrir un enlace, mirá la dirección" explica,
-// "abrilo" o "podés entrar" recomiendan. Un imperativo va al empezar la frase o después de una coma.
 const IMP = String.raw`(?:^|[,;:]\s*|\b(?:y|entonces|ahora|tranquilo|dale)\s+)`
 const recomienda = (verbos) => new RegExp(`${IMP}(?:${verbos})\\b`)
 const permite = (verbos) =>
@@ -62,7 +58,6 @@ const SEGURO = [
   permite('pagar|poner la clave|ingresar la clave|cargar los datos'),
 ]
 
-// En ningún nivel se dice que un sitio es seguro o que algo está garantizado.
 const NUNCA = [/\bes seguro\b/, /\bconfiable\b/, /\bgarantizad[oa]s?\b/]
 
 const TITULOS = ['Peligroso', 'Precaución', 'Seguro', 'Sin señales de riesgo', 'No pudimos verificarlo']
@@ -76,7 +71,6 @@ export function plano(texto) {
 
 const DELIMITADORES = /contexto_inicio|contexto_fin|datos_inicio|datos_fin/gi
 
-// Texto que escribió otra persona: sin caracteres de control ni los delimitadores del prompt, y cortado.
 export function datoExterno(valor, tope) {
   return String(valor ?? '')
     .replace(/[\u0000-\u001F\u007F\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, ' ')
@@ -117,7 +111,6 @@ export function oraciones(texto) {
 const ITEM = /^(\d{1,2})[.)]\s+/
 const VINETA = /^[-*•]\s+/
 
-// Una lista numerada escrita dentro de un párrafo ("Señales: 1. X. 2. Y.") pasa a un ítem por línea.
 function separarItems(texto) {
   return String(texto ?? '')
     .split('\n')
@@ -129,10 +122,8 @@ function separarItems(texto) {
     .filter(Boolean)
 }
 
-// Una frase que presenta una lista ("Hay dos señales:") también cuenta como completa.
 const completa = (parte, indice, todas) => /[.!?]$/.test(parte) || (indice === todas.length - 1 && /:$/.test(parte))
 
-// Recorta a `max` oraciones completas y a `maxLineas` renglones, sin perder saltos de línea ni partir ítems.
 export function limitarOraciones(texto, max = 5, maxLineas = Infinity) {
   let quedan = max
   const lineas = []
@@ -151,7 +142,6 @@ export function limitarOraciones(texto, max = 5, maxLineas = Infinity) {
   return lineas.join('\n')
 }
 
-// Para mostrar: párrafos, listas numeradas y viñetas. El texto se queda como texto.
 export function bloquesRespuesta(texto) {
   const bloques = []
   for (const linea of separarItems(texto)) {
@@ -167,7 +157,6 @@ export function bloquesRespuesta(texto) {
   return bloques
 }
 
-// Markdown mínimo: solo **negrita**. El resto, incluido el HTML, queda como texto.
 export function partesTexto(texto) {
   const origen = String(texto ?? '')
   const partes = []
@@ -192,7 +181,6 @@ function codigoNivel(nivel) {
   return ''
 }
 
-// El mismo nombre que muestra la tarjeta. Si llega el título de la tarjeta, manda ese.
 export function nombreNivel(nivel, titulo) {
   const codigo = codigoNivel(nivel)
   if (titulo && TITULOS.includes(titulo) && codigoNivel(titulo) === codigo) return titulo
@@ -203,7 +191,6 @@ export function nombreNivel(nivel, titulo) {
   return ''
 }
 
-// El backend ya desplegado solo acepta estos tres nombres; el título de la tarjeta viaja aparte.
 function nivelServidor(codigo) {
   if (codigo === 'rojo') return 'Peligroso'
   if (codigo === 'amarillo') return 'Dudoso'
@@ -215,14 +202,12 @@ export function modoValido(modo) {
   return modo === 'tecnico' || modo === 'avanzado' ? modo : 'simple'
 }
 
-// Simple cabe en 3 frases. Técnico, en 8 renglones. Avanzado puede listar el desglose entero.
 export function topesDelModo(modo) {
   if (modo === 'avanzado') return { oraciones: 16, lineas: 40 }
   if (modo === 'tecnico') return { oraciones: 8, lineas: 8 }
   return { oraciones: 3, lineas: 3 }
 }
 
-// Estos botones se responden con el caso ya calculado. Una pregunta escrita va al modelo.
 export function pideResumen(pregunta) {
   const p = plano(pregunta)
     .replace(/[¿?¡!.,:;]/g, ' ')
@@ -269,7 +254,6 @@ function unir(partes) {
   return `${partes.slice(0, -1).join(', ')} y ${partes.at(-1)}`
 }
 
-// Otra redacción que la de la tarjeta. La tarjeta ya muestra senal.texto tal cual.
 function decirSenal(senal, caso) {
   const id = String(senal?.id ?? '')
   const dias = Number.isFinite(caso?.edadDias) ? Math.round(caso.edadDias) : null
@@ -460,12 +444,10 @@ function afirma(frase, patron) {
 export function respuestaContradice(nivel, texto) {
   const codigo = codigoNivel(nivel)
   if (!codigo) return true
-  // En "No pudimos verificarlo" vale lo mismo que en Precaución: no se recomienda abrir ni se tranquiliza.
   const patrones = [...(codigo === 'rojo' ? PELIGROSO : codigo === 'verde' ? SEGURO : DUDOSO), ...NUNCA]
   return oraciones(plano(sinEmojis(texto))).some((frase) => patrones.some((patron) => afirma(frase, patron)))
 }
 
-// Una respuesta que copia el prompt o sus delimitadores no se muestra.
 export function revelaInstrucciones(texto) {
   const p = plano(texto)
   return /contexto[_ ]?inicio|contexto[_ ]?fin|datos[_ ]?inicio|datos[_ ]?fin|prompt de sistema|instrucciones del sistema|system prompt/.test(p)
@@ -497,14 +479,12 @@ export function prepararRespuesta(nivel, motivos, pregunta, cruda, modo = 'simpl
   return limpia
 }
 
-// El resumen armado solo entra si lo pidieron. Si el modelo falló o su respuesta no sirve, no se inventa un análisis.
 export function cerrarConsulta(nivel, motivos, pregunta, cruda, modo, caso, fallo) {
   if (pideResumen(pregunta)) return respuestaLocal(nivel, motivos, pregunta, modo, caso)
   if (fallo) return FALLO_FARO
   return prepararRespuesta(nivel, motivos, pregunta, cruda, modo, caso) ?? FALLO_FARO
 }
 
-// Si el modelo usa un nombre de nivel viejo, se cambia por el de la tarjeta en vez de tirar la respuesta.
 function conNombreDeTarjeta(texto, nivel, caso) {
   const nombre = nombreNivel(nivel, caso?.titulo)
   return nombre ? texto.replace(/\b(Dudoso|Sospechoso)\b/g, nombre) : texto
@@ -566,7 +546,6 @@ function destinoDeContexto(caso, url) {
   return destino && destino !== url ? destino : null
 }
 
-// Un solo objeto para el modelo. null significa que ese dato no está: no se inventa.
 export function contextoDe(caso, titulo) {
   const ficha = casoConsulta(caso)
   const vt = virusTotalConsulta(caso)
@@ -620,7 +599,6 @@ export function armarConsulta(nivel, motivos, pregunta, turnos, modo = 'simple',
   const datosCaso = casoConsulta(caso)
   const titulo = datosCaso.titulo || nombreNivel(codigo)
   return {
-    // El nivel viejo deja que la función ya desplegada acepte el pedido. El modelo lee contexto.nivel.
     nivel: nombre || titulo,
     titulo,
     motivos: lista,

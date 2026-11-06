@@ -1,6 +1,3 @@
-// Contenido que hay que mantener a mano. Al actualizarlo: cambiá `fecha`, poné solo avisos con fuente
-// y fecha reales, y escribí los ejemplos a partir de lo que describe cada aviso (sin enlaces reales).
-// Pasados DIAS_VIGENCIA desde `fecha`, la card desaparece: una edición vieja engaña más de lo que ayuda.
 export const DIAS_VIGENCIA = 10
 export const MAXIMO_ESTAFAS = 3
 

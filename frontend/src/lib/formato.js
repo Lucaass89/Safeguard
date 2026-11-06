@@ -1,6 +1,5 @@
 const MENORES = new Set(['de', 'del', 'la', 'las', 'los', 'el', 'y', 'e', 'en'])
 
-// Si quien lo cargó usó mayúsculas a propósito (SafeGuard, YPF), se respeta tal cual.
 export function nombreEmpresa(texto) {
   const limpio = typeof texto === 'string' ? texto.trim().replace(/\s+/g, ' ') : ''
   if (!limpio || limpio !== limpio.toLowerCase()) return limpio

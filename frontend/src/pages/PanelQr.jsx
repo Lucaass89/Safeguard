@@ -14,7 +14,6 @@ const INTERVALO_MS = 120
 const LADO_AJUSTADO = 960
 const LADO_COMPLETO = 1280
 
-// eslint-disable-next-line no-control-regex
 const INVISIBLE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u00AD\u200B-\u200F\u202A-\u202E\u2060-\u2064\uFEFF]/
 
 function soportaCamara() {
@@ -43,7 +42,7 @@ function Direccion({ valor }) {
   const resto = `${url.pathname === '/' ? '' : url.pathname}${url.search}${url.hash}`
   return (
     <span className="qr-url">
-      <span className="qr-url-tenue">{url.protocol}//</span>
+      <span className="qr-url-tenue">{url.protocol}{'//'}</span>
       <strong>{url.host}</strong>
       {resto && <span className="qr-url-tenue">{resto}</span>}
     </span>
@@ -419,7 +418,6 @@ function PanelQr() {
     return ctx.getImageData(0, 0, salida[0], salida[1])
   }
 
-  // Un código se acepta cuando se lee igual en dos cuadros seguidos.
   function aceptar(textos) {
     const ahora = performance.now()
     const previo = candidatoRef.current
@@ -489,7 +487,7 @@ function PanelQr() {
       try {
         await pista.applyConstraints({ advanced: avanzado })
       } catch {
-        // El celular no aplica el enfoque continuo.
+        void 0
       }
     }
     const zoom = capacidades.zoom
@@ -525,7 +523,7 @@ function PanelQr() {
         await pista.applyConstraints({ advanced: [intento] })
         break
       } catch {
-        // Se prueba la forma siguiente.
+        void 0
       }
     }
 

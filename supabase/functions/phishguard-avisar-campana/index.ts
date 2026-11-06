@@ -56,9 +56,6 @@ type Plantilla = {
   cuerpo_html?: string | null
 }
 
-// Nombre para mostrar en el "De". El correo sale igual desde la cuenta de
-// Gmail autenticada, así SPF, DKIM y DMARC quedan bien y el mail entra a la
-// bandeja en lugar de caer en spam.
 function remitenteVisible(plantilla: Plantilla | null) {
   const crudo = (plantilla?.remitente_falso ?? '').trim()
   const nombre = crudo.replaceAll('"', '').trim() || 'Notificaciones'
@@ -70,8 +67,6 @@ function asuntoCreible(plantilla: Plantilla | null) {
   return asunto || 'Tenés una notificación pendiente'
 }
 
-// Arma el cuerpo del correo como una notificación real: el texto de la
-// plantilla, con el enlace como un botón, dentro de una tarjeta sobria.
 function correoHtml(plantilla: Plantilla | null, link: string) {
   const crudo = plantilla?.cuerpo_html ?? 'Tenés una notificación pendiente. Ingresá para verla: {link}'
   const boton = `<a href="${esc(link)}" style="display:inline-block;margin:18px 0;padding:12px 22px;background:#2563eb;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600;font-size:15px">Ingresar ahora</a>`
@@ -223,9 +218,6 @@ Deno.serve(async (req) => {
       },
     )
 
-    // Canal Mail: el cebo va directo a la bandeja de cada empleado, con aspecto
-    // de notificación real. El remitente visible es el de la plantilla, pero el
-    // correo sale desde la cuenta de Gmail para no caer en spam.
     if (campana.canal === 'email') {
       const conMail = personas.filter((p) => p.email)
       if (conMail.length === 0) {
@@ -280,8 +272,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // WhatsApp y SMS no se pueden mandar solos: la persona que administra recibe
-    // un kit limpio con el mensaje listo para copiar y los dos enlaces.
     const bloques = personas
       .map(
         (persona) => `<div style="margin:0 0 18px;padding:14px 16px;border:1px solid #e5e7eb;border-radius:10px;font-family:sans-serif;font-size:14px;color:#1f2937">

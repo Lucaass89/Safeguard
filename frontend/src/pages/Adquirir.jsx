@@ -24,7 +24,7 @@ async function mensajeDe(error, data) {
       const cuerpo = await error.context.json()
       if (cuerpo?.error) return cuerpo.error
     } catch {
-      // La función no devolvió un mensaje legible.
+      void 0
     }
   }
   return 'No se pudo abrir Mercado Pago.'

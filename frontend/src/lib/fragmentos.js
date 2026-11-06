@@ -1,4 +1,3 @@
-// El texto de los mensajes no se sube: para mostrarlo en la actividad, un fragmento corto queda solo en este aparato.
 const CLAVE = 'sg-fragmentos'
 const MAXIMO = 100
 export const LARGO = 80
@@ -31,7 +30,7 @@ export function guardarFragmento(id, texto) {
   try {
     localStorage.setItem(CLAVE, JSON.stringify(guardados))
   } catch {
-    // Sin almacenamiento, la fila muestra el título genérico.
+    void 0
   }
 }
 

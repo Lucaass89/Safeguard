@@ -5,8 +5,6 @@ export const SIN_BASE = 'No pudimos consultar la base de amenazas.'
 
 export const MOTIVOS_VISIBLES = 3
 
-// "Seguro" solo con evidencia positiva: el dominio final es el oficial de una marca de la lista,
-// sin plataforma de terceros y sin nada que haya quedado sin verificar.
 export function veredictoDe(resultado) {
   const nivel = resultado?.nivel
   if (nivel === 'rojo') return { clave: 'peligroso', titulo: 'Peligroso' }
@@ -24,13 +22,11 @@ function tieneSenal(resultado, id) {
   return (resultado?.senales ?? []).some((senal) => senal.id === id)
 }
 
-// Que el sitio no responda no es un error de SafeLink ni lo vuelve inocente: va como nota informativa, no arriba.
 export function notaSinContenido(resultado) {
   if (!resultado) return null
   return resultado.falloAlSeguir || motivosLimpios(resultado.motivos).includes(SIN_ABRIR) ? SIN_CONTENIDO : null
 }
 
-// Una línea con la causa, solo si algo quedó sin verificar. Que el sitio no responda va en notaSinContenido.
 export function porQueSinVerificar(resultado) {
   if (!resultado || (!resultado.sinVerificar && resultado.nivel !== 'gris')) return null
   const motivos = motivosLimpios(resultado.motivos)
@@ -44,9 +40,7 @@ export function porQueSinVerificar(resultado) {
   return null
 }
 
-// Si la línea de arriba ya dice por qué no se verificó, el motivo largo que dice lo mismo sobra.
 const REPITEN_LA_CAUSA = new Set([SIN_FORMATO])
-// Cuando está la nota de que no se pudo revisar el contenido, estos motivos dicen lo mismo con otras palabras.
 const REPITEN_LA_NOTA = new Set([
   SIN_ABRIR,
   FALLO_AL_SEGUIR.tiempo,
@@ -56,8 +50,6 @@ const REPITEN_LA_NOTA = new Set([
 ])
 const ORDEN_FUERZA = { fuerte: 0, media: 1, debil: 2 }
 
-// Une las frases de una misma señal en un solo motivo y ordena: primero las fuertes, después por peso.
-// Lo que no viene de una señal (avisos, el camino de una redirección) va al final, en su orden.
 export function motivosOrdenados(motivos, senales = []) {
   const deFrase = new Map()
   ;(senales ?? []).forEach((senal, indice) => {
@@ -91,8 +83,6 @@ export function motivosCortos(motivos, { abierto = false, conCausa = false, sena
   return { visibles: abierto ? lista : lista.slice(0, MOTIVOS_VISIBLES), ocultos: Math.max(0, lista.length - MOTIVOS_VISIBLES), lista }
 }
 
-// Un caso del historial guarda nivel, dominio y motivos. La comparación de letras se rearma con el motor,
-// y Resultado solo la muestra si su frase está entre los motivos que se guardaron.
 export function casoGuardado(fila) {
   const motivos = motivosLimpios(fila.explicacion ? [fila.explicacion] : [])
   let base = null
@@ -114,7 +104,6 @@ export function casoGuardado(fila) {
   }
 }
 
-// El dominio va desarmado ("g0ogle[.]com") para que la alerta no se convierta en un enlace que se toca.
 export function desarmar(dominio) {
   return String(dominio ?? '').replace(/\./g, '[.]')
 }

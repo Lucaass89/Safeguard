@@ -11,8 +11,6 @@ const CANALES = new Set(['enlace', 'whatsapp', 'pdf', 'correo', 'qr'])
 const NIVELES = new Set(['verde', 'amarillo', 'rojo', 'gris'])
 export const TOPE_COMENTARIO = 500
 
-// Solo sale una dirección web sin la consulta ni el fragmento. Un texto suelto (el contenido
-// de un QR, un mensaje) no se manda: puede tener una clave de Wi-Fi o datos personales.
 function direccionParaReportar(url) {
   const texto = String(url ?? '').trim()
   if (/^https?:\/\//i.test(texto)) return sinConsulta(texto).slice(0, 2048)
@@ -20,7 +18,6 @@ function direccionParaReportar(url) {
   return esquema ? `${esquema[1].toLowerCase()}:` : null
 }
 
-// Cambia con cada resultado nuevo, para que el formulario arranque cerrado y vacío.
 export function claveReporte(caso) {
   return `${caso.nivel}|${caso.url ?? ''}|${(caso.motivos ?? []).join('|')}`
 }

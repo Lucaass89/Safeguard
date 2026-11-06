@@ -206,7 +206,6 @@ function Tarjeta({ resultado, canal, subtitulo, casoId, porQue, conFaro, onNoAbr
   )
 }
 
-// Cada resultado nuevo arranca de cero: motivos plegados, sin reporte abierto y con el foco en el título.
 function Resultado({ resultado, conFaro = true, ...resto }) {
   const clave = resto.casoId ?? claveReporte(resultado)
   return <Tarjeta key={clave} resultado={resultado} conFaro={conFaro} {...resto} />

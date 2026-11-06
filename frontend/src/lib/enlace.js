@@ -5,7 +5,6 @@ export const LARGO_MAXIMO = 2048
 const ESQUEMAS_PELIGROSOS = new Set(['javascript', 'vbscript', 'data', 'file', 'blob', 'filesystem'])
 
 const INVISIBLES = /[\u00ad\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u2069\ufeff]/
-// eslint-disable-next-line no-control-regex
 const ESPACIOS = /[\s\u0000-\u001f\u007f]/
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/
 const PSL = { allowPrivateDomains: true }
@@ -104,7 +103,6 @@ export function dominioRegistrable(host) {
   return partesDominio(host).dominio
 }
 
-// etiqueta es el nombre del dominio registrable sin la extensión: "tiktok" en vm.tiktok.com.ar.
 export function partesDominio(host) {
   const limpio = (host ?? '').toLowerCase().replace(/\.$/, '')
   if (IPV4.test(limpio) || limpio.startsWith('[')) return { dominio: limpio, etiqueta: '', subdominio: '' }
@@ -116,14 +114,12 @@ export function partesDominio(host) {
   }
 }
 
-// El fragmento (#...) nunca viaja en un pedido HTTP, así que no hace falta para seguir el enlace.
 export function sinFragmento(direccion) {
   const texto = String(direccion ?? '')
   const corte = texto.indexOf('#')
   return corte === -1 ? texto : texto.slice(0, corte)
 }
 
-// Para servicios de terceros: alcanza con el sitio y la ruta; la query puede traer datos personales o tokens.
 export function sinConsulta(direccion) {
   const texto = String(direccion ?? '')
   try {
@@ -152,17 +148,12 @@ export function dominiosDelRecorrido(extra) {
 
 const ESQUEMA = /^([a-z][a-z0-9+.-]*):(.*)$/is
 
-// Un texto sin esquema (ejemplo.com/promo) se lee como https://. Lo que tiene forma de esquema
-// pero lleva un punto o sigue con un número (ejemplo.com:8080, localhost:3000) es un host con
-// puerto. Si ya trae esquema, se deja tal cual aunque después no se pueda leer.
 function completarEsquema(texto) {
   const partes = texto.match(ESQUEMA)
   if (partes && !partes[1].includes('.') && !/^\d+(?:[/?#]|$)/.test(partes[2])) return texto
   return `https://${texto}`
 }
 
-// Solo sirve para comparar cómo se escribió el host con cómo lo lee el navegador;
-// el host que se juzga siempre es el del parser.
 function hostEscrito(completo) {
   let resto = completo.slice(completo.indexOf(':') + 1)
   let inicio = 0

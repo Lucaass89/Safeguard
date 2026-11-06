@@ -5,7 +5,6 @@ function dia(fecha) {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
 }
 
-// Junta lo que se revisó más de una vez el mismo día con el mismo resultado; el más nuevo representa al grupo.
 export function agruparActividad(items, maximo = 5) {
   const grupos = []
   const porClave = new Map()

@@ -10,7 +10,6 @@ function entero(valor) {
 export async function consultarFaro(nivel, motivos, pregunta, turnos, modo, caso) {
   const consulta = armarConsulta(nivel, motivos, pregunta, turnos, modo, caso)
   if (!consulta) return { texto: SIN_PREGUNTA, tokens: null, tokensUsuario: null }
-  // Los botones usan el caso ya calculado. Una pregunta escrita va al modelo.
   if (pideResumen(consulta.pregunta)) {
     return { texto: cerrarConsulta(nivel, motivos, consulta.pregunta, '', consulta.modo, caso, false), tokens: null, tokensUsuario: null }
   }

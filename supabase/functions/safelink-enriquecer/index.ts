@@ -16,7 +16,6 @@ const AGENTE = 'SafeGuard-SafeLink/1.0 (+https://safeguardd.vercel.app)'
 
 type Fallo = 'no_resuelve' | 'dns' | 'bloqueado' | 'protocolo' | 'tls' | 'tiempo' | 'conexion' | 'saltos'
 
-// Siempre viaja con `error`: una versión vieja de la app lo trata como "no se pudo abrir" (fail-closed).
 const ERRORES: Record<Fallo, string> = {
   no_resuelve: 'El dominio no existe o no tiene servidor',
   dns: 'No se pudo resolver el dominio',
@@ -133,7 +132,6 @@ async function resolverConDeno(host: string): Promise<Resolucion | null> {
   return null
 }
 
-// Respaldo por DNS sobre HTTPS: a Cloudflare solo le llega el nombre del sitio, nunca la ruta ni la query.
 async function resolverConDoh(host: string): Promise<Resolucion> {
   const consultas = await Promise.all(
     ['A', 'AAAA'].map(async (tipo) => {
@@ -168,7 +166,6 @@ async function revisarHost(hostname: string): Promise<Fallo | null> {
   } catch {
     resolucion = null
   }
-  // Un resolver que filtra puede negar un dominio que existe: antes de decir que no existe, se confirma por DoH.
   if (!resolucion || resolucion.estado === 'no_resuelve') resolucion = await resolverConDoh(host)
 
   if (resolucion.estado === 'no_resuelve') return 'no_resuelve'
@@ -229,7 +226,6 @@ function unir(partes: Uint8Array[]) {
 
 type Recorrido = { cadena: string[]; fallo: Fallo | null; res: Response | null }
 
-// Un GET por salto, sin cookies ni credenciales, y el DNS se vuelve a revisar antes de cada pedido.
 async function seguir(urlInicial: string): Promise<Recorrido> {
   const cadena: string[] = []
   const limite = Date.now() + TIEMPO_TOTAL_MS
@@ -320,7 +316,6 @@ const PAGINA_VACIA = {
   pide_datos: false,
 }
 
-// Solo se lee texto: la página no se renderiza ni se ejecuta su JavaScript.
 async function mirarPagina(res: Response, url: string) {
   try {
     const tipo = (res.headers.get('content-type') ?? '').toLowerCase()
@@ -399,7 +394,6 @@ function fraseCert(dias: number | null) {
   return null
 }
 
-// A rdap.org y a crt.sh solo les llega el dominio registrable, sin ruta ni query.
 async function edadDominio(dominio: string) {
   try {
     const res = await fetch(`https://rdap.org/domain/${encodeURIComponent(dominio)}`, {

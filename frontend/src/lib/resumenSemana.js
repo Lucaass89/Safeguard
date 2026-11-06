@@ -1,4 +1,3 @@
-// SafeLink avisa y no bloquea: el resumen cuenta lo que se revisó y lo que dio peligroso, nada más.
 const NOMBRES = [
   ['web', 'enlace', 'enlaces'],
   ['qr', 'QR', 'QR'],

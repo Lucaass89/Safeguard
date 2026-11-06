@@ -1,7 +1,3 @@
-// Corre eval/faro_cases.json contra Faro, sin llamar al modelo ni gastar la clave.
-// "Analizá este caso" y "Hacé un resumen" salen del texto local.
-// El resto, en la app, lo escribe el modelo: acá se imprime el contexto y el mensaje de fallo.
-// Uso: node eval/evaluar_faro.js
 import { readFileSync } from 'node:fs'
 import process from 'node:process'
 import { analizar, combinarConEnriquecimiento } from '../src/lib/analisis.js'

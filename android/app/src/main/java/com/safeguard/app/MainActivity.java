@@ -128,9 +128,7 @@ public class MainActivity extends AppCompatActivity {
         ajustes.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         String agente = ajustes.getUserAgentString();
         if (agente != null) {
-            // Google rechaza el inicio de sesión si el navegador se anuncia como WebView.
             agente = agente.replace("; wv", "");
-            // La versión le dice al sitio qué funciones nativas tiene esta app.
             if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp/2";
             ajustes.setUserAgentString(agente);
         }
@@ -250,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Solo se lee con la opción activada en el sitio: Android avisa cada lectura.
     private void leerPortapapeles() {
         if (!hasWindowFocus() || !estaEnNuestroSitio()) return;
         ClipboardManager portapapeles = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -344,7 +341,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             manager.enqueue(pedido);
         } catch (IllegalArgumentException | SecurityException ignored) {
-            // La página sigue usable si el archivo no se puede guardar.
         }
     }
 

@@ -40,7 +40,6 @@ export function evaluar(casos = construirCasos()) {
   const falsosPositivos = legitimos.filter((fila) => DETECTA.has(fila.nivel))
   const detectados = maliciosos.filter((fila) => DETECTA.has(fila.nivel))
 
-  // Regla dura: ninguna imitación de una marca de la lista sale como "Sin señales".
   const violaciones = maliciosos.filter(
     (fila) => ['typosquat', 'regresion'].includes(fila.categoria) && (fila.nivel === 'verde' || fila.nivel === SIN_VEREDICTO),
   )

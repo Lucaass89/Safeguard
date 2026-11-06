@@ -1,10 +1,7 @@
 import { motivosLimpios, nivelDesde } from './analisis.js'
 import { nuevaSenal, PUNTAJE, puntajeFinal } from './puntaje.js'
 
-// TODO(VT_API_KEY): todavía no hay consulta a VirusTotal. Esto solo combina una respuesta ya obtenida
-// (en el set de evaluación, una guardada en eval/virustotal/). La API pública no permite uso comercial.
 
-// Acepta la respuesta de la API v3 (data.attributes.last_analysis_stats) o solo los atributos.
 export function conteoVirusTotal(respuesta) {
   const stats = respuesta?.data?.attributes?.last_analysis_stats ?? respuesta?.attributes?.last_analysis_stats
   if (!stats || typeof stats.malicious !== 'number') return null
@@ -12,7 +9,6 @@ export function conteoVirusTotal(respuesta) {
   return { maliciosos: stats.malicious, total }
 }
 
-// Pocas detecciones son una señal media; varias, una fuerte que sola alcanza para Peligroso.
 export function senalVirusTotal(conteo, config = PUNTAJE.virustotal) {
   if (!conteo || conteo.maliciosos < config.motoresMedia) return null
   const { maliciosos, total } = conteo
@@ -29,7 +25,6 @@ export function senalVirusTotal(conteo, config = PUNTAJE.virustotal) {
   })
 }
 
-// VirusTotal es una señal más: suma su peso, nunca baja el puntaje, y que no conozca un sitio no lo vuelve seguro.
 export function combinarConVirusTotal(resultado, respuesta) {
   const conteo = conteoVirusTotal(respuesta)
   const senal = senalVirusTotal(conteo)

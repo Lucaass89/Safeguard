@@ -325,11 +325,6 @@ export function interpretarLibro(hojas, opciones = {}) {
 }
 
 export async function leerXlsx(archivo, opciones = {}) {
-  // fflate, que es quien descomprime el .xlsx, no pone tope al tamaño
-  // descomprimido: usa el tamaño que declara el zip. El tope de 2 MB es
-  // del archivo subido, no de lo que el zip dice que pesa adentro.
-  // readSheet lee una sola hoja pero no devuelve su nombre ni si hay más.
-  // La exportación por defecto de la 9.3.10 sí. Nos quedamos con la primera.
   try {
     const { default: leerLibro } = await import('read-excel-file/browser')
     return interpretarLibro(await leerLibro(archivo), opciones)
