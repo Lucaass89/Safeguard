@@ -95,7 +95,7 @@ function metricas(eventos) {
   const cap = eventos.filter((e) => e.completo_capacitacion).length
   const bien = eventos.filter((e) => e.vio_reconocimiento && !e.hizo_clic).length
   const enviados = eventos.filter((e) => e.mail_enviado).length
-  const abiertos = eventos.filter((e) => e.mail_abierto).length
+  const abiertos = eventos.filter((e) => e.pagina_abierta).length
   return {
     total,
     clic,
@@ -119,7 +119,7 @@ function fraseEstadistica(m, canal) {
   const bien = m.bien === 1 ? '1 no tocó el enlace y vio el reconocimiento' : `${m.bien} no tocaron el enlace y vieron el reconocimiento`
   const correo =
     canal === 'email' && m.enviados > 0
-      ? ` El correo salió a ${m.enviados}${m.abiertos > 0 ? ` y se abrió ${m.abiertos} ${m.abiertos === 1 ? 'vez' : 'veces'}` : ''}.`
+      ? ` El correo salió a ${m.enviados}${m.abiertos > 0 ? ` y ${m.abiertos} ${m.abiertos === 1 ? 'abrió la página' : 'abrieron la página'}` : ''}.`
       : ''
   return `De ${m.total}, ${clic} (${m.pctClic}%). ${datos}. ${cap}. ${bien}.${correo}`
 }
@@ -198,7 +198,7 @@ async function cargar() {
     supabase
       .from('campanas')
       .select(
-        'id, nombre_campana, estado, canal, es_refuerzo, fecha_inicio, creado_en, plantilla_id, extra, plantillas_phishing(titulo, asunto_mail, remitente_falso, cuerpo_html), eventos_simulacion(id, token_unico, hizo_clic, ingreso_datos, completo_capacitacion, vio_reconocimiento, mail_enviado, mail_abierto, fecha_evento, empleados(nombre, email, departamento))',
+        'id, nombre_campana, estado, canal, es_refuerzo, fecha_inicio, creado_en, plantilla_id, extra, plantillas_phishing(titulo, asunto_mail, remitente_falso, cuerpo_html), eventos_simulacion(id, token_unico, hizo_clic, ingreso_datos, completo_capacitacion, vio_reconocimiento, mail_enviado, pagina_abierta, fecha_evento, empleados(nombre, email, departamento))',
       )
       .order('creado_en', { ascending: false }),
   ])

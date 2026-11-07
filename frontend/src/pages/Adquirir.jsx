@@ -66,10 +66,15 @@ function Adquirir() {
           <h1>Medios de pago</h1>
           <p className="adquirir-monto">$ 500</p>
           <p>
-            Precio de prueba. El botón abre el checkout de Mercado Pago.
-            Cerrá antes la sesión de la cuenta que cobra y pagá como invitado
-            con una tarjeta. Cuando el pago queda aprobado, se desbloquea
-            PhishGuard.
+            Es un pago único de prueba, en pesos, para desbloquear PhishGuard en
+            esta cuenta. No es la cuota del mes ni un cargo del año. El plan
+            publicado se cobra por persona y por mes, desde USD 1, con un mínimo
+            de USD 25 por mes.
+          </p>
+          <p>
+            El botón abre el checkout de Mercado Pago. Cerrá antes la sesión de
+            la cuenta que cobra y pagá como invitado con una tarjeta. Cuando el
+            pago queda aprobado, se desbloquea PhishGuard.
           </p>
           <label className="adquirir-acepto">
             <input

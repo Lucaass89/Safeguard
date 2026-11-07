@@ -116,8 +116,10 @@ function Privacidad() {
           muestra uno por uno.
         </p>
         <p>
-          Abrir el enlace de la simulación deja <code>mail_abierto</code>. El botón
-          Entendido deja <code>completo_capacitacion</code>.
+          Abrir la página de la simulación deja <code>pagina_abierta</code>. Ese
+          campo es la página, no la bandeja del correo. Tocar el botón de adentro
+          deja <code>hizo_clic</code>. Enviar el formulario deja <code>ingreso_datos</code>,
+          sin el valor escrito. El botón Entendido deja <code>completo_capacitacion</code>.
         </p>
         <p>
           Si la persona toca el enlace, <code>phishguard-avisar-caida</code> manda un

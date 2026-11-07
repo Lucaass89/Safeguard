@@ -62,8 +62,9 @@ function Terminos() {
           <li>No suplanta a una persona real del equipo sin autorización escrita.</li>
           <li>
             No usa como anzuelo despidos, sanciones, plata, salud, fallecimientos ni
-            datos sensibles. Las marcas de bancos u organismos van como nombres
-            genéricos o de prueba, para el ejercicio.
+            datos sensibles. Las plantillas del ejercicio usan el nombre de ARCA,
+            Mercado Libre, OCA y Correo Argentino. El mensaje no sale de esas
+            organizaciones.
           </li>
         </ul>
         <p>

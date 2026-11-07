@@ -81,8 +81,8 @@ async function crearCobro(usuarioId: string, token: string) {
     body: JSON.stringify({
       items: [
         {
-          title: 'PhishGuard',
-          description: 'Plan de PhishGuard',
+          title: 'PhishGuard, pago único de prueba',
+          description: 'Un solo cobro de prueba en pesos. No es la suscripción mensual.',
           quantity: 1,
           currency_id: MONEDA,
           unit_price: PRECIO,
