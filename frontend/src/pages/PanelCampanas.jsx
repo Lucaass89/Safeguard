@@ -352,8 +352,9 @@ function PanelCampanas() {
         )
       }
       const motivo = mail?.error || falloMail?.message || 'No se pudo enviar por Gmail.'
+      const destino = canal === 'email' ? 'los empleados' : correo || 'tu cuenta'
       setError(
-        `La campaña se creó, pero el correo no salió a ${correo || 'tu cuenta'}: ${motivo} Los enlaces quedan en el listado.`,
+        `La campaña se creó, pero el correo no salió a ${destino}: ${motivo} Los enlaces quedan en el listado.`,
       )
     }
   }

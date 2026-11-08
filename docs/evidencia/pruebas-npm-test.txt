@@ -1,0 +1,6 @@
+SafeGuard, pruebas automáticas del frontend
+Fecha: 7 de noviembre de 2026
+Comando: npm test
+Resultado: 294 pruebas, 0 fallas
+Commit de referencia: 8035859
+La prueba de la nómina (correo sin arroba) está en el árbol de trabajo y todavía no forma parte de ese commit.
