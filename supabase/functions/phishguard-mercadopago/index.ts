@@ -2,7 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import postgres from 'npm:postgres'
 
-const PRECIO = 500
+const PRECIO = 37500
 const MONEDA = 'ARS'
 const SITIO = 'https://safeguardd.vercel.app'
 
@@ -81,8 +81,8 @@ async function crearCobro(usuarioId: string, token: string) {
     body: JSON.stringify({
       items: [
         {
-          title: 'PhishGuard, pago único de prueba',
-          description: 'Un solo cobro de prueba en pesos. No es la suscripción mensual.',
+          title: 'PhishGuard, mínimo mensual',
+          description: 'Un solo cobro en pesos, equivalente al mínimo de USD 25 por mes.',
           quantity: 1,
           currency_id: MONEDA,
           unit_price: PRECIO,

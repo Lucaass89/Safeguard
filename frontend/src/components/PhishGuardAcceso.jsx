@@ -94,11 +94,11 @@ export function PhishGuardPago() {
         Si no tenés cuenta, o la tenés y no administrás la empresa, esta parte se paga.
         SafeLink sigue disponible.
       </p>
-      <p className="phish-pago-monto">$ 500</p>
+      <p className="phish-pago-monto">$ 37.500</p>
       <p>
-        Es un pago único de prueba, en pesos. No es la cuota del mes ni un cargo
-        del año. El plan publicado se cobra por persona y por mes, desde USD 1,
-        con un mínimo de USD 25 por mes.
+        Es un pago único en pesos, equivalente al mínimo de USD 25 por mes. El
+        plan publicado se cobra por persona y por mes, desde USD 1, con un
+        mínimo de USD 25 por mes.
       </p>
       {sesion ? (
         <button
