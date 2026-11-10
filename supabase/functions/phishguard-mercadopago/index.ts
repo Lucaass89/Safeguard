@@ -133,6 +133,24 @@ function pagoValido(pago: Record<string, unknown>, usuarioId: string) {
   )
 }
 
+async function buscarPagoAprobado(usuarioId: string, token: string) {
+  const busqueda = new URL('https://api.mercadopago.com/v1/payments/search')
+  busqueda.searchParams.set('external_reference', usuarioId)
+  busqueda.searchParams.set('status', 'approved')
+  busqueda.searchParams.set('sort', 'date_created')
+  busqueda.searchParams.set('criteria', 'desc')
+  busqueda.searchParams.set('limit', '20')
+
+  const respuesta = await fetch(busqueda, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!respuesta.ok) return null
+
+  const cuerpo = await respuesta.json()
+  const pagos: Record<string, unknown>[] = Array.isArray(cuerpo?.results) ? cuerpo.results : []
+  return pagos.find((pago) => pagoValido(pago, usuarioId)) ?? null
+}
+
 async function desbloquear(usuarioId: string, pagoMp: string) {
   const url = Deno.env.get('SUPABASE_URL')
   const servicio = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
@@ -263,6 +281,20 @@ Deno.serve(async (req) => {
 
     try {
       await desbloquear(usuario.id, pagoId)
+    } catch (error) {
+      const mensaje = error instanceof Error ? error.message : 'No se pudo abrir PhishGuard.'
+      return json({ error: mensaje }, 500)
+    }
+
+    return json({ estado: 'aprobado' })
+  }
+
+  if (cuerpo.accion === 'verificar') {
+    const pago = await buscarPagoAprobado(usuario.id, token)
+    if (!pago) return json({ estado: 'sin_pago' })
+
+    try {
+      await desbloquear(usuario.id, String(pago.id))
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'No se pudo abrir PhishGuard.'
       return json({ error: mensaje }, 500)

@@ -14,13 +14,14 @@ function AdquirirVuelta() {
   const volver = `/adquirir/vuelta${pagoId ? `?payment_id=${encodeURIComponent(pagoId)}` : ''}`
 
   useEffect(() => {
-    if (cargando || !sesion || !/^\d{1,20}$/.test(pagoId)) return
+    if (cargando || !sesion) return
 
     let activo = true
+    const pedido = /^\d{1,20}$/.test(pagoId)
+      ? { accion: 'confirmar', pago_id: pagoId }
+      : { accion: 'verificar' }
     supabase.functions
-      .invoke('phishguard-mercadopago', {
-        body: { accion: 'confirmar', pago_id: pagoId },
-      })
+      .invoke('phishguard-mercadopago', { body: pedido })
       .then(({ data, error: fallo }) => {
         if (!activo) return
         if (fallo || data?.error) {
@@ -42,8 +43,8 @@ function AdquirirVuelta() {
   let texto = 'Confirmando el pago con Mercado Pago…'
   if (!cargando && !sesion) {
     texto = 'Entrá con la misma cuenta para terminar de abrir PhishGuard.'
-  } else if (!pagoId) {
-    texto = 'Mercado Pago no informó un pago.'
+  } else if (estado === 'sin_pago') {
+    texto = 'No encontramos un pago aprobado para esta cuenta en Mercado Pago.'
   } else if (estado === 'aprobado') {
     texto = 'El pago quedó aprobado. PhishGuard está desbloqueado.'
   } else if (estado === 'pendiente') {
