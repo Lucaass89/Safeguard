@@ -1,8 +1,14 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import postgres from 'npm:postgres'
+import {
+  leerPersonas,
+  personasDeReferencia,
+  PRECIO_ANTERIOR,
+  precioPesos,
+  referencia,
+} from './precio.ts'
 
-const PRECIO = 37500
 const MONEDA = 'ARS'
 const SITIO = 'https://safeguardd.vercel.app'
 
@@ -70,8 +76,9 @@ async function usuarioDe(autorizacion: string) {
   return data.user
 }
 
-async function crearCobro(usuarioId: string, token: string) {
+async function crearCobro(usuarioId: string, token: string, personas: number) {
   const vuelta = `${SITIO}/adquirir/vuelta`
+  const monto = precioPesos(personas)
   const respuesta = await fetch('https://api.mercadopago.com/checkout/preferences', {
     method: 'POST',
     headers: {
@@ -81,14 +88,14 @@ async function crearCobro(usuarioId: string, token: string) {
     body: JSON.stringify({
       items: [
         {
-          title: 'PhishGuard, mínimo mensual',
-          description: 'Un solo cobro en pesos, equivalente al mínimo de USD 25 por mes.',
+          title: `PhishGuard para ${personas} ${personas === 1 ? 'persona' : 'personas'}`,
+          description: 'Un solo cobro en pesos por el primer mes del plan elegido.',
           quantity: 1,
           currency_id: MONEDA,
-          unit_price: PRECIO,
+          unit_price: monto,
         },
       ],
-      external_reference: usuarioId,
+      external_reference: referencia(usuarioId, personas),
       back_urls: {
         success: vuelta,
         pending: vuelta,
@@ -123,19 +130,26 @@ async function leerPago(pagoId: string, token: string) {
   return await respuesta.json()
 }
 
-function pagoValido(pago: Record<string, unknown>, usuarioId: string) {
-  const monto = Number(pago.transaction_amount)
-  return (
-    pago.status === 'approved' &&
-    pago.currency_id === MONEDA &&
-    monto === PRECIO &&
-    pago.external_reference === usuarioId
-  )
+function personasPagadas(pago: Record<string, unknown>, usuarioId: string): number | null {
+  if (pago.status !== 'approved' || pago.currency_id !== MONEDA) return null
+  const personas = personasDeReferencia(pago.external_reference, usuarioId)
+  if (personas === null) return null
+  const esperado = pago.external_reference === usuarioId ? PRECIO_ANTERIOR : precioPesos(personas)
+  return Number(pago.transaction_amount) === esperado ? personas : null
 }
 
-async function buscarPagoAprobado(usuarioId: string, token: string) {
+async function buscarPagoAprobado(usuarioId: string, token: string, personas: number | null) {
+  const referencias = personas ? [referencia(usuarioId, personas), usuarioId] : [usuarioId]
+  for (const ref of referencias) {
+    const pago = await buscarConReferencia(ref, usuarioId, token)
+    if (pago) return pago
+  }
+  return null
+}
+
+async function buscarConReferencia(ref: string, usuarioId: string, token: string) {
   const busqueda = new URL('https://api.mercadopago.com/v1/payments/search')
-  busqueda.searchParams.set('external_reference', usuarioId)
+  busqueda.searchParams.set('external_reference', ref)
   busqueda.searchParams.set('status', 'approved')
   busqueda.searchParams.set('sort', 'date_created')
   busqueda.searchParams.set('criteria', 'desc')
@@ -148,10 +162,10 @@ async function buscarPagoAprobado(usuarioId: string, token: string) {
 
   const cuerpo = await respuesta.json()
   const pagos: Record<string, unknown>[] = Array.isArray(cuerpo?.results) ? cuerpo.results : []
-  return pagos.find((pago) => pagoValido(pago, usuarioId)) ?? null
+  return pagos.find((pago) => personasPagadas(pago, usuarioId) !== null) ?? null
 }
 
-async function desbloquear(usuarioId: string, pagoMp: string) {
+async function desbloquear(usuarioId: string, pagoMp: string, personas: number, monto: number) {
   const url = Deno.env.get('SUPABASE_URL')
   const servicio = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
   if (!url || !servicio) {
@@ -186,6 +200,7 @@ async function desbloquear(usuarioId: string, pagoMp: string) {
         nombre_empresa: 'Prueba PhishGuard',
         plan_id: 'Inicial',
         estado_suscripcion: 'activa',
+        usuarios_contratados: personas,
       })
       .select('id')
       .single()
@@ -203,7 +218,7 @@ async function desbloquear(usuarioId: string, pagoMp: string) {
   } else {
     const { error: errorEstado } = await admin
       .from('organizaciones')
-      .update({ estado_suscripcion: 'activa' })
+      .update({ estado_suscripcion: 'activa', usuarios_contratados: personas })
       .eq('id', organizacionId)
     if (errorEstado) throw new Error('No se pudo abrir PhishGuard.')
   }
@@ -212,10 +227,11 @@ async function desbloquear(usuarioId: string, pagoMp: string) {
     auth_user_id: usuarioId,
     organizacion_id: organizacionId,
     medio: 'mercado_pago',
-    monto: PRECIO,
+    monto,
     moneda: MONEDA,
     es_prueba: false,
     pago_mp: pagoMp,
+    personas,
   })
   if (errorPago && errorPago.code !== '23505') {
     throw new Error('No se pudo guardar el pago.')
@@ -249,7 +265,7 @@ Deno.serve(async (req) => {
     )
   }
 
-  let cuerpo: { accion?: string; pago_id?: string } = {}
+  let cuerpo: { accion?: string; pago_id?: string; personas?: unknown } = {}
   try {
     cuerpo = await req.json()
   } catch {
@@ -257,7 +273,11 @@ Deno.serve(async (req) => {
   }
 
   if (cuerpo.accion === 'crear') {
-    return await crearCobro(usuario.id, token)
+    const personas = leerPersonas(cuerpo.personas)
+    if (personas === null) {
+      return json({ error: 'Elegí cuántas personas va a cubrir el plan, de 1 a 10.000.' }, 400)
+    }
+    return await crearCobro(usuario.id, token, personas)
   }
 
   if (cuerpo.accion === 'confirmar') {
@@ -275,12 +295,13 @@ Deno.serve(async (req) => {
       return json({ estado: 'pendiente' })
     }
 
-    if (!pagoValido(pago, usuario.id)) {
+    const personas = personasPagadas(pago, usuario.id)
+    if (personas === null) {
       return json({ estado: 'rechazado' })
     }
 
     try {
-      await desbloquear(usuario.id, pagoId)
+      await desbloquear(usuario.id, pagoId, personas, Number(pago.transaction_amount))
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'No se pudo abrir PhishGuard.'
       return json({ error: mensaje }, 500)
@@ -290,11 +311,12 @@ Deno.serve(async (req) => {
   }
 
   if (cuerpo.accion === 'verificar') {
-    const pago = await buscarPagoAprobado(usuario.id, token)
-    if (!pago) return json({ estado: 'sin_pago' })
+    const pago = await buscarPagoAprobado(usuario.id, token, leerPersonas(cuerpo.personas))
+    const personas = pago ? personasPagadas(pago, usuario.id) : null
+    if (!pago || personas === null) return json({ estado: 'sin_pago' })
 
     try {
-      await desbloquear(usuario.id, String(pago.id))
+      await desbloquear(usuario.id, String(pago.id), personas, Number(pago.transaction_amount))
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'No se pudo abrir PhishGuard.'
       return json({ error: mensaje }, 500)

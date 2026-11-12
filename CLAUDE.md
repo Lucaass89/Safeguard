@@ -6,10 +6,14 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
 - **PhishGuard** (puerta Empresas, `/empresas`): campañas de phishing simulado por correo (SMTP de Gmail),
   kit de texto para WhatsApp/SMS (no se envía), página de enseñanza en el momento (`/simulacion/:token`,
   `/bien/:token`), tablero, informe, alta/baja de empleados por planilla y cobro con Mercado Pago
-  (función `phishguard-mercadopago`): un pago único de ARS 37.500, equivalente al mínimo de USD 25 por mes,
-  que desbloquea PhishGuard en la cuenta. Los pagos viejos de prueba de ARS 500 siguen valiendo. Si la vuelta de
-  Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. Precio publicado: USD 1 por
-  persona por mes, mínimo USD 25 por mes. No hay suscripción automática ni pago anual.
+  (función `phishguard-mercadopago`). La organización elige cuántas personas cubre el plan y paga en un pago
+  único el primer mes según los tramos: USD 1 por persona de 1 a 100, USD 0,85 de 101 a 300, USD 0,70 de 301 a
+  600 y USD 0,55 desde 601, con un mínimo de USD 25 por mes, pasado a pesos con USD 1 = ARS 1.500
+  (`src/lib/precioPhishguard.js` y `precio.ts` de la función tienen que coincidir). La cantidad queda en
+  `organizaciones.usuarios_contratados` y el panel de la empresa la muestra contra las personas activas (RF-07).
+  Los pagos de ARS 37.500 hechos antes cuentan como 25 personas, y los viejos de prueba de ARS 500 siguen valiendo.
+  Si la vuelta de Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. No hay
+  suscripción automática ni pago anual.
 - **SafeLink** (puerta Personas, `/personas`, gratis): detector propio que devuelve un semáforo
   (verde, amarillo, rojo, gris) con el motivo, para URL, QR, PDF, correo y WhatsApp. **Faro** es el chat que
   explica cada resultado (función `safelink-faro`). No consulta VirusTotal ni Google Safe Browsing en el veredicto.

@@ -890,3 +890,37 @@ html[data-tema='oscuro'] .sg-landing .pg-riel span {
     gap: 28px;
   }
 }
+
+.sg-landing .pg-calcular {
+  margin: 48px 0 0;
+  font-size: 22px;
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sg-landing .pg-precios li {
+  transition: border-color 160ms ease;
+}
+
+.sg-landing .pg-precios li.pg-precio-activo {
+  border-top: 3px solid #1a52be;
+}
+
+.sg-landing .pg-precios li.pg-precio-activo strong {
+  color: #1a52be;
+}
+
+html[data-tema='oscuro'] .sg-landing .pg-precios li.pg-precio-activo {
+  border-top-color: #8eb4ff;
+}
+
+html[data-tema='oscuro'] .sg-landing .pg-precios li.pg-precio-activo strong {
+  color: #8eb4ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-landing .pg-precios li {
+    transition: none;
+  }
+}

@@ -2397,3 +2397,56 @@ html[data-tema='claro'] .panel-empresas .panel-campo select {
   border-color: #dce3ee;
 }
 
+
+.panel-plan {
+  margin: 20px 0 28px;
+  padding: 18px 20px;
+  border: 1px solid var(--sg-line);
+  border-left: 4px solid var(--sg-accent);
+  border-radius: var(--sg-radius-sm);
+  background: var(--sg-surface);
+}
+
+.panel-plan h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.panel-plan p {
+  margin: 0;
+  color: var(--sg-muted);
+}
+
+.panel-plan p strong {
+  color: var(--sg-text);
+}
+
+.panel-plan-excede {
+  border-left-color: #9a6400;
+}
+
+html[data-tema='oscuro'] .panel-plan-excede {
+  border-left-color: #fbbf24;
+}
+
+.panel-plan .panel-plan-aviso {
+  margin-top: 8px;
+  color: var(--sg-text);
+  font-weight: 600;
+}
+
+.panel-plan-accion {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  margin-top: 12px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #1a52be;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.panel-plan-accion:hover {
+  background: #153f94;
+}
