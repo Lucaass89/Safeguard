@@ -19,7 +19,7 @@ const semaforo = [
     nivel: 'rojo',
     titulo: '✕ Rojo',
     texto:
-      'Fuentes de reputación marcaron esta página como peligrosa. No la abras.',
+      'Hay señales fuertes de engaño o el sitio ya fue denunciado en SafeLink. No la abras.',
   },
 ]
 

@@ -24,7 +24,7 @@ const accesos = [
 const semaforo = [
   ['verde', 'Verde', 'No aparecieron señales de riesgo. Podés continuar.'],
   ['amarillo', 'Amarillo', 'Hay algo raro. Revisá antes de seguir.'],
-  ['rojo', 'Rojo', 'Fuentes de reputación marcaron esto como peligroso. No lo abras.'],
+  ['rojo', 'Rojo', 'Hay señales fuertes de engaño o ya fue denunciado en SafeLink. No lo abras.'],
 ]
 
 const lugares = [

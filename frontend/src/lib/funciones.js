@@ -157,7 +157,7 @@ export const funciones = {
       items: [
         ['Verde', 'No aparecieron señales de riesgo en esta revisión. Podés seguir.'],
         ['Amarillo', 'Hay algo raro. Revisá con calma antes de tocar nada.'],
-        ['Rojo', 'Fuentes de reputación o señales fuertes lo marcan como peligroso. No lo abras.'],
+        ['Rojo', 'Hay señales fuertes de engaño o ya fue denunciado en SafeLink. No lo abras.'],
       ],
     },
     consejos: [

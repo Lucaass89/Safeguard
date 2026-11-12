@@ -88,9 +88,8 @@ function Empresas() {
           <h2>Precio por persona, por mes</h2>
           <p className="pg-precio-regla">
             Todos los usuarios pagan la tarifa del tramo en el que cae la
-            organización. Facturación mensual, cancelable. Sin contrato anual.
-            Cargo mínimo de USD 25 por mes. Pago anual opcional: 15% de
-            descuento.
+            organización, con un mínimo de USD 25 por mes. No hay suscripción
+            automática ni pago anual.
           </p>
           <ul className="pg-precios">
             {precios.map(([rango, valor]) => (
@@ -111,6 +110,11 @@ function Empresas() {
           </p>
           <p className="pg-precio-nota">
             Con 100 usuarios pagás USD 100; con 101, USD 85,85.
+          </p>
+          <p className="pg-precio-pago">
+            Hoy PhishGuard se activa con un pago único de ARS 37.500 por Mercado
+            Pago, el equivalente al mínimo de USD 25. Con ese pago se desbloquea
+            PhishGuard en tu cuenta.
           </p>
           <p className="pg-precio-nota">
             Al adquirir PhishGuard aceptás los{' '}
