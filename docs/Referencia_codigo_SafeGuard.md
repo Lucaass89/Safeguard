@@ -183,9 +183,16 @@ completo hay que sacar el esquema de la base publicada (Supabase → Database �
 
 ## 6. Inconsistencias encontradas (producto contra documentación interna)
 
-1. **Precio en `/empresas`**: muestra tramos (USD 1,00 / 0,85 / 0,70 / 0,55), "Facturación mensual, cancelable" y
-   "Pago anual opcional: 15% de descuento". El cobro real es un pago único de ARS 37.500 y no hay pago anual ni
-   tramos implementados. Hay que decidir si los tramos y el anual quedan como "Planificada" en los documentos.
+1. **Precio** (decidido por el equipo el 12/11/2026): el precio oficial es el de `/empresas`, con tramos por
+   persona y por mes (1 a 100: USD 1,00; 101 a 300: USD 0,85; 301 a 600: USD 0,70; más de 600: USD 0,55), la
+   tarifa del tramo para todos, mínimo de USD 25 por mes, facturación mensual cancelable y pago anual opcional
+   con 15 % de descuento. En los documentos va así:
+   - Lista de precios: "Implementada" como precio publicado en el sitio.
+   - Cobro del mínimo (pago único de ARS 37.500 por Mercado Pago que desbloquea PhishGuard): "Implementada".
+   - Cobro por tramo según la cantidad de personas, facturación mensual automática y pago anual con descuento:
+     "Planificada" (el código no los cobra).
+   - Con el corte entre tramos, 101 personas pagan menos que 100 (USD 85,85 contra USD 100). El sitio lo muestra
+     como ejemplo, así que conviene explicarlo como decisión comercial por si el profe lo pregunta.
 2. **Rojo por "fuentes de reputación"**: `/personas` y la ficha del Semáforo dicen que el rojo sale de "fuentes de
    reputación". El rojo sale de señales propias o de la base `amenazas` de SafeLink. No se consulta ninguna
    fuente externa.
