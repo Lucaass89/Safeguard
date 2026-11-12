@@ -11,6 +11,7 @@ const COLORES = {
   verde: '#2f9e6b',
   amarillo: '#c4922a',
   rojo: '#d16b5a',
+  gris: '#6b7280',
   neutro: '#8d98ab',
 }
 
@@ -18,6 +19,7 @@ const LETRAS = {
   verde: 'V',
   amarillo: '!',
   rojo: 'X',
+  gris: '?',
   neutro: '',
 }
 
@@ -25,6 +27,7 @@ const NOMBRES = {
   verde: 'Verde',
   amarillo: 'Amarillo',
   rojo: 'Rojo',
+  gris: 'No pudimos verificarlo',
 }
 
 const porUrl = new Map()

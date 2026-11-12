@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "test": "node --test src/lib/*.test.js",
     "preview": "vite preview",
-    "eval:legibilidad": "node eval/legibilidad.js"
+    "eval:legibilidad": "node eval/legibilidad.js",
+    "build:extension": "vite build --config vite.extension.config.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

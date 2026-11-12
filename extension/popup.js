@@ -2,6 +2,7 @@ const NOMBRES = {
   verde: 'Verde',
   amarillo: 'Amarillo',
   rojo: 'Rojo',
+  gris: 'No pudimos verificarlo',
   neutro: 'Sin revisión',
 }
 

@@ -35,6 +35,11 @@ main.rojo {
   border-top-color: rgb(239 68 68 / 35%);
 }
 
+main.gris {
+  background: rgb(107 114 128 / 14%);
+  border-top-color: rgb(107 114 128 / 40%);
+}
+
 .marca {
   margin: 0;
   font-size: 12px;
@@ -55,6 +60,7 @@ h1 {
 main.verde h1 { color: #34d399; }
 main.amarillo h1 { color: #fbbf24; }
 main.rojo h1 { color: #f87171; }
+main.gris h1 { color: #cbd5e1; }
 
 #dominio {
   margin: 8px 0 0;
