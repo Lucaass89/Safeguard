@@ -13,7 +13,7 @@
 
 .slapp h1,
 .slapp h2 {
-  font-family: Inter, var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: inherit;

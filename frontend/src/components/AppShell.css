@@ -1,5 +1,5 @@
 .app-shell {
-  --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sg-sans: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 
   display: flex;
   flex-direction: column;

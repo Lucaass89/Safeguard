@@ -2,17 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import IconoFuncion from '../components/IconoFuncion.jsx'
 import Logo from '../components/Logo.jsx'
+import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
 import TemaControl from '../components/TemaControl.jsx'
 import { pasosCampana } from '../lib/pasosCampana.js'
 import { useSesion } from '../lib/useSesion.js'
 import './LandingInicio.css'
-
-const pilares = [
-  ['simulacion', 'Simulación', 'Campañas de phishing por correo, WhatsApp o SMS, con plantillas en español.'],
-  ['explicacion', 'Explicación', 'Si alguien cae, ve en el momento qué tenía que mirar. Sin sanciones.'],
-  ['semaforo', 'Semáforo', 'SafeLink responde verde, amarillo o rojo antes de abrir un enlace, un PDF o un correo.'],
-  ['nube', 'En la nube', 'PhishGuard no se instala en cada equipo. SafeLink avisa: no bloquea la navegación.'],
-]
 
 const accesos = [
   ['enlace', 'Enlace', 'Revisá un link antes de abrirlo.'],
@@ -291,38 +285,23 @@ function Landing() {
       <main className="main">
         <div className="shell">
           <section className="hero">
-            <p className="ceja">Protegé el clic</p>
-            <h1>
-              El ataque no rompe tus sistemas: <span>engaña a tu gente.</span>
-            </h1>
-            <p className="hero-text">
-              SafeGuard tiene dos partes. PhishGuard entrena al equipo con
-              simulaciones. SafeLink revisa lo que te llega antes de abrirlo.
-            </p>
-            <div className="hero-acciones">
-              <a className="door-cta" href="#phishguard">Ver PhishGuard</a>
-              <a className="door-cta door-cta-ghost" href="#safelink">Conocer SafeLink</a>
+            <div className="hero-texto">
+              <h1>El ataque no rompe tus sistemas. Engaña a tu gente.</h1>
+              <p className="hero-text">
+                SafeGuard tiene dos partes. PhishGuard entrena al equipo con
+                simulaciones. SafeLink revisa lo que te llega antes de abrirlo.
+              </p>
+              <div className="hero-acciones">
+                <a className="door-cta" href="#phishguard">Ver PhishGuard</a>
+                <a className="door-cta door-cta-ghost" href="#safelink">Conocer SafeLink</a>
+              </div>
             </div>
-            <div className="hero-shield" aria-hidden="true">
-              <Logo />
-            </div>
+            <ProbadorEnlace />
           </section>
 
-          <section className="pilares" aria-label="Qué cubre SafeGuard">
-            {pilares.map(([icono, titulo, texto]) => (
-              <Link key={titulo} className="pilar" to={`/funcion/${icono}`}>
-                <article>
-                  <IconoFuncion nombre={icono} />
-                  <h2>{titulo}</h2>
-                  <p>{texto}</p>
-                </article>
-              </Link>
-            ))}
-          </section>
 
           <section className="accesos">
             <div className="bloque-cabeza">
-              <p className="ceja">A un clic</p>
               <h2>Revisá lo que te llega antes de abrirlo.</h2>
             </div>
             <div className="accesos-grilla">
@@ -338,7 +317,6 @@ function Landing() {
 
           <section className="banda" id="phishguard">
             <div className="banda-texto">
-              <p className="ceja">Empresas</p>
               <h2>PhishGuard entrena el criterio, no el firewall.</h2>
               <p>
                 Simulación de phishing para PyMEs e instituciones educativas.
@@ -359,7 +337,6 @@ function Landing() {
 
           <section className="pasos">
             <div className="bloque-cabeza">
-              <p className="ceja">Cómo funciona</p>
               <h2>Una campaña, de punta a punta.</h2>
             </div>
             <ol>
@@ -378,7 +355,6 @@ function Landing() {
 
           <section className="banda banda-inversa" id="safelink">
             <div className="banda-texto">
-              <p className="ceja">Personas</p>
               <h2>SafeLink responde con un color, no con un informe.</h2>
               <p>
                 Pegá un enlace, un WhatsApp, un PDF o un correo. El semáforo
@@ -398,7 +374,6 @@ function Landing() {
 
           <section className="lugares">
             <div className="bloque-cabeza">
-              <p className="ceja">Dónde aparece</p>
               <h2>El aviso llega antes del clic.</h2>
             </div>
             <div className="lugares-grilla">
@@ -412,7 +387,6 @@ function Landing() {
           </section>
 
           <section className="portal">
-            <p className="ceja">Tu cuenta</p>
             <h2>Todas las revisiones, en un solo lugar.</h2>
             <p>
               Con cuenta, SafeLink guarda el historial. PhishGuard abre el
@@ -423,34 +397,6 @@ function Landing() {
             </Link>
           </section>
 
-          <section className="doors">
-            <article className="door door-empresas">
-              <p className="door-tag">Empresas</p>
-              <h2 className="door-title">PhishGuard</h2>
-              <p className="door-text">
-                Simulaciones de phishing por correo, WhatsApp o SMS. Queda
-                registrado quién hizo clic y quien cae ve una explicación corta,
-                sin sanciones.
-              </p>
-              <p className="door-meta">Se paga por persona</p>
-              <Link className="door-cta" to="/empresas">
-                Ver PhishGuard
-              </Link>
-            </article>
-            <article className="door door-personas">
-              <p className="door-tag">Personas</p>
-              <h2 className="door-title">SafeLink</h2>
-              <p className="door-text">
-                Pegá un enlace, un WhatsApp, un PDF o un correo. SafeLink
-                responde verde, amarillo o rojo, con el motivo, antes de que lo
-                abras.
-              </p>
-              <p className="door-meta">Gratis</p>
-              <Link className="door-cta" to="/personas">
-                Conocer SafeLink
-              </Link>
-            </article>
-          </section>
         </div>
       </main>
 

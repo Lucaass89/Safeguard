@@ -10,14 +10,14 @@
 
   padding-block: 8px 72px;
   color: var(--fn-texto);
-  font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 .fn h1,
 .fn h2,
 .fn h3 {
   color: var(--fn-texto);
-  font-family: Inter, Inter, system-ui, sans-serif;
+  font-family: Archivo, Archivo, system-ui, sans-serif;
   letter-spacing: -0.02em;
 }
 
@@ -297,7 +297,7 @@
 
 .fn-datos strong {
   color: var(--fn-texto);
-  font-family: Inter, Inter, sans-serif;
+  font-family: Archivo, Archivo, sans-serif;
   font-size: 22px;
 }
 

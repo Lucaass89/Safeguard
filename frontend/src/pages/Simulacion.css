@@ -180,7 +180,7 @@
   min-height: 100vh;
   background: #ededed;
   color: #333;
-  font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 .ml-barra {
@@ -322,7 +322,7 @@
   min-height: 100vh;
   background: #f5f5f5;
   color: #333;
-  font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 .mp-barra {

@@ -13,8 +13,8 @@
   --sg-yellow: #fbbf24;
   --sg-red: #f87171;
 
-  --sg-serif: Inter, system-ui, sans-serif;
-  --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sg-serif: Archivo, system-ui, sans-serif;
+  --sg-sans: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
   --sg-mono: 'JetBrains Mono', ui-monospace, monospace;
   --sg-radius: 10px;
   --sg-radius-sm: 6px;

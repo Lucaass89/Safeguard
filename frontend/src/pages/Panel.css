@@ -944,7 +944,7 @@ table.persona-tabla td:first-child,
 
 .metricas-franja strong {
   color: var(--sg-text);
-  font: 700 32px/1 Inter, var(--sg-sans);
+  font: 700 32px/1 Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -1004,7 +1004,7 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .mesa-saludo {
   margin: 0;
-  font: 700 30px/1.25 Inter, var(--sg-sans);
+  font: 700 30px/1.25 Archivo, var(--sg-sans);
   letter-spacing: -0.03em;
   color: var(--sg-text);
 }
@@ -1090,7 +1090,7 @@ table.persona-tabla td:first-child,
 
 .mesa-cartas a strong,
 .mesa-cartas .mesa-carta-quieta strong {
-  font: 700 22px/1.15 Inter, var(--sg-sans);
+  font: 700 22px/1.15 Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -1212,7 +1212,7 @@ table.persona-tabla td:first-child,
 
 .mesa-barra span:first-child {
   color: var(--sg-text);
-  font: 600 18px Inter, var(--sg-sans);
+  font: 600 18px Archivo, var(--sg-sans);
   letter-spacing: -0.03em;
 }
 
@@ -1313,7 +1313,7 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .panel-header h1,
 .sg-landing .panel-lienzo h2 {
-  font-family: Inter, var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #0f1b2d;
@@ -1406,7 +1406,7 @@ table.persona-tabla td:first-child,
   border-radius: 50%;
   background: color-mix(in srgb, var(--sg-accent) 18%, var(--sg-surface));
   color: var(--sg-text);
-  font: 700 18px/1 Inter, var(--sg-sans);
+  font: 700 18px/1 Archivo, var(--sg-sans);
 }
 
 .perfil .panel-boton {
@@ -1950,7 +1950,7 @@ table.persona-tabla td:first-child,
 .elegir h1 {
   margin: 0;
   color: var(--sg-text);
-  font: 700 30px/1.25 Inter, var(--sg-sans);
+  font: 700 30px/1.25 Archivo, var(--sg-sans);
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
@@ -2008,7 +2008,7 @@ table.persona-tabla td:first-child,
 }
 
 .elegir-lado strong {
-  font: 700 32px/1.15 Inter, var(--sg-sans);
+  font: 700 32px/1.15 Archivo, var(--sg-sans);
   letter-spacing: -0.03em;
 }
 

@@ -14,7 +14,7 @@
 .sl h1,
 .sl h2,
 .pg h3 {
-  font-family: Inter, var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: inherit;
@@ -66,7 +66,7 @@
 .pg-banda .pg-cta-secundario,
 .sl-lado button,
 .sl-secundario {
-  font-family: Inter, var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
 }
 
 .pg-banda .pg-cta {
@@ -111,7 +111,7 @@
 .sg-landing .pg-tablero h2 {
   margin: 0 0 16px;
   color: #fff;
-  font: 600 22px Inter, var(--sg-sans);
+  font: 600 22px Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -132,7 +132,7 @@
 .pg-tablero strong {
   display: block;
   color: #fff;
-  font: 700 26px Inter, var(--sg-sans);
+  font: 700 26px Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -180,7 +180,7 @@
 .pg-riel span {
   display: block;
   margin-bottom: 14px;
-  font: 600 16px Inter, var(--sg-sans);
+  font: 600 16px Archivo, var(--sg-sans);
   color: var(--sg-muted);
 }
 
@@ -251,7 +251,7 @@
 
 .pg-precios strong {
   display: block;
-  font: 700 40px/1 Inter, var(--sg-sans);
+  font: 700 40px/1 Archivo, var(--sg-sans);
   letter-spacing: -0.04em;
 }
 
@@ -423,7 +423,7 @@ html[data-tema='oscuro'] .pg-precio-pago {
 
 .sl-banda h3 {
   margin: 0;
-  font: 700 22px Inter, var(--sg-sans);
+  font: 700 22px Archivo, var(--sg-sans);
 }
 
 .sl-verde {
@@ -494,7 +494,7 @@ html[data-tema='oscuro'] .pg-precio-pago {
 
 .sg-landing .nota h2 {
   margin: 36px 0 12px;
-  font: 700 28px Inter, var(--sg-sans);
+  font: 700 28px Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -571,7 +571,7 @@ html[data-tema='oscuro'] .pg-precio-pago {
   margin-top: 24px;
   padding: 0 20px;
   border-radius: 6px;
-  font-family: Inter, var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   font-weight: 700;
   background: var(--blue, #1a52be);
   color: #fff;
@@ -594,7 +594,7 @@ html[data-tema='oscuro'] .pg-precio-pago {
   border-radius: 6px;
   background: #009ee3;
   color: #fff;
-  font-family: Inter, var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
