@@ -708,3 +708,185 @@ html[data-tema='claro'] .sl-rojo {
   border-color: #f3c7c2;
   border-left-color: #d36b62;
 }
+
+.sg-landing .sl-hero,
+.sg-landing .pg-banda-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 56px;
+  align-items: center;
+}
+
+.sg-landing .sl-hero {
+  margin-bottom: 88px;
+}
+
+.sg-landing .sl-hero h1,
+.sg-landing .pg-banda h1 {
+  max-width: 13ch;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(38px, 5vw, 60px);
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.sg-landing .sl-hero-texto > p,
+.sg-landing .pg-banda p {
+  max-width: 34em;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.sg-landing .sl-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.sg-landing .sl-boton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid #1a52be;
+  border-radius: 6px;
+  background: #1a52be;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.sg-landing .sl-boton:hover {
+  border-color: #153f94;
+  background: #153f94;
+}
+
+.sg-landing .sl-boton-secundario,
+.sg-landing .sl-boton-secundario:hover {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--ink);
+}
+
+.sg-landing .sl-grilla {
+  display: block;
+  max-width: 760px;
+}
+
+.sg-landing .sl-cuerpo h2,
+.sg-landing .pg-bloque h2 {
+  font-size: clamp(26px, 3vw, 36px);
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.sg-landing .sl-banda h3 {
+  font-size: 18px;
+}
+
+html[data-tema='claro'] .sg-landing .sl-verde { color: #13795b; background: rgb(19 121 91 / 8%); border-color: rgb(19 121 91 / 22%); border-left-color: #13795b; }
+html[data-tema='claro'] .sg-landing .sl-amarillo { color: #9a6400; background: rgb(154 100 0 / 8%); border-color: rgb(154 100 0 / 22%); border-left-color: #9a6400; }
+html[data-tema='claro'] .sg-landing .sl-rojo { color: #b42318; background: rgb(180 35 24 / 8%); border-color: rgb(180 35 24 / 22%); border-left-color: #b42318; }
+
+html[data-tema='claro'] .sg-landing .sl-banda p {
+  color: #0f1b2d;
+}
+
+.sg-landing .pg-banda,
+html[data-tema] .sg-landing .pg-banda {
+  margin-bottom: 88px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+}
+
+.sg-landing .pg-banda .pg-cta,
+html[data-tema] .sg-landing .pg-banda .pg-cta {
+  min-height: 46px;
+  background: #1a52be;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.sg-landing .pg-banda .pg-cta:hover,
+html[data-tema] .sg-landing .pg-banda .pg-cta:hover {
+  background: #153f94;
+  color: #ffffff;
+}
+
+.sg-landing .pg-banda .pg-cta-secundario,
+html[data-tema] .sg-landing .pg-banda .pg-cta-secundario {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+html[data-tema] .sg-landing .pg-tablero {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--sg-surface);
+  box-shadow: 0 24px 48px -28px rgb(15 27 45 / 35%);
+}
+
+html[data-tema] .sg-landing .pg-riel {
+  gap: 0 32px;
+  border-top: 0;
+}
+
+html[data-tema] .sg-landing .pg-riel li,
+html[data-tema] .sg-landing .pg-riel li + li {
+  padding: 20px 0 0;
+  border-top: 2px solid var(--ink);
+  border-left: 0;
+}
+
+html[data-tema] .sg-landing .pg-riel span {
+  margin-bottom: 10px;
+  color: #1a52be;
+  font-size: 30px;
+  font-stretch: 112%;
+  font-weight: 800;
+  line-height: 1;
+}
+
+html[data-tema='oscuro'] .sg-landing .pg-riel span {
+  color: #8eb4ff;
+}
+
+.sg-landing .pg-precios strong {
+  font-stretch: 112%;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .sg-landing .sl-hero,
+  .sg-landing .pg-banda-cuerpo {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .sg-landing .sl-hero h1,
+  .sg-landing .pg-banda h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 700px) {
+  html[data-tema] .sg-landing .pg-riel {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}

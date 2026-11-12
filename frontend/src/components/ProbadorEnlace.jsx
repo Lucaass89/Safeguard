@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { analizar, motivosLimpios } from '../lib/analisis.js'
+import './ProbadorEnlace.css'
 
 const EJEMPLO = 'https://mercadolibre-pagos-verificar.com/login'
 

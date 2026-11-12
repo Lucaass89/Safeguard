@@ -1377,108 +1377,6 @@ html[data-tema] .landing-puertas .portal h2 {
   line-height: 1.08;
 }
 
-.landing-puertas .probador {
-  padding: 28px;
-  border: 1px solid var(--p-linea);
-  border-radius: 14px;
-  background: var(--p-papel);
-  box-shadow: 0 24px 48px -28px rgb(15 27 45 / 35%);
-}
-
-.landing-puertas .probador-titulo {
-  color: var(--p-tinta);
-  font-size: 22px;
-  font-stretch: 112%;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.landing-puertas .probador-etiqueta {
-  display: block;
-  margin-top: 6px;
-  color: var(--p-suave);
-  font-size: 15px;
-}
-
-.landing-puertas .probador-campo {
-  width: 100%;
-  min-height: 48px;
-  margin-top: 14px;
-  padding: 0 14px;
-  border: 1px solid var(--p-linea);
-  border-radius: 8px;
-  background: var(--p-campo);
-  color: var(--p-tinta);
-  font-family: var(--sg-mono);
-  font-size: 14px;
-}
-
-.landing-puertas .probador-campo:focus-visible {
-  border-color: var(--p-acento);
-  outline: 2px solid var(--p-acento);
-  outline-offset: 1px;
-}
-
-.landing-puertas .probador-veredicto {
-  --luz: var(--p-gris);
-  margin-top: 18px;
-  padding: 18px 18px 18px 20px;
-  border-left: 4px solid var(--luz);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--luz) 9%, transparent);
-  transition: border-color 180ms ease, background-color 180ms ease;
-}
-
-.landing-puertas .probador-verde { --luz: var(--p-verde); }
-.landing-puertas .probador-amarillo { --luz: var(--p-amarillo); }
-.landing-puertas .probador-rojo { --luz: var(--p-rojo); }
-
-.landing-puertas .probador-nivel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--luz);
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.landing-puertas .probador-vacio .probador-nivel {
-  color: var(--p-suave);
-  font-weight: 500;
-}
-
-.landing-puertas .probador-luz {
-  width: 12px;
-  height: 12px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--luz);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--luz) 22%, transparent);
-}
-
-.landing-puertas .probador-motivos {
-  display: grid;
-  gap: 8px;
-  margin: 12px 0 0;
-  padding-left: 22px;
-  color: var(--p-tinta);
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.landing-puertas .probador-pie {
-  margin-top: 16px;
-  color: var(--p-suave);
-  font-size: 14px;
-}
-
-.landing-puertas .probador-pie a {
-  color: var(--p-acento);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 html[data-tema] .landing-puertas .lugares-grilla {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 48px;
@@ -1516,16 +1414,6 @@ html[data-tema] .landing-puertas .lugares article:hover {
 
   html[data-tema] .landing-puertas .lugares-grilla {
     grid-template-columns: 1fr;
-  }
-
-  .landing-puertas .probador {
-    padding: 20px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-puertas .probador-veredicto {
-    transition: none;
   }
 }
 

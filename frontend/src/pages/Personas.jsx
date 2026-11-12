@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
 import { useSesion } from '../lib/useSesion.js'
 import './Modulo.css'
 
@@ -52,23 +53,29 @@ function Personas() {
   return (
     <Marco interior>
       <div className="container sl">
-        <div className="sl-grilla">
-          <aside className="sl-lado">
-            <h1>SafeLink</h1>
+        <section className="sl-hero">
+          <div className="sl-hero-texto">
+            <h1>Antes del clic, un color y el motivo.</h1>
             <p>
-              Revisa el enlace o el QR antes del clic y responde con un color,
-              no con un informe técnico.
+              SafeLink revisa el enlace, el QR, el PDF o el mensaje que te
+              llegó y te dice si conviene abrirlo. Es gratis y no necesitás
+              cuenta.
             </p>
-            <a href="/safelink.zip" download="safelink.zip">
-              Descargar la extensión
-            </a>
-            {sesion && (
-              <Link className="sl-secundario" to="/panel/enlaces">
-                Mis enlaces
-              </Link>
-            )}
-          </aside>
+            <div className="sl-acciones">
+              <a className="sl-boton" href="/safelink.zip" download="safelink.zip">
+                Descargar la extensión
+              </a>
+              {sesion && (
+                <Link className="sl-boton sl-boton-secundario" to="/panel/enlaces">
+                  Mis enlaces
+                </Link>
+              )}
+            </div>
+          </div>
+          <ProbadorEnlace />
+        </section>
 
+        <div className="sl-grilla">
           <div className="sl-cuerpo">
             <section>
               <h2>Un color, un motivo</h2>
