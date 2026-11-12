@@ -5,8 +5,11 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
 
 - **PhishGuard** (puerta Empresas, `/empresas`): campañas de phishing simulado por correo (SMTP de Gmail),
   kit de texto para WhatsApp/SMS (no se envía), página de enseñanza en el momento (`/simulacion/:token`,
-  `/bien/:token`), tablero, informe, alta/baja de empleados por planilla y cobro de prueba con Mercado Pago
-  (pago único de ARS 500). Precio publicado: USD 1 por persona por mes, mínimo USD 25 por mes. No hay pago anual.
+  `/bien/:token`), tablero, informe, alta/baja de empleados por planilla y cobro con Mercado Pago
+  (función `phishguard-mercadopago`): un pago único de ARS 37.500, equivalente al mínimo de USD 25 por mes,
+  que desbloquea PhishGuard en la cuenta. Los pagos viejos de prueba de ARS 500 siguen valiendo. Si la vuelta de
+  Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. Precio publicado: USD 1 por
+  persona por mes, mínimo USD 25 por mes. No hay suscripción automática ni pago anual.
 - **SafeLink** (puerta Personas, `/personas`, gratis): detector propio que devuelve un semáforo
   (verde, amarillo, rojo, gris) con el motivo, para URL, QR, PDF, correo y WhatsApp. **Faro** es el chat que
   explica cada resultado (función `safelink-faro`). No consulta VirusTotal ni Google Safe Browsing en el veredicto.
