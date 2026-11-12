@@ -832,6 +832,12 @@ function recorridoDe(extra) {
 
 const deOtroLado = (senales, origen) => (senales ?? []).map((senal) => ({ ...senal, origen }))
 
+function pisoDelTexto(local) {
+  const senales = local.senales ?? []
+  const sinDesglose = senales.length === 0 || senales.some((senal) => typeof senal !== 'object')
+  return sinDesglose && local.enlaces ? Math.min(100, local.puntuacion ?? 0) : 0
+}
+
 export function combinarConEnriquecimiento(local, extra) {
   if (!extra) return local
 
@@ -980,7 +986,7 @@ export function combinarConEnriquecimiento(local, extra) {
   if (actual.parecido && refuerzos > 0) puntos = Math.max(puntos, PISO_PARECIDO_FUERTE)
 
   actual.senales = actual.senales.filter((senal) => senal.id !== 'tope_sin_senal_fuerte')
-  puntos = cerrarPuntaje(puntos, actual.senales)
+  puntos = Math.max(cerrarPuntaje(puntos, actual.senales), pisoDelTexto(local))
   const motivos = motivosLimpios(actual.motivos)
   if (motivos.length === 0) motivos.push('No aparecen señales fuertes en la dirección.')
 

@@ -158,4 +158,22 @@ describe('mensajes', () => {
     assert.notEqual(resultado.nivel, 'verde')
     assert.equal(resultado.sinVerificar, true)
   })
+
+  test('revisar el enlace en el servidor no baja el nivel que ya tenía el texto del mensaje', () => {
+    const texto = 'Hola, soy del Banco. Tu cuenta se bloquea hoy. Mandame el código que te llegó por SMS y entrá acá: bit.ly/3xYzAbc'
+    const local = analizarWhatsapp(texto)
+    assert.equal(local.nivel, 'rojo')
+    const final = combinarConEnriquecimiento(local, {
+      destino: 'https://bit.ly/3xYzAbc',
+      cadena: ['https://bit.ly/3xYzAbc'],
+      fallo: 'no_resuelve',
+    })
+    assert.equal(final.nivel, 'rojo')
+    assert.ok(final.puntuacion >= local.puntuacion)
+  })
+
+  test('un enlace sano no sube por el piso del texto', () => {
+    const final = combinarConEnriquecimiento(analizar('https://www.mercadolibre.com.ar'), { dominio: 'mercadolibre.com.ar' })
+    assert.equal(final.nivel, 'verde')
+  })
 })

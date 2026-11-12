@@ -11,7 +11,7 @@ export function inspeccionarBytes(datos) {
     launch: /\/Launch\b/.test(texto),
     embebido: /\/EmbeddedFile\b/.test(texto),
     envio: /\/SubmitForm\b|\/XFA\b/.test(texto),
-    automatico: /\/AA\b|\/OpenAction\b/.test(texto),
+    automatico: /\/AA\b|\/OpenAction\s*(?:<<|\d+\s+\d+\s+R)/.test(texto),
     otroArchivo: /\/GoToR\b/.test(texto),
     richMedia: /\/RichMedia\b/.test(texto),
     cifrado: /\/Encrypt\b/.test(texto),
@@ -59,10 +59,11 @@ async function cargarPdfjs() {
   return pdfjsCargado
 }
 
-export async function analizarPdf(archivo) {
-  const pdfjs = await cargarPdfjs()
+export async function analizarPdf(archivo, cargar = cargarPdfjs) {
+  const pdfjs = await cargar()
   const datos = await archivo.arrayBuffer()
-  const doc = await pdfjs.getDocument({ data: datos }).promise
+  const marcas = inspeccionarBytes(datos)
+  const doc = await pdfjs.getDocument({ data: datos.slice(0) }).promise
   const senales = []
   const enlaces = []
   let puntos = 0
@@ -70,7 +71,6 @@ export async function analizarPdf(archivo) {
   let lanzamiento = false
   let javascript = false
 
-  const marcas = inspeccionarBytes(datos)
   if (marcas.javascript) javascript = true
   if (marcas.launch) lanzamiento = true
   if (marcas.envio) formulario = true
