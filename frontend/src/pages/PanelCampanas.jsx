@@ -426,7 +426,7 @@ function PanelCampanas() {
         </Link>
         <h1>Campañas</h1>
         <p className="panel-lead">
-          Hay plantillas de banco, ARCA, colegio, envío y Mercado Libre, por correo,
+          Hay plantillas de banco, organismo fiscal, colegio, envío y tienda, con marcas ficticias, por correo,
           WhatsApp o SMS. Quien cae recibe un refuerzo más difícil a las 3 semanas.
         </p>
         <p className="panel-aviso">

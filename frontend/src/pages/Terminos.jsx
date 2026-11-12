@@ -24,7 +24,7 @@ function Terminos() {
           <li>Solo se simula con las personas que la organización cargó y autorizó.</li>
           <li>La página de simulación no guarda contraseñas ni datos de pago.</li>
           <li>Los resultados sirven para enseñar. No se usan para sancionar ni para evaluar el desempeño.</li>
-          <li>Quien administra puede pausar o cancelar una campaña.</li>
+          <li>Quien administra puede borrar una campaña cuando quiera, con sus resultados.</li>
           <li>Los datos del equipo quedan en la organización. SafeGuard los usa solo para el ejercicio.</li>
         </ul>
 
@@ -61,16 +61,22 @@ function Terminos() {
           <li>No entra a correos, cuentas ni sistemas reales de la organización.</li>
           <li>No suplanta a una persona real del equipo sin autorización escrita.</li>
           <li>
-            No usa como anzuelo despidos, sanciones, plata, salud, fallecimientos ni
-            datos sensibles. Las plantillas del ejercicio usan el nombre de ARCA,
-            Mercado Libre, OCA y Correo Argentino. El mensaje no sale de esas
-            organizaciones.
+            No usa marcas reales de bancos, organismos públicos ni empresas: las
+            plantillas usan marcas ficticias o genéricas.
+          </li>
+          <li>
+            No usa como anzuelo despidos, sanciones, aumentos, premios ni beneficios
+            económicos, salud, fallecimientos ni datos sensibles. Algunas plantillas
+            hablan de una compra, una cuota o una tasa, como los engaños reales, pero
+            nunca cobran ni piden plata de verdad.
           </li>
         </ul>
         <p>
           Si alguien toca el enlace, ve en el momento que era una simulación y cómo
-          reconocer las señales. Sin burlas y sin culpa. Reportar el mensaje como
-          sospechoso es una conducta correcta y queda registrada como tal.
+          reconocer las señales. Sin burlas y sin culpa. No tocar el enlace y
+          desconfiar del mensaje es la conducta correcta. En WhatsApp y SMS, quien
+          administra puede mandarle a esa persona el enlace «Lo hiciste bien», que
+          la reconoce y queda registrado.
         </p>
         <p>
           El correo de la campaña sale directo a cada persona. WhatsApp y SMS se
@@ -107,10 +113,10 @@ function Terminos() {
           Nadie queda señalado en un documento público.
         </p>
 
-        <h2>Pausa, plazo y responsabilidad</h2>
+        <h2>Baja, plazo y responsabilidad</h2>
         <p>
-          Quien administra puede pedir que se detenga una campaña. SafeGuard deja de
-          enviar y se puede borrar la campaña del listado. Cualquiera de las partes
+          Quien administra puede borrar una campaña del listado cuando quiera: se
+          borran la campaña y sus resultados, y el informe deja de contarlos. Cualquiera de las partes
           puede terminar el uso con aviso, sin penalidad.
         </p>
         <p>

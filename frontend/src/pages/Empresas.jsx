@@ -8,7 +8,7 @@ const incluye = [
   ['Aviso', 'Un correo corto cuando alguien toca el enlace.'],
   ['Informe', 'Quién tocó el enlace, quién se capacitó y quién mejoró. Se guarda o se imprime.'],
   ['Usuarios', 'Alta, baja y cambio de plan cuando la organización crece.'],
-  ['Plantillas', 'Bancos, ARCA, colegios, envíos y Mercado Libre, en español.'],
+  ['Plantillas', 'Bancos, organismos, colegios, envíos y tiendas, en español y con marcas ficticias.'],
   ['En la nube', 'Sin instalar software en cada equipo.'],
   ['Soporte', 'WhatsApp Business y correo, en español.'],
 ]

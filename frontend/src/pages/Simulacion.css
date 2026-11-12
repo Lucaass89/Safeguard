@@ -176,31 +176,31 @@
   border-color: #cbd5e1;
 }
 
-.ml {
+.tienda {
   min-height: 100vh;
   background: #ededed;
   color: #333;
   font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
-.ml-barra {
+.tienda-barra {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 16px;
   padding: 12px 20px;
-  background: #fff159;
+  background: #ffb547;
 }
 
-.ml-marca {
+.tienda-marca {
   margin: 0;
-  color: #2d3277;
+  color: #3b1f00;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.04em;
 }
 
-.ml-buscar {
+.tienda-buscar {
   flex: 1 1 220px;
   margin: 0;
   padding: 10px 14px;
@@ -210,48 +210,48 @@
   box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
 }
 
-.ml-cuerpo {
+.tienda-cuerpo {
   width: min(920px, calc(100% - 32px));
   margin: 24px auto 48px;
 }
 
-.ml-caja,
-.ml-producto {
+.tienda-caja,
+.tienda-producto {
   padding: 24px;
   border-radius: 6px;
   background: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 }
 
-.ml-caja {
+.tienda-caja {
   display: grid;
   gap: 12px;
   max-width: 420px;
   margin-inline: auto;
 }
 
-.ml-caja h1,
-.ml-producto h1 {
+.tienda-caja h1,
+.tienda-producto h1 {
   margin: 0;
   font-size: 24px;
   letter-spacing: -0.02em;
 }
 
-.ml-caja p,
-.ml-estado,
-.ml-envio {
+.tienda-caja p,
+.tienda-estado,
+.tienda-envio {
   margin: 0;
   color: #666;
 }
 
-.ml-caja label {
+.tienda-caja label {
   display: grid;
   gap: 6px;
   font-size: 14px;
   font-weight: 600;
 }
 
-.ml-caja input {
+.tienda-caja input {
   min-height: 44px;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -260,7 +260,7 @@
   font-weight: 400;
 }
 
-.ml-boton {
+.tienda-boton {
   min-height: 48px;
   margin-top: 8px;
   border: 0;
@@ -272,14 +272,14 @@
   cursor: pointer;
 }
 
-.ml-producto {
+.tienda-producto {
   display: grid;
   grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
   gap: 28px;
   align-items: center;
 }
 
-.ml-foto {
+.tienda-foto {
   display: grid;
   place-items: center;
   height: 240px;
@@ -287,14 +287,14 @@
   background: #f5f5f5;
 }
 
-.ml-foto span {
+.tienda-foto span {
   width: 120px;
   height: 120px;
   border: 10px solid #333;
   border-radius: 50%;
 }
 
-.ml-foto span + span {
+.tienda-foto span + span {
   width: 28px;
   height: 70px;
   margin-top: -90px;
@@ -302,49 +302,49 @@
   border-radius: 8px;
 }
 
-.ml-precio {
+.tienda-precio {
   margin: 8px 0;
   font-size: 32px;
   font-weight: 400;
 }
 
-.ml-pagar {
+.tienda-pagar {
   width: 100%;
 }
 
 @media (max-width: 700px) {
-  .ml-producto {
+  .tienda-producto {
     grid-template-columns: 1fr;
   }
 }
 
-.mp {
+.pago {
   min-height: 100vh;
   background: #f5f5f5;
   color: #333;
   font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
-.mp-barra {
+.pago-barra {
   padding: 16px 20px;
   background: #fff;
   border-bottom: 1px solid #e6e6e6;
 }
 
-.mp-marca {
+.pago-marca {
   margin: 0;
-  color: #009ee3;
+  color: #2f9e6b;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.03em;
 }
 
-.mp-cuerpo {
+.pago-cuerpo {
   width: min(440px, calc(100% - 32px));
   margin: 24px auto 48px;
 }
 
-.mp-caja {
+.pago-caja {
   display: grid;
   gap: 12px;
   padding: 24px;
@@ -353,35 +353,35 @@
   box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
 }
 
-.mp-caja h1 {
+.pago-caja h1 {
   margin: 0;
   font-size: 22px;
 }
 
-.mp-caja p {
+.pago-caja p {
   margin: 0;
   color: #666;
 }
 
-.mp-caja label {
+.pago-caja label {
   display: grid;
   gap: 6px;
   font-size: 14px;
   font-weight: 600;
 }
 
-.mp-caja label.mp-opcion {
+.pago-caja label.pago-opcion {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 48px;
   padding: 0 12px;
-  border: 1px solid #009ee3;
+  border: 1px solid #2f9e6b;
   border-radius: 6px;
   background: #e8f7fd;
 }
 
-.mp-caja input {
+.pago-caja input {
   min-height: 44px;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -390,21 +390,21 @@
   font-weight: 400;
 }
 
-.mp-caja label.mp-opcion input {
+.pago-caja label.pago-opcion input {
   width: 18px;
   height: 18px;
   min-height: 18px;
   margin: 0;
   padding: 0;
-  accent-color: #009ee3;
+  accent-color: #2f9e6b;
 }
 
-.mp-boton {
+.pago-boton {
   min-height: 48px;
   margin-top: 8px;
   border: 0;
   border-radius: 6px;
-  background: #009ee3;
+  background: #2f9e6b;
   color: #fff;
   font: inherit;
   font-weight: 600;

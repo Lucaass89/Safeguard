@@ -4,6 +4,12 @@ import { armarRegistro } from '../lib/registroSimulacion.js'
 import { supabase } from '../lib/supabase.js'
 import './Simulacion.css'
 
+const TIENDAS = new Set(['TIENDA', 'MERCADOLIBRE'])
+
+function esTienda(categoria) {
+  return TIENDAS.has(categoria)
+}
+
 function cuerpoConLink(texto, token) {
   const link = `${window.location.origin}/simulacion/${token}`
   return (texto ?? '').replaceAll('{link}', link)
@@ -11,17 +17,17 @@ function cuerpoConLink(texto, token) {
 
 function MarcoTienda({ children }) {
   return (
-    <div className="ml">
-      <header className="ml-barra">
-        <p className="ml-marca">mercado libre</p>
-        <p className="ml-buscar" aria-hidden="true">Buscar productos, marcas y más…</p>
+    <div className="tienda">
+      <header className="tienda-barra">
+        <p className="tienda-marca">vitrina</p>
+        <p className="tienda-buscar" aria-hidden="true">Buscar productos, marcas y más…</p>
       </header>
-      <main className="ml-cuerpo">{children}</main>
+      <main className="tienda-cuerpo">{children}</main>
     </div>
   )
 }
 
-function Tienda({ paso, onCuenta, onMercadoPago }) {
+function Tienda({ paso, onCuenta, onPagar }) {
   const [cuenta, setCuenta] = useState({ nombre: '', mail: '', clave: '' })
   const [compra, setCompra] = useState('no')
 
@@ -29,7 +35,7 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
     return (
       <MarcoTienda>
         <form
-          className="ml-caja"
+          className="tienda-caja"
           onSubmit={(evento) => {
             evento.preventDefault()
             const escrito = `${cuenta.nombre}\n${cuenta.mail}\n${cuenta.clave}`
@@ -68,9 +74,9 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
               onChange={(evento) => setCuenta({ ...cuenta, clave: evento.target.value })}
             />
           </label>
-          <button type="submit" className="ml-boton">Crear cuenta</button>
-          <button type="button" className="mp-boton ml-pagar" onClick={onMercadoPago}>
-            Pagar con Mercado Pago
+          <button type="submit" className="tienda-boton">Crear cuenta</button>
+          <button type="button" className="pago-boton tienda-pagar" onClick={onPagar}>
+            Pagar con Billetera Vitrina
           </button>
         </form>
       </MarcoTienda>
@@ -80,21 +86,21 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
   if (paso === 'producto' && compra === 'no') {
     return (
       <MarcoTienda>
-        <article className="ml-producto">
-          <div className="ml-foto" aria-hidden="true">
+        <article className="tienda-producto">
+          <div className="tienda-foto" aria-hidden="true">
             <span />
             <span />
           </div>
           <div>
-            <p className="ml-estado">Nuevo · 3 disponibles</p>
+            <p className="tienda-estado">Nuevo · 3 disponibles</p>
             <h1>Auriculares inalámbricos SoundPro</h1>
-            <p className="ml-precio">$ 45.999</p>
-            <p className="ml-envio">Llega mañana a tu domicilio</p>
-            <button type="button" className="ml-boton" onClick={() => setCompra('medio')}>
+            <p className="tienda-precio">$ 45.999</p>
+            <p className="tienda-envio">Llega mañana a tu domicilio</p>
+            <button type="button" className="tienda-boton" onClick={() => setCompra('medio')}>
               Comprar ahora
             </button>
-            <button type="button" className="mp-boton ml-pagar" onClick={onMercadoPago}>
-              Pagar con Mercado Pago
+            <button type="button" className="pago-boton tienda-pagar" onClick={onPagar}>
+              Pagar con Billetera Vitrina
             </button>
           </div>
         </article>
@@ -104,19 +110,19 @@ function Tienda({ paso, onCuenta, onMercadoPago }) {
 
   if (paso === 'producto' && compra === 'medio') {
     return (
-      <div className="mp">
-        <header className="mp-barra">
-          <p className="mp-marca">Mercado Pago</p>
+      <div className="pago">
+        <header className="pago-barra">
+          <p className="pago-marca">Billetera Vitrina</p>
         </header>
-        <main className="mp-cuerpo">
-          <section className="mp-caja">
+        <main className="pago-cuerpo">
+          <section className="pago-caja">
             <h1>Medio de pago</h1>
             <p>Auriculares inalámbricos SoundPro · $ 45.999</p>
-            <label className="mp-opcion">
+            <label className="pago-opcion">
               <input type="radio" name="medio" checked onChange={() => {}} />
-              <span>Mercado Pago</span>
+              <span>Billetera Vitrina</span>
             </label>
-            <button type="button" className="mp-boton" onClick={onMercadoPago}>
+            <button type="button" className="pago-boton" onClick={onPagar}>
               Continuar
             </button>
           </section>
@@ -144,8 +150,8 @@ function Simulacion() {
         return
       }
       setFicha(data)
-      if (data.capacitado || (data.categoria === 'MERCADOLIBRE' && data.ingreso_datos)) setPaso('leccion')
-      else if (data.categoria === 'MERCADOLIBRE') setPaso('producto')
+      if (data.capacitado || (esTienda(data.categoria) && data.ingreso_datos)) setPaso('leccion')
+      else if (esTienda(data.categoria)) setPaso('producto')
       else if (data.hizo_clic) setPaso('datos')
       supabase.rpc('phishguard_registrar', armarRegistro(token, 'abrio'))
     })
@@ -199,10 +205,10 @@ function Simulacion() {
         <p className="sim-marca">SafeGuard · PhishGuard</p>
         <h1>Esto era una simulación</h1>
         <p>Era una simulación. El mensaje apuraba y pedía un clic.</p>
-        {ficha.categoria === 'MERCADOLIBRE' && (
+        {esTienda(ficha.categoria) && (
           <p>
-            El botón de Mercado Pago abre el sitio real, mercadopago.com.ar. La barra pasa a decir
-            eso recién ahí. Esta página no era Mercado Libre ni Mercado Pago.
+            La tienda y la billetera de esta página eran inventadas. Una tienda real no te pide crear una
+            cuenta ni pagar desde un aviso que llegó por mail.
           </p>
         )}
         {leccion.cuerpo && !/era una simulaci[oó]n/i.test(leccion.cuerpo) && <p>{leccion.cuerpo}</p>}
@@ -218,12 +224,12 @@ function Simulacion() {
     )
   }
 
-  if (ficha.categoria === 'MERCADOLIBRE') {
+  if (esTienda(ficha.categoria)) {
     return (
       <Tienda
         paso={paso}
         onCuenta={(escrito) => registrar('clic', 'producto', escrito)}
-        onMercadoPago={async () => {
+        onPagar={async () => {
           const { error: fallo } = await supabase.rpc(
             'phishguard_registrar',
             armarRegistro(token, 'clic'),
@@ -232,11 +238,8 @@ function Simulacion() {
             setError(fallo.message)
             return
           }
-          await Promise.race([
-            avisarCaida(),
-            new Promise((resolve) => setTimeout(resolve, 2500)),
-          ])
-          window.location.assign('https://www.mercadopago.com.ar')
+          avisarCaida()
+          setPaso('leccion')
         }}
       />
     )

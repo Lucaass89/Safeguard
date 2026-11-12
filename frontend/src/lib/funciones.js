@@ -12,13 +12,13 @@ export const funciones = {
       'Un mensaje de prueba que se parece a un engaño real. Tu equipo practica a reconocerlo en un lugar seguro, antes de que llegue uno de verdad.',
     datos: [
       ['3 canales', 'Correo, WhatsApp y SMS'],
-      ['En español', 'Plantillas con marcas y trámites de acá'],
+      ['En español', 'Plantillas con trámites de acá y marcas ficticias'],
       ['Sin riesgo', 'No se guardan claves ni datos de pago'],
     ],
     muestra: {
       etiqueta: 'Correo de prueba',
       entrada: [
-        ['De', 'Banco Nación <avisos@...>'],
+        ['De', 'Banco Aurora <avisos@...>'],
         ['Asunto', 'Validá tu cuenta antes de las 18 h'],
       ],
       color: 'amarillo',
@@ -27,7 +27,7 @@ export const funciones = {
     },
     paraQue: [
       'La mayoría de los ataques a una empresa no empiezan con un virus: empiezan con un mensaje que alguien abre apurado. La simulación entrena justo ese momento.',
-      'Mandás un mensaje que imita a un banco, a ARCA, a un envío o a un proveedor. Si alguien cae, no pasa nada malo: aprende en el momento y vos sabés dónde reforzar.',
+      'Mandás un mensaje que imita a un banco, a un organismo, a un envío o a un proveedor, con marcas ficticias. Si alguien cae, no pasa nada malo: aprende en el momento y vos sabés dónde reforzar.',
     ],
     cuando: [
       'Cuando arranca alguien nuevo en el equipo.',
@@ -36,7 +36,7 @@ export const funciones = {
       'Como rutina, una vez por mes o por trimestre.',
     ],
     pasos: [
-      ['Elegís la plantilla', 'Hay modelos en español: banco, ARCA, envío, colegio, Mercado Libre y más. Cada uno trae el texto y la página de prueba.'],
+      ['Elegís la plantilla', 'Hay modelos en español: banco, organismo fiscal, envío, colegio, tienda y más, con marcas ficticias. Cada uno trae el texto y la página de prueba.'],
       ['Elegís el canal', 'Correo, WhatsApp o SMS. El correo llega a la bandeja de cada persona como un mensaje común.'],
       ['Elegís a quién', 'Marcás personas de tu lista o pedís una cantidad al azar, para que nadie sepa de antemano a quién le toca.'],
       ['Seguís los resultados', 'En el tablero ves quién lo abrió, quién tocó el enlace y quién cargó datos. Cada caída queda en el historial.'],
@@ -45,7 +45,7 @@ export const funciones = {
       titulo: 'Qué medís en cada campaña',
       items: [
         ['Enviados', 'Cuántos mensajes salieron y a quiénes.'],
-        ['Abiertos', 'Quién abrió el correo.'],
+        ['Abiertos', 'Quién abrió la página de prueba.'],
         ['Clics', 'Quién tocó el enlace de prueba.'],
         ['Datos cargados', 'Quién llegó a escribir algo en la página falsa. Lo escrito no se guarda.'],
       ],
@@ -58,7 +58,7 @@ export const funciones = {
     preguntas: [
       ['¿Puedo mandarle una simulación a cualquier correo?', 'No. Solo a las personas que tu organización cargó y autorizó. Es un ejercicio interno de capacitación.'],
       ['¿Qué pasa si alguien escribe su clave?', 'La página de prueba no guarda contraseñas ni datos de pago. Solo registra que llegó a ese paso.'],
-      ['¿Puedo frenar una campaña?', 'Sí. Quien administra puede pausarla o borrarla cuando quiera, con todos sus resultados.'],
+      ['¿Puedo frenar una campaña?', 'Sí. Quien administra puede borrarla cuando quiera, con todos sus resultados.'],
     ],
     nota: 'PhishGuard es un ejercicio de capacitación, no un ataque. Las condiciones completas están en Términos y condiciones.',
     accion: { texto: 'Conocer PhishGuard', ruta: '/empresas' },
