@@ -36,6 +36,7 @@ npm install
 npm run dev        # servidor local
 npm test           # node --test src/lib/*.test.js
 npm run eval       # evaluación del detector con eval/
+npm run eval:legibilidad  # índice INFLESZ de los textos del semáforo y las lecciones
 npm run build      # corre eval y después vite build
 npm run lint
 ```

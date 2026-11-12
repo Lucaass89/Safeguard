@@ -1,0 +1,9 @@
+SafeGuard, RNF-W-03 y RNF-W-07: la extensión en Chromium
+Fecha: 12 de noviembre de 2026
+Navegador: Chromium 153.0.8010.12 (Playwright), modo headless nuevo
+Comando: PW_EXPERIMENTAL_SERVICE_WORKER_NETWORK_EVENTS=1 node docs/evidencia/prueba-extension-chromium.cjs
+
+Resultado:
+- La extensión Manifest V3 carga, registra el service worker background.js y abre el popup "SafeLink" sin errores en la consola.
+- Con el servidor disponible y con las llamadas a Supabase cortadas, la página de prueba carga igual y el ícono muestra "!" (amarillo): el color sale del análisis de la dirección.
+- Si la primera pestaña se abre antes de que arranque el service worker, esa pestaña queda sin color hasta la próxima navegación.

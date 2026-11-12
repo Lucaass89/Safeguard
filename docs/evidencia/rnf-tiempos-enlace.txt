@@ -1,0 +1,36 @@
+SafeGuard, RNF-W-04: tiempo de la revisión completa de un enlace en el servidor
+Fecha: 12 de noviembre de 2026
+Función: safelink-enriquecer publicada en axbwxsghgxcqhjxckqcp.supabase.co, llamada con la clave publishable del sitio.
+Método: una llamada por sitio desde un contenedor en la nube, con curl. Se mide el tiempo total de la respuesta.
+
+segundos  http  sitio  resultado  edad_del_dominio_en_dias
+4.619011  200  google.com  ok  10650
+4.567404  200  mercadolibre.com.ar  ok  10047
+1.156610  200  bancogalicia.com  ok  2576
+0.683204  400  afip.gob.ar  ok  None
+4.354167  200  wikipedia.org  ok  9434
+0.408911  200  github.com  ok  6973
+0.520563  200  youtube.com  ok  7940
+0.455461  200  clarin.com  ok  11411
+4.312301  200  lanacion.com.ar  ok  11273
+5.322113  200  infobae.com  ok  8987
+5.068505  200  bna.com.ar  ok  10677
+3.314653  200  santander.com.ar  ok  4714
+4.698117  200  netflix.com  ok  10593
+4.338094  200  amazon.com  ok  11699
+4.364006  200  microsoft.com  ok  12978
+4.371989  200  apple.com  ok  14511
+4.390717  200  whatsapp.com  ok  6643
+5.234260  400  instagram.com  ok  None
+5.596508  200  unlam.edu.ar  ok  None
+0.499074  200  bit.ly  ok  8401
+
+Casos: 20
+Mediana: 4.36 s
+95 % por debajo de: 5.32 s
+Máximo: 5.60 s
+Por debajo de 3 s: 6 de 20
+Las respuestas 400 de afip.gob.ar (certificado que no coincide con el nombre) e instagram.com (tiempo agotado) indican que la
+función publicada no es la misma versión del repositorio, que devuelve esos casos como fallo con código 200.
+
+Evaluación de la dirección en el navegador (sin servidor): 3295 direcciones del set de eval en 2444 ms, 0,74 ms por dirección (Node 22).

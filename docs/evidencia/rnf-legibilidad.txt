@@ -1,0 +1,10 @@
+SafeGuard, RNF-W-05: legibilidad de los textos del semáforo y de las lecciones
+Fecha: 12 de noviembre de 2026
+Comando: npm run eval:legibilidad (frontend/eval/legibilidad.js)
+Índice: INFLESZ (Szigriszt-Pazos). 65 a 80 es bastante fácil; más de 80, muy fácil. Las sílabas se cuentan por grupos de vocales, así que el valor es aproximado. Las direcciones web se cuentan como una palabra.
+
+casos 3295 frases distintas 1359
+motivos {"indice":74.9,"palabras":17724,"frases":1367,"palabrasPorFrase":13}
+que hacer y fallos {"indice":72,"palabras":233,"frases":17,"palabrasPorFrase":13.7}
+lecciones {"indice":83.6,"palabras":487,"frases":39,"palabrasPorFrase":12.5}
+todo {"indice":75.1,"palabras":18444,"frases":1423,"palabrasPorFrase":13}

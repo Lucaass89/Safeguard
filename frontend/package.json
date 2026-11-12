@@ -14,7 +14,8 @@
     "eval:faro": "node eval/evaluar_faro.js",
     "lint": "eslint .",
     "test": "node --test src/lib/*.test.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "eval:legibilidad": "node eval/legibilidad.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
