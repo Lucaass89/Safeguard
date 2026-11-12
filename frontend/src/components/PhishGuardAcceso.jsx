@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { supabase } from '../lib/supabase.js'
@@ -35,7 +35,41 @@ export function PhishGuardPago() {
   const { pathname, search, hash } = useLocation()
   const [error, setError] = useState(null)
   const [enviando, setEnviando] = useState(false)
+  const [verificando, setVerificando] = useState(false)
   const volver = `/ingresar?volver=${encodeURIComponent(`${pathname}${search}${hash}`)}`
+  const usuarioId = sesion?.user?.id ?? null
+
+  useEffect(() => {
+    if (!usuarioId) return undefined
+
+    let activo = true
+    let enCurso = false
+
+    async function verificar() {
+      if (enCurso || document.visibilityState === 'hidden') return
+      enCurso = true
+      setVerificando(true)
+      const { data } = await supabase.functions.invoke('phishguard-mercadopago', {
+        body: { accion: 'verificar' },
+      })
+      enCurso = false
+      if (!activo) return
+      setVerificando(false)
+      const recargado = `sg-pago-recargado:${usuarioId}`
+      if (data?.estado === 'aprobado' && sessionStorage.getItem(recargado) !== '1') {
+        sessionStorage.setItem(recargado, '1')
+        sessionStorage.removeItem(`sg-acceso:${usuarioId}`)
+        window.location.reload()
+      }
+    }
+
+    verificar()
+    document.addEventListener('visibilitychange', verificar)
+    return () => {
+      activo = false
+      document.removeEventListener('visibilitychange', verificar)
+    }
+  }, [usuarioId])
 
   async function pagar() {
     setError(null)
@@ -60,15 +94,24 @@ export function PhishGuardPago() {
         Si no tenés cuenta, o la tenés y no administrás la empresa, esta parte se paga.
         SafeLink sigue disponible.
       </p>
-      <p className="phish-pago-monto">$ 500</p>
+      <p className="phish-pago-monto">$ 37.500</p>
       <p>
-        Es un pago único de prueba, en pesos. No es la cuota del mes ni un cargo
-        del año. El plan publicado se cobra por persona y por mes, desde USD 1,
-        con un mínimo de USD 25 por mes.
+        Es un pago único en pesos, equivalente al mínimo de USD 25 por mes. El
+        plan publicado se cobra por persona y por mes, desde USD 1, con un
+        mínimo de USD 25 por mes.
       </p>
       {sesion ? (
-        <button type="button" className="phish-armar" onClick={pagar} disabled={enviando}>
-          {enviando ? 'Abriendo Mercado Pago…' : 'Pagar con Mercado Pago'}
+        <button
+          type="button"
+          className="phish-armar"
+          onClick={pagar}
+          disabled={enviando || verificando}
+        >
+          {verificando
+            ? 'Revisando si ya pagaste…'
+            : enviando
+              ? 'Abriendo Mercado Pago…'
+              : 'Pagar con Mercado Pago'}
         </button>
       ) : (
         <Link className="phish-armar" to={volver}>

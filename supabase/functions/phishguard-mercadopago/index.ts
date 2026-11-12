@@ -2,7 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import postgres from 'npm:postgres'
 
-const PRECIO = 500
+const PRECIO = 37500
 const MONEDA = 'ARS'
 const SITIO = 'https://safeguardd.vercel.app'
 
@@ -81,8 +81,8 @@ async function crearCobro(usuarioId: string, token: string) {
     body: JSON.stringify({
       items: [
         {
-          title: 'PhishGuard, pago único de prueba',
-          description: 'Un solo cobro de prueba en pesos. No es la suscripción mensual.',
+          title: 'PhishGuard, mínimo mensual',
+          description: 'Un solo cobro en pesos, equivalente al mínimo de USD 25 por mes.',
           quantity: 1,
           currency_id: MONEDA,
           unit_price: PRECIO,
@@ -131,6 +131,24 @@ function pagoValido(pago: Record<string, unknown>, usuarioId: string) {
     monto === PRECIO &&
     pago.external_reference === usuarioId
   )
+}
+
+async function buscarPagoAprobado(usuarioId: string, token: string) {
+  const busqueda = new URL('https://api.mercadopago.com/v1/payments/search')
+  busqueda.searchParams.set('external_reference', usuarioId)
+  busqueda.searchParams.set('status', 'approved')
+  busqueda.searchParams.set('sort', 'date_created')
+  busqueda.searchParams.set('criteria', 'desc')
+  busqueda.searchParams.set('limit', '20')
+
+  const respuesta = await fetch(busqueda, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!respuesta.ok) return null
+
+  const cuerpo = await respuesta.json()
+  const pagos: Record<string, unknown>[] = Array.isArray(cuerpo?.results) ? cuerpo.results : []
+  return pagos.find((pago) => pagoValido(pago, usuarioId)) ?? null
 }
 
 async function desbloquear(usuarioId: string, pagoMp: string) {
@@ -263,6 +281,20 @@ Deno.serve(async (req) => {
 
     try {
       await desbloquear(usuario.id, pagoId)
+    } catch (error) {
+      const mensaje = error instanceof Error ? error.message : 'No se pudo abrir PhishGuard.'
+      return json({ error: mensaje }, 500)
+    }
+
+    return json({ estado: 'aprobado' })
+  }
+
+  if (cuerpo.accion === 'verificar') {
+    const pago = await buscarPagoAprobado(usuario.id, token)
+    if (!pago) return json({ estado: 'sin_pago' })
+
+    try {
+      await desbloquear(usuario.id, String(pago.id))
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'No se pudo abrir PhishGuard.'
       return json({ error: mensaje }, 500)
