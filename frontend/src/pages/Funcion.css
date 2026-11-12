@@ -6,7 +6,7 @@
   --fn-suave: var(--sg-muted, #9ca3af);
   --fn-borde: var(--sg-line, #26334d);
   --fn-fondo: var(--sg-surface, #131a26);
-  --fn-acento: var(--sg-accent, #2563eb);
+  --fn-acento: var(--sg-accent, #1a52be);
 
   padding-block: 8px 72px;
   color: var(--fn-texto);
@@ -17,7 +17,7 @@
 .fn h2,
 .fn h3 {
   color: var(--fn-texto);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-family: Inter, Inter, system-ui, sans-serif;
   letter-spacing: -0.02em;
 }
 
@@ -297,7 +297,7 @@
 
 .fn-datos strong {
   color: var(--fn-texto);
-  font-family: 'Space Grotesk', Inter, sans-serif;
+  font-family: Inter, Inter, sans-serif;
   font-size: 22px;
 }
 

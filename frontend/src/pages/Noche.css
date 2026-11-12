@@ -2,7 +2,7 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche {
   --ink: #f3f4f6;
   --navy: #0b0f17;
-  --blue: #2563eb;
+  --blue: #1a52be;
   --muted: #9ca3af;
   --line: #26334d;
   --white: #f3f4f6;
@@ -15,8 +15,8 @@ html[data-tema] .sg-landing.sg-noche,
   --sg-text: #f3f4f6;
   --sg-muted: #9ca3af;
   --sg-line: #26334d;
-  --sg-blue: #2563eb;
-  --sg-accent: #2563eb;
+  --sg-blue: #1a52be;
+  --sg-accent: #1a52be;
 
   color: #f3f4f6;
   color-scheme: dark;
@@ -60,25 +60,25 @@ html[data-tema] .sg-landing.sg-noche,
 }
 
 .sg-landing.sg-noche .button-primary {
-  background: #2563eb;
+  background: #1a52be;
   color: #fff;
 }
 
 .sg-landing.sg-noche .button-primary:hover {
-  background: #1d4ed8;
+  background: #153f94;
 }
 
 .sg-landing.sg-noche .nav-fin .nav-cta,
 .sg-landing.sg-noche .nav-cta {
   border-color: transparent;
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
 .sg-landing.sg-noche .nav-fin .nav-cta:hover,
 .sg-landing.sg-noche .nav-cta:hover {
-  background: #1d4ed8;
+  background: #153f94;
   border-color: transparent;
   color: #ffffff;
 }
@@ -114,12 +114,12 @@ html[data-tema] .sg-landing.sg-noche,
 
 .sg-landing.sg-noche .pg-banda .pg-cta {
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
 .sg-landing.sg-noche .pg-banda .pg-cta:hover {
-  background: #1d4ed8;
+  background: #153f94;
   color: #ffffff;
 }
 
@@ -176,14 +176,14 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .sl-lado button,
 .sg-landing.sg-noche .adquirir-precio {
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
 .sg-landing.sg-noche .sl-lado a:hover,
 .sg-landing.sg-noche .sl-lado button:hover,
 .sg-landing.sg-noche .adquirir-precio:hover {
-  background: #1d4ed8;
+  background: #153f94;
   color: #ffffff;
 }
 
@@ -247,18 +247,18 @@ html[data-tema] .sg-landing.sg-noche,
 }
 
 .sg-landing.sg-noche .acceso-form input:focus {
-  border-color: #2563eb;
+  border-color: #1a52be;
 }
 
 .sg-landing.sg-noche .acceso-boton {
   border: 0;
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
 .sg-landing.sg-noche .acceso-boton:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #153f94;
 }
 
 .sg-landing.sg-noche .acceso-error {
@@ -282,9 +282,9 @@ html[data-tema] .sg-landing.sg-noche .panel-lienzo {
   --sg-text: #f5f3ff;
   --sg-muted: #9ca3af;
   --sg-line: #26334d;
-  --sg-blue: #2563eb;
+  --sg-blue: #1a52be;
   --sg-teal: #0d9488;
-  --sg-accent: #2563eb;
+  --sg-accent: #1a52be;
   color: #f3f4f6;
 }
 
@@ -305,7 +305,7 @@ html[data-tema] .sg-landing.sg-noche .mesa-hoja a:hover {
 }
 
 html[data-tema] .sg-landing.sg-noche .mesa-hoja a span:last-child {
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
@@ -313,13 +313,13 @@ html[data-tema] .sg-landing.sg-noche .elegir-cerrado a,
 html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton,
 html[data-tema] .sg-landing.sg-noche .panel-lienzo a.panel-boton {
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
 html[data-tema] .sg-landing.sg-noche .panel-boton:hover:not(:disabled),
 html[data-tema] .sg-landing.sg-noche .elegir-cerrado a:hover {
-  background: #1d4ed8;
+  background: #153f94;
   color: #ffffff;
 }
 

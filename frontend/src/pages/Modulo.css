@@ -14,7 +14,7 @@
 .sl h1,
 .sl h2,
 .pg h3 {
-  font-family: 'Space Grotesk', var(--sg-sans);
+  font-family: Inter, var(--sg-sans);
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: inherit;
@@ -111,7 +111,7 @@
 .sg-landing .pg-tablero h2 {
   margin: 0 0 16px;
   color: #fff;
-  font: 600 22px 'Space Grotesk', var(--sg-sans);
+  font: 600 22px Inter, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -132,7 +132,7 @@
 .pg-tablero strong {
   display: block;
   color: #fff;
-  font: 700 26px 'Space Grotesk', var(--sg-sans);
+  font: 700 26px Inter, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -174,13 +174,13 @@
 
 .pg-riel li + li {
   padding-left: 22px;
-  border-left: 1px solid #e3d9cc;
+  border-left: 1px solid #dce3ee;
 }
 
 .pg-riel span {
   display: block;
   margin-bottom: 14px;
-  font: 600 16px 'Space Grotesk', var(--sg-sans);
+  font: 600 16px Inter, var(--sg-sans);
   color: var(--sg-muted);
 }
 
@@ -215,7 +215,7 @@
   grid-template-columns: 140px minmax(0, 1fr);
   gap: 16px;
   padding: 18px 28px 18px 0;
-  border-bottom: 1px solid #e3d9cc;
+  border-bottom: 1px solid #dce3ee;
 }
 
 .pg-incluye dt {
@@ -251,7 +251,7 @@
 
 .pg-precios strong {
   display: block;
-  font: 700 40px/1 'Space Grotesk', var(--sg-sans);
+  font: 700 40px/1 Inter, var(--sg-sans);
   letter-spacing: -0.04em;
 }
 
@@ -329,7 +329,7 @@
   padding: 10px 16px;
   border: 0;
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #fff;
   font: inherit;
   font-weight: 700;
@@ -407,7 +407,7 @@
 
 .sl-banda h3 {
   margin: 0;
-  font: 700 22px 'Space Grotesk', var(--sg-sans);
+  font: 700 22px Inter, var(--sg-sans);
 }
 
 .sl-verde {
@@ -447,7 +447,7 @@
   gap: 16px 24px;
   min-width: 0;
   padding: 18px 0;
-  border-top: 1px solid #e3d9cc;
+  border-top: 1px solid #dce3ee;
 }
 
 .sl-lugares dt {
@@ -478,7 +478,7 @@
 
 .sg-landing .nota h2 {
   margin: 36px 0 12px;
-  font: 700 28px 'Space Grotesk', var(--sg-sans);
+  font: 700 28px Inter, var(--sg-sans);
   letter-spacing: -0.02em;
 }
 
@@ -525,7 +525,7 @@
   .pg-riel li + li {
     padding: 20px 0;
     border-left: 0;
-    border-top: 1px solid #e3d9cc;
+    border-top: 1px solid #dce3ee;
   }
 
   .pg-incluye div,
@@ -549,13 +549,20 @@
 }
 
 .adquirir-precio {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
   margin-top: 24px;
-  background: var(--blue, #2563eb);
+  padding: 0 20px;
+  border-radius: 6px;
+  font-family: Inter, var(--sg-sans);
+  font-weight: 700;
+  background: var(--blue, #1a52be);
   color: #fff;
 }
 
 .adquirir-precio:hover {
-  background: #1d4ed8;
+  background: #153f94;
   color: #fff;
 }
 
@@ -623,46 +630,46 @@
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda {
-  border: 1px solid #e4d9cc;
-  background: #faf6f1;
-  color: #3c342c;
+  border: 1px solid #dce3ee;
+  background: #ffffff;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda h1,
 html[data-tema='claro'] .sg-landing .pg-tablero h2,
 html[data-tema='claro'] .sg-landing .pg-tablero strong {
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda p,
 html[data-tema='claro'] .sg-landing .pg-tablero li span {
-  color: #6f655c;
+  color: #52627a;
 }
 
 html[data-tema='claro'] .sg-landing .pg-tablero,
 html[data-tema='claro'] .sg-landing .pg-tablero li {
-  border-top-color: #e4d9cc;
+  border-top-color: #dce3ee;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta,
 html[data-tema='claro'] .sg-landing .sl-lado a,
 html[data-tema='claro'] .sg-landing .sl-lado button,
 html[data-tema='claro'] .sg-landing .adquirir-precio {
-  background: #e6d9cc;
-  color: #3c342c;
+  background: #1a52be;
+  color: #ffffff;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover,
 html[data-tema='claro'] .sg-landing .sl-lado a:hover,
 html[data-tema='claro'] .sg-landing .sl-lado button:hover,
 html[data-tema='claro'] .sg-landing .adquirir-precio:hover {
-  background: #d9c9b8;
-  color: #3c342c;
+  background: #153f94;
+  color: #ffffff;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta-secundario {
-  border-color: #d9c9b8;
-  color: #3c342c;
+  border-color: #c9d4e4;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .sl-verde {
