@@ -1,23 +1,23 @@
 .probador {
-  --p-tinta: #1d2b30;
-  --p-suave: #586a6f;
-  --p-linea: #dbe7e6;
+  --p-tinta: #0f1b2d;
+  --p-suave: #52627a;
+  --p-linea: #dce3ee;
   --p-papel: #ffffff;
-  --p-campo: #f7fafa;
-  --p-acento: #0e7c86;
+  --p-campo: #f5f7fb;
+  --p-acento: #1a52be;
   --p-verde: #13795b;
   --p-amarillo: #9a6400;
   --p-rojo: #b42318;
-  --p-gris: #586a6f;
+  --p-gris: #52627a;
 }
 
 html[data-tema='oscuro'] .probador {
   --p-tinta: #f3f4f6;
-  --p-suave: #a6c2c1;
+  --p-suave: #a9b7cc;
   --p-linea: #22314a;
   --p-papel: #111c2e;
   --p-campo: #0a1220;
-  --p-acento: #5cc8cf;
+  --p-acento: #8eb4ff;
   --p-verde: #34d399;
   --p-amarillo: #fbbf24;
   --p-rojo: #f87171;
@@ -29,7 +29,7 @@ html[data-tema='oscuro'] .probador {
   border: 1px solid var(--p-linea);
   border-radius: 14px;
   background: var(--p-papel);
-  box-shadow: 0 24px 48px -28px rgb(29 43 48 / 35%);
+  box-shadow: 0 24px 48px -28px rgb(15 27 45 / 35%);
 }
 
 .probador-titulo {
