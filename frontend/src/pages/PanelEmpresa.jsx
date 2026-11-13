@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { nombreEmpresa } from '../lib/formato.js'
+import FormEmpresa from '../components/FormEmpresa.jsx'
+import { empresaDesdeOrganizacion, validarEmpresa } from '../lib/datosEmpresa.js'
+import { cargarEmpresaGuardada } from '../lib/empresaGuardada.js'
 import { estadoPlan, formatoUsd, puedeActivar } from '../lib/precioPhishguard.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
@@ -52,6 +55,86 @@ function PlanContratado({ plan }) {
       <Link className="panel-plan-accion" to={destino}>
         {plan.lleno || plan.excede ? 'Ampliar el plan' : 'Cambiar la cantidad'}
       </Link>
+    </section>
+  )
+}
+
+function DatosEmpresa({ correo, puedeEditar, alGuardar }) {
+  const [valor, setValor] = useState(null)
+  const [incompleta, setIncompleta] = useState(false)
+  const [abierta, setAbierta] = useState(false)
+  const [errores, setErrores] = useState({})
+  const [guardando, setGuardando] = useState(false)
+  const [aviso, setAviso] = useState(null)
+  const [falla, setFalla] = useState(null)
+
+  useEffect(() => {
+    let activo = true
+    cargarEmpresaGuardada().then(({ organizacion, areas }) => {
+      if (!activo) return
+      const form = empresaDesdeOrganizacion(organizacion, areas, correo)
+      setValor(form)
+      const falta = !organizacion?.tipo_organizacion || !form.nombre_empresa
+      setIncompleta(falta)
+      setAbierta(falta && puedeEditar)
+      alGuardar(form, false)
+    })
+    return () => {
+      activo = false
+    }
+  }, [correo, puedeEditar, alGuardar])
+
+  async function guardar(evento) {
+    evento.preventDefault()
+    setAviso(null)
+    setFalla(null)
+    const revision = validarEmpresa(valor)
+    setErrores(revision.errores)
+    if (!revision.valido) {
+      setFalla('Revisá los datos marcados en rojo.')
+      return
+    }
+    setGuardando(true)
+    const { error } = await supabase.rpc('phishguard_guardar_empresa', { p_datos: revision.datos })
+    setGuardando(false)
+    if (error) {
+      setFalla(error.message || 'No se pudieron guardar los datos.')
+      return
+    }
+    setIncompleta(false)
+    setAviso('Guardamos los datos de la empresa.')
+    alGuardar(valor, true)
+  }
+
+  if (!valor) return null
+
+  return (
+    <section className="panel-seccion panel-datos-empresa">
+      {incompleta && (
+        <p className="panel-aviso" role="status">
+          Faltan los datos de tu empresa. Completalos para que el informe y las
+          simulaciones salgan con el nombre correcto.
+        </p>
+      )}
+      <details open={abierta} onToggle={(evento) => setAbierta(evento.currentTarget.open)}>
+        <summary>
+          <h2>Datos de la empresa</h2>
+        </summary>
+        {puedeEditar ? (
+          <form onSubmit={guardar} noValidate>
+            <FormEmpresa valor={valor} onCambiar={setValor} errores={errores} titulo="Empresa y responsable" />
+            <div className="panel-datos-acciones">
+              <button type="submit" className="panel-boton" disabled={guardando}>
+                {guardando ? 'Guardando…' : 'Guardar los datos'}
+              </button>
+              {aviso && <p className="panel-ok" role="status">{aviso}</p>}
+              {falla && <p className="panel-error" role="alert">{falla}</p>}
+            </div>
+          </form>
+        ) : (
+          <p className="panel-vacio">Solo un administrador de la empresa puede cambiar estos datos.</p>
+        )}
+      </details>
     </section>
   )
 }
@@ -405,6 +488,14 @@ function PanelEmpresa() {
   const [elegidos, setElegidos] = useState([])
   const [resolviendo, setResolviendo] = useState([])
   const [avisoLista, setAvisoLista] = useState(null)
+  const [areasEmpresa, setAreasEmpresa] = useState([])
+
+  const alGuardarEmpresa = useCallback((form, guardado) => {
+    setAreasEmpresa(form.areas.split(',').map((item) => item.trim()).filter(Boolean))
+    if (guardado) {
+      setOrganizacion((previa) => (previa ? { ...previa, nombre_empresa: form.nombre_empresa } : previa))
+    }
+  }, [])
 
   useEffect(() => {
     let activo = true
@@ -556,6 +647,14 @@ function PanelEmpresa() {
 
       {plan && <PlanContratado plan={plan} />}
 
+      {organizacion && !cargandoMembresia && (
+        <DatosEmpresa
+          correo={sesion?.user?.email ?? ''}
+          puedeEditar={esAdministrador(rol)}
+          alGuardar={alGuardarEmpresa}
+        />
+      )}
+
       {error && <p className="panel-error">{error}</p>}
 
       {!organizacion ? (
@@ -594,7 +693,13 @@ function PanelEmpresa() {
                   value={area}
                   onChange={(e) => setArea(e.target.value)}
                   placeholder="General"
+                  list="areas-empresa"
                 />
+                <datalist id="areas-empresa">
+                  {areasEmpresa.map((nombreArea) => (
+                    <option key={nombreArea} value={nombreArea} />
+                  ))}
+                </datalist>
               </label>
               <button type="submit" className="panel-boton">
                 Agregar

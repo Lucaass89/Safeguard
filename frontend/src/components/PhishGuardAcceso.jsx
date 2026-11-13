@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
+import { EMPRESA_VACIA, empresaDesdeOrganizacion, guardarBorrador, leerBorrador, validarEmpresa } from '../lib/datosEmpresa.js'
 import { personasRecordadas, recordarPersonas } from '../lib/planRecordado.js'
 import { formatoPesos, PERSONAS_POR_DEFECTO, precioPhishguard } from '../lib/precioPhishguard.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import ElegirPersonas from './ElegirPersonas.jsx'
+import FormEmpresa from './FormEmpresa.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import '../pages/PhishGuard.css'
@@ -45,6 +47,15 @@ export function PhishGuardPago() {
     () => String(personasRecordadas(usuarioId) ?? PERSONAS_POR_DEFECTO),
   )
   const precio = precioPhishguard(personas)
+  const [empresa, setEmpresa] = useState(
+    () => leerBorrador() ?? empresaDesdeOrganizacion(null, [], sesion?.user?.email ?? ''),
+  )
+  const [erroresEmpresa, setErroresEmpresa] = useState({})
+  const formulario = useRef(null)
+
+  useEffect(() => {
+    guardarBorrador(empresa)
+  }, [empresa])
 
   useEffect(() => {
     if (!usuarioId) return undefined
@@ -84,10 +95,17 @@ export function PhishGuardPago() {
       setError('Elegí cuántas personas va a cubrir el plan, de 1 a 10.000.')
       return
     }
+    const revision = validarEmpresa({ ...EMPRESA_VACIA, ...empresa })
+    setErroresEmpresa(revision.errores)
+    if (!revision.valido) {
+      setError('Revisá los datos de la empresa marcados en rojo.')
+      formulario.current?.querySelector('[aria-invalid="true"]')?.focus()
+      return
+    }
     setEnviando(true)
     recordarPersonas(usuarioId, precio.personas)
     const { data, error: fallo } = await supabase.functions.invoke('phishguard-mercadopago', {
-      body: { accion: 'crear', personas: precio.personas },
+      body: { accion: 'crear', personas: precio.personas, empresa: revision.datos },
     })
     setEnviando(false)
 
@@ -107,6 +125,9 @@ export function PhishGuardPago() {
         SafeLink sigue disponible.
       </p>
       <ElegirPersonas valor={personas} onCambiar={setPersonas} mostrarPesos={false} />
+      <div ref={formulario}>
+        <FormEmpresa valor={empresa} onCambiar={setEmpresa} errores={erroresEmpresa} />
+      </div>
       <p className="phish-pago-monto">{precio ? formatoPesos(precio.totalPesos) : '—'}</p>
       <p>
         Es un pago único en pesos por el primer mes del plan que elegiste. No

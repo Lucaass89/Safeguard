@@ -2495,3 +2495,69 @@ html[data-tema='oscuro'] .panel-plan-lleno {
 html[data-tema='oscuro'] .panel-plan-lleno .panel-plan-barra span {
   background: #f87171;
 }
+
+.panel-datos-empresa details {
+  border: 1px solid var(--sg-line);
+  border-radius: var(--sg-radius-sm);
+  background: var(--sg-surface);
+}
+
+.panel-datos-empresa summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.panel-datos-empresa summary::-webkit-details-marker {
+  display: none;
+}
+
+.panel-datos-empresa summary::after {
+  color: var(--sg-muted);
+  content: '+';
+  font-size: 22px;
+  line-height: 1;
+}
+
+.panel-datos-empresa details[open] summary::after {
+  content: '−';
+}
+
+.panel-datos-empresa summary h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.panel-datos-empresa form {
+  padding: 0 20px 20px;
+}
+
+.panel-datos-empresa .form-empresa {
+  max-width: none;
+  margin-top: 0;
+}
+
+.panel-datos-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.panel-datos-acciones .panel-error {
+  margin: 0;
+}
+
+.panel-ok {
+  margin: 0;
+  color: #13795b;
+  font-weight: 600;
+}
+
+html[data-tema='oscuro'] .panel-ok {
+  color: #34d399;
+}

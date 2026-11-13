@@ -77,6 +77,25 @@ async function usuarioDe(autorizacion: string) {
   return data.user
 }
 
+function clienteAdmin() {
+  const url = Deno.env.get('SUPABASE_URL')
+  const servicio = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!url || !servicio) return null
+  return createClient(url, servicio)
+}
+
+async function guardarSolicitud(usuarioId: string, empresa: unknown) {
+  const admin = clienteAdmin()
+  if (!admin) return { error: 'No se pudieron guardar los datos de la empresa.' }
+  const { data, error } = await admin.rpc('phishguard_empresa_normalizada', { p_datos: empresa })
+  if (error) return { error: error.message || 'Los datos de la empresa no son válidos.' }
+  const { error: errorGuardar } = await admin
+    .from('phishguard_solicitudes')
+    .upsert({ auth_user_id: usuarioId, datos: data, actualizado_en: new Date().toISOString() })
+  if (errorGuardar) return { error: 'No se pudieron guardar los datos de la empresa.' }
+  return { error: null }
+}
+
 async function crearCobro(usuarioId: string, token: string, personas: number, ref: string) {
   const vuelta = `${SITIO}/adquirir/vuelta`
   const monto = precioPesos(personas)
@@ -174,6 +193,13 @@ async function desbloquear(usuarioId: string, pagoMp: string, personas: number, 
   }
 
   const admin = createClient(url, servicio)
+  const { data: solicitud } = await admin
+    .from('phishguard_solicitudes')
+    .select('datos')
+    .eq('auth_user_id', usuarioId)
+    .maybeSingle()
+  const empresa = solicitud?.datos as Record<string, unknown> | undefined
+
   const { data: ya } = await admin
     .from('pagos_phishguard')
     .select('id')
@@ -198,7 +224,8 @@ async function desbloquear(usuarioId: string, pagoMp: string, personas: number, 
     const { data: org, error: errorOrg } = await admin
       .from('organizaciones')
       .insert({
-        nombre_empresa: 'Prueba PhishGuard',
+        nombre_empresa:
+          typeof empresa?.nombre_empresa === 'string' ? empresa.nombre_empresa : 'Prueba PhishGuard',
         plan_id: 'Inicial',
         estado_suscripcion: 'activa',
         usuarios_contratados: personas,
@@ -222,6 +249,16 @@ async function desbloquear(usuarioId: string, pagoMp: string, personas: number, 
       .update({ estado_suscripcion: 'activa', usuarios_contratados: personas })
       .eq('id', organizacionId)
     if (errorEstado) throw new Error('No se pudo abrir PhishGuard.')
+  }
+
+  if (empresa) {
+    const { error: errorEmpresa } = await admin.rpc('phishguard_aplicar_empresa', {
+      p_org: organizacionId,
+      p_datos: empresa,
+    })
+    if (!errorEmpresa) {
+      await admin.from('phishguard_solicitudes').delete().eq('auth_user_id', usuarioId)
+    }
   }
 
   const { error: errorPago } = await admin.from('pagos_phishguard').insert({
@@ -266,7 +303,7 @@ Deno.serve(async (req) => {
     )
   }
 
-  let cuerpo: { accion?: string; pago_id?: string; personas?: unknown } = {}
+  let cuerpo: { accion?: string; pago_id?: string; personas?: unknown; empresa?: unknown } = {}
   try {
     cuerpo = await req.json()
   } catch {
@@ -274,6 +311,10 @@ Deno.serve(async (req) => {
   }
 
   if (cuerpo.accion === 'crear') {
+    if (cuerpo.empresa !== undefined) {
+      const { error } = await guardarSolicitud(usuario.id, cuerpo.empresa)
+      if (error) return json({ error }, 400)
+    }
     if (cuerpo.personas === undefined) {
       return await crearCobro(usuario.id, token, PERSONAS_PRECIO_ANTERIOR, usuario.id)
     }
