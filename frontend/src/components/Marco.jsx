@@ -235,13 +235,6 @@ function Marco({ children, interior = false }) {
 
   return (
     <div className={noche ? 'sg-landing sg-noche' : 'sg-landing'}>
-      <div className="marco-utilidades">
-        <div className="container marco-utilidades-fila">
-          <a href="/safelink.zip" download="safelink.zip">Extensión de Chrome</a>
-          <Link to="/empresas#precios">Precios</Link>
-          <Link to="/contacto">Contacto</Link>
-        </div>
-      </div>
       <header className="site-header">
         <div className="container nav-wrap">
           <div className="nav-inicio">
@@ -327,34 +320,18 @@ function Marco({ children, interior = false }) {
 
       {interior ? <div className="pagina-interior">{children}</div> : children}
 
-      <footer className="site-footer marco-pie">
-        <div className="container marco-pie-grilla">
-          <div>
-            <Link to="/" aria-label="SafeGuard, inicio">
-              <Marca />
-            </Link>
-            <p>SafeGuard no reemplaza al antivirus ni al firewall: protege el eslabón humano.</p>
-          </div>
-          <nav aria-label="Productos">
-            <h2>Productos</h2>
-            <Link to="/empresas">PhishGuard</Link>
-            <Link to="/personas">SafeLink</Link>
-            <a href="/safelink.zip" download="safelink.zip">Extensión de Chrome</a>
-          </nav>
-          <nav aria-label="Cuenta">
-            <h2>Cuenta</h2>
-            <Link to={conSesion ? '/panel' : '/ingresar'}>{conSesion ? 'Mi panel' : 'Ingresar'}</Link>
-            <Link to="/empresas#precios">Precios</Link>
-            <Link to="/contacto">Contacto</Link>
-          </nav>
-          <nav aria-label="Legales">
-            <h2>Legales</h2>
+      <footer className="site-footer">
+        <div className="container footer-wrap">
+          <Link to="/" aria-label="SafeGuard, inicio">
+            <Marca />
+          </Link>
+          <p>La seguridad empieza con una mejor decisión.</p>
+          <div className="footer-links">
             <Link to="/terminos">Términos y condiciones</Link>
             <Link to="/privacidad">Privacidad</Link>
-          </nav>
-        </div>
-        <div className="container marco-pie-final">
-          <small>© 2026 SafeGuard. Trabajo final de Analista de Sistemas.</small>
+            <Link to="/contacto">Contacto</Link>
+          </div>
+          <small>© 2026 SafeGuard</small>
         </div>
       </footer>
     </div>

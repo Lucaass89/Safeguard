@@ -635,15 +635,15 @@
   gap: 8px;
   width: fit-content;
   padding: 8px 12px;
-  border: 1px solid #dbe7e6;
+  border: 1px solid #dce3ee;
   border-radius: 6px;
   background: #fff;
   color: #102a43;
 }
 
 .check-empleado:has(input:checked) {
-  border-color: #0e7c86;
-  background: #e3f2f1;
+  border-color: #1a52be;
+  background: #e7f0ff;
 }
 
 .panel-empresas fieldset.panel-campo {
@@ -672,7 +672,7 @@
   width: 96px;
   min-height: 44px;
   padding: 0 12px;
-  border: 1px solid #dbe7e6;
+  border: 1px solid #dce3ee;
   border-radius: 6px;
   background: #fff;
   color: #102a43;
@@ -1278,8 +1278,8 @@ table.persona-tabla td:first-child,
   height: 34px;
   justify-self: end;
   border-radius: 999px;
-  background: #e3f2f1;
-  color: #0e7c86;
+  background: #e7f0ff;
+  color: #1a52be;
 }
 
 .mesa-hoja a:hover {
@@ -1297,18 +1297,18 @@ table.persona-tabla td:first-child,
 }
 
 .sg-landing .panel-lienzo {
-  --sg-bg: #f7fafa;
+  --sg-bg: #f5f7fb;
   --sg-surface: #ffffff;
-  --sg-text: #1d2b30;
-  --sg-muted: #586a6f;
-  --sg-line: #dbe7e6;
-  --sg-teal: #2b8d95;
-  --sg-blue: #0e7c86;
+  --sg-text: #0f1b2d;
+  --sg-muted: #52627a;
+  --sg-line: #dce3ee;
+  --sg-teal: #3d68c4;
+  --sg-blue: #1a52be;
   --sg-green: #3f9a78;
   --sg-yellow: #b0893e;
   --sg-red: #c46b62;
-  --sg-accent: #0e7c86;
-  color: #1d2b30;
+  --sg-accent: #1a52be;
+  color: #0f1b2d;
 }
 
 .sg-landing .panel-lienzo .panel-header h1,
@@ -1316,7 +1316,7 @@ table.persona-tabla td:first-child,
   font-family: Archivo, var(--sg-sans);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #1d2b30;
+  color: #0f1b2d;
   line-height: 1.15;
 }
 
@@ -1368,7 +1368,7 @@ table.persona-tabla td:first-child,
 .panel-empresas .panel-campo textarea,
 .panel-empresas .panel-campo select {
   padding: 14px 16px;
-  border-color: #dbe7e6;
+  border-color: #dce3ee;
   border-radius: 6px;
   background: #fff;
 }
@@ -1756,7 +1756,7 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .panel-boton,
 .sg-landing .panel-lienzo a.panel-boton {
-  background: #0e7c86;
+  background: #1a52be;
   color: #ffffff;
 }
 
@@ -1765,8 +1765,8 @@ table.persona-tabla td:first-child,
 .sg-landing .panel-lienzo .panel-boton:focus-visible:not(:disabled) {
   background: #f3e9dc;
   box-shadow:
-    0 0 0 1px color-mix(in srgb, #a6c2c1 55%, transparent),
-    0 8px 20px rgb(29 43 48 / 14%);
+    0 0 0 1px color-mix(in srgb, #a9b7cc 55%, transparent),
+    0 8px 20px rgb(15 27 45 / 14%);
 }
 
 .sg-landing .panel-lienzo .panel-boton-borde {
@@ -1777,7 +1777,7 @@ table.persona-tabla td:first-child,
 
 .sg-landing .panel-lienzo .panel-boton-borde:hover:not(:disabled),
 .sg-landing .panel-lienzo .panel-boton-borde:focus-visible:not(:disabled) {
-  border-color: #5cc8cf;
+  border-color: #8eb4ff;
   background: #f4f8ff;
   box-shadow: 0 0 18px rgb(142 180 255 / 35%);
 }
@@ -1896,7 +1896,7 @@ table.persona-tabla td:first-child,
   }
 
   .mesa-grupos .panel-empresas {
-    border-top: 3px solid #0e7c86;
+    border-top: 3px solid #1a52be;
   }
 
   .mesa-grupos section:only-child {
@@ -2377,7 +2377,7 @@ html[data-tema='claro'] .check-empleado:has(input:checked) {
 
 html[data-tema='claro'] .mesa-hoja a span:last-child {
   background: #ffffff;
-  color: #0e7c86;
+  color: #1a52be;
 }
 
 html[data-tema='claro'] .mesa-grupos .panel-empresas {
@@ -2393,8 +2393,8 @@ html[data-tema='claro'] .panel-empresas .panel-campo input,
 html[data-tema='claro'] .panel-empresas .panel-campo textarea,
 html[data-tema='claro'] .panel-empresas .panel-campo select {
   background: #ffffff;
-  color: #1d2b30;
-  border-color: #dbe7e6;
+  color: #0f1b2d;
+  border-color: #dce3ee;
 }
 
 
@@ -2442,13 +2442,13 @@ html[data-tema='oscuro'] .panel-plan-excede {
   margin-top: 12px;
   padding: 0 16px;
   border-radius: 6px;
-  background: #0e7c86;
+  background: #1a52be;
   color: #ffffff;
   font-weight: 600;
 }
 
 .panel-plan-accion:hover {
-  background: #0a646c;
+  background: #153f94;
 }
 
 .panel-plan .panel-plan-cuenta {

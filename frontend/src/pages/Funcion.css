@@ -6,7 +6,7 @@
   --fn-suave: var(--sg-muted, #9ca3af);
   --fn-borde: var(--sg-line, #26334d);
   --fn-fondo: var(--sg-surface, #131a26);
-  --fn-acento: var(--sg-accent, #0e7c86);
+  --fn-acento: var(--sg-accent, #1a52be);
 
   padding-block: 8px 72px;
   color: var(--fn-texto);
