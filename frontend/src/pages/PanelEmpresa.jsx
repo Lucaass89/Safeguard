@@ -4,10 +4,43 @@ import { rutaEnApp } from '../lib/esAppNativa.js'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { nombreEmpresa } from '../lib/formato.js'
+import { estadoPlan, formatoUsd } from '../lib/precioPhishguard.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
+
+function PlanContratado({ organizacion, empleados }) {
+  const plan = estadoPlan(organizacion.usuarios_contratados, empleados)
+  const destino = `/adquirir?personas=${plan.sugerido}`
+
+  return (
+    <section className={plan.excede ? 'panel-plan panel-plan-excede' : 'panel-plan'} aria-labelledby="panel-plan-titulo">
+      <h2 id="panel-plan-titulo">Tu plan</h2>
+      {plan.contratados ? (
+        <p>
+          PhishGuard para <strong>{plan.contratados} {plan.contratados === 1 ? 'persona' : 'personas'}</strong>,{' '}
+          {formatoUsd(plan.precio.totalUsd)} por mes. Hay {plan.activos}{' '}
+          {plan.activos === 1 ? 'persona activa' : 'personas activas'}.
+        </p>
+      ) : (
+        <p>
+          Tu plan todavía no tiene una cantidad de personas. Hay {plan.activos}{' '}
+          {plan.activos === 1 ? 'persona activa' : 'personas activas'}.
+        </p>
+      )}
+      {plan.excede && (
+        <p className="panel-plan-aviso" role="status">
+          Tenés más personas activas que las del plan. Ampliá el plan a {plan.sugerido} personas
+          para cubrirlas a todas.
+        </p>
+      )}
+      <Link className="panel-plan-accion" to={destino}>
+        {plan.excede ? `Ampliar a ${plan.sugerido} personas` : plan.contratados ? 'Cambiar la cantidad' : 'Elegir la cantidad'}
+      </Link>
+    </section>
+  )
+}
 
 async function cargar() {
   const { data: orgs, error: falloOrg } = await supabase
@@ -19,8 +52,15 @@ async function cargar() {
     return { organizacion: null, empleados: [], error: falloOrg.message }
   }
 
-  const org = orgs?.[0] ?? null
-  if (!org) return { organizacion: null, empleados: [], error: null }
+  const primera = orgs?.[0] ?? null
+  if (!primera) return { organizacion: null, empleados: [], error: null }
+
+  const { data: cupo } = await supabase
+    .from('organizaciones')
+    .select('usuarios_contratados')
+    .eq('id', primera.id)
+    .maybeSingle()
+  const org = { ...primera, usuarios_contratados: cupo?.usuarios_contratados ?? null }
 
   const { data: personas, error: falloEmp } = await supabase
     .from('empleados')
@@ -467,10 +507,12 @@ function PanelEmpresa() {
         <h1>{organizacion ? nombreEmpresa(organizacion.nombre_empresa) : 'PhishGuard es pago'}</h1>
         <p className="panel-lead">
           {organizacion
-            ? `Plan ${organizacion.plan_id}. Acá cargás a la gente que va a recibir las simulaciones.`
+            ? 'Acá cargás a la gente que va a recibir las simulaciones.'
             : 'Esta cuenta no tiene el plan activo. SafeLink sigue disponible.'}
         </p>
       </header>
+
+      {organizacion && <PlanContratado organizacion={organizacion} empleados={empleados} />}
 
       {error && <p className="panel-error">{error}</p>}
 

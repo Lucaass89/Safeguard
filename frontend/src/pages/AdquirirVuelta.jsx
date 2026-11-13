@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import Marco from '../components/Marco.jsx'
+import { personasRecordadas } from '../lib/planRecordado.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Modulo.css'
@@ -19,7 +20,7 @@ function AdquirirVuelta() {
     let activo = true
     const pedido = /^\d{1,20}$/.test(pagoId)
       ? { accion: 'confirmar', pago_id: pagoId }
-      : { accion: 'verificar' }
+      : { accion: 'verificar', personas: personasRecordadas(sesion.user.id) }
     supabase.functions
       .invoke('phishguard-mercadopago', { body: pedido })
       .then(({ data, error: fallo }) => {

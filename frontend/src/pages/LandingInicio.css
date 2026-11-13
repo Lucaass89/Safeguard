@@ -4,12 +4,12 @@
   --sg-text: #f4f7fb;
   --sg-muted: #93a0b3;
   --sg-line: #1e2a3a;
-  --sg-blue: #2563eb;
+  --sg-blue: #1a52be;
   --sg-magenta: #60a5fa;
   --sg-teal: #22d3ee;
   --sg-accent: var(--sg-blue);
-  --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
-  --sg-serif: Inter, system-ui, sans-serif;
+  --sg-sans: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sg-serif: Archivo, system-ui, sans-serif;
   --sg-mono: 'JetBrains Mono', ui-monospace, monospace;
   --sg-ease: 200ms ease;
 
@@ -276,7 +276,7 @@
   min-height: 44px;
   padding: 0 18px;
   border-radius: 999px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
   font-size: 15px;
   font-weight: 600;
@@ -285,7 +285,7 @@
 }
 
 .landing-puertas .header-cta:hover {
-  background: #1d4ed8;
+  background: #153f94;
   color: #ffffff;
 }
 
@@ -337,7 +337,7 @@
   padding: 10px 20px;
   border: 1px solid transparent;
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
   font: inherit;
   font-size: 14px;
@@ -359,7 +359,7 @@
 .landing-puertas .door-empresas .door-cta:hover,
 .landing-puertas .banda .door-cta:hover,
 .landing-puertas .portal .door-cta:hover {
-  background: #1d4ed8;
+  background: #153f94;
   color: #ffffff;
 }
 
@@ -638,8 +638,8 @@
   margin-top: 14px;
   border-radius: 8px;
   background:
-    linear-gradient(#1d4ed8, #1d4ed8) 10% 100% / 9% 42% no-repeat,
-    linear-gradient(#2563eb, #2563eb) 26% 100% / 9% 68% no-repeat,
+    linear-gradient(#153f94, #153f94) 10% 100% / 9% 42% no-repeat,
+    linear-gradient(#1a52be, #1a52be) 26% 100% / 9% 68% no-repeat,
     linear-gradient(#3b82f6, #3b82f6) 42% 100% / 9% 52% no-repeat,
     linear-gradient(#60a5fa, #60a5fa) 58% 100% / 9% 86% no-repeat,
     linear-gradient(#22d3ee, #22d3ee) 74% 100% / 9% 60% no-repeat,
@@ -1051,26 +1051,26 @@
 }
 
 html[data-tema='claro'] .landing-puertas {
-  --sg-bg: #f3eee6;
-  --sg-surface: #faf6f1;
-  --sg-text: #3c342c;
-  --sg-muted: #6f655c;
-  --sg-line: #e4d9cc;
-  --sg-blue: #7a6552;
-  --sg-magenta: #7a6552;
-  --sg-teal: #8a7564;
-  --sg-accent: #7a6552;
-  color: #3c342c;
+  --sg-bg: #f5f7fb;
+  --sg-surface: #ffffff;
+  --sg-text: #0f1b2d;
+  --sg-muted: #52627a;
+  --sg-line: #dce3ee;
+  --sg-blue: #1a52be;
+  --sg-magenta: #1a52be;
+  --sg-teal: #3d68c4;
+  --sg-accent: #1a52be;
+  color: #0f1b2d;
   color-scheme: light;
   background:
-    radial-gradient(ellipse 36% 28% at 8% 38%, rgb(220 200 180 / 40%), transparent 64%),
-    radial-gradient(ellipse 32% 22% at 82% 4%, rgb(210 190 170 / 35%), transparent 70%),
+    radial-gradient(ellipse 36% 28% at 8% 38%, rgb(30 142 212 / 10%), transparent 64%),
+    radial-gradient(ellipse 32% 22% at 82% 4%, rgb(26 82 190 / 9%), transparent 70%),
     var(--sg-bg);
 }
 
 html[data-tema='claro'] .landing-puertas .header {
-  border-bottom-color: #e4d9cc;
-  background: rgb(243 238 230 / 92%);
+  border-bottom-color: #dce3ee;
+  background: rgb(245 247 251 / 92%);
 }
 
 html[data-tema='claro'] .landing-puertas .header-nav a,
@@ -1083,7 +1083,7 @@ html[data-tema='claro'] .landing-puertas .pasos p,
 html[data-tema='claro'] .landing-puertas .banda-texto p,
 html[data-tema='claro'] .landing-puertas .portal p,
 html[data-tema='claro'] .landing-puertas .footer {
-  color: #6f655c;
+  color: #52627a;
 }
 
 html[data-tema='claro'] .landing-puertas .header-nav a:hover,
@@ -1099,24 +1099,24 @@ html[data-tema='claro'] .landing-puertas .portal h2,
 html[data-tema='claro'] .landing-puertas .door-title,
 html[data-tema='claro'] .landing-puertas .tablero h3,
 html[data-tema='claro'] .landing-puertas .tablero strong {
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .hero h1 span,
 html[data-tema='claro'] .landing-puertas .ceja,
 html[data-tema='claro'] .landing-puertas .brand-mark,
 html[data-tema='claro'] .landing-puertas .tarjeta-icono {
-  color: #7a6552;
+  color: #1a52be;
 }
 
 html[data-tema='claro'] .landing-puertas .brand-safe,
 html[data-tema='claro'] .landing-puertas .brand:hover .brand-safe {
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .brand-guard,
 html[data-tema='claro'] .landing-puertas .brand:hover .brand-guard {
-  color: #1d4ed8;
+  color: #153f94;
 }
 
 html[data-tema='claro'] .landing-puertas .hero-shield svg {
@@ -1124,79 +1124,79 @@ html[data-tema='claro'] .landing-puertas .hero-shield svg {
 }
 
 html[data-tema='claro'] .landing-puertas .tema-icono {
-  border-color: #e4d9cc;
-  color: #6f655c;
+  border-color: #dce3ee;
+  color: #52627a;
 }
 
 html[data-tema='claro'] .landing-puertas .tema-icono:hover {
-  border-color: #d9c9b8;
-  background: #e6d9cc;
-  color: #3c342c;
+  border-color: #c9d4e4;
+  background: #e8eefa;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .tema-icono:focus-visible {
-  outline-color: #7a6552;
+  outline-color: #1a52be;
 }
 
 html[data-tema='claro'] .landing-puertas .header-nav > a,
 html[data-tema='claro'] .landing-puertas .header-menu-disparador {
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .header-nav > a:hover,
 html[data-tema='claro'] .landing-puertas .header-menu-disparador:hover,
 html[data-tema='claro'] .landing-puertas .header-activo {
-  background: #e7ddd2;
-  color: #3c342c;
+  background: #e8eefa;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .header-menu-panel {
-  border-color: #e4d9cc;
-  background: #faf6f1;
-  box-shadow: 0 16px 36px rgb(60 52 44 / 12%);
+  border-color: #dce3ee;
+  background: #ffffff;
+  box-shadow: 0 16px 36px rgb(15 27 45 / 12%);
 }
 
 html[data-tema='claro'] .landing-puertas .header-menu-panel a {
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .header-menu-panel strong + span {
-  color: #4a433c;
+  color: #2b3a52;
 }
 
 html[data-tema='claro'] .landing-puertas .header-menu-icono {
-  background: #f3eee6;
-  color: #7a6552;
+  background: #f5f7fb;
+  color: #1a52be;
 }
 
 html[data-tema='claro'] .landing-puertas .header-cta,
 html[data-tema='claro'] .landing-puertas .header-cta:hover {
-  background: #2563eb;
+  background: #1a52be;
   color: #ffffff;
 }
 
 html[data-tema='claro'] .landing-puertas .header-cta:hover {
-  background: #1d4ed8;
+  background: #153f94;
 }
 
 html[data-tema='claro'] .landing-puertas .header .tema-icono,
 html[data-tema='claro'] .landing-puertas .header .tema-icono:hover {
   border-color: transparent;
   background: transparent;
-  color: #4a433c;
+  color: #2b3a52;
 }
 
 html[data-tema='claro'] .landing-puertas .header-hamburguesa {
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .header-baja {
-  box-shadow: 0 8px 24px rgb(60 52 44 / 8%);
+  box-shadow: 0 8px 24px rgb(15 27 45 / 8%);
 }
 
 html[data-tema='claro'] .landing-puertas .header-nav.header-nav-abierta {
-  border-bottom-color: #e4d9cc;
-  background: #f3eee6;
+  border-bottom-color: #dce3ee;
+  background: #f5f7fb;
 }
 
 html[data-tema='claro'] .landing-puertas .login-link,
@@ -1204,8 +1204,8 @@ html[data-tema='claro'] .landing-puertas .door-cta,
 html[data-tema='claro'] .landing-puertas .door-empresas .door-cta:hover,
 html[data-tema='claro'] .landing-puertas .banda .door-cta:hover,
 html[data-tema='claro'] .landing-puertas .portal .door-cta:hover {
-  background: #e6d9cc;
-  color: #3c342c;
+  background: #1a52be;
+  color: #ffffff;
 }
 
 html[data-tema='claro'] .landing-puertas .door-cta-ghost,
@@ -1214,9 +1214,9 @@ html[data-tema='claro'] .landing-puertas .door-cta-ghost:hover,
 html[data-tema='claro'] .landing-puertas .door-personas .door-cta:hover,
 html[data-tema='claro'] .landing-puertas .banda .door-cta-ghost:hover,
 html[data-tema='claro'] .landing-puertas .hero-acciones .door-cta-ghost:hover {
-  border-color: #d9c9b8;
+  border-color: #c9d4e4;
   background: transparent;
-  color: #3c342c;
+  color: #0f1b2d;
 }
 
 html[data-tema='claro'] .landing-puertas .pilares article,
@@ -1227,48 +1227,272 @@ html[data-tema='claro'] .landing-puertas .tablero,
 html[data-tema='claro'] .landing-puertas .banda,
 html[data-tema='claro'] .landing-puertas .banda-inversa,
 html[data-tema='claro'] .landing-puertas .door {
-  border-color: #e4d9cc;
-  background: #faf6f1;
+  border-color: #dce3ee;
+  background: #ffffff;
 }
 
 html[data-tema='claro'] .landing-puertas .accesos a:hover,
 html[data-tema='claro'] .landing-puertas .pilares article:hover,
 html[data-tema='claro'] .landing-puertas .lugares article:hover {
-  border-color: #d4c4b0;
+  border-color: #c3cede;
 }
 
 html[data-tema='claro'] .landing-puertas .tablero li {
-  background: #f3eee6;
+  background: #f5f7fb;
 }
 
 html[data-tema='claro'] .landing-puertas .tablero li span,
 html[data-tema='claro'] .landing-puertas .tablero > p,
 html[data-tema='claro'] .landing-puertas .door-meta {
-  color: #6f655c;
+  color: #52627a;
 }
 
 html[data-tema='claro'] .landing-puertas .tablero h3::after {
   background:
-    linear-gradient(#d9c9b8, #d9c9b8) 10% 100% / 9% 42% no-repeat,
-    linear-gradient(#cbb59e, #cbb59e) 26% 100% / 9% 68% no-repeat,
-    linear-gradient(#ddcfc0, #ddcfc0) 42% 100% / 9% 52% no-repeat,
-    linear-gradient(#b9a48c, #b9a48c) 58% 100% / 9% 86% no-repeat,
-    linear-gradient(#c4b09a, #c4b09a) 74% 100% / 9% 60% no-repeat,
-    #f3eee6;
+    linear-gradient(#c9d4e4, #c9d4e4) 10% 100% / 9% 42% no-repeat,
+    linear-gradient(#b3c0d3, #b3c0d3) 26% 100% / 9% 68% no-repeat,
+    linear-gradient(#d3dbe7, #d3dbe7) 42% 100% / 9% 52% no-repeat,
+    linear-gradient(#9aa9bf, #9aa9bf) 58% 100% / 9% 86% no-repeat,
+    linear-gradient(#a9b7cc, #a9b7cc) 74% 100% / 9% 60% no-repeat,
+    #f5f7fb;
 }
 
 html[data-tema='claro'] .landing-puertas .pasos li::after {
-  background: radial-gradient(ellipse at center, rgb(200 180 160 / 40%), transparent 72%);
+  background: radial-gradient(ellipse at center, rgb(26 82 190 / 14%), transparent 72%);
 }
 
-html[data-tema='claro'] .landing-puertas .door-empresas { --door-accent: #7a6552; }
-html[data-tema='claro'] .landing-puertas .door-personas { --door-accent: #c4b09a; }
+html[data-tema='claro'] .landing-puertas .door-empresas { --door-accent: #1a52be; }
+html[data-tema='claro'] .landing-puertas .door-personas { --door-accent: #a9b7cc; }
 
 html[data-tema='claro'] .landing-puertas .footer {
-  border-top-color: #e4d9cc;
-  background: #f3eee6;
+  border-top-color: #dce3ee;
+  background: #f5f7fb;
 }
 
 html[data-tema='claro'] .landing-puertas :focus-visible {
-  outline-color: #7a6552;
+  outline-color: #1a52be;
+}
+
+html[data-tema='claro'] .landing-puertas .portal {
+  border-color: #0f1b2d;
+  background: linear-gradient(135deg, #0f1b2d 0%, #13306b 100%);
+  box-shadow: 0 18px 40px -18px rgb(15 27 45 / 45%);
+}
+
+html[data-tema='claro'] .landing-puertas .portal h2 {
+  color: #ffffff;
+}
+
+html[data-tema='claro'] .landing-puertas .portal p {
+  color: #c3cede;
+}
+
+html[data-tema='claro'] .landing-puertas .portal .ceja {
+  color: #8eb4ff;
+}
+
+html[data-tema='claro'] .landing-puertas .portal .door-cta,
+html[data-tema='claro'] .landing-puertas .portal .door-cta:hover {
+  background: #ffffff;
+  color: #1a52be;
+}
+
+html[data-tema='claro'] .landing-puertas .portal .door-cta:hover {
+  background: #e8eefa;
+}
+
+.landing-puertas {
+  --p-tinta: #f3f4f6;
+  --p-suave: #a9b7cc;
+  --p-linea: #22314a;
+  --p-papel: #111c2e;
+  --p-campo: #0a1220;
+  --p-acento: #8eb4ff;
+  --p-verde: #34d399;
+  --p-amarillo: #fbbf24;
+  --p-rojo: #f87171;
+  --p-gris: #93a3ba;
+}
+
+html[data-tema='claro'] .landing-puertas {
+  --p-tinta: #0f1b2d;
+  --p-suave: #52627a;
+  --p-linea: #dce3ee;
+  --p-papel: #ffffff;
+  --p-campo: #f5f7fb;
+  --p-acento: #1a52be;
+  --p-verde: #13795b;
+  --p-amarillo: #9a6400;
+  --p-rojo: #b42318;
+  --p-gris: #52627a;
+}
+
+html[data-tema] .landing-puertas .hero {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: 56px;
+  margin-bottom: 88px;
+  padding-block: 56px 8px;
+  perspective: none;
+}
+
+html[data-tema] .landing-puertas .hero h1 {
+  max-width: 13ch;
+  color: var(--p-tinta);
+  font-size: clamp(40px, 5.4vw, 64px);
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+html[data-tema] .landing-puertas .hero-text {
+  max-width: 34em;
+  margin-top: 24px;
+  color: var(--p-suave);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+html[data-tema] .landing-puertas .door-cta::after {
+  content: none;
+}
+
+html[data-tema] .landing-puertas .door-cta {
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+html[data-tema] .landing-puertas .bloque-cabeza h2,
+html[data-tema] .landing-puertas .banda h2,
+html[data-tema] .landing-puertas .portal h2 {
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+html[data-tema] .landing-puertas .lugares-grilla {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 48px;
+  border-top: 1px solid var(--p-linea);
+}
+
+html[data-tema] .landing-puertas .lugares article,
+html[data-tema] .landing-puertas .lugares article:hover {
+  padding: 22px 0;
+  border: 0;
+  border-bottom: 1px solid var(--p-linea);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  html[data-tema] .landing-puertas .hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 32px;
+  }
+
+  html[data-tema] .landing-puertas .hero h1,
+  html[data-tema] .landing-puertas .hero-text {
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  html[data-tema] .landing-puertas .hero h1 {
+    font-size: clamp(36px, 10vw, 44px);
+  }
+
+  html[data-tema] .landing-puertas .lugares-grilla {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[data-tema] .landing-puertas .luz {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 0;
+  border-left: 4px solid var(--luz-tono);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--luz-tono) 9%, transparent);
+  box-shadow: none;
+  color: var(--luz-tono);
+}
+
+html[data-tema] .landing-puertas .luz::before {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  margin-top: 1px;
+}
+
+html[data-tema] .landing-puertas .luz h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+html[data-tema] .landing-puertas .luz p {
+  margin-top: 2px;
+  color: var(--p-tinta);
+  font-family: var(--sg-sans);
+  font-size: 15px;
+}
+
+.landing-puertas .luz-verde { --luz-tono: var(--p-verde); }
+.landing-puertas .luz-amarillo { --luz-tono: var(--p-amarillo); }
+.landing-puertas .luz-rojo { --luz-tono: var(--p-rojo); }
+
+html[data-tema] .landing-puertas .pasos ol {
+  gap: 0 32px;
+}
+
+html[data-tema] .landing-puertas .pasos li {
+  padding: 20px 0 0;
+  border: 0;
+  border-top: 2px solid var(--p-tinta);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+html[data-tema] .landing-puertas .pasos li::after,
+html[data-tema] .landing-puertas .paso-icono {
+  display: none;
+}
+
+html[data-tema] .landing-puertas .paso-cabeza {
+  margin-bottom: 10px;
+}
+
+html[data-tema] .landing-puertas .pasos li span {
+  color: var(--p-acento);
+  font-size: 30px;
+  font-stretch: 112%;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  html[data-tema] .landing-puertas .accesos-grilla {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  html[data-tema] .landing-puertas .accesos a {
+    padding: 16px;
+  }
+
+  html[data-tema] .landing-puertas .pasos ol {
+    gap: 28px;
+  }
 }

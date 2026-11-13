@@ -1,11 +1,11 @@
 html[data-tema='claro'] {
-  --sg-bg: #f3eee6;
-  --sg-surface: #faf6f1;
-  --sg-text: #3c342c;
-  --sg-muted: #6f655c;
-  --sg-line: #e4d9cc;
-  --sg-blue: #7a6552;
-  --sg-accent: #7a6552;
+  --sg-bg: #f5f7fb;
+  --sg-surface: #ffffff;
+  --sg-text: #0f1b2d;
+  --sg-muted: #52627a;
+  --sg-line: #dce3ee;
+  --sg-blue: #1a52be;
+  --sg-accent: #1a52be;
   color-scheme: light;
 }
 
@@ -15,7 +15,7 @@ html[data-tema='oscuro'] {
   --sg-text: #f3f4f6;
   --sg-muted: #9ca3af;
   --sg-line: #26334d;
-  --sg-accent: #2563eb;
+  --sg-accent: #1a52be;
   color-scheme: dark;
   background: #0b0f17;
 }
@@ -25,15 +25,15 @@ html[data-tema='oscuro'] {
   flex-shrink: 0;
   margin-left: auto;
   padding: 3px;
-  border: 1px solid #e4d9cc;
+  border: 1px solid #dce3ee;
   border-radius: 6px;
-  background: #faf6f1;
+  background: #ffffff;
 }
 
 .tema-control button {
   border: 0;
   background: transparent;
-  color: #6f655c;
+  color: #52627a;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -43,12 +43,12 @@ html[data-tema='oscuro'] {
 }
 
 .tema-control button[aria-pressed='true'] {
-  background: #e6d9cc;
-  color: #3c342c;
+  background: #e8eefa;
+  color: #0f1b2d;
 }
 
 .tema-control button:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid #1a52be;
   outline-offset: 2px;
 }
 

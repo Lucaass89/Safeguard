@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
+import ElegirPersonas from '../components/ElegirPersonas.jsx'
 import Marco from '../components/Marco.jsx'
+import { PERSONAS_POR_DEFECTO, precioPhishguard, TRAMOS } from '../lib/precioPhishguard.js'
 import { pasosCampana } from '../lib/pasosCampana.js'
 import './Modulo.css'
 
@@ -21,6 +24,10 @@ const precios = [
 ]
 
 function Empresas() {
+  const [personas, setPersonas] = useState(String(PERSONAS_POR_DEFECTO))
+  const precio = precioPhishguard(personas)
+  const destino = `/adquirir?personas=${precio ? precio.personas : PERSONAS_POR_DEFECTO}`
+
   return (
     <Marco interior>
       <div className="container pg">
@@ -88,13 +95,12 @@ function Empresas() {
           <h2>Precio por persona, por mes</h2>
           <p className="pg-precio-regla">
             Todos los usuarios pagan la tarifa del tramo en el que cae la
-            organización. Facturación mensual, cancelable. Sin contrato anual.
-            Cargo mínimo de USD 25 por mes. Pago anual opcional: 15% de
-            descuento.
+            organización, con un mínimo de USD 25 por mes. No hay suscripción
+            automática ni pago anual.
           </p>
           <ul className="pg-precios">
-            {precios.map(([rango, valor]) => (
-              <li key={rango}>
+            {precios.map(([rango, valor], i) => (
+              <li key={rango} className={precio?.tramo === TRAMOS[i] ? 'pg-precio-activo' : undefined}>
                 <strong>
                   <small>USD</small> {valor}
                 </strong>
@@ -102,22 +108,19 @@ function Empresas() {
               </li>
             ))}
           </ul>
-          <p className="pg-precio-nota">
-            Con 10 usuarios, el mínimo de USD 25 aplica (USD 2,50 por persona).
-          </p>
-          <p className="pg-precio-nota">
-            Con 150 usuarios, la organización cae en 101 a 300: los 150 pagan
-            USD 0,85, o sea USD 127,50 al mes.
-          </p>
-          <p className="pg-precio-nota">
-            Con 100 usuarios pagás USD 100; con 101, USD 85,85.
+          <h3 className="pg-calcular">Calculá cuánto pagás</h3>
+          <ElegirPersonas valor={personas} onCambiar={setPersonas} />
+          <p className="pg-precio-pago">
+            Mercado Pago cobra en pesos el primer mes del plan que elegís, con
+            USD 1 = $ 1.500, en un pago único. Con ese pago se desbloquea
+            PhishGuard en tu cuenta.
           </p>
           <p className="pg-precio-nota">
             Al adquirir PhishGuard aceptás los{' '}
             <Link to="/terminos">términos y condiciones de servicio</Link>. El
             ejercicio es de capacitación: los resultados no se usan para sancionar.
           </p>
-          <Link className="pg-cta adquirir-precio" to="/adquirir">
+          <Link className="pg-cta adquirir-precio" to={destino}>
             Adquirir PhishGuard
           </Link>
         </section>

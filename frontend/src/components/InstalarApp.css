@@ -62,16 +62,16 @@ body:has(.landing-puertas) .instalar-app {
 }
 
 html[data-tema='claro'] .instalar-app-si {
-  background: #e6d9cc;
-  color: #3c342c;
+  background: #1a52be;
+  color: #ffffff;
 }
 
 html[data-tema='claro'] .instalar-app-si:hover {
-  background: #d9c9b8;
+  background: #c9d4e4;
 }
 
 html[data-tema='claro'] body:has(.landing-puertas) .instalar-app {
-  border-top-color: #e4d9cc;
-  background: #faf6f1;
-  color: #3c342c;
+  border-top-color: #dce3ee;
+  background: #ffffff;
+  color: #0f1b2d;
 }

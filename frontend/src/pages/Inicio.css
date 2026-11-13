@@ -1,7 +1,7 @@
 .inicio {
-  --inicio-secundario: #4a433c;
-  --inicio-boton: #3c342c;
-  --inicio-boton-texto: #faf6f1;
+  --inicio-secundario: #2b3a52;
+  --inicio-boton: #0f1b2d;
+  --inicio-boton-texto: #ffffff;
   display: grid;
   gap: 20px;
   width: 100%;
@@ -12,7 +12,7 @@
 
 html[data-tema='oscuro'] .inicio {
   --inicio-secundario: #d5deea;
-  --inicio-boton: #2563eb;
+  --inicio-boton: #1a52be;
   --inicio-boton-texto: #ffffff;
 }
 
@@ -83,7 +83,7 @@ html[data-tema='oscuro'] .inicio {
 }
 
 html[data-tema='claro'] .inicio-campo {
-  box-shadow: 0 8px 24px rgb(60 52 44 / 9%);
+  box-shadow: 0 8px 24px rgb(15 27 45 / 9%);
 }
 
 .inicio-campo:focus-within {

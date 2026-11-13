@@ -1,5 +1,5 @@
 .app-shell {
-  --sg-sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sg-sans: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 
   display: flex;
   flex-direction: column;
@@ -15,7 +15,7 @@ html[data-tema='oscuro'] .app-shell {
   --sg-text: #f3f4f6;
   --sg-muted: #9ca3af;
   --sg-line: #26334d;
-  --sg-blue: #2563eb;
+  --sg-blue: #1a52be;
   --sg-accent: var(--sg-blue);
   --sg-enlace: #8fb2ff;
   --sg-texto-2: #d5deea;
@@ -24,16 +24,16 @@ html[data-tema='oscuro'] .app-shell {
 }
 
 html[data-tema='claro'] .app-shell {
-  --sg-bg: #f3eee6;
-  --sg-surface: #faf6f1;
-  --sg-text: #3c342c;
-  --sg-muted: #6f655c;
-  --sg-line: #e4d9cc;
-  --sg-blue: #7a6552;
-  --sg-accent: #7a6552;
+  --sg-bg: #f5f7fb;
+  --sg-surface: #ffffff;
+  --sg-text: #0f1b2d;
+  --sg-muted: #52627a;
+  --sg-line: #dce3ee;
+  --sg-blue: #1a52be;
+  --sg-accent: #1a52be;
   --sg-enlace: #6b5644;
-  --sg-texto-2: #4a433c;
-  --sg-tonal: color-mix(in srgb, #3c342c 6%, transparent);
+  --sg-texto-2: #2b3a52;
+  --sg-tonal: color-mix(in srgb, #0f1b2d 6%, transparent);
   color-scheme: light;
 }
 
@@ -116,16 +116,16 @@ html[data-tema='oscuro'] .app-nav {
 
 html[data-tema='claro'] .app-nav-activa .app-nav-icono,
 html[data-tema='claro'] .app-acceso-icono {
-  color: #7a6552;
+  color: #1a52be;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton {
-  background: #e6d9cc;
-  color: #3c342c;
+  background: #1a52be;
+  color: #ffffff;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton:hover:not(:disabled) {
-  background: #d9c9b8;
+  background: #c9d4e4;
 }
 
 .app-nav-item {

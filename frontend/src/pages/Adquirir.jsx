@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
+import ElegirPersonas from '../components/ElegirPersonas.jsx'
 import Marco from '../components/Marco.jsx'
+import { recordarPersonas } from '../lib/planRecordado.js'
+import { formatoPesos, leerPersonas, PERSONAS_POR_DEFECTO, precioPhishguard } from '../lib/precioPhishguard.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Modulo.css'
@@ -32,19 +35,30 @@ async function mensajeDe(error, data) {
 
 function Adquirir() {
   const { sesion, cargando } = useSesion()
+  const [params] = useSearchParams()
+  const [personas, setPersonas] = useState(
+    () => String(leerPersonas(params.get('personas')) ?? PERSONAS_POR_DEFECTO),
+  )
   const [error, setError] = useState(null)
   const [enviando, setEnviando] = useState(false)
   const [acepta, setAcepta] = useState(false)
+  const precio = precioPhishguard(personas)
+  const volver = `/adquirir?personas=${precio ? precio.personas : PERSONAS_POR_DEFECTO}`
 
   async function pagar() {
     setError(null)
+    if (!precio) {
+      setError('Elegí cuántas personas va a cubrir el plan, de 1 a 10.000.')
+      return
+    }
     if (!acepta) {
       setError('Para pagar tenés que aceptar los términos y condiciones de servicio.')
       return
     }
     setEnviando(true)
+    recordarPersonas(sesion.user.id, precio.personas)
     const { data, error: fallo } = await supabase.functions.invoke('phishguard-mercadopago', {
-      body: { accion: 'crear' },
+      body: { accion: 'crear', personas: precio.personas },
     })
     setEnviando(false)
 
@@ -63,13 +77,13 @@ function Adquirir() {
           <p className="adquirir-vuelta">
             <Link to="/empresas">← PhishGuard</Link>
           </p>
-          <h1>Medios de pago</h1>
-          <p className="adquirir-monto">$ 37.500</p>
+          <h1>Elegí tu plan</h1>
+          <ElegirPersonas valor={personas} onCambiar={setPersonas} mostrarPesos={false} />
+          <p className="adquirir-monto">{precio ? formatoPesos(precio.totalPesos) : '—'}</p>
           <p>
-            Es un pago único en pesos, equivalente al mínimo de USD 25 por mes,
-            para desbloquear PhishGuard en esta cuenta. El plan publicado se
-            cobra por persona y por mes, desde USD 1, con un mínimo de USD 25
-            por mes.
+            Es un pago único en pesos por el primer mes del plan que elegiste,
+            y desbloquea PhishGuard en esta cuenta. No hay suscripción
+            automática.
           </p>
           <p>
             El botón abre el checkout de Mercado Pago. Cerrá antes la sesión de
@@ -96,12 +110,12 @@ function Adquirir() {
               type="button"
               className="medio-pago"
               onClick={pagar}
-              disabled={enviando || !acepta}
+              disabled={enviando || !acepta || !precio}
             >
               {enviando ? 'Abriendo Mercado Pago…' : 'Pagar con Mercado Pago'}
             </button>
           ) : (
-            <Link className="medio-pago" to="/ingresar?volver=/adquirir">
+            <Link className="medio-pago" to={`/ingresar?volver=${encodeURIComponent(volver)}`}>
               Entrá para pagar
             </Link>
           )}
