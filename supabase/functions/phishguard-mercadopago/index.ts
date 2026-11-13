@@ -4,6 +4,7 @@ import postgres from 'npm:postgres'
 import {
   leerPersonas,
   personasDeReferencia,
+  PERSONAS_PRECIO_ANTERIOR,
   PRECIO_ANTERIOR,
   precioPesos,
   referencia,
@@ -76,7 +77,7 @@ async function usuarioDe(autorizacion: string) {
   return data.user
 }
 
-async function crearCobro(usuarioId: string, token: string, personas: number) {
+async function crearCobro(usuarioId: string, token: string, personas: number, ref: string) {
   const vuelta = `${SITIO}/adquirir/vuelta`
   const monto = precioPesos(personas)
   const respuesta = await fetch('https://api.mercadopago.com/checkout/preferences', {
@@ -95,7 +96,7 @@ async function crearCobro(usuarioId: string, token: string, personas: number) {
           unit_price: monto,
         },
       ],
-      external_reference: referencia(usuarioId, personas),
+      external_reference: ref,
       back_urls: {
         success: vuelta,
         pending: vuelta,
@@ -273,11 +274,14 @@ Deno.serve(async (req) => {
   }
 
   if (cuerpo.accion === 'crear') {
+    if (cuerpo.personas === undefined) {
+      return await crearCobro(usuario.id, token, PERSONAS_PRECIO_ANTERIOR, usuario.id)
+    }
     const personas = leerPersonas(cuerpo.personas)
     if (personas === null) {
       return json({ error: 'Elegí cuántas personas va a cubrir el plan, de 1 a 10.000.' }, 400)
     }
-    return await crearCobro(usuario.id, token, personas)
+    return await crearCobro(usuario.id, token, personas, referencia(usuario.id, personas))
   }
 
   if (cuerpo.accion === 'confirmar') {
