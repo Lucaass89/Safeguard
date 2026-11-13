@@ -1,9 +1,9 @@
 .elegir-personas {
-  --ep-tinta: #0f1b2d;
-  --ep-suave: #52627a;
-  --ep-linea: #dce3ee;
+  --ep-tinta: #1d2b30;
+  --ep-suave: #586a6f;
+  --ep-linea: #dbe7e6;
   --ep-papel: #ffffff;
-  --ep-acento: #1a52be;
+  --ep-acento: #0e7c86;
   --ep-error: #b42318;
 
   max-width: 520px;
@@ -18,10 +18,10 @@
 
 html[data-tema='oscuro'] .elegir-personas {
   --ep-tinta: #f3f4f6;
-  --ep-suave: #a9b7cc;
+  --ep-suave: #a6c2c1;
   --ep-linea: #22314a;
   --ep-papel: #111c2e;
-  --ep-acento: #8eb4ff;
+  --ep-acento: #5cc8cf;
   --ep-error: #f87171;
 }
 
