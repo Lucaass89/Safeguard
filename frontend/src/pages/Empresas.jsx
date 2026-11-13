@@ -96,7 +96,8 @@ function Empresas() {
           <p className="pg-precio-regla">
             Todos los usuarios pagan la tarifa del tramo en el que cae la
             organización, con un mínimo de USD 25 por mes. No hay suscripción
-            automática ni pago anual.
+            automática ni pago anual. El plan cubre la cantidad de personas que
+            elegís, con un margen del 10 % para sumar a alguien de último momento.
           </p>
           <ul className="pg-precios">
             {precios.map(([rango, valor], i) => (

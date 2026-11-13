@@ -11,6 +11,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   600 y USD 0,55 desde 601, con un mínimo de USD 25 por mes, pasado a pesos con USD 1 = ARS 1.500
   (`src/lib/precioPhishguard.js` y `precio.ts` de la función tienen que coincidir). La cantidad queda en
   `organizaciones.usuarios_contratados` y el panel de la empresa la muestra contra las personas activas (RF-07).
+  Límite: hasta un 10 % más de personas activas que las contratadas, redondeado hacia arriba (sin cantidad guardada
+  cuentan 25). Lo hace cumplir el disparador `empleados_respetar_limite` en la base (error `SG001`), y
+  `limitePersonas` en `precioPhishguard.js` tiene que dar lo mismo que `phishguard_limite_personas`.
   Los pagos de ARS 37.500 hechos antes cuentan como 25 personas, y los viejos de prueba de ARS 500 siguen valiendo.
   Si la vuelta de Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. No hay
   suscripción automática ni pago anual.

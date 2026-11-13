@@ -3,6 +3,8 @@ import { test } from 'node:test'
 import {
   estadoPlan,
   etiquetaTramo,
+  limitePersonas,
+  puedeActivar,
   formatoPesos,
   formatoUsd,
   leerPersonas,
@@ -69,7 +71,17 @@ test('muestra los montos y los tramos en formato argentino', () => {
   assert.equal(etiquetaTramo(tramoDe(700)), 'Más de 600 personas')
 })
 
-test('el plan cuenta solo a las personas activas contra la cantidad contratada', () => {
+test('el límite deja un 10 % por encima de lo contratado, redondeado hacia arriba', () => {
+  assert.equal(limitePersonas(1), 2)
+  assert.equal(limitePersonas(10), 11)
+  assert.equal(limitePersonas(25), 28)
+  assert.equal(limitePersonas(100), 110)
+  assert.equal(limitePersonas(150), 165)
+  assert.equal(limitePersonas(333), 367)
+  assert.equal(limitePersonas(null), 28)
+})
+
+test('el plan cuenta solo a las personas activas contra lo contratado y el límite', () => {
   const equipo = [
     { estado: 'activo' },
     { estado: 'activo' },
@@ -77,21 +89,34 @@ test('el plan cuenta solo a las personas activas contra la cantidad contratada',
     { estado: 'inactivo' },
     { estado: 'pendiente_aprobacion' },
   ]
-  const dentro = estadoPlan(5, equipo)
-  assert.equal(dentro.activos, 3)
-  assert.equal(dentro.excede, false)
-  assert.equal(dentro.precio.totalUsd, 25)
+  const holgado = estadoPlan(5, equipo)
+  assert.equal(holgado.activos, 3)
+  assert.equal(holgado.limite, 6)
+  assert.equal(holgado.lugares, 3)
+  assert.equal(holgado.excede, false)
+  assert.equal(holgado.lleno, false)
+  assert.equal(holgado.precio.totalUsd, 25)
 
-  const fuera = estadoPlan(2, equipo)
-  assert.equal(fuera.excede, true)
-  assert.equal(fuera.sugerido, 3)
+  const enMargen = estadoPlan(2, equipo)
+  assert.equal(enMargen.limite, 3)
+  assert.equal(enMargen.excede, true)
+  assert.equal(enMargen.lleno, true)
+  assert.equal(enMargen.lugares, 0)
+  assert.equal(enMargen.sugerido, 3)
 })
 
-test('sin cantidad contratada no marca exceso y sugiere cubrir a los activos', () => {
+test('sin cantidad guardada el plan cuenta como 25 personas', () => {
   const plan = estadoPlan(null, [{ estado: 'activo' }, { estado: 'activo' }])
-  assert.equal(plan.contratados, null)
-  assert.equal(plan.excede, false)
-  assert.equal(plan.sugerido, 2)
-  assert.equal(plan.precio, null)
-  assert.equal(estadoPlan(undefined, []).sugerido, 1)
+  assert.equal(plan.contratados, 25)
+  assert.equal(plan.porDefecto, true)
+  assert.equal(plan.limite, 28)
+  assert.equal(plan.lugares, 26)
+  assert.equal(plan.sugerido, 25)
+})
+
+test('solo deja activar a tantas personas como lugares queden', () => {
+  const plan = estadoPlan(10, Array.from({ length: 9 }, () => ({ estado: 'activo' })))
+  assert.equal(plan.lugares, 2)
+  assert.equal(puedeActivar(plan, 2), true)
+  assert.equal(puedeActivar(plan, 3), false)
 })
