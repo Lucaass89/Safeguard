@@ -1,8 +1,8 @@
 .phish {
-  --phish-secundario: #2b3a52;
+  --phish-secundario: #2e4248;
   --phish-hero: #ffffff;
-  --phish-hero-borde: #c3cede;
-  --phish-boton: #0f1b2d;
+  --phish-hero-borde: #c2d6d5;
+  --phish-boton: #1d2b30;
   --phish-boton-texto: #ffffff;
   display: grid;
   gap: 20px;
@@ -18,7 +18,7 @@ html[data-tema='oscuro'] .phish {
   --phish-secundario: #d5deea;
   --phish-hero: #172033;
   --phish-hero-borde: #314664;
-  --phish-boton: #1a52be;
+  --phish-boton: #0e7c86;
   --phish-boton-texto: #ffffff;
 }
 
@@ -32,7 +32,7 @@ html[data-tema='oscuro'] .phish {
 
 html[data-tema='claro'] .phish-campana,
 html[data-tema='claro'] .phish-vacio {
-  box-shadow: 0 10px 28px rgb(15 27 45 / 8%);
+  box-shadow: 0 10px 28px rgb(29 43 48 / 8%);
 }
 
 .phish-campana-cabeza {
@@ -200,7 +200,7 @@ html[data-tema='claro'] .phish-vacio {
 }
 
 .phish-pago .phish-pago-monto {
-  color: #0f1b2d;
+  color: #1d2b30;
   font-size: 32px;
   font-weight: 700;
 }

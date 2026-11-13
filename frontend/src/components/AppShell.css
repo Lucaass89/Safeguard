@@ -15,7 +15,7 @@ html[data-tema='oscuro'] .app-shell {
   --sg-text: #f3f4f6;
   --sg-muted: #9ca3af;
   --sg-line: #26334d;
-  --sg-blue: #1a52be;
+  --sg-blue: #0e7c86;
   --sg-accent: var(--sg-blue);
   --sg-enlace: #8fb2ff;
   --sg-texto-2: #d5deea;
@@ -24,16 +24,16 @@ html[data-tema='oscuro'] .app-shell {
 }
 
 html[data-tema='claro'] .app-shell {
-  --sg-bg: #f5f7fb;
+  --sg-bg: #f7fafa;
   --sg-surface: #ffffff;
-  --sg-text: #0f1b2d;
-  --sg-muted: #52627a;
-  --sg-line: #dce3ee;
-  --sg-blue: #1a52be;
-  --sg-accent: #1a52be;
+  --sg-text: #1d2b30;
+  --sg-muted: #586a6f;
+  --sg-line: #dbe7e6;
+  --sg-blue: #0e7c86;
+  --sg-accent: #0e7c86;
   --sg-enlace: #6b5644;
-  --sg-texto-2: #2b3a52;
-  --sg-tonal: color-mix(in srgb, #0f1b2d 6%, transparent);
+  --sg-texto-2: #2e4248;
+  --sg-tonal: color-mix(in srgb, #1d2b30 6%, transparent);
   color-scheme: light;
 }
 
@@ -116,16 +116,16 @@ html[data-tema='oscuro'] .app-nav {
 
 html[data-tema='claro'] .app-nav-activa .app-nav-icono,
 html[data-tema='claro'] .app-acceso-icono {
-  color: #1a52be;
+  color: #0e7c86;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton {
-  background: #1a52be;
+  background: #0e7c86;
   color: #ffffff;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton:hover:not(:disabled) {
-  background: #c9d4e4;
+  background: #c5d8d7;
 }
 
 .app-nav-item {
@@ -156,7 +156,7 @@ html[data-tema='claro'] .app-shell .panel-boton:hover:not(:disabled) {
 
 .app-nav-activa .app-nav-icono {
   background: color-mix(in srgb, var(--sg-blue) 28%, transparent);
-  color: #8eb4ff;
+  color: #5cc8cf;
 }
 
 .app-nav-item:focus-visible {
@@ -169,7 +169,7 @@ html[data-tema='claro'] .app-shell .panel-boton:hover:not(:disabled) {
   place-items: center;
   width: 32px;
   height: 32px;
-  color: #8eb4ff;
+  color: #5cc8cf;
 }
 
 .app-opciones {
