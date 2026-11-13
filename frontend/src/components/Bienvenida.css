@@ -1,8 +1,8 @@
 .bienvenida {
-  --sg-logo-0: #eaf6ff;
-  --sg-logo-1: #b9dcff;
-  --sg-logo-2: #7eb6ff;
-  --sg-logo-3: #dbeafe;
+  --sg-logo-0: #c9f1ee;
+  --sg-logo-1: #7fdcd5;
+  --sg-logo-2: #3fb6bd;
+  --sg-logo-3: #e3f7f5;
 
   position: fixed;
   z-index: 80;
@@ -116,10 +116,10 @@
 }
 
 html[data-tema='claro'] .bienvenida {
-  --sg-logo-0: #e7d3bf;
-  --sg-logo-1: #c4a88e;
-  --sg-logo-2: #8f7360;
-  --sg-logo-3: #5c4638;
+  --sg-logo-0: #5fd3c9;
+  --sg-logo-1: #23a7a8;
+  --sg-logo-2: #0e7c86;
+  --sg-logo-3: #0a4f57;
 
   background: #f7fafa;
   color: #1d2b30;

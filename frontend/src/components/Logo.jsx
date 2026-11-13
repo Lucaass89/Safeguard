@@ -8,10 +8,10 @@ const BARRAS = [
 ]
 
 const PARADAS = [
-  ['0', '--sg-logo-0', '#2ad4ee'],
-  ['0.34', '--sg-logo-1', '#1e8ed4'],
-  ['0.66', '--sg-logo-2', '#1a52be'],
-  ['1', '--sg-logo-3', '#1a1c8c'],
+  ['0', '--sg-logo-0', '#5fd3c9'],
+  ['0.34', '--sg-logo-1', '#23a7a8'],
+  ['0.66', '--sg-logo-2', '#0e7c86'],
+  ['1', '--sg-logo-3', '#0a4f57'],
 ]
 
 function Logo({ className }) {
