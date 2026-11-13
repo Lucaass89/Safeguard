@@ -14,6 +14,11 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   Límite: hasta un 10 % más de personas activas que las contratadas, redondeado hacia arriba (sin cantidad guardada
   cuentan 25). Lo hace cumplir el disparador `empleados_respetar_limite` en la base (error `SG001`), y
   `limitePersonas` en `precioPhishguard.js` tiene que dar lo mismo que `phishguard_limite_personas`.
+  Datos de la empresa: antes de pagar se completa `FormEmpresa` (nombre, tipo PyME o educativa, CUIT opcional,
+  responsable y áreas). La función de cobro los valida con `phishguard_empresa_normalizada`, los guarda en
+  `phishguard_solicitudes` y los aplica al aprobarse el pago; el panel los edita con `phishguard_guardar_empresa`.
+  La validación del navegador (`datosEmpresa.js`) tiene que coincidir con la de la base. `organizaciones` no se
+  escribe desde el navegador.
   Los pagos de ARS 37.500 hechos antes cuentan como 25 personas, y los viejos de prueba de ARS 500 siguen valiendo.
   Si la vuelta de Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. No hay
   suscripción automática ni pago anual.

@@ -1,0 +1,120 @@
+.form-empresa {
+  --fe-tinta: #0f1b2d;
+  --fe-suave: #52627a;
+  --fe-linea: #dce3ee;
+  --fe-papel: #ffffff;
+  --fe-campo: #f5f7fb;
+  --fe-acento: #1a52be;
+  --fe-error: #b42318;
+
+  max-width: 760px;
+  margin: 24px 0 0;
+  padding: 24px;
+  border: 1px solid var(--fe-linea);
+  border-radius: 14px;
+  background: var(--fe-papel);
+  color: var(--fe-tinta);
+  font-family: var(--sg-sans);
+}
+
+html[data-tema='oscuro'] .form-empresa {
+  --fe-tinta: #f3f4f6;
+  --fe-suave: #a9b7cc;
+  --fe-linea: #22314a;
+  --fe-papel: #111c2e;
+  --fe-campo: #0a1220;
+  --fe-acento: #8eb4ff;
+  --fe-error: #f87171;
+}
+
+.form-empresa legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.form-empresa .form-empresa-subtitulo {
+  clear: both;
+  margin: 24px 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.form-empresa-grilla {
+  display: grid;
+  clear: both;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.form-empresa-campo {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.form-empresa > .form-empresa-campo {
+  margin-top: 16px;
+}
+
+.form-empresa-campo label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-empresa-campo input,
+.form-empresa-campo select,
+.form-empresa-campo textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--fe-linea);
+  border-radius: 8px;
+  background: var(--fe-campo);
+  color: var(--fe-tinta);
+  font: inherit;
+  font-size: 15px;
+}
+
+.form-empresa-campo textarea {
+  resize: vertical;
+}
+
+.form-empresa-campo input:focus-visible,
+.form-empresa-campo select:focus-visible,
+.form-empresa-campo textarea:focus-visible {
+  border-color: var(--fe-acento);
+  outline: 2px solid var(--fe-acento);
+  outline-offset: 1px;
+}
+
+.form-empresa-campo-error input,
+.form-empresa-campo-error select,
+.form-empresa-campo-error textarea {
+  border-color: var(--fe-error);
+}
+
+.form-empresa-ayuda {
+  color: var(--fe-suave);
+  font-size: 13px;
+}
+
+.form-empresa-mensaje {
+  color: var(--fe-error);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .form-empresa {
+    padding: 18px;
+  }
+
+  .form-empresa-grilla {
+    grid-template-columns: 1fr;
+  }
+}

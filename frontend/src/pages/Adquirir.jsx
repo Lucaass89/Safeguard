@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import ElegirPersonas from '../components/ElegirPersonas.jsx'
+import FormEmpresa from '../components/FormEmpresa.jsx'
 import Marco from '../components/Marco.jsx'
+import { EMPRESA_VACIA, empresaDesdeOrganizacion, guardarBorrador, leerBorrador, validarEmpresa } from '../lib/datosEmpresa.js'
+import { cargarEmpresaGuardada } from '../lib/empresaGuardada.js'
 import { recordarPersonas } from '../lib/planRecordado.js'
 import { formatoPesos, leerPersonas, PERSONAS_POR_DEFECTO, precioPhishguard } from '../lib/precioPhishguard.js'
 import { supabase } from '../lib/supabase.js'
@@ -42,6 +45,33 @@ function Adquirir() {
   const [error, setError] = useState(null)
   const [enviando, setEnviando] = useState(false)
   const [acepta, setAcepta] = useState(false)
+  const [empresa, setEmpresa] = useState(() => leerBorrador() ?? EMPRESA_VACIA)
+  const [erroresEmpresa, setErroresEmpresa] = useState({})
+  const formulario = useRef(null)
+  const usuarioId = sesion?.user?.id ?? null
+  const correo = sesion?.user?.email ?? ''
+
+  useEffect(() => {
+    guardarBorrador(empresa)
+  }, [empresa])
+
+  useEffect(() => {
+    if (!usuarioId) return undefined
+    let activo = true
+    cargarEmpresaGuardada().then(({ organizacion, areas }) => {
+      if (!activo) return
+      setEmpresa((actual) => {
+        const guardada = empresaDesdeOrganizacion(organizacion, areas, correo)
+        const completa = Object.fromEntries(
+          Object.keys(EMPRESA_VACIA).map((clave) => [clave, actual[clave] || guardada[clave] || '']),
+        )
+        return completa
+      })
+    })
+    return () => {
+      activo = false
+    }
+  }, [usuarioId, correo])
   const precio = precioPhishguard(personas)
   const volver = `/adquirir?personas=${precio ? precio.personas : PERSONAS_POR_DEFECTO}`
 
@@ -51,6 +81,13 @@ function Adquirir() {
       setError('Elegí cuántas personas va a cubrir el plan, de 1 a 10.000.')
       return
     }
+    const revision = validarEmpresa(empresa)
+    setErroresEmpresa(revision.errores)
+    if (!revision.valido) {
+      setError('Revisá los datos de la empresa marcados en rojo.')
+      formulario.current?.querySelector('[aria-invalid="true"]')?.focus()
+      return
+    }
     if (!acepta) {
       setError('Para pagar tenés que aceptar los términos y condiciones de servicio.')
       return
@@ -58,7 +95,7 @@ function Adquirir() {
     setEnviando(true)
     recordarPersonas(sesion.user.id, precio.personas)
     const { data, error: fallo } = await supabase.functions.invoke('phishguard-mercadopago', {
-      body: { accion: 'crear', personas: precio.personas },
+      body: { accion: 'crear', personas: precio.personas, empresa: revision.datos },
     })
     setEnviando(false)
 
@@ -79,6 +116,9 @@ function Adquirir() {
           </p>
           <h1>Elegí tu plan</h1>
           <ElegirPersonas valor={personas} onCambiar={setPersonas} mostrarPesos={false} />
+          <div ref={formulario}>
+            <FormEmpresa valor={empresa} onCambiar={setEmpresa} errores={erroresEmpresa} />
+          </div>
           <p className="adquirir-monto">{precio ? formatoPesos(precio.totalPesos) : '—'}</p>
           <p>
             Es un pago único en pesos por el primer mes del plan que elegiste,
