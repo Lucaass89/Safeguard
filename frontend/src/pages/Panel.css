@@ -2450,3 +2450,48 @@ html[data-tema='oscuro'] .panel-plan-excede {
 .panel-plan-accion:hover {
   background: #153f94;
 }
+
+.panel-plan .panel-plan-cuenta {
+  margin-top: 8px;
+  color: var(--sg-text);
+  font-weight: 600;
+}
+
+.panel-plan-barra {
+  overflow: hidden;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: var(--sg-line);
+}
+
+.panel-plan-barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sg-accent);
+}
+
+.panel-plan-excede .panel-plan-barra span {
+  background: #9a6400;
+}
+
+.panel-plan-lleno {
+  border-left-color: #b42318;
+}
+
+.panel-plan-lleno .panel-plan-barra span {
+  background: #b42318;
+}
+
+html[data-tema='oscuro'] .panel-plan-excede .panel-plan-barra span {
+  background: #fbbf24;
+}
+
+html[data-tema='oscuro'] .panel-plan-lleno {
+  border-left-color: #f87171;
+}
+
+html[data-tema='oscuro'] .panel-plan-lleno .panel-plan-barra span {
+  background: #f87171;
+}

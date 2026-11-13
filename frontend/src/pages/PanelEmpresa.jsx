@@ -4,39 +4,53 @@ import { rutaEnApp } from '../lib/esAppNativa.js'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { nombreEmpresa } from '../lib/formato.js'
-import { estadoPlan, formatoUsd } from '../lib/precioPhishguard.js'
+import { estadoPlan, formatoUsd, puedeActivar } from '../lib/precioPhishguard.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
 
-function PlanContratado({ organizacion, empleados }) {
-  const plan = estadoPlan(organizacion.usuarios_contratados, empleados)
-  const destino = `/adquirir?personas=${plan.sugerido}`
+function mensajeLleno(plan) {
+  return `Llegaste al límite de tu plan: ${plan.limite} personas activas (${plan.contratados} contratadas más el 10 %). Ampliá el plan para sumar más.`
+}
+
+function PlanContratado({ plan }) {
+  const destino = `/adquirir?personas=${plan.lleno || plan.excede ? plan.activos + 1 : plan.sugerido}`
+  const clase = plan.lleno ? 'panel-plan panel-plan-lleno' : plan.excede ? 'panel-plan panel-plan-excede' : 'panel-plan'
 
   return (
-    <section className={plan.excede ? 'panel-plan panel-plan-excede' : 'panel-plan'} aria-labelledby="panel-plan-titulo">
+    <section className={clase} aria-labelledby="panel-plan-titulo">
       <h2 id="panel-plan-titulo">Tu plan</h2>
-      {plan.contratados ? (
-        <p>
-          PhishGuard para <strong>{plan.contratados} {plan.contratados === 1 ? 'persona' : 'personas'}</strong>,{' '}
-          {formatoUsd(plan.precio.totalUsd)} por mes. Hay {plan.activos}{' '}
-          {plan.activos === 1 ? 'persona activa' : 'personas activas'}.
-        </p>
-      ) : (
-        <p>
-          Tu plan todavía no tiene una cantidad de personas. Hay {plan.activos}{' '}
-          {plan.activos === 1 ? 'persona activa' : 'personas activas'}.
-        </p>
-      )}
-      {plan.excede && (
+      <p>
+        PhishGuard para <strong>{plan.contratados} {plan.contratados === 1 ? 'persona' : 'personas'}</strong>
+        {plan.porDefecto ? ', el mínimo de USD 25 por mes' : `, ${formatoUsd(plan.precio.totalUsd)} por mes`}.
+        {' '}Podés tener hasta <strong>{plan.limite} activas</strong> (lo contratado más un 10 %).
+      </p>
+      <p className="panel-plan-cuenta">
+        {plan.activos} de {plan.limite} {plan.activos === 1 ? 'persona activa' : 'personas activas'}
+        {plan.lleno ? '. No quedan lugares.' : `. ${plan.lugares === 1 ? 'Queda 1 lugar' : `Quedan ${plan.lugares} lugares`}.`}
+      </p>
+      <div
+        className="panel-plan-barra"
+        role="progressbar"
+        aria-label="Personas activas del plan"
+        aria-valuemin={0}
+        aria-valuemax={plan.limite}
+        aria-valuenow={Math.min(plan.activos, plan.limite)}
+      >
+        <span style={{ width: `${Math.min(100, (plan.activos / plan.limite) * 100)}%` }} />
+      </div>
+      {plan.lleno ? (
         <p className="panel-plan-aviso" role="status">
-          Tenés más personas activas que las del plan. Ampliá el plan a {plan.sugerido} personas
-          para cubrirlas a todas.
+          Llegaste al límite. Para activar a alguien más, ampliá el plan.
         </p>
-      )}
+      ) : plan.excede ? (
+        <p className="panel-plan-aviso" role="status">
+          Estás usando el margen del 10 %. Ampliá el plan a {plan.sugerido} personas para cubrirlas a todas.
+        </p>
+      ) : null}
       <Link className="panel-plan-accion" to={destino}>
-        {plan.excede ? `Ampliar a ${plan.sugerido} personas` : plan.contratados ? 'Cambiar la cantidad' : 'Elegir la cantidad'}
+        {plan.lleno || plan.excede ? 'Ampliar el plan' : 'Cambiar la cantidad'}
       </Link>
     </section>
   )
@@ -112,7 +126,7 @@ function claseEstado(estado) {
   return 'persona-badge'
 }
 
-function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
+function ImportarCsv({ empleados, correoAdmin, alTerminar, plan }) {
   const archivoRef = useRef(null)
   const [abierto, setAbierto] = useState(false)
   const [arrastrando, setArrastrando] = useState(false)
@@ -209,6 +223,7 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
       cargadas: data?.cargadas ?? 0,
       omitidas: data?.omitidas ?? 0,
       errores: data?.errores ?? 0,
+      sinLugar: data?.sin_lugar ?? 0,
     })
     setVista(null)
     await alTerminar()
@@ -343,6 +358,13 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
                 <input type="checkbox" checked={autoriza} onChange={(evento) => setAutoriza(evento.target.checked)} />
                 <span>Confirmo que tengo autorización de mi empresa para incluir a estas personas en el programa de concientización.</span>
               </label>
+              {plan && !puedeActivar(plan, vista.validas.length) && (
+                <p className="panel-aviso" role="status">
+                  {plan.lugares === 0
+                    ? 'Tu plan no tiene lugares libres: no se va a cargar nadie hasta que lo amplíes.'
+                    : `Tu plan tiene ${plan.lugares} ${plan.lugares === 1 ? 'lugar libre' : 'lugares libres'}. Se cargan las primeras ${plan.lugares} y el resto queda afuera hasta que amplíes el plan.`}
+                </p>
+              )}
               <button type="button" className="panel-boton" disabled={!puedeConfirmar} onClick={confirmar}>
                 {importando ? 'Cargando las personas…' : `Cargar ${vista.validas.length} ${vista.validas.length === 1 ? 'persona' : 'personas'}`}
               </button>
@@ -355,6 +377,7 @@ function ImportarCsv({ empleados, correoAdmin, alTerminar }) {
       {resultado && (
         <p className="panel-aviso" aria-live="polite">
           Cargadas: {resultado.cargadas}. Omitidas por duplicado: {resultado.omitidas}. Con error: {resultado.errores}.
+          {resultado.sinLugar > 0 && ` Sin lugar en el plan: ${resultado.sinLugar}.`}
         </p>
       )}
     </div>
@@ -368,6 +391,10 @@ function PanelEmpresa() {
   const [empleados, setEmpleados] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const plan = useMemo(
+    () => (organizacion ? estadoPlan(organizacion.usuarios_contratados, empleados) : null),
+    [organizacion, empleados],
+  )
 
   const [nombre, setNombre] = useState('')
   const [correo, setCorreo] = useState('')
@@ -396,6 +423,10 @@ function PanelEmpresa() {
   async function agregarEmpleado(evento) {
     evento.preventDefault()
     setError(null)
+    if (plan?.lleno) {
+      setError(mensajeLleno(plan))
+      return
+    }
 
     const { data, error: fallo } = await supabase
       .from('empleados')
@@ -472,6 +503,17 @@ function PanelEmpresa() {
     if (!ids.length || resolviendo.length) return
     setError(null)
     setAvisoLista(null)
+    if (estado === 'activo' && plan) {
+      const nuevas = empleados.filter((persona) => ids.includes(persona.id) && persona.estado !== 'activo').length
+      if (!puedeActivar(plan, nuevas)) {
+        setError(
+          plan.lugares === 0
+            ? mensajeLleno(plan)
+            : `Elegiste ${nuevas} personas y tu plan tiene ${plan.lugares} ${plan.lugares === 1 ? 'lugar libre' : 'lugares libres'}. Aprobá menos o ampliá el plan.`,
+        )
+        return
+      }
+    }
     setResolviendo(ids)
     const { data, error: fallo } = await supabase
       .from('empleados')
@@ -512,7 +554,7 @@ function PanelEmpresa() {
         </p>
       </header>
 
-      {organizacion && <PlanContratado organizacion={organizacion} empleados={empleados} />}
+      {plan && <PlanContratado plan={plan} />}
 
       {error && <p className="panel-error">{error}</p>}
 
@@ -565,6 +607,7 @@ function PanelEmpresa() {
               <h2>Importar</h2>
               <ImportarCsv
                 empleados={empleados}
+                plan={plan}
                 correoAdmin={sesion?.user?.email ?? ''}
                 alTerminar={async () => {
                   const estado = await cargar()

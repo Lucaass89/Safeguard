@@ -53,14 +53,31 @@ export function etiquetaTramo(tramo) {
   return `${tramo.desde} a ${tramo.hasta} personas`
 }
 
+export const MARGEN_PORCENTAJE = 10
+
+export function limitePersonas(contratados) {
+  const cupo = leerPersonas(contratados) ?? PERSONAS_POR_DEFECTO
+  return Math.floor((cupo * (100 + MARGEN_PORCENTAJE) + 99) / 100)
+}
+
 export function estadoPlan(contratados, empleados) {
   const activos = (empleados ?? []).filter((persona) => persona?.estado === 'activo').length
-  const cupo = leerPersonas(contratados)
+  const guardado = leerPersonas(contratados)
+  const cupo = guardado ?? PERSONAS_POR_DEFECTO
+  const limite = limitePersonas(cupo)
   return {
     contratados: cupo,
+    porDefecto: guardado === null,
     activos,
-    excede: cupo !== null && activos > cupo,
-    sugerido: Math.max(activos, cupo ?? 0, MIN_PERSONAS),
-    precio: cupo === null ? null : precioPhishguard(cupo),
+    limite,
+    lugares: Math.max(limite - activos, 0),
+    excede: activos > cupo,
+    lleno: activos >= limite,
+    sugerido: Math.max(activos, cupo, MIN_PERSONAS),
+    precio: precioPhishguard(cupo),
   }
+}
+
+export function puedeActivar(plan, cantidad) {
+  return cantidad <= plan.lugares
 }
