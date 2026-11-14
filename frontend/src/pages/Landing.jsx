@@ -4,6 +4,7 @@ import CarruselEstafas from '../components/CarruselEstafas.jsx'
 import ElegirPersonas from '../components/ElegirPersonas.jsx'
 import IconoFuncion from '../components/IconoFuncion.jsx'
 import Logo from '../components/Logo.jsx'
+import PantallasApp from '../components/PantallasApp.jsx'
 import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
 import TemaControl from '../components/TemaControl.jsx'
 import { pasosCampana } from '../lib/pasosCampana.js'
@@ -481,6 +482,8 @@ function Landing() {
               ))}
             </div>
           </section>
+
+          <PantallasApp />
 
           <section className="portada-caja portada-caja-dividida">
             <div>
