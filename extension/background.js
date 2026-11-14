@@ -1,16 +1,19 @@
 import {
   analizar,
-  combinarConAmenaza,
-  combinarConEnriquecimiento,
-  motivosLimpios,
-  queHacer,
-} from './analisis.js'
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config.js'
+  esPagina,
+  estadoDe,
+  indiceDeAmenazas,
+  listaVigente,
+  recordar,
+  urlParaAbrir,
+} from './detector.js'
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from './config.js'
 
 const COLORES = {
   verde: '#2f9e6b',
   amarillo: '#c4922a',
   rojo: '#d16b5a',
+  gris: '#8d98ab',
   neutro: '#8d98ab',
 }
 
@@ -18,6 +21,7 @@ const LETRAS = {
   verde: 'V',
   amarillo: '!',
   rojo: 'X',
+  gris: '?',
   neutro: '',
 }
 
@@ -25,92 +29,72 @@ const NOMBRES = {
   verde: 'Verde',
   amarillo: 'Amarillo',
   rojo: 'Rojo',
+  gris: 'Gris',
 }
 
-const porUrl = new Map()
+const CLAVE_LISTA = 'amenazas'
+const abiertas = new Map()
 const generacion = new Map()
-const conectado = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)
-
-function esPagina(url) {
-  try {
-    const destino = new URL(url)
-    return destino.protocol === 'http:' || destino.protocol === 'https:'
-  } catch {
-    return false
-  }
-}
+let indice = null
+let bajando = null
 
 function estadoNeutro(hacer) {
-  return {
-    nivel: 'neutro',
-    dominio: '',
-    url: '',
-    motivos: [],
-    hacer,
-    aviso: '',
-  }
+  return { nivel: 'neutro', dominio: '', url: '', motivos: [], hacer, aviso: '' }
 }
 
 function encabezados() {
-  return {
-    apikey: SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-  }
+  return { apikey: SUPABASE_PUBLISHABLE_KEY }
 }
 
 async function pintar(tabId, estado) {
   const color = COLORES[estado.nivel] ?? COLORES.neutro
   await chrome.action.setBadgeBackgroundColor({ tabId, color })
   await chrome.action.setBadgeText({ tabId, text: LETRAS[estado.nivel] ?? '' })
-  const titulo =
-    estado.nivel === 'neutro'
-      ? 'SafeLink'
-      : `SafeLink · ${NOMBRES[estado.nivel]} · ${estado.dominio}`
+  const titulo = NOMBRES[estado.nivel] ? `SafeLink · ${NOMBRES[estado.nivel]} · ${estado.dominio}` : 'SafeLink'
   await chrome.action.setTitle({ tabId, title: titulo })
   await chrome.storage.session.set({ [`tab:${tabId}`]: estado })
 }
 
-async function consultarAmenaza(dominio) {
-  if (!conectado || !dominio?.includes('.')) return null
+async function bajarLista() {
   const consulta = new URL('/rest/v1/amenazas', SUPABASE_URL)
-  consulta.searchParams.set('select', 'nivel,motivo,veces_reportado')
-  consulta.searchParams.set('dominio', `eq.${dominio}`)
+  consulta.searchParams.set('select', 'dominio,nivel,motivo,veces_reportado')
+  consulta.searchParams.set('limit', '20000')
   const respuesta = await fetch(consulta, { headers: encabezados() })
-  if (!respuesta.ok) return null
+  if (!respuesta.ok) throw new Error(`amenazas ${respuesta.status}`)
   const filas = await respuesta.json()
-  return Array.isArray(filas) ? (filas[0] ?? null) : null
+  if (!Array.isArray(filas)) throw new Error('amenazas sin filas')
+  await chrome.storage.local.set({ [CLAVE_LISTA]: { filas, guardadaEn: Date.now() } })
+  return filas
 }
 
-async function enriquecer(pagina) {
-  if (!conectado) return null
+async function listaDeAmenazas() {
+  const guardado = (await chrome.storage.local.get(CLAVE_LISTA))[CLAVE_LISTA]
+  if (listaVigente(guardado)) {
+    indice ??= indiceDeAmenazas(guardado.filas)
+    return indice
+  }
+  bajando ??= bajarLista()
+    .then((filas) => (indice = indiceDeAmenazas(filas)))
+    .catch(() => (guardado?.filas ? (indice = indiceDeAmenazas(guardado.filas)) : null))
+    .finally(() => {
+      bajando = null
+    })
+  return bajando
+}
+
+async function abrir(url) {
   const respuesta = await fetch(new URL('/functions/v1/safelink-enriquecer', SUPABASE_URL), {
     method: 'POST',
     headers: { ...encabezados(), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url: pagina }),
+    body: JSON.stringify({ url }),
   })
   if (!respuesta.ok) return null
   const data = await respuesta.json()
-  if (data?.error) return null
-  return data
+  return data?.error ? null : data
 }
 
-function armar(local, amenaza, extra, aviso) {
-  let final = combinarConAmenaza(local, amenaza)
-  final = combinarConEnriquecimiento(final, extra)
-  return {
-    nivel: final.nivel,
-    dominio: final.dominioDestino ?? final.dominio,
-    url: final.url,
-    motivos: motivosLimpios(final.motivos).slice(0, 4),
-    hacer: queHacer(final.nivel),
-    aviso,
-  }
-}
-
-async function completar(local) {
-  const extra = await enriquecer(local.url)
-  const amenaza = await consultarAmenaza(extra?.dominio || local.dominio)
-  return armar(local, amenaza, extra, '')
+function abrirUnaVez(url) {
+  return abiertas.get(url) ?? recordar(abiertas, url, abrir(url).catch(() => null))
 }
 
 async function revisar(tabId, url) {
@@ -129,33 +113,35 @@ async function revisar(tabId, url) {
     return
   }
 
-  await pintar(tabId, armar(local, null, null, ''))
-  if (!conectado) return
-
-  let pendiente = porUrl.get(local.url)
-  if (!pendiente) {
-    pendiente = completar(local).catch(() =>
-      armar(local, null, null, 'No se pudo consultar la base. El color sale de la dirección.'),
-    )
-    porUrl.set(local.url, pendiente)
-  }
-
-  const listo = await pendiente
+  const lista = await listaDeAmenazas()
   if (!sigue()) return
-  await pintar(tabId, listo)
+  const aviso = lista ? '' : 'No se pudo bajar la lista de dominios denunciados. El color sale de la dirección.'
+  await pintar(tabId, estadoDe(local, { indice: lista, aviso }))
+
+  const paraAbrir = urlParaAbrir(local)
+  if (!paraAbrir) return
+  const extra = await abrirUnaVez(paraAbrir)
+  if (!sigue()) return
+  await pintar(tabId, estadoDe(local, { indice: lista, extra, intentoAbrir: true, aviso }))
 }
+
+chrome.runtime.onInstalled.addListener(() => {
+  listaDeAmenazas()
+})
+
+chrome.runtime.onStartup.addListener(() => {
+  listaDeAmenazas()
+})
 
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (info.url || info.status === 'complete') revisar(tabId, tab.url ?? info.url ?? '')
 })
 
-chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  try {
-    const tab = await chrome.tabs.get(tabId)
-    revisar(tabId, tab.url ?? '')
-  } catch {
-    /* la pestaña se cerró */
-  }
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+  chrome.tabs
+    .get(tabId)
+    .then((tab) => revisar(tabId, tab.url ?? ''))
+    .catch(() => {})
 })
 
 chrome.runtime.onMessage.addListener((mensaje, _emisor, responder) => {
