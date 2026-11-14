@@ -24490,6 +24490,8 @@ FALLO_AL_SEGUIR.tiempo, FALLO_AL_SEGUIR.conexion, FALLO_AL_SEGUIR.tls, FALLO_AL_
 var HORAS_LISTA = 6;
 var MAX_MOTIVOS = 4;
 var MAX_RECORDADAS = 200;
+var SITIO = "https://safeguardd.vercel.app";
+var MAX_LARGO_AVISO = 140;
 var PESO = {
 	rojo: 2,
 	amarillo: 1
@@ -24562,5 +24564,22 @@ function recordar(mapa, clave, valor, maximo = 200) {
 	while (mapa.size > maximo) mapa.delete(mapa.keys().next().value);
 	return valor;
 }
+function debeAvisar(estado, { activo = true, avisados = /* @__PURE__ */ new Set() } = {}) {
+	if (!activo || estado?.nivel !== "rojo" || !estado.dominio) return false;
+	return !avisados.has(estado.dominio);
+}
+function textoAviso(estado) {
+	const motivo = estado?.motivos?.[0] ?? "Encontramos señales fuertes de engaño.";
+	const corto = motivo.length > 140 ? `${motivo.slice(0, 139).trimEnd()}…` : motivo;
+	return {
+		titulo: `Rojo: ${estado?.dominio ?? "esta página"}`,
+		mensaje: `${corto} No escribas claves ni datos de una tarjeta.`
+	};
+}
+function enlaceAlPanel(url, sitio = SITIO) {
+	const destino = new URL("/panel/enlaces", sitio);
+	if (esPagina(url)) destino.searchParams.set("url", sinFragmento(url));
+	return destino.toString();
+}
 //#endregion
-export { HORAS_LISTA, MAX_MOTIVOS, MAX_RECORDADAS, analizar, debeAbrir, dominiosARevisar, esPagina, estadoDe, indiceDeAmenazas, listaVigente, peorAmenaza, recordar, urlParaAbrir };
+export { HORAS_LISTA, MAX_LARGO_AVISO, MAX_MOTIVOS, MAX_RECORDADAS, SITIO, analizar, debeAbrir, debeAvisar, dominiosARevisar, enlaceAlPanel, esPagina, estadoDe, indiceDeAmenazas, listaVigente, peorAmenaza, recordar, textoAviso, urlParaAbrir };

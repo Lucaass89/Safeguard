@@ -38,6 +38,8 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   `extension/detector.js` no se edita a mano: lo genera `npm run extension` desde `src/lib/extension.js` (mismo detector
   que la web) y la CI falla si quedó atrasado. La lista de `amenazas` se baja cada 6 horas y se busca en la compu; solo
   las páginas que no dan verde se mandan a `safelink-enriquecer`, sin la parte después de `#`.
+  Cuando da rojo avisa con una notificación (una vez por dominio, se puede apagar). "Ver el análisis completo" abre
+  `/panel/enlaces?url=…`, que solo completa el campo; si no hay sesión, el ingreso vuelve ahí (`volverTrasIngreso.js`).
 - `backend/` — solo un `package.json` de Express, sin uso real.
 - `docs/` — entregables del TFC (propuesta, ERS, casos de prueba, benchmark, competencia, diagramas, evidencia).
 

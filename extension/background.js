@@ -1,10 +1,13 @@
 import {
   analizar,
+  debeAvisar,
+  enlaceAlPanel,
   esPagina,
   estadoDe,
   indiceDeAmenazas,
   listaVigente,
   recordar,
+  textoAviso,
   urlParaAbrir,
 } from './detector.js'
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from './config.js'
@@ -33,9 +36,13 @@ const NOMBRES = {
 }
 
 const CLAVE_LISTA = 'amenazas'
+const CLAVE_AVISAR = 'avisar'
+const CLAVE_AVISADOS = 'avisados'
+const PREFIJO_AVISO = 'safelink:'
 const abiertas = new Map()
 const generacion = new Map()
 let indice = null
+const avisadosAhora = new Set()
 let bajando = null
 
 function estadoNeutro(hacer) {
@@ -53,6 +60,39 @@ async function pintar(tabId, estado) {
   const titulo = NOMBRES[estado.nivel] ? `SafeLink · ${NOMBRES[estado.nivel]} · ${estado.dominio}` : 'SafeLink'
   await chrome.action.setTitle({ tabId, title: titulo })
   await chrome.storage.session.set({ [`tab:${tabId}`]: estado })
+}
+
+async function avisarSiHaceFalta(estado) {
+  if (!debeAvisar(estado, { avisados: avisadosAhora })) return
+  avisadosAhora.add(estado.dominio)
+  const { [CLAVE_AVISAR]: activo = true } = await chrome.storage.sync.get(CLAVE_AVISAR)
+  const { [CLAVE_AVISADOS]: lista = [] } = await chrome.storage.session.get(CLAVE_AVISADOS)
+  const avisados = new Set(lista)
+  if (!debeAvisar(estado, { activo, avisados })) return
+  avisados.add(estado.dominio)
+  await chrome.storage.session.set({ [CLAVE_AVISADOS]: [...avisados] })
+  const { titulo, mensaje } = textoAviso(estado)
+  const idAviso = `${PREFIJO_AVISO}${Date.now()}`
+  await chrome.storage.session.set({ [`url:${idAviso}`]: estado.url })
+  chrome.notifications.create(idAviso, {
+    type: 'basic',
+    iconUrl: 'icons/icon128.png',
+    title: titulo,
+    message: mensaje,
+    contextMessage: 'SafeLink avisa, no bloquea.',
+    buttons: [{ title: 'Ver el análisis completo' }],
+    priority: 2,
+  })
+}
+
+function abrirAnalisis(idAviso) {
+  if (!idAviso.startsWith(PREFIJO_AVISO)) return
+  const clave = `url:${idAviso}`
+  chrome.storage.session.get(clave).then((guardado) => {
+    if (guardado[clave]) chrome.tabs.create({ url: enlaceAlPanel(guardado[clave]) })
+    chrome.notifications.clear(idAviso)
+    chrome.storage.session.remove(clave)
+  })
 }
 
 async function bajarLista() {
@@ -119,10 +159,15 @@ async function revisar(tabId, url) {
   await pintar(tabId, estadoDe(local, { indice: lista, aviso }))
 
   const paraAbrir = urlParaAbrir(local)
-  if (!paraAbrir) return
+  if (!paraAbrir) {
+    await avisarSiHaceFalta(estadoDe(local, { indice: lista, aviso }))
+    return
+  }
   const extra = await abrirUnaVez(paraAbrir)
   if (!sigue()) return
-  await pintar(tabId, estadoDe(local, { indice: lista, extra, intentoAbrir: true, aviso }))
+  const final = estadoDe(local, { indice: lista, extra, intentoAbrir: true, aviso })
+  await pintar(tabId, final)
+  await avisarSiHaceFalta(final)
 }
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -143,6 +188,10 @@ chrome.tabs.onActivated.addListener(({ tabId }) => {
     .then((tab) => revisar(tabId, tab.url ?? ''))
     .catch(() => {})
 })
+
+chrome.notifications.onClicked.addListener(abrirAnalisis)
+
+chrome.notifications.onButtonClicked.addListener((idAviso) => abrirAnalisis(idAviso))
 
 chrome.runtime.onMessage.addListener((mensaje, _emisor, responder) => {
   if (mensaje?.tipo !== 'actual') return
