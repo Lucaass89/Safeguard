@@ -56,8 +56,8 @@
 }
 
 body:has(.landing-puertas) .instalar-app {
-  border-top-color: #1e2a3a;
-  background: #10161e;
+  border-top-color: #1e2f52;
+  background: #0d1830;
   color: #f4f7fb;
 }
 

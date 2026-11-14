@@ -12,11 +12,11 @@
 }
 
 html[data-tema='oscuro'] .probador {
-  --p-tinta: #f3f4f6;
+  --p-tinta: #e6edf7;
   --p-suave: #a9b7cc;
-  --p-linea: #22314a;
-  --p-papel: #111c2e;
-  --p-campo: #0a1220;
+  --p-linea: #1e2f52;
+  --p-papel: #0d1830;
+  --p-campo: #081022;
   --p-acento: #8eb4ff;
   --p-verde: #34d399;
   --p-amarillo: #fbbf24;

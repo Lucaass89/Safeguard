@@ -179,7 +179,7 @@ function Landing() {
 
     function pintar() {
       const claro = document.documentElement.dataset.tema !== 'oscuro'
-      meta?.setAttribute('content', claro ? '#ffffff' : '#0b0f17')
+      meta?.setAttribute('content', claro ? '#ffffff' : '#070d1a')
     }
 
     pintar()

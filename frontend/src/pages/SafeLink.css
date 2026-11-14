@@ -20,9 +20,9 @@
 }
 
 html[data-tema='oscuro'] .slapp {
-  color: #e6eef4;
+  color: #e6edf7;
   --sl-secundario: #d5deea;
-  --sl-hero: #172033;
+  --sl-hero: #1e2f52;
   --sl-hero-borde: #314664;
   --sl-boton: #1a52be;
   --sl-boton-texto: #ffffff;

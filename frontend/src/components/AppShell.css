@@ -10,16 +10,16 @@
 }
 
 html[data-tema='oscuro'] .app-shell {
-  --sg-bg: #0b0f17;
-  --sg-surface: #131a26;
-  --sg-text: #f3f4f6;
-  --sg-muted: #9ca3af;
-  --sg-line: #26334d;
+  --sg-bg: #070d1a;
+  --sg-surface: #0d1830;
+  --sg-text: #e6edf7;
+  --sg-muted: #94a3b8;
+  --sg-line: #1e2f52;
   --sg-blue: #1a52be;
   --sg-accent: var(--sg-blue);
   --sg-enlace: #8fb2ff;
   --sg-texto-2: #d5deea;
-  --sg-tonal: color-mix(in srgb, #f3f4f6 6%, transparent);
+  --sg-tonal: color-mix(in srgb, #e6edf7 6%, transparent);
   color-scheme: dark;
 }
 
@@ -111,7 +111,7 @@ html[data-tema='claro'] .app-shell {
 }
 
 html[data-tema='oscuro'] .app-nav {
-  background: #10161e;
+  background: #0d1830;
 }
 
 html[data-tema='claro'] .app-nav-activa .app-nav-icono,

@@ -16,9 +16,9 @@
   margin: 4rem auto;
   padding: 2.5rem;
   min-height: 0;
-  background: #131a26;
-  color: #f3f4f6;
-  border: 1px solid #26334d;
+  background: #0d1830;
+  color: #e6edf7;
+  border: 1px solid #1e2f52;
   border-radius: 16px;
   box-shadow: 0 10px 25px -5px rgb(0 0 0 / 50%);
   text-align: center;
@@ -42,11 +42,11 @@
 }
 
 .sim-leccion p {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sim-leccion .sim-nota {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sim-boton {

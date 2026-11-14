@@ -10,14 +10,14 @@ html[data-tema='claro'] {
 }
 
 html[data-tema='oscuro'] {
-  --sg-bg: #0b0f17;
-  --sg-surface: #131a26;
-  --sg-text: #f3f4f6;
-  --sg-muted: #9ca3af;
-  --sg-line: #26334d;
+  --sg-bg: #070d1a;
+  --sg-surface: #0d1830;
+  --sg-text: #e6edf7;
+  --sg-muted: #94a3b8;
+  --sg-line: #1e2f52;
   --sg-accent: #1a52be;
   color-scheme: dark;
-  background: #0b0f17;
+  background: #070d1a;
 }
 
 .tema-control {
@@ -69,19 +69,19 @@ html[data-tema='oscuro'] {
 }
 
 html[data-tema='oscuro'] .sg-landing {
-  --ink: #e6eef4;
-  --muted: #b4c4d0;
-  --line: #3d5163;
-  --nav-activo: color-mix(in srgb, var(--ink) 16%, #243444);
-  --tinta: #314556;
-  --tinta-fuerte: #071018;
-  background: #1b2836;
-  color: #e6eef4;
+  --ink: #e6edf7;
+  --muted: #94a3b8;
+  --line: #1e2f52;
+  --nav-activo: color-mix(in srgb, var(--ink) 16%, #13254a);
+  --tinta: #13254a;
+  --tinta-fuerte: #070d1a;
+  background: #0b1426;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .tema-control {
   background: #2c3d4e;
-  border-color: #3d5163;
+  border-color: #1e2f52;
 }
 
 html[data-tema='oscuro'] .tema-control button {
@@ -119,7 +119,7 @@ html[data-tema='oscuro'] .sg-landing .nav-fin .main-nav {
 
 @media (min-width: 901px) {
   html[data-tema='oscuro'] .sg-landing .nav-app {
-    border-left-color: #3d5163;
+    border-left-color: #1e2f52;
   }
 
   html[data-tema='oscuro'] .sg-landing .main-nav > a:not(.nav-cta):hover,
@@ -144,12 +144,12 @@ html[data-tema='oscuro'] .sg-landing .nav-fin .main-nav {
   html[data-tema='oscuro'] .sg-landing .main-nav .nav-salir {
     border-color: #6d8496;
     background: transparent;
-    color: #e6eef4;
+    color: #e6edf7;
   }
 
   html[data-tema='oscuro'] .sg-landing .main-nav .nav-salir:hover {
     background: var(--nav-activo);
-    border-color: #e6eef4;
+    border-color: #e6edf7;
     color: var(--ink);
   }
 }
@@ -168,7 +168,7 @@ html[data-tema='oscuro'] .nota a {
 
 html[data-tema='oscuro'] .sg-landing .footer-wrap p,
 html[data-tema='oscuro'] .sg-landing .footer-links {
-  color: #b4c4d0;
+  color: #94a3b8;
 }
 
 html[data-tema='oscuro'] .sg-landing .eyebrow {
@@ -176,7 +176,7 @@ html[data-tema='oscuro'] .sg-landing .eyebrow {
 }
 
 html[data-tema='oscuro'] .sg-landing .site-footer {
-  background: #1b2836;
+  background: #0b1426;
 }
 
 html[data-tema='oscuro'] .sg-landing .text-link {
@@ -185,7 +185,7 @@ html[data-tema='oscuro'] .sg-landing .text-link {
 
 html[data-tema='oscuro'] .sg-landing .producto-phish {
   background: var(--tinta-fuerte);
-  border-block: 1px solid #3d5163;
+  border-block: 1px solid #1e2f52;
 }
 
 html[data-tema='oscuro'] .sg-landing .producto-phish .text-link {
@@ -194,20 +194,20 @@ html[data-tema='oscuro'] .sg-landing .producto-phish .text-link {
 
 html[data-tema='oscuro'] .pg-banda {
   background: var(--tinta-fuerte);
-  border: 1px solid #3d5163;
+  border: 1px solid #1e2f52;
 }
 
 html[data-tema='oscuro'] .mesa-hoja,
 html[data-tema='oscuro'] .sg-landing .acceso-caja,
 html[data-tema='oscuro'] .sg-landing .acceso-pestanas button.activa,
 html[data-tema='oscuro'] .sg-landing .acceso-form input {
-  background: #243444;
-  color: #e6eef4;
+  background: #13254a;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .pg,
 html[data-tema='oscuro'] .sl {
-  color: #e6eef4;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .pg-riel p,
@@ -219,39 +219,39 @@ html[data-tema='oscuro'] .sl-lado p,
 html[data-tema='oscuro'] .sl-lugares dd,
 html[data-tema='oscuro'] .nota p,
 html[data-tema='oscuro'] .nota li {
-  color: #b4c4d0;
+  color: #94a3b8;
 }
 
 html[data-tema='oscuro'] .pg-riel li + li,
 html[data-tema='oscuro'] .pg-incluye div,
 html[data-tema='oscuro'] .sl-lugares div {
-  border-color: #3d5163;
+  border-color: #1e2f52;
 }
 
 html[data-tema='oscuro'] .sl-secundario {
-  color: #e6eef4 !important;
+  color: #e6edf7 !important;
   border-color: #8eb4ff;
 }
 
 html[data-tema='oscuro'] .elegir h1,
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .mesa-saludo,
 html[data-tema='oscuro'] .sg-landing .acceso-caja h1 {
-  color: #e6eef4;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .sg-landing .panel-lienzo {
-  --sg-bg: #1b2836;
-  --sg-surface: #243444;
-  --sg-text: #e6eef4;
-  --sg-muted: #b4c4d0;
-  --sg-line: #3d5163;
+  --sg-bg: #0b1426;
+  --sg-surface: #13254a;
+  --sg-text: #e6edf7;
+  --sg-muted: #94a3b8;
+  --sg-line: #1e2f52;
   --sg-accent: #8eb4ff;
-  color: #e6eef4;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .panel-header h1,
 html[data-tema='oscuro'] .sg-landing .panel-lienzo h2 {
-  color: #e6eef4;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .perfil-peligro h2,
@@ -262,12 +262,12 @@ html[data-tema='oscuro'] .sg-landing .perfil-modal h2 {
 
 html[data-tema='oscuro'] .perfil-nota,
 html[data-tema='oscuro'] .perfil-candado {
-  color: #b4c4d0;
+  color: #94a3b8;
 }
 
 html[data-tema='oscuro'] .perfil .panel-campo input[readonly] {
   background: #172230;
-  border-color: #3d5163;
+  border-color: #1e2f52;
   color: var(--sg-muted);
 }
 
@@ -277,15 +277,15 @@ html[data-tema='oscuro'] .panel-empresas .panel-campo input,
 html[data-tema='oscuro'] .panel-empresas .panel-campo textarea,
 html[data-tema='oscuro'] .panel-empresas .panel-campo select,
 html[data-tema='oscuro'] .check-empleado {
-  background: #1b2836;
-  border-color: #3d5163;
-  color: #e6eef4;
+  background: #0b1426;
+  border-color: #1e2f52;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .check-empleado:has(input:checked) {
   border-color: #8eb4ff;
   background: #2a4060;
-  color: #e6eef4;
+  color: #e6edf7;
 }
 
 html[data-tema='oscuro'] .mesa-hoja a:hover {
@@ -299,7 +299,7 @@ html[data-tema='oscuro'] .mesa-hoja a span:last-child {
 
 html[data-tema='oscuro'] .sg-landing .panel-lienzo .panel-boton-borde {
   background: #2c3d4e;
-  border-color: #3d5163;
+  border-color: #1e2f52;
   color: #8eb4ff;
 }
 
@@ -311,48 +311,48 @@ html[data-tema='oscuro'] .sg-landing .acceso-texto,
 html[data-tema='oscuro'] .sg-landing .acceso-estado,
 html[data-tema='oscuro'] .sg-landing .separador,
 html[data-tema='oscuro'] .sg-landing .acceso-pestanas button {
-  color: #b4c4d0;
+  color: #94a3b8;
 }
 
 html[data-tema='oscuro'] .sg-landing .boton-google,
 html[data-tema='oscuro'] .sg-landing .boton-google:hover {
   background: #2c3d4e;
-  color: #e6eef4;
-  border-color: #3d5163;
+  color: #e6edf7;
+  border-color: #1e2f52;
 }
 
 html[data-tema='oscuro'] .sg-landing .separador::before,
 html[data-tema='oscuro'] .sg-landing .separador::after {
-  background: #3d5163;
+  background: #1e2f52;
 }
 
 html[data-tema='oscuro'] .sg-landing .acceso-pestanas {
-  background: #1b2836;
+  background: #0b1426;
 }
 
 html[data-tema='oscuro'] .sg-landing .acceso-form input {
-  border-color: #3d5163;
+  border-color: #1e2f52;
 }
 
 html[data-tema='oscuro'] .sg-landing .acceso-caja {
-  border-color: #3d5163;
+  border-color: #1e2f52;
 }
 
 html[data-tema='oscuro'] .sg-landing .acceso-aviso {
-  background: #1b2836;
-  color: #e6eef4;
-  border-color: #3d5163;
+  background: #0b1426;
+  color: #e6edf7;
+  border-color: #1e2f52;
 }
 
 @media (max-width: 850px) {
   html[data-tema='oscuro'] .sg-landing .main-nav {
-    background: #243444;
+    background: #13254a;
     box-shadow: 0 16px 40px rgb(0 0 0 / 28%);
   }
 }
 
 @media (min-width: 901px) {
   html[data-tema='oscuro'] .mesa-grupos section {
-    background: #243444;
+    background: #13254a;
   }
 }

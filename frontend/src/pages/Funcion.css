@@ -2,10 +2,10 @@
   --fn-verde: #34d399;
   --fn-amarillo: #fbbf24;
   --fn-rojo: #f87171;
-  --fn-texto: var(--sg-text, #f3f4f6);
-  --fn-suave: var(--sg-muted, #9ca3af);
-  --fn-borde: var(--sg-line, #26334d);
-  --fn-fondo: var(--sg-surface, #131a26);
+  --fn-texto: var(--sg-text, #e6edf7);
+  --fn-suave: var(--sg-muted, #94a3b8);
+  --fn-borde: var(--sg-line, #1e2f52);
+  --fn-fondo: var(--sg-surface, #0d1830);
   --fn-acento: var(--sg-accent, #1a52be);
 
   padding-block: 8px 72px;
