@@ -24,6 +24,51 @@ const beneficios = [
   ['nube', 'Sin instalar nada', 'PhishGuard funciona en la nube. SafeLink avisa y no bloquea la navegación.'],
 ]
 
+const comoTrabaja = [
+  {
+    icono: 'enlace',
+    titulo: 'Enlace',
+    como: 'Primero mira la dirección en tu dispositivo: si imita a una marca conocida, si usa letras parecidas o trucos para disfrazarse. Después la abre por vos, sigue a dónde lleva de verdad, se fija hace cuánto existe el sitio y si la página pide claves o datos de tarjeta.',
+    con: 'Reglas propias, una lista de 44 marcas argentinas y conocidas, registros públicos de dominios y certificados, y los reportes de otras personas.',
+  },
+  {
+    icono: 'qr',
+    titulo: 'Código QR',
+    como: 'La cámara lee el código y te muestra qué trae antes de abrirlo: una página, una red WiFi, un contacto o un pago. Si es una página, la revisa como un enlace. Si es un pago, controla que el código y el CBU sean válidos.',
+    con: 'La cámara del celular y un lector de QR que funciona dentro de tu dispositivo.',
+  },
+  {
+    icono: 'pdf',
+    titulo: 'PDF',
+    como: 'Lo revisa sin subirlo: el archivo no sale de tu dispositivo. Busca lo que un PDF común no necesita, como programas escondidos, acciones que se ejecutan solas o archivos adjuntos, y revisa cada enlace que trae.',
+    con: 'Un lector de PDF que funciona en tu navegador.',
+  },
+  {
+    icono: 'correo',
+    titulo: 'Correo',
+    como: 'Mira quién lo mandó de verdad: si el servidor que lo envió está autorizado, si el nombre que ves coincide con la dirección real, si al contestar la respuesta se va a otro lado y si los enlaces llevan a donde dicen.',
+    con: 'Los controles que traen los correos para comprobar el remitente y el mismo análisis de enlaces.',
+  },
+  {
+    icono: 'whatsapp',
+    titulo: 'WhatsApp',
+    como: 'Lee el mensaje buscando los engaños más comunes: el cuento del número nuevo, el pedido del código de verificación, premios, apuro, pedidos de CBU o de instalar una app. Los enlaces se revisan aparte.',
+    con: 'Frases y patrones de estafas reales en español y el análisis de enlaces.',
+  },
+  {
+    icono: 'extension',
+    titulo: 'Extensión de Chrome',
+    como: 'Revisa cada página que abrís y pinta el ícono de la barra con el color. Avisa, no bloquea: vos decidís si seguís.',
+    con: 'El mismo detector de SafeLink, adentro de Chrome.',
+  },
+  {
+    icono: 'faro',
+    titulo: 'Faro',
+    como: 'Si un resultado te deja dudas, le preguntás a Faro y te lo explica con palabras simples. No cambia el color, solo lo explica.',
+    con: 'Un asistente de inteligencia artificial (Gemini, de Google).',
+  },
+]
+
 const semaforo = [
   ['verde', 'Verde', 'No aparecieron señales de riesgo.'],
   ['amarillo', 'Amarillo', 'Hay algo raro. Revisá antes de seguir.'],
@@ -347,6 +392,33 @@ function Landing() {
                 </li>
               ))}
             </ul>
+          </section>
+
+          <section className="portada-como" aria-labelledby="portada-como-titulo">
+            <div className="portada-como-cabeza">
+              <h2 id="portada-como-titulo">Cómo trabaja SafeLink</h2>
+              <p>
+                Cada señal sospechosa suma puntos y el total da el color. Para
+                llegar a rojo hace falta al menos una señal fuerte, así no te
+                asustamos por un detalle. El color lo decide nuestro propio
+                detector, que probamos con más de 3.000 direcciones entre sitios
+                conocidos e imitaciones de marcas.
+              </p>
+            </div>
+            <div className="portada-como-grilla">
+              {comoTrabaja.map((funcion) => (
+                <article key={funcion.titulo} className="portada-como-tarjeta">
+                  <span className="portada-beneficio-icono">
+                    <IconoFuncion nombre={funcion.icono} className="portada-icono" />
+                  </span>
+                  <h3>{funcion.titulo}</h3>
+                  <p>{funcion.como}</p>
+                  <p className="portada-como-con">
+                    <strong>Con qué:</strong> {funcion.con}
+                  </p>
+                </article>
+              ))}
+            </div>
           </section>
 
           <section className="portada-dos-columnas" aria-label="Qué es SafeGuard">

@@ -243,7 +243,7 @@ html[data-tema='oscuro'] .portada .portada-hero .portada-boton-borde-blanco {
   border-color: rgb(148 163 184 / 38%);
 }
 
-html[data-tema='oscuro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-accesos a, .portada .portada-tablero, .portada .portada-luz, .portada .portada-cierre-tarjeta, .probador, .elegir-personas, .form-empresa) {
+html[data-tema='oscuro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-como-tarjeta, .portada .portada-accesos a, .portada .portada-tablero, .portada .portada-luz, .portada .portada-cierre-tarjeta, .probador, .elegir-personas, .form-empresa) {
   border: 1px solid var(--sg-borde-suave);
   background: var(--sg-vidrio);
   backdrop-filter: blur(10px);
