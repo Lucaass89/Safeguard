@@ -166,7 +166,7 @@ html[data-tema='claro'] body :is(
   .panel-boton.panel-boton-borde
 ) {
   border-color: #c9d4e4;
-  background: #ffffff;
+  background: #f3f5f8;
   color: #0f1b2d;
 }
 
@@ -441,24 +441,24 @@ html[data-tema='oscuro'] body .panel-lienzo :is(.tabla-wrap, .tabla-equipo td) {
 }
 
 html[data-tema='claro'] {
-  --sg-bg: #eef2f8;
-  --sg-surface: #ffffff;
+  --sg-bg: #dde3ec;
+  --sg-surface: #f3f5f8;
   --sg-text: #0b1a33;
   --sg-muted: #4b5b74;
-  --sg-line: #d6dfec;
+  --sg-line: #c9d2df;
   --sg-accent: #1a52be;
   --sg-titulo: #0b1a33;
   --sg-cuerpo: #33435c;
   --sg-sombra-caja: 0 1px 2px rgb(11 26 51 / 5%), 0 12px 32px -20px rgb(11 26 51 / 28%);
 
-  background: #eef2f8;
+  background: #dde3ec;
 }
 
 html[data-tema='claro'] body {
   background:
-    radial-gradient(1000px 560px at 88% 0, rgb(59 130 246 / 9%), transparent 62%),
-    linear-gradient(180deg, #f5f8fc 0%, #eef2f8 45%, #e8eef7 100%);
-  background-color: #eef2f8;
+    radial-gradient(1000px 560px at 88% 0, rgb(59 130 246 / 6%), transparent 62%),
+    linear-gradient(180deg, #e4e9f0 0%, #dde3ec 45%, #d6dde8 100%);
+  background-color: #dde3ec;
   color: var(--sg-cuerpo);
 }
 
@@ -475,14 +475,14 @@ html[data-tema='claro'] .sg-landing {
 }
 
 html[data-tema='claro'] .portada {
-  --h-fondo: #ffffff;
-  --h-gris: #ffffff;
-  --h-linea: #d9e1ee;
+  --h-fondo: #f3f5f8;
+  --h-gris: #f3f5f8;
+  --h-linea: #cdd5e1;
   --h-tinta: #0b1a33;
   --h-suave: #4b5b74;
   --h-verde: #1a52be;
   --h-verde-hondo: #153f94;
-  --h-verde-suave: #e6eefb;
+  --h-verde-suave: #cfd7e3;
   --h-banda: linear-gradient(135deg, #0b1a33 0%, #0f2350 55%, #163a7a 100%);
   --h-banda-texto: #f1f5fb;
   --h-banda-suave: #c4d0e2;
@@ -500,7 +500,7 @@ html[data-tema='claro'] body .portada .portada-hero .portada-hero-texto :is(h1, 
 }
 
 html[data-tema='claro'] body .portada .portada-hero .probador {
-  background: #ffffff;
+  background: #f3f5f8;
 }
 
 html[data-tema='claro'] body .portada .portada-hero .probador h2.probador-titulo {
@@ -516,14 +516,14 @@ html[data-tema='claro'] body .portada .portada-hero-texto > p {
 }
 
 html[data-tema='claro'] .portada .portada-utilidades {
-  border-bottom-color: #dfe6f1;
-  background: rgb(245 248 252 / 80%);
+  border-bottom-color: #cfd7e3;
+  background: rgb(226 231 239 / 88%);
 }
 
 html[data-tema='claro'] .portada .portada-cabecera,
 html[data-tema='claro'] body .sg-landing .site-header {
-  border-bottom-color: #dfe6f1;
-  background: rgb(255 255 255 / 82%);
+  border-bottom-color: #cfd7e3;
+  background: rgb(236 240 245 / 88%);
   backdrop-filter: blur(14px);
 }
 
@@ -543,23 +543,23 @@ html[data-tema='claro'] body .portada .portada-hero .portada-boton-borde-blanco 
 }
 
 html[data-tema='claro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-como-tarjeta, .portada .portada-accesos a, .portada .portada-tablero, .portada .portada-luz, .portada .portada-cierre-tarjeta, .elegir-personas, .form-empresa, .sg-landing .pg-tablero, .sg-landing .sl-banda, .sg-landing .pg-precio-pago) {
-  border: 1px solid #dbe3ef;
-  background: #ffffff;
+  border: 1px solid #cdd5e1;
+  background: #f3f5f8;
   box-shadow: var(--sg-sombra-caja);
 }
 
 html[data-tema='claro'] body .portada .portada-caja .portada-luz,
 html[data-tema='claro'] body .portada .portada-caja .portada-accesos a {
-  background: #f5f8fc;
+  background: #e8ecf2;
   box-shadow: none;
 }
 
 html[data-tema='claro'] body .portada .portada-tablero :is(.portada-tablero-barras, li) {
-  background: #f1f5fb;
+  background: #e6ebf1;
 }
 
 html[data-tema='claro'] body .probador {
-  border: 1px solid #dbe3ef;
+  border: 1px solid #cdd5e1;
   box-shadow: 0 30px 60px -32px rgb(7 13 26 / 55%);
 }
 
@@ -600,14 +600,23 @@ html[data-tema='claro'] body .sg-landing .site-footer .brand > span:last-child >
 
 html[data-tema='claro'] body .panel-lienzo :is(.panel-seccion, .panel-card, .panel-plan, .panel-datos-empresa details, .tarjeta-metrica, .metricas-franja > *),
 html[data-tema='claro'] body .panel-barra {
-  border: 1px solid #dbe3ef;
+  border: 1px solid #cdd5e1;
   border-radius: var(--sg-radio-caja);
-  background: #ffffff;
+  background: #f3f5f8;
   box-shadow: var(--sg-sombra-caja);
 }
 
 html[data-tema='claro'] body .panel-lienzo :is(input, select, textarea):not([type='checkbox']):not([type='radio']) {
-  border-color: #d6dfec;
-  background: #f7f9fc;
+  border-color: #c9d2df;
+  background: #e9edf3;
   color: #0b1a33;
+}
+
+html[data-tema='claro'] body :is(.sg-landing .acceso-caja, .sg-landing .pg-banda, .phish-pago, .mesa-hoja) {
+  border-color: #cdd5e1;
+  background: #f3f5f8;
+}
+
+html[data-tema='claro'] body .sg-landing .acceso-pestanas button.activa {
+  background: #f3f5f8;
 }
