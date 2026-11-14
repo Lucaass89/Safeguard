@@ -4,6 +4,7 @@ import Marco from '../components/Marco.jsx'
 import { destinoTrasIngreso } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
+import { elegirDestino, guardarVolver, leerVolver, olvidarVolver } from '../lib/volverTrasIngreso.js'
 import './Ingresar.css'
 
 const avisosConocidos = {
@@ -22,12 +23,6 @@ const mensajes = {
 
 function traducir(error) {
   return mensajes[error.message] ?? error.message
-}
-
-function destinoSeguro(valor) {
-  if (typeof valor !== 'string') return '/panel'
-  if (!valor.startsWith('/') || valor.startsWith('//')) return '/panel'
-  return valor
 }
 
 function errorDeRedirect() {
@@ -78,7 +73,7 @@ function Ingresar() {
   const navegar = useNavigate()
 
   const crearCuenta = modo === 'crear'
-  const destino = destinoTrasIngreso(destinoSeguro(params.get('volver')))
+  const destino = destinoTrasIngreso(elegirDestino(params.get('volver'), leerVolver()))
 
   async function manejarEnvio(evento) {
     evento.preventDefault()
@@ -107,6 +102,7 @@ function Ingresar() {
     }
 
     if (data.session) {
+      olvidarVolver()
       navegar(destino)
       return
     }
@@ -124,6 +120,7 @@ function Ingresar() {
       return
     }
 
+    guardarVolver(params.get('volver'))
     const { error: fallo } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/ingresar` },
@@ -149,7 +146,10 @@ function Ingresar() {
     )
   }
 
-  if (sesion) return <Navigate to={destino} replace />
+  if (sesion) {
+    olvidarVolver()
+    return <Navigate to={destino} replace />
+  }
 
   return (
     <Marco interior>

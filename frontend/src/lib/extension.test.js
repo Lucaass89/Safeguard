@@ -3,6 +3,10 @@ import { test } from 'node:test'
 import { analizar } from './analisis.js'
 import {
   debeAbrir,
+  debeAvisar,
+  enlaceAlPanel,
+  MAX_LARGO_AVISO,
+  textoAviso,
   estadoDe,
   esPagina,
   indiceDeAmenazas,
@@ -102,4 +106,36 @@ test('recordar guarda las últimas y descarta las más viejas', () => {
   recordar(mapa, 'c', 4, 2)
   assert.deepEqual([...mapa.keys()], ['a', 'c'])
   assert.equal(mapa.get('a'), 3)
+})
+
+test('avisa una sola vez por dominio, solo en rojo y solo si está activado', () => {
+  const rojo = { nivel: 'rojo', dominio: 'bna-acceso.com', motivos: ['x'] }
+  assert.equal(debeAvisar(rojo), true)
+  assert.equal(debeAvisar(rojo, { avisados: new Set(['bna-acceso.com']) }), false)
+  assert.equal(debeAvisar(rojo, { activo: false }), false)
+  assert.equal(debeAvisar({ ...rojo, nivel: 'amarillo' }), false)
+  assert.equal(debeAvisar({ nivel: 'rojo', dominio: '' }), false)
+  assert.equal(debeAvisar(null), false)
+})
+
+test('el aviso trae el dominio, el primer motivo y qué no hacer', () => {
+  const estado = estadoDe(analizar('https://bna-acceso.com/clave'), { indice: new Map() })
+  const aviso = textoAviso(estado)
+  assert.equal(aviso.titulo, 'Rojo: bna-acceso.com')
+  assert.ok(aviso.mensaje.startsWith(estado.motivos[0]))
+  assert.ok(aviso.mensaje.endsWith('No escribas claves ni datos de una tarjeta.'))
+})
+
+test('un motivo largo se corta en el aviso', () => {
+  const aviso = textoAviso({ nivel: 'rojo', dominio: 'a.com', motivos: ['palabra '.repeat(40)] })
+  const motivo = aviso.mensaje.split(' No escribas')[0]
+  assert.ok(motivo.length <= MAX_LARGO_AVISO)
+  assert.ok(motivo.endsWith('…'))
+})
+
+test('el enlace al panel lleva la dirección sin la parte después de #', () => {
+  const enlace = new URL(enlaceAlPanel('https://bna-acceso.com/clave?x=1#token=9'))
+  assert.equal(enlace.origin + enlace.pathname, 'https://safeguardd.vercel.app/panel/enlaces')
+  assert.equal(enlace.searchParams.get('url'), 'https://bna-acceso.com/clave?x=1')
+  assert.equal(new URL(enlaceAlPanel('chrome://extensions')).search, '')
 })

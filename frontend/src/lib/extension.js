@@ -14,6 +14,8 @@ export { analizar }
 export const HORAS_LISTA = 6
 export const MAX_MOTIVOS = 4
 export const MAX_RECORDADAS = 200
+export const SITIO = 'https://safeguardd.vercel.app'
+export const MAX_LARGO_AVISO = 140
 
 const PESO = { rojo: 2, amarillo: 1 }
 
@@ -87,4 +89,24 @@ export function recordar(mapa, clave, valor, maximo = MAX_RECORDADAS) {
   mapa.set(clave, valor)
   while (mapa.size > maximo) mapa.delete(mapa.keys().next().value)
   return valor
+}
+
+export function debeAvisar(estado, { activo = true, avisados = new Set() } = {}) {
+  if (!activo || estado?.nivel !== 'rojo' || !estado.dominio) return false
+  return !avisados.has(estado.dominio)
+}
+
+export function textoAviso(estado) {
+  const motivo = estado?.motivos?.[0] ?? 'Encontramos señales fuertes de engaño.'
+  const corto = motivo.length > MAX_LARGO_AVISO ? `${motivo.slice(0, MAX_LARGO_AVISO - 1).trimEnd()}…` : motivo
+  return {
+    titulo: `Rojo: ${estado?.dominio ?? 'esta página'}`,
+    mensaje: `${corto} No escribas claves ni datos de una tarjeta.`,
+  }
+}
+
+export function enlaceAlPanel(url, sitio = SITIO) {
+  const destino = new URL('/panel/enlaces', sitio)
+  if (esPagina(url)) destino.searchParams.set('url', sinFragmento(url))
+  return destino.toString()
 }
