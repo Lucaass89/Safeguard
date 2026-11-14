@@ -559,6 +559,7 @@ html[data-tema='claro'] body .portada .portada-tablero :is(.portada-tablero-barr
 }
 
 html[data-tema='claro'] body .probador {
+  background: #f3f5f8;
   border: 1px solid #cdd5e1;
   box-shadow: 0 30px 60px -32px rgb(7 13 26 / 55%);
 }
@@ -618,5 +619,50 @@ html[data-tema='claro'] body :is(.sg-landing .acceso-caja, .sg-landing .pg-banda
 }
 
 html[data-tema='claro'] body .sg-landing .acceso-pestanas button.activa {
+  background: #f3f5f8;
+}
+
+html[data-tema='claro'] body :is(.mesa-hoja, .mesa-grupos section, .check-empleado, .azar-cantidad input, .panel-personas .panel-campo :is(input, textarea), .panel-empresas .panel-campo :is(input, textarea, select)) {
+  border-color: #c9d2df;
+  background: #e9edf3;
+  color: #0b1a33;
+}
+
+html[data-tema='claro'] body :is(.mesa-hoja, .mesa-grupos section) {
+  background: #f3f5f8;
+}
+
+html[data-tema='claro'] body .check-empleado:has(input:checked) {
+  border-color: #8eb0d8;
+  background: #dfe6f1;
+}
+
+html[data-tema='claro'] body .mesa-hoja a span:last-child {
+  background: #e6ebf1;
+}
+
+html[data-tema='claro'] body :is(.sg-landing .panel-lienzo .panel-boton-borde, .bienvenida-marca) {
+  background: #f3f5f8;
+}
+
+html[data-tema='claro'] body .instalar-app {
+  border-top-color: #cdd5e1;
+  background: #e8ecf2;
+}
+
+@media (max-width: 850px) {
+  html[data-tema='claro'] body .sg-landing .main-nav {
+    background: #f3f5f8;
+  }
+}
+
+html[data-tema='claro'] body :is(.app-shell, .sg-landing .panel-lienzo) {
+  --sg-bg: #dde3ec;
+  --sg-surface: #f3f5f8;
+  --sg-line: #c9d2df;
+}
+
+html[data-tema='claro'] body .slapp-entrada {
+  border-color: #c9d2df;
   background: #f3f5f8;
 }
