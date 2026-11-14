@@ -109,10 +109,25 @@ export function enlacesEn(texto) {
   )
 }
 
-function extraerNumeros(texto) {
-  return (texto.match(RE_TEL) ?? [])
+const RE_GRUPO_LARGO = /\d[\d\s.-]{18,34}\d/g
+const DIGITOS_CBU = 22
+const MAX_DIGITOS_TELEFONO = 15
+
+function esCbu(grupo) {
+  return grupo.replace(/\D/g, '').length === DIGITOS_CBU
+}
+
+export function sinCbu(texto) {
+  return texto.replace(RE_GRUPO_LARGO, (grupo) => (esCbu(grupo) ? ' ' : grupo))
+}
+
+export function extraerNumeros(texto) {
+  return (sinCbu(texto).match(RE_TEL) ?? [])
     .map((n) => n.trim())
-    .filter((n) => n.replace(/\D/g, '').length >= 8)
+    .filter((n) => {
+      const digitos = n.replace(/\D/g, '').length
+      return digitos >= 8 && digitos <= MAX_DIGITOS_TELEFONO
+    })
 }
 
 function numeroRaro(numero) {
@@ -179,8 +194,8 @@ export function analizarWhatsapp(crudo) {
     puntos += 30
     motivos.push('Pide un CBU, un CVU o un alias. Un banco no pide eso por WhatsApp.')
   } else {
-    const grupos = texto.match(/\d[\d\s.-]{18,34}\d/g) ?? []
-    if (grupos.some((grupo) => grupo.replace(/\D/g, '').length === 22)) {
+    const grupos = texto.match(RE_GRUPO_LARGO) ?? []
+    if (grupos.some(esCbu)) {
       puntos += 30
       motivos.push('Incluye un número de 22 dígitos, el largo de un CBU o un CVU.')
     }
