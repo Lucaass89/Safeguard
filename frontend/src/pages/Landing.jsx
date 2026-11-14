@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
+import CarruselEstafas from '../components/CarruselEstafas.jsx'
 import ElegirPersonas from '../components/ElegirPersonas.jsx'
 import IconoFuncion from '../components/IconoFuncion.jsx'
 import Logo from '../components/Logo.jsx'
@@ -420,6 +421,8 @@ function Landing() {
               ))}
             </div>
           </section>
+
+          <CarruselEstafas />
 
           <section className="portada-dos-columnas" aria-label="Qué es SafeGuard">
             <p>

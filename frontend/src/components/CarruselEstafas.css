@@ -1,0 +1,332 @@
+.carrusel {
+  --c-tinta: var(--h-tinta, #0f1b2d);
+  --c-suave: var(--h-suave, #52627a);
+  --c-linea: var(--h-linea, #dce3ee);
+  --c-papel: var(--h-fondo, #ffffff);
+  --c-campo: var(--h-gris, #f5f7fb);
+  --c-acento: var(--h-verde, #1a52be);
+  --c-verde: #13795b;
+  --c-amarillo: #9a6400;
+  --c-rojo: #b42318;
+  --c-gris: #52627a;
+  --c-wa: #e7f6dd;
+  --c-sms: #e8edf5;
+
+  min-width: 0;
+  max-width: 100%;
+  font-family: var(--sg-sans);
+}
+
+html[data-tema='oscuro'] .carrusel {
+  --c-verde: #34d399;
+  --c-amarillo: #fbbf24;
+  --c-rojo: #f87171;
+  --c-gris: #93a3ba;
+  --c-wa: #173a2c;
+  --c-sms: #1a2a4a;
+}
+
+html[data-tema='claro'] .carrusel {
+  --c-papel: #f3f5f8;
+  --c-campo: #e8ecf2;
+  --c-linea: #cdd5e1;
+  --c-wa: #dcefd2;
+  --c-sms: #dfe5ee;
+}
+
+.carrusel-cabeza {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.carrusel-cabeza > div:first-child {
+  max-width: 760px;
+}
+
+.carrusel-cabeza p {
+  margin: 16px 0 0;
+  color: var(--c-suave);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.carrusel-flechas {
+  display: flex;
+  flex: none;
+  gap: 10px;
+}
+
+.carrusel-flechas button,
+.carrusel-punto {
+  cursor: pointer;
+  font: inherit;
+}
+
+.carrusel-flechas button {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid var(--c-linea);
+  border-radius: 50%;
+  background: var(--c-papel);
+  color: var(--c-tinta);
+  font-size: 20px;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.carrusel-flechas button:hover:not(:disabled) {
+  border-color: var(--c-acento);
+  transform: translateY(-1px);
+}
+
+.carrusel-flechas button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.carrusel-flechas button:focus-visible,
+.carrusel-punto:focus-visible,
+.carrusel-pista:focus-visible {
+  outline: 2px solid var(--c-acento);
+  outline-offset: 3px;
+}
+
+.carrusel-pista {
+  display: grid;
+  grid-auto-columns: minmax(300px, calc((100% - 40px) / 3));
+  grid-auto-flow: column;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  margin: 32px 0 0;
+  padding: 4px 4px 16px;
+  overflow-x: auto;
+  list-style: none;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.carrusel-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid var(--c-linea);
+  border-radius: var(--sg-radio-caja, 16px);
+  background: var(--c-papel);
+  box-shadow: var(--sg-sombra-caja, 0 12px 32px -20px rgb(11 26 51 / 28%));
+  color: var(--c-tinta);
+  scroll-snap-align: start;
+}
+
+.carrusel-etiqueta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.carrusel-etiqueta span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c-acento) 14%, transparent);
+  color: var(--c-acento);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.carrusel-chat,
+.carrusel-correo,
+.carrusel-barra-url {
+  border: 1px solid var(--c-linea);
+  border-radius: 12px;
+  background: var(--c-campo);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.carrusel-chat {
+  padding: 14px;
+}
+
+.carrusel-chat-de {
+  margin: 0 0 8px;
+  color: var(--c-suave);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.carrusel-burbuja {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 4px 12px 12px;
+  overflow-wrap: anywhere;
+}
+
+.carrusel-chat-wa .carrusel-burbuja {
+  background: var(--c-wa);
+}
+
+.carrusel-chat-sms .carrusel-burbuja {
+  background: var(--c-sms);
+}
+
+.carrusel-correo {
+  padding: 14px;
+}
+
+.carrusel-correo p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.carrusel-correo-de {
+  color: var(--c-suave);
+  font-size: 13px;
+}
+
+.carrusel-correo-de span {
+  font-weight: 600;
+}
+
+.carrusel-correo .carrusel-correo-asunto {
+  margin: 6px 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--c-linea);
+  font-weight: 700;
+}
+
+.carrusel-barra-url {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  font-family: var(--sg-mono);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.carrusel-candado {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border: 2px solid var(--c-suave);
+  border-radius: 2px;
+}
+
+.carrusel-veredicto {
+  --luz: var(--c-gris);
+  padding: 14px 14px 14px 16px;
+  border-left: 4px solid var(--luz);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--luz) 9%, transparent);
+}
+
+.carrusel-verde { --luz: var(--c-verde); }
+.carrusel-amarillo { --luz: var(--c-amarillo); }
+.carrusel-rojo { --luz: var(--c-rojo); }
+
+.carrusel-nivel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--luz);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.carrusel-luz {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--luz);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--luz) 22%, transparent);
+}
+
+.carrusel-veredicto ul {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.carrusel-consejo {
+  margin: auto 0 0;
+  color: var(--c-suave);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.carrusel-consejo strong {
+  color: var(--c-tinta);
+}
+
+.carrusel-puntos {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.carrusel-punto {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-linea);
+  transition: width 200ms ease, background-color 200ms ease;
+}
+
+.carrusel-punto-activo {
+  width: 28px;
+  background: var(--c-acento);
+}
+
+@media (max-width: 900px) {
+  .carrusel-pista {
+    grid-auto-columns: minmax(280px, 82%);
+  }
+}
+
+@media (max-width: 640px) {
+  .carrusel-cabeza {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .carrusel-cabeza p {
+    font-size: 16px;
+  }
+
+  .carrusel-flechas {
+    display: none;
+  }
+
+  .carrusel-pista {
+    grid-auto-columns: 88%;
+    gap: 14px;
+  }
+
+  .carrusel-tarjeta {
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carrusel-flechas button,
+  .carrusel-punto {
+    transition: none;
+  }
+}
