@@ -80,6 +80,7 @@ const INVISIBLES = /\u200b|\u200c|\u200d|\u2060|\ufeff/
 const RE_URL = /(?:https?:\/\/|\bw{2,}\.)[^\s<>"']+/gi
 const RE_HOST = /\b(?:[a-z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
 const RE_TEL = /(?:\+|00)?[\d][\d\s().-]{7,18}\d/g
+const RE_CBU = /(?:\bc[bv]u\b[\s:#nº°.-]*)?(?<!\d[\s.-]?)\d(?:[\s.-]?\d){21}(?![\s.-]?\d)/gi
 
 function destapar(texto) {
   return texto
@@ -109,8 +110,12 @@ export function enlacesEn(texto) {
   )
 }
 
-function extraerNumeros(texto) {
-  return (texto.match(RE_TEL) ?? [])
+export function sinCbu(texto) {
+  return texto.replace(RE_CBU, ' ')
+}
+
+export function extraerNumeros(texto) {
+  return (sinCbu(texto).match(RE_TEL) ?? [])
     .map((n) => n.trim())
     .filter((n) => n.replace(/\D/g, '').length >= 8)
 }
