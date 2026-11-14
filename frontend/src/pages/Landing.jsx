@@ -60,7 +60,7 @@ const comoTrabaja = [
   {
     icono: 'extension',
     titulo: 'Extensión de Chrome',
-    como: 'Revisa cada página que abrís y pinta el ícono de la barra con el color. Avisa, no bloquea: vos decidís si seguís.',
+    como: 'Revisa cada página que abrís y pinta el ícono de la barra con el color. Avisa, no bloquea: vos decidís si seguís. Si la página da verde, la dirección no sale de tu compu.',
     con: 'El mismo detector de SafeLink, adentro de Chrome.',
   },
   {

@@ -28,3 +28,7 @@ jobs:
         if: always()
         run: cat eval/reporte.md >> "$GITHUB_STEP_SUMMARY"
       - run: npx vite build
+      - name: Detector de la extensión al día
+        run: |
+          npm run extension
+          git diff --exit-code -- ../extension/detector.js

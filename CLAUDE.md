@@ -35,6 +35,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
 - `extension/` — extensión de Chrome (MV3) "SafeLink": pinta un color según la pestaña activa. Avisa, no bloquea.
+  `extension/detector.js` no se edita a mano: lo genera `npm run extension` desde `src/lib/extension.js` (mismo detector
+  que la web) y la CI falla si quedó atrasado. La lista de `amenazas` se baja cada 6 horas y se busca en la compu; solo
+  las páginas que no dan verde se mandan a `safelink-enriquecer`, sin la parte después de `#`.
 - `backend/` — solo un `package.json` de Express, sin uso real.
 - `docs/` — entregables del TFC (propuesta, ERS, casos de prueba, benchmark, competencia, diagramas, evidencia).
 
@@ -46,6 +49,7 @@ npm run dev        # servidor local
 npm test           # node --test src/lib/*.test.js
 npm run eval       # evaluación del detector con eval/
 npm run build      # corre eval y después vite build
+npm run extension  # regenera extension/detector.js
 npm run lint
 ```
 
