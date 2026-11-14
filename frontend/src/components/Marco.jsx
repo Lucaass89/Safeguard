@@ -178,7 +178,7 @@ function Marco({ children, interior = false }) {
     if (!noche) return undefined
     const meta = document.querySelector('meta[name="theme-color"]')
     const previo = meta?.getAttribute('content')
-    meta?.setAttribute('content', '#070814')
+    meta?.setAttribute('content', '#070d1a')
     return () => {
       if (previo) meta?.setAttribute('content', previo)
     }

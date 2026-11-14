@@ -1,26 +1,26 @@
 html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche {
-  --ink: #f3f4f6;
-  --navy: #0b0f17;
+  --ink: #e6edf7;
+  --navy: #070d1a;
   --blue: #1a52be;
-  --muted: #9ca3af;
-  --line: #26334d;
-  --white: #f3f4f6;
+  --muted: #94a3b8;
+  --line: #1e2f52;
+  --white: #e6edf7;
   --shadow: 0 4px 14px rgb(0 0 0 / 40%);
   --nav-activo: rgb(37 99 235 / 15%);
-  --tinta: #131a26;
-  --tinta-fuerte: #0b0f17;
-  --sg-bg: #0b0f17;
-  --sg-surface: #131a26;
-  --sg-text: #f3f4f6;
-  --sg-muted: #9ca3af;
-  --sg-line: #26334d;
+  --tinta: #0d1830;
+  --tinta-fuerte: #070d1a;
+  --sg-bg: #070d1a;
+  --sg-surface: #0d1830;
+  --sg-text: #e6edf7;
+  --sg-muted: #94a3b8;
+  --sg-line: #1e2f52;
   --sg-blue: #1a52be;
   --sg-accent: #1a52be;
 
-  color: #f3f4f6;
+  color: #e6edf7;
   color-scheme: dark;
-  background: #0b0f17;
+  background: #070d1a;
 }
 
 .sg-landing.sg-noche h1,
@@ -29,7 +29,7 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .pg,
 .sg-landing.sg-noche .sl,
 .sg-landing.sg-noche .nota {
-  color: #f3f4f6;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .site-header {
@@ -40,7 +40,7 @@ html[data-tema] .sg-landing.sg-noche,
 
 .sg-landing.sg-noche .brand,
 .sg-landing.sg-noche .brand > span:last-child > span {
-  color: #f3f4f6;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .main-nav > a:not(.nav-cta),
@@ -48,7 +48,7 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .nav-panel,
 .sg-landing.sg-noche .footer-wrap p,
 .sg-landing.sg-noche .footer-links {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sg-landing.sg-noche .nav-publico > a:hover,
@@ -89,13 +89,13 @@ html[data-tema] .sg-landing.sg-noche,
 
 .sg-landing.sg-noche .main-nav.open,
 .sg-landing.sg-noche .nav-fin .main-nav.open {
-  background: #131a26;
-  border: 1px solid #26334d;
-  color: #f3f4f6;
+  background: #0d1830;
+  border: 1px solid #1e2f52;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .site-footer {
-  background: #0b0f17;
+  background: #070d1a;
   border-top-color: rgb(255 255 255 / 8%);
 }
 
@@ -108,8 +108,8 @@ html[data-tema] .sg-landing.sg-noche,
 }
 
 .sg-landing.sg-noche .pg-banda {
-  background: #131a26;
-  border: 1px solid #26334d;
+  background: #0d1830;
+  border: 1px solid #1e2f52;
 }
 
 .sg-landing.sg-noche .pg-banda .pg-cta {
@@ -124,18 +124,18 @@ html[data-tema] .sg-landing.sg-noche,
 }
 
 .sg-landing.sg-noche .pg-banda .pg-cta-secundario {
-  color: #f3f4f6;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .pg-riel,
 .sg-landing.sg-noche .pg-incluye div,
 .sg-landing.sg-noche .sl-gratis {
-  border-color: #26334d;
+  border-color: #1e2f52;
 }
 
 .sg-landing.sg-noche .pg-riel li + li,
 .sg-landing.sg-noche .pg-incluye div {
-  border-color: #26334d;
+  border-color: #1e2f52;
 }
 
 .sg-landing.sg-noche .pg-riel p,
@@ -148,7 +148,7 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .nota li,
 .sg-landing.sg-noche .sl-lado p,
 .sg-landing.sg-noche .sl-lugares dd {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sg-landing.sg-noche .sl-verde h3,
@@ -190,19 +190,19 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .sl-secundario {
   background: transparent !important;
   border-color: #3b82f6 !important;
-  color: #f3f4f6 !important;
+  color: #e6edf7 !important;
 }
 
 .sg-landing.sg-noche .acceso-caja {
-  background: #131a26;
-  border-color: #26334d;
-  color: #f3f4f6;
+  background: #0d1830;
+  border-color: #1e2f52;
+  color: #e6edf7;
   box-shadow: 0 18px 40px rgb(0 0 0 / 35%);
 }
 
 .sg-landing.sg-noche .acceso-caja h1,
 .sg-landing.sg-noche .acceso-aviso {
-  color: #f3f4f6;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .acceso-texto,
@@ -210,29 +210,29 @@ html[data-tema] .sg-landing.sg-noche,
 .sg-landing.sg-noche .separador,
 .sg-landing.sg-noche .acceso-acepto,
 .sg-landing.sg-noche .acceso-pestanas button {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sg-landing.sg-noche .boton-google {
-  background: #131a26;
-  border-color: #26334d;
-  color: #f3f4f6;
+  background: #0d1830;
+  border-color: #1e2f52;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .boton-google:hover {
-  background: #1c2536;
+  background: #1e2f52;
   border-color: #60a5fa;
 }
 
 .sg-landing.sg-noche .separador::before,
 .sg-landing.sg-noche .separador::after {
-  background: #26334d;
+  background: #1e2f52;
 }
 
 .sg-landing.sg-noche .acceso-pestanas,
 .sg-landing.sg-noche .acceso-aviso {
-  background: #0b0f17;
-  border-color: #26334d;
+  background: #070d1a;
+  border-color: #1e2f52;
 }
 
 .sg-landing.sg-noche .acceso-pestanas button.activa {
@@ -241,9 +241,9 @@ html[data-tema] .sg-landing.sg-noche,
 }
 
 .sg-landing.sg-noche .acceso-form input {
-  background: #0b0f17;
-  border-color: #26334d;
-  color: #f3f4f6;
+  background: #070d1a;
+  border-color: #1e2f52;
+  color: #e6edf7;
 }
 
 .sg-landing.sg-noche .acceso-form input:focus {
@@ -268,8 +268,8 @@ html[data-tema] .sg-landing.sg-noche,
 }
 
 .sg-landing.sg-noche .tema-icono {
-  border-color: #26334d;
-  color: #9ca3af;
+  border-color: #1e2f52;
+  color: #94a3b8;
 }
 
 .sg-landing.sg-noche :focus-visible {
@@ -278,14 +278,14 @@ html[data-tema] .sg-landing.sg-noche,
 
 html[data-tema] .sg-landing.sg-noche .panel-lienzo {
   --sg-bg: transparent;
-  --sg-surface: #131a26;
+  --sg-surface: #0d1830;
   --sg-text: #f5f3ff;
-  --sg-muted: #9ca3af;
-  --sg-line: #26334d;
+  --sg-muted: #94a3b8;
+  --sg-line: #1e2f52;
   --sg-blue: #1a52be;
   --sg-teal: #0d9488;
   --sg-accent: #1a52be;
-  color: #f3f4f6;
+  color: #e6edf7;
 }
 
 html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-header h1,
@@ -296,8 +296,8 @@ html[data-tema] .sg-landing.sg-noche .panel-lienzo .mesa-saludo {
 }
 
 html[data-tema] .sg-landing.sg-noche .mesa-hoja {
-  background: #0b0f17;
-  border-color: #26334d;
+  background: #070d1a;
+  border-color: #1e2f52;
 }
 
 html[data-tema] .sg-landing.sg-noche .mesa-hoja a:hover {
@@ -310,23 +310,33 @@ html[data-tema] .sg-landing.sg-noche .mesa-hoja a span:last-child {
 }
 
 html[data-tema] .sg-landing.sg-noche .elegir-cerrado a,
-html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton,
-html[data-tema] .sg-landing.sg-noche .panel-lienzo a.panel-boton {
-  border-radius: 6px;
-  background: #1a52be;
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton:not(.panel-boton-borde),
+html[data-tema] .sg-landing.sg-noche .panel-lienzo a.panel-boton:not(.panel-boton-borde) {
+  border: 0;
+  border-radius: var(--sg-radio-boton, 10px);
+  background: var(--sg-degradado);
   color: #ffffff;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 18%) inset, 0 6px 18px -10px rgb(26 82 190 / 70%);
 }
 
-html[data-tema] .sg-landing.sg-noche .panel-boton:hover:not(:disabled),
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton:not(.panel-boton-borde):hover:not(:disabled),
 html[data-tema] .sg-landing.sg-noche .elegir-cerrado a:hover {
-  background: #153f94;
+  background: var(--sg-degradado-hover);
   color: #ffffff;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 22%) inset, var(--sg-brillo);
 }
 
 html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton-borde {
-  border-color: #3b82f6;
-  background: transparent;
-  color: #f3f4f6;
+  border: 1px solid rgb(148 163 184 / 38%);
+  border-radius: var(--sg-radio-boton, 10px);
+  background: rgb(148 163 184 / 6%);
+  color: #e6edf7;
+  box-shadow: none;
+}
+
+html[data-tema] .sg-landing.sg-noche .panel-lienzo .panel-boton-borde:hover:not(:disabled) {
+  border-color: rgb(148 163 184 / 65%);
+  background: rgb(148 163 184 / 12%);
 }
 
 html[data-tema] .sg-landing.sg-noche .panel-personas .panel-campo input,
@@ -335,13 +345,13 @@ html[data-tema] .sg-landing.sg-noche .panel-empresas .panel-campo input,
 html[data-tema] .sg-landing.sg-noche .panel-empresas .panel-campo textarea,
 html[data-tema] .sg-landing.sg-noche .panel-empresas .panel-campo select,
 html[data-tema] .sg-landing.sg-noche .check-empleado {
-  background: #0b0f17;
-  border-color: #26334d;
-  color: #f3f4f6;
+  background: #070d1a;
+  border-color: #1e2f52;
+  color: #e6edf7;
 }
 
 html[data-tema] .sg-landing.sg-noche .perfil .panel-campo input[readonly] {
-  background: #0b0f17;
-  border-color: #26334d;
-  color: #9ca3af;
+  background: #070d1a;
+  border-color: #1e2f52;
+  color: #94a3b8;
 }

@@ -17,10 +17,10 @@
 }
 
 html[data-tema='oscuro'] .elegir-personas {
-  --ep-tinta: #f3f4f6;
+  --ep-tinta: #e6edf7;
   --ep-suave: #a9b7cc;
-  --ep-linea: #22314a;
-  --ep-papel: #111c2e;
+  --ep-linea: #1e2f52;
+  --ep-papel: #0d1830;
   --ep-acento: #8eb4ff;
   --ep-error: #f87171;
 }

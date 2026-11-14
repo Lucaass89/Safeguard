@@ -13,16 +13,16 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <script>
       (function () {
-        var tema = 'claro'
+        var tema = 'oscuro'
         try {
           var guardado = null
           try { guardado = localStorage.getItem('sg-tema') } catch (e) {}
-          if (guardado === 'oscuro') tema = 'oscuro'
-          if (guardado === 'sistema' && window.matchMedia('(prefers-color-scheme: dark)').matches) tema = 'oscuro'
+          if (guardado === 'claro') tema = 'claro'
+          if (guardado === 'sistema' && !window.matchMedia('(prefers-color-scheme: dark)').matches) tema = 'claro'
         } catch (e) {}
         document.documentElement.dataset.tema = tema
         var meta = document.querySelector('meta[name="theme-color"]')
-        if (meta) meta.setAttribute('content', tema === 'oscuro' ? '#1b2836' : '#f5f7fb')
+        if (meta) meta.setAttribute('content', tema === 'oscuro' ? '#070d1a' : '#f5f7fb')
       })()
     </script>
     <meta

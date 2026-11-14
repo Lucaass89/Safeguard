@@ -26,18 +26,18 @@
 }
 
 html[data-tema='oscuro'] .portada {
-  --h-fondo: #0b0f17;
-  --h-gris: #131a26;
-  --h-linea: #26334d;
-  --h-tinta: #f3f4f6;
-  --h-suave: #9ca3af;
+  --h-fondo: #070d1a;
+  --h-gris: #0d1830;
+  --h-linea: #1e2f52;
+  --h-tinta: #e6edf7;
+  --h-suave: #94a3b8;
   --h-verde: #3b6fd8;
   --h-verde-hondo: #5b8def;
-  --h-verde-suave: #16223a;
+  --h-verde-suave: #13254a;
   --h-banda: #13254a;
-  --h-banda-texto: #f3f4f6;
+  --h-banda-texto: #e6edf7;
   --h-banda-suave: #c3d3f0;
-  --h-oscuro: #121c30;
+  --h-oscuro: #0a1428;
   --h-oscuro-texto: #eef2f8;
   --h-oscuro-suave: #93a3ba;
   --h-verde-luz: #34d399;

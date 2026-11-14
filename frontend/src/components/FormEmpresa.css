@@ -18,11 +18,11 @@
 }
 
 html[data-tema='oscuro'] .form-empresa {
-  --fe-tinta: #f3f4f6;
+  --fe-tinta: #e6edf7;
   --fe-suave: #a9b7cc;
-  --fe-linea: #22314a;
-  --fe-papel: #111c2e;
-  --fe-campo: #0a1220;
+  --fe-linea: #1e2f52;
+  --fe-papel: #0d1830;
+  --fe-campo: #081022;
   --fe-acento: #8eb4ff;
   --fe-error: #f87171;
 }
