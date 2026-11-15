@@ -67,30 +67,59 @@ html[data-tema='oscuro'] .portada {
 }
 
 .portada-ancho {
-  width: min(1120px, calc(100% - 48px));
+  width: min(1200px, calc(100% - 48px));
   margin-inline: auto;
 }
 
 .portada-utilidades {
   border-bottom: 1px solid var(--h-linea);
   background: var(--h-gris);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .portada-utilidades-fila {
   display: flex;
-  justify-content: flex-end;
-  gap: 24px;
-  min-height: 36px;
   align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 42px;
+}
+
+.portada .portada-utilidades-lema {
+  margin: 0;
+  color: var(--h-suave);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.portada-utilidades-enlaces {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .portada-utilidades a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
   color: var(--h-suave);
+  font-weight: 500;
+  transition: color 160ms ease, background-color 160ms ease;
 }
 
 .portada-utilidades a:hover {
+  background: var(--h-verde-suave);
   color: var(--h-tinta);
+}
+
+.portada-icono-chico {
+  width: 16px;
+  height: 16px;
+  flex: none;
 }
 
 .portada-cabecera {
@@ -109,8 +138,8 @@ html[data-tema='oscuro'] .portada {
 .portada-cabecera-fila {
   display: flex;
   align-items: center;
-  gap: 24px;
-  min-height: 76px;
+  gap: 28px;
+  min-height: 84px;
 }
 
 .portada-marca {
@@ -118,7 +147,7 @@ html[data-tema='oscuro'] .portada {
   align-items: center;
   gap: 10px;
   color: var(--h-tinta);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -128,37 +157,62 @@ html[data-tema='oscuro'] .portada {
 }
 
 .portada-escudo {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
 }
 
 .portada-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   margin-left: auto;
 }
 
 .portada-nav > a,
 .portada-menu-disparador {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 40px;
-  padding: 0 12px;
+  min-height: 46px;
+  padding: 0 14px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 10px;
   background: transparent;
   color: var(--h-tinta);
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.portada-nav > a::after,
+.portada-menu-disparador::after {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  left: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--h-verde);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 200ms ease;
 }
 
 .portada-nav > a:hover,
 .portada-menu-disparador:hover,
 .portada-menu-activo {
   background: var(--h-verde-suave);
+}
+
+.portada-nav > a:hover::after,
+.portada-menu-disparador:hover::after,
+.portada-menu-activo::after {
+  transform: scaleX(1);
 }
 
 .portada-menu-disparador svg {
@@ -219,7 +273,26 @@ html[data-tema='oscuro'] .portada {
 .portada-acciones {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.portada .portada-acciones .portada-boton-ingresar {
   gap: 10px;
+  min-height: 48px;
+  padding: 0 22px 0 24px;
+  font-size: 16px;
+}
+
+.portada-flecha {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  transition: transform 180ms ease;
+}
+
+.portada-boton-ingresar:hover .portada-flecha,
+.portada-beneficio:hover .portada-flecha {
+  transform: translateX(3px);
 }
 
 .portada .portada-boton {
@@ -282,12 +355,12 @@ html[data-tema='oscuro'] .portada .portada-boton-borde-blanco {
 .portada .tema-icono {
   position: relative;
   display: inline-grid;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   place-items: center;
   padding: 0;
   border: 1px solid var(--h-linea);
-  border-radius: 6px;
+  border-radius: 12px;
   background: transparent;
   color: var(--h-suave);
   cursor: pointer;
@@ -521,45 +594,139 @@ html[data-tema='oscuro'] .portada .portada-boton-borde-blanco {
   box-shadow: 0 24px 48px -32px rgb(15 27 45 / 35%);
 }
 
-.portada-beneficios > h2,
 .portada-pasos > h2 {
   text-align: center;
+}
+
+.portada-beneficios-cabeza {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.portada .portada-ceja {
+  margin: 0 0 12px;
+  color: var(--h-verde);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portada .portada-beneficios-cabeza > p:last-child {
+  margin: 16px 0 0;
+  color: var(--h-suave);
+  font-size: 18px;
+  line-height: 1.6;
 }
 
 .portada-beneficios-grilla {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  max-width: 900px;
-  margin: 36px auto 0;
+  gap: 24px;
+  max-width: 1040px;
+  margin: 44px auto 0;
 }
 
-.portada-beneficio {
+.portada .portada-beneficio {
+  position: relative;
   display: flex;
-  gap: 16px;
-  padding: 24px;
-  border: 1px solid transparent;
-  border-radius: 12px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  overflow: hidden;
+  border: 1px solid var(--h-linea);
+  border-radius: 18px;
   background: var(--h-gris);
-  transition: border-color 160ms ease;
+  color: var(--h-tinta);
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
 }
 
-.portada-beneficio:hover {
-  border-color: var(--h-linea);
+.portada .portada-beneficio::before {
+  position: absolute;
+  top: 0;
+  right: 28px;
+  left: 28px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--sg-degradado, var(--h-verde));
+  content: '';
+  opacity: 0;
+  transition: opacity 200ms ease;
 }
 
-.portada-beneficio strong {
-  display: block;
-  color: var(--h-verde);
-  font-size: 17px;
+.portada .portada-beneficio:hover {
+  box-shadow: 0 24px 48px -32px rgb(7 13 26 / 55%);
 }
 
-.portada-beneficio strong + span {
-  display: block;
-  margin-top: 6px;
+.portada .portada-beneficio:hover::before {
+  opacity: 1;
+}
+
+.portada .portada-beneficio:focus-visible {
+  outline: 2px solid var(--h-verde);
+  outline-offset: 3px;
+}
+
+.portada-beneficio-arriba {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.portada-beneficio-modulo {
+  padding: 4px 10px;
+  border: 1px solid var(--h-linea);
+  border-radius: 999px;
   color: var(--h-suave);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.portada .portada-beneficio strong {
+  display: block;
+  color: var(--h-tinta);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.portada .portada-beneficio .portada-beneficio-texto {
+  display: block;
+  color: var(--h-suave);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.portada-beneficio-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+  color: var(--h-verde);
   font-size: 15px;
-  line-height: 1.55;
+  font-weight: 700;
+}
+
+.portada .portada-beneficio .portada-beneficio-icono {
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--sg-degradado, var(--h-verde));
+  color: #ffffff;
+  box-shadow: 0 12px 24px -14px rgb(26 82 190 / 80%);
+}
+
+.portada .portada-beneficio .portada-beneficio-icono svg {
+  width: 26px;
+  height: 26px;
 }
 
 .portada-beneficio-icono,
@@ -790,6 +957,26 @@ html[data-tema='oscuro'] .portada .portada-boton-borde-blanco {
   }
 }
 
+@media (max-width: 1080px) {
+  .portada-nav > a,
+  .portada-menu-disparador {
+    padding: 0 10px;
+    font-size: 15px;
+  }
+
+  .portada-cabecera-fila {
+    gap: 16px;
+  }
+
+  .portada .portada-utilidades-lema {
+    display: none;
+  }
+
+  .portada-utilidades-fila {
+    justify-content: flex-end;
+  }
+}
+
 @media (max-width: 820px) {
   .portada-utilidades {
     display: none;
@@ -857,6 +1044,18 @@ html[data-tema='oscuro'] .portada .portada-boton-borde-blanco {
   .portada-caja,
   .portada-cierre-tarjeta {
     padding: 24px;
+  }
+
+  .portada .portada-beneficio {
+    padding: 22px;
+  }
+
+  .portada .portada-beneficio strong {
+    font-size: 19px;
+  }
+
+  .portada .portada-beneficios-cabeza > p:last-child {
+    font-size: 16px;
   }
 
   .portada-beneficios-grilla,
