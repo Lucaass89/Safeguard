@@ -24581,5 +24581,60 @@ function enlaceAlPanel(url, sitio = SITIO) {
 	if (esPagina(url)) destino.searchParams.set("url", sinFragmento(url));
 	return destino.toString();
 }
+var ICONOS = {
+	verde: {
+		color: "#16a34a",
+		simbolo: "tilde",
+		titulo: "Verde"
+	},
+	amarillo: {
+		color: "#d97706",
+		simbolo: "atencion",
+		titulo: "Amarillo"
+	},
+	rojo: {
+		color: "#dc2626",
+		simbolo: "cruz",
+		titulo: "Rojo"
+	},
+	gris: {
+		color: "#64748b",
+		simbolo: "pregunta",
+		titulo: "Gris"
+	},
+	neutro: {
+		color: "#1a52be",
+		simbolo: "punto",
+		titulo: ""
+	}
+};
+function iconoDe(nivel) {
+	return ICONOS[nivel] ?? ICONOS.neutro;
+}
+function tituloIcono(estado) {
+	const { titulo } = iconoDe(estado?.nivel);
+	if (!titulo || !estado?.dominio) return "SafeLink";
+	return `SafeLink · ${titulo} · ${estado.dominio}`;
+}
+function trazosSimbolo(simbolo, lado) {
+	const c = lado / 2;
+	const r = lado * .17;
+	if (simbolo === "tilde") return [[
+		[c - r, c],
+		[c - r * .25, c + r * .75],
+		[c + r, c - r * .7]
+	]];
+	if (simbolo === "cruz") return [[[c - r * .75, c - r * .75], [c + r * .75, c + r * .75]], [[c + r * .75, c - r * .75], [c - r * .75, c + r * .75]]];
+	if (simbolo === "atencion") return [[[c, c - r], [c, c + r * .2]], [[c, c + r * .85], [c, c + r * .9]]];
+	if (simbolo === "pregunta") return [[
+		[c - r * .6, c - r * .45],
+		[c - r * .3, c - r],
+		[c + r * .4, c - r],
+		[c + r * .7, c - r * .45],
+		[c, c + r * .1],
+		[c, c + r * .3]
+	], [[c, c + r * .85], [c, c + r * .9]]];
+	return [];
+}
 //#endregion
-export { HORAS_LISTA, MAX_LARGO_AVISO, MAX_MOTIVOS, MAX_RECORDADAS, SITIO, analizar, debeAbrir, debeAvisar, dominiosARevisar, enlaceAlPanel, esPagina, estadoDe, indiceDeAmenazas, listaVigente, peorAmenaza, recordar, textoAviso, urlParaAbrir };
+export { HORAS_LISTA, ICONOS, MAX_LARGO_AVISO, MAX_MOTIVOS, MAX_RECORDADAS, SITIO, analizar, debeAbrir, debeAvisar, dominiosARevisar, enlaceAlPanel, esPagina, estadoDe, iconoDe, indiceDeAmenazas, listaVigente, peorAmenaza, recordar, textoAviso, tituloIcono, trazosSimbolo, urlParaAbrir };
