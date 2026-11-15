@@ -1,0 +1,12 @@
+{
+  "duracion": 60.2,
+  "inicios": {
+    "qr": 0,
+    "enlace": 10.4,
+    "mensaje": 16.5,
+    "pdf": 24.2,
+    "faro": 30.4,
+    "ingreso": 40.7,
+    "perfil": 52.2
+  }
+}

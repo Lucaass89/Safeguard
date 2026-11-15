@@ -1,13 +1,15 @@
-export const DURACION = 59.7
+import tiempos from '../data/recorridoApp.json' with { type: 'json' }
+
+export const DURACION = tiempos.duracion
 
 export const CAPITULOS = [
-  { id: 'qr', titulo: 'Escaneá un QR', texto: 'Apuntás la cámara al cartel y te dice adónde lleva antes de abrirlo.', inicio: 0 },
-  { id: 'enlace', titulo: 'Revisá un enlace', texto: 'Pegás la dirección y te da el color, el motivo y qué hacer.', inicio: 9.9 },
-  { id: 'mensaje', titulo: 'Revisá un mensaje', texto: 'Lee un WhatsApp o un SMS y marca el engaño.', inicio: 15.9 },
-  { id: 'pdf', titulo: 'Revisá un PDF', texto: 'Mira los enlaces que trae adentro antes de que lo abras.', inicio: 23.6 },
-  { id: 'faro', titulo: 'Preguntale a Faro', texto: 'Te explica el resultado con palabras simples.', inicio: 29.8 },
-  { id: 'ingreso', titulo: 'Ingresá', texto: 'Con Google o con tu correo. Con cuenta guardás tu historial.', inicio: 40.2 },
-  { id: 'perfil', titulo: 'Tu perfil', texto: 'Tu actividad, tu seguridad, tus datos y el tema de la app.', inicio: 51.7 },
+  { id: 'qr', titulo: 'Escaneá un QR', texto: 'Apuntás la cámara al cartel y te dice adónde lleva antes de abrirlo.', inicio: tiempos.inicios.qr },
+  { id: 'enlace', titulo: 'Revisá un enlace', texto: 'Pegás la dirección y te da el color, el motivo y qué hacer.', inicio: tiempos.inicios.enlace },
+  { id: 'mensaje', titulo: 'Revisá un mensaje', texto: 'Lee un WhatsApp o un SMS y marca el engaño.', inicio: tiempos.inicios.mensaje },
+  { id: 'pdf', titulo: 'Revisá un PDF', texto: 'Mira los enlaces que trae adentro antes de que lo abras.', inicio: tiempos.inicios.pdf },
+  { id: 'faro', titulo: 'Preguntale a Faro', texto: 'Te explica el resultado con palabras simples.', inicio: tiempos.inicios.faro },
+  { id: 'ingreso', titulo: 'Ingresá', texto: 'Con Google o con tu correo. Con cuenta guardás tu historial.', inicio: tiempos.inicios.ingreso },
+  { id: 'perfil', titulo: 'Tu perfil', texto: 'Tu actividad, tu seguridad, tus datos y el tema de la app.', inicio: tiempos.inicios.perfil },
 ]
 
 export function capituloEn(tiempo, capitulos = CAPITULOS) {
