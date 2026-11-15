@@ -32,7 +32,16 @@ const UTILIDADES = {
   precios: ['M4 12.5 12.5 4H20v7.5L11.5 20z', 'M15.5 8.5h.01'],
   contacto: ['M4 6.5h16v11H4z', 'm4.5 7 7.5 6 7.5-6'],
   flecha: ['M5 12h14', 'm13 6 6 6-6 6'],
+  tilde: ['m5 12.5 4.5 4.5L19 7.5'],
+  candado: ['M6.5 10.5h11v9h-11z', 'M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5'],
 }
+
+const INCLUYE = [
+  'Campañas por correo con plantillas argentinas',
+  'Kit de mensajes para WhatsApp y SMS',
+  'Página de enseñanza en el momento, sin sanciones',
+  'Tablero por área e informe para guardar',
+]
 
 function IconoChico({ nombre, className = 'portada-icono-chico' }) {
   return (
@@ -563,19 +572,33 @@ function Landing() {
         <section className="portada-cierre">
           <div className="portada-ancho">
             <div className="portada-cierre-tarjeta">
-              <div>
+              <div className="portada-cierre-texto">
+                <p className="portada-ceja">PhishGuard para empresas</p>
                 <h2>Probá PhishGuard en tu empresa</h2>
                 <p>
-                  Elegí cuántas personas va a cubrir el plan y mirá el precio.
+                  Elegí cuántas personas va a cubrir el plan y mirá el precio al instante.
                   Se paga una vez por el primer mes, sin suscripción automática.
                 </p>
+                <ul className="portada-cierre-incluye" aria-label="Qué incluye">
+                  {INCLUYE.map((item) => (
+                    <li key={item}>
+                      <IconoChico nombre="tilde" className="portada-tilde" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
                 <Link className="portada-enlace" to="/empresas#precios">Ver todos los tramos</Link>
               </div>
-              <div>
+              <div className="portada-cierre-plan">
                 <ElegirPersonas valor={personas} onCambiar={setPersonas} />
-                <Link className="portada-boton portada-boton-ancho" to={destinoPago}>
+                <Link className="portada-boton portada-boton-ancho portada-boton-ingresar" to={destinoPago}>
                   Adquirir PhishGuard
+                  <IconoChico nombre="flecha" className="portada-flecha" />
                 </Link>
+                <p className="portada-cierre-seguro">
+                  <IconoChico nombre="candado" />
+                  Pago seguro con Mercado Pago
+                </p>
               </div>
             </div>
           </div>
@@ -612,7 +635,8 @@ function Landing() {
           </nav>
         </div>
         <div className="portada-ancho portada-pie-final">
-          <small>© 2026 SafeGuard. Trabajo final de Analista de Sistemas.</small>
+          <small>© 2026 SafeGuard</small>
+          <p className="portada-pie-lema">Antes de hacer clic, SafeGuard. Personas atentas, organizaciones protegidas.</p>
         </div>
       </footer>
     </div>
