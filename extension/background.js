@@ -1,5 +1,8 @@
 import {
   analizar,
+  iconoDe,
+  tituloIcono,
+  trazosSimbolo,
   debeAvisar,
   enlaceAlPanel,
   esPagina,
@@ -12,28 +15,6 @@ import {
 } from './detector.js'
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from './config.js'
 
-const COLORES = {
-  verde: '#2f9e6b',
-  amarillo: '#c4922a',
-  rojo: '#d16b5a',
-  gris: '#8d98ab',
-  neutro: '#8d98ab',
-}
-
-const LETRAS = {
-  verde: 'V',
-  amarillo: '!',
-  rojo: 'X',
-  gris: '?',
-  neutro: '',
-}
-
-const NOMBRES = {
-  verde: 'Verde',
-  amarillo: 'Amarillo',
-  rojo: 'Rojo',
-  gris: 'Gris',
-}
 
 const CLAVE_LISTA = 'amenazas'
 const CLAVE_AVISAR = 'avisar'
@@ -53,12 +34,54 @@ function encabezados() {
   return { apikey: SUPABASE_PUBLISHABLE_KEY }
 }
 
+const TAMANOS = [16, 32, 48]
+const dibujados = new Map()
+
+function dibujar(nivel, lado) {
+  const { color, simbolo } = iconoDe(nivel)
+  const lienzo = new OffscreenCanvas(lado, lado)
+  const ctx = lienzo.getContext('2d')
+  const c = lado / 2
+  ctx.beginPath()
+  ctx.moveTo(c, lado * 0.04)
+  ctx.lineTo(lado * 0.9, lado * 0.2)
+  ctx.lineTo(lado * 0.9, lado * 0.5)
+  ctx.quadraticCurveTo(lado * 0.88, lado * 0.82, c, lado * 0.97)
+  ctx.quadraticCurveTo(lado * 0.12, lado * 0.82, lado * 0.1, lado * 0.5)
+  ctx.lineTo(lado * 0.1, lado * 0.2)
+  ctx.closePath()
+  ctx.fillStyle = color
+  ctx.fill()
+  if (simbolo === 'punto') {
+    ctx.beginPath()
+    ctx.arc(c, c, lado * 0.14, 0, Math.PI * 2)
+    ctx.fillStyle = '#ffffff'
+    ctx.fill()
+  } else {
+    ctx.strokeStyle = '#ffffff'
+    ctx.lineWidth = Math.max(1.6, lado * 0.12)
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    for (const trazo of trazosSimbolo(simbolo, lado)) {
+      ctx.beginPath()
+      trazo.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
+      ctx.stroke()
+    }
+  }
+  return ctx.getImageData(0, 0, lado, lado)
+}
+
+function iconos(nivel) {
+  if (!dibujados.has(nivel)) {
+    dibujados.set(nivel, Object.fromEntries(TAMANOS.map((lado) => [lado, dibujar(nivel, lado)])))
+  }
+  return dibujados.get(nivel)
+}
+
 async function pintar(tabId, estado) {
-  const color = COLORES[estado.nivel] ?? COLORES.neutro
-  await chrome.action.setBadgeBackgroundColor({ tabId, color })
-  await chrome.action.setBadgeText({ tabId, text: LETRAS[estado.nivel] ?? '' })
-  const titulo = NOMBRES[estado.nivel] ? `SafeLink · ${NOMBRES[estado.nivel]} · ${estado.dominio}` : 'SafeLink'
-  await chrome.action.setTitle({ tabId, title: titulo })
+  await chrome.action.setIcon({ tabId, imageData: iconos(estado.nivel) })
+  await chrome.action.setBadgeText({ tabId, text: '' })
+  await chrome.action.setTitle({ tabId, title: tituloIcono(estado) })
   await chrome.storage.session.set({ [`tab:${tabId}`]: estado })
 }
 

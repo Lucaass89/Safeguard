@@ -2,6 +2,10 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { analizar } from './analisis.js'
 import {
+  ICONOS,
+  iconoDe,
+  tituloIcono,
+  trazosSimbolo,
   debeAbrir,
   debeAvisar,
   enlaceAlPanel,
@@ -138,4 +142,32 @@ test('el enlace al panel lleva la dirección sin la parte después de #', () => 
   assert.equal(enlace.origin + enlace.pathname, 'https://safeguardd.vercel.app/panel/enlaces')
   assert.equal(enlace.searchParams.get('url'), 'https://bna-acceso.com/clave?x=1')
   assert.equal(new URL(enlaceAlPanel('chrome://extensions')).search, '')
+})
+
+test('cada nivel tiene su color y su símbolo, y lo desconocido queda neutro', () => {
+  assert.equal(iconoDe('rojo').simbolo, 'cruz')
+  assert.equal(iconoDe('verde').simbolo, 'tilde')
+  assert.equal(iconoDe('amarillo').simbolo, 'atencion')
+  assert.equal(iconoDe('gris').simbolo, 'pregunta')
+  assert.equal(iconoDe('otro'), ICONOS.neutro)
+  assert.equal(new Set(Object.values(ICONOS).map((i) => i.color)).size, Object.keys(ICONOS).length)
+})
+
+test('el título del ícono nombra el color y el dominio', () => {
+  assert.equal(tituloIcono({ nivel: 'rojo', dominio: 'bna-acceso.com' }), 'SafeLink · Rojo · bna-acceso.com')
+  assert.equal(tituloIcono({ nivel: 'neutro', dominio: '' }), 'SafeLink')
+  assert.equal(tituloIcono(null), 'SafeLink')
+})
+
+test('los símbolos quedan dentro del ícono a cualquier tamaño', () => {
+  for (const lado of [16, 32, 48]) {
+    for (const simbolo of ['tilde', 'cruz', 'atencion', 'pregunta']) {
+      const trazos = trazosSimbolo(simbolo, lado)
+      assert.ok(trazos.length > 0, simbolo)
+      for (const [x, y] of trazos.flat()) {
+        assert.ok(x >= 0 && x <= lado && y >= 0 && y <= lado, `${simbolo} ${lado}`)
+      }
+    }
+  }
+  assert.deepEqual(trazosSimbolo('punto', 16), [])
 })

@@ -110,3 +110,31 @@ export function enlaceAlPanel(url, sitio = SITIO) {
   if (esPagina(url)) destino.searchParams.set('url', sinFragmento(url))
   return destino.toString()
 }
+
+export const ICONOS = {
+  verde: { color: '#16a34a', simbolo: 'tilde', titulo: 'Verde' },
+  amarillo: { color: '#d97706', simbolo: 'atencion', titulo: 'Amarillo' },
+  rojo: { color: '#dc2626', simbolo: 'cruz', titulo: 'Rojo' },
+  gris: { color: '#64748b', simbolo: 'pregunta', titulo: 'Gris' },
+  neutro: { color: '#1a52be', simbolo: 'punto', titulo: '' },
+}
+
+export function iconoDe(nivel) {
+  return ICONOS[nivel] ?? ICONOS.neutro
+}
+
+export function tituloIcono(estado) {
+  const { titulo } = iconoDe(estado?.nivel)
+  if (!titulo || !estado?.dominio) return 'SafeLink'
+  return `SafeLink · ${titulo} · ${estado.dominio}`
+}
+
+export function trazosSimbolo(simbolo, lado) {
+  const c = lado / 2
+  const r = lado * 0.17
+  if (simbolo === 'tilde') return [[[c - r, c], [c - r * 0.25, c + r * 0.75], [c + r, c - r * 0.7]]]
+  if (simbolo === 'cruz') return [[[c - r * 0.75, c - r * 0.75], [c + r * 0.75, c + r * 0.75]], [[c + r * 0.75, c - r * 0.75], [c - r * 0.75, c + r * 0.75]]]
+  if (simbolo === 'atencion') return [[[c, c - r], [c, c + r * 0.2]], [[c, c + r * 0.85], [c, c + r * 0.9]]]
+  if (simbolo === 'pregunta') return [[[c - r * 0.6, c - r * 0.45], [c - r * 0.3, c - r], [c + r * 0.4, c - r], [c + r * 0.7, c - r * 0.45], [c, c + r * 0.1], [c, c + r * 0.3]], [[c, c + r * 0.85], [c, c + r * 0.9]]]
+  return []
+}
