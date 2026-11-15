@@ -521,63 +521,6 @@ html[data-tema='oscuro'] .portada .portada-boton-borde-blanco {
   box-shadow: 0 24px 48px -32px rgb(15 27 45 / 35%);
 }
 
-.portada-tablero h3 {
-  font-size: 17px;
-  font-weight: 600;
-}
-
-.portada-tablero-barras {
-  display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  height: 120px;
-  margin-top: 18px;
-  padding: 16px;
-  border-radius: 8px;
-  background: var(--h-gris);
-}
-
-.portada-tablero-barras span {
-  flex: 1;
-  border-radius: 4px 4px 0 0;
-  background: color-mix(in srgb, var(--h-verde) 55%, var(--h-gris));
-}
-
-.portada-tablero-barras span:nth-child(4) {
-  background: var(--h-verde);
-}
-
-.portada-tablero ul {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 14px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.portada-tablero li {
-  padding: 14px 16px;
-  border-radius: 8px;
-  background: var(--h-gris);
-}
-
-.portada-tablero li strong {
-  display: block;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.portada-tablero li span,
-.portada-tablero > p {
-  color: var(--h-suave);
-  font-size: 14px;
-}
-
-.portada-tablero > p {
-  margin-top: 12px;
-}
-
 .portada-beneficios > h2,
 .portada-pasos > h2 {
   text-align: center;

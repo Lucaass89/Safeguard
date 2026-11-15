@@ -554,10 +554,6 @@ html[data-tema='claro'] body .portada .portada-caja .portada-accesos a {
   box-shadow: none;
 }
 
-html[data-tema='claro'] body .portada .portada-tablero :is(.portada-tablero-barras, li) {
-  background: #e6ebf1;
-}
-
 html[data-tema='claro'] body .probador {
   background: #f3f5f8;
   border: 1px solid #cdd5e1;

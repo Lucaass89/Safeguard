@@ -6,6 +6,7 @@ import IconoFuncion from '../components/IconoFuncion.jsx'
 import Logo from '../components/Logo.jsx'
 import PantallasApp from '../components/PantallasApp.jsx'
 import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
+import TableroEjemplo from '../components/TableroEjemplo.jsx'
 import TemaControl from '../components/TemaControl.jsx'
 import { pasosCampana } from '../lib/pasosCampana.js'
 import { PERSONAS_POR_DEFECTO, precioPhishguard } from '../lib/precioPhishguard.js'
@@ -449,21 +450,7 @@ function Landing() {
               </p>
               <Link className="portada-boton" to="/empresas">Ver PhishGuard</Link>
             </div>
-            <aside className="portada-tablero" aria-label="Vista previa del tablero">
-              <h3>Tablero del equipo</h3>
-              <div className="portada-tablero-barras" aria-hidden="true">
-                <span style={{ height: '42%' }} />
-                <span style={{ height: '68%' }} />
-                <span style={{ height: '50%' }} />
-                <span style={{ height: '84%' }} />
-                <span style={{ height: '60%' }} />
-              </div>
-              <ul>
-                <li><strong>19</strong><span>Clics</span></li>
-                <li><strong>4</strong><span>Datos ingresados</span></li>
-              </ul>
-              <p>Ejemplo con datos ficticios</p>
-            </aside>
+            <TableroEjemplo />
           </section>
 
           <section className="portada-beneficios">
