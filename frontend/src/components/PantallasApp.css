@@ -93,11 +93,38 @@ html[data-tema='claro'] .pantallas {
   transform: translateX(-50%);
 }
 
-.pantallas-captura {
+.pantallas-telefono:focus-visible {
+  outline: 2px solid var(--h-verde);
+  outline-offset: 4px;
+}
+
+.pantallas-pantalla {
+  position: relative;
+  overflow: hidden;
+  border-radius: 31px;
+  aspect-ratio: 540 / 1100;
+}
+
+.pantallas-captura,
+.pantallas-video {
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 31px;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pantallas-captura {
+  position: relative;
+  transition: opacity 220ms ease;
+}
+
+.pantallas-video {
+  position: absolute;
+  inset: 0;
+}
+
+.pantallas-en-movimiento .pantallas-captura {
+  opacity: 0;
 }
 
 .pantallas-captura-claro,
@@ -107,6 +134,54 @@ html[data-tema='claro'] .pantallas-captura-oscuro {
 
 html[data-tema='claro'] .pantallas-captura-claro {
   display: block;
+}
+
+.pantallas-pista {
+  position: absolute;
+  top: 22px;
+  right: 18px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 999px;
+  background: rgb(7 13 26 / 78%);
+  color: #e6edf7;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  transition: opacity 200ms ease;
+}
+
+.pantallas-en-movimiento .pantallas-pista:not(.pantallas-pista-boton) {
+  opacity: 0;
+}
+
+.pantallas-pista-boton {
+  cursor: pointer;
+}
+
+.pantallas-pista-boton:focus-visible {
+  outline: 2px solid #8eb4ff;
+  outline-offset: 2px;
+}
+
+.pantallas-pista-icono {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+}
+
+.pantallas-pista-pausa {
+  width: 8px;
+  height: 10px;
+  border-right: 3px solid currentColor;
+  border-left: 3px solid currentColor;
 }
 
 .pantallas .pantallas-pie {
@@ -146,7 +221,9 @@ html[data-tema='claro'] .pantallas-captura-claro {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pantallas-telefono {
+  .pantallas-telefono,
+  .pantallas-captura,
+  .pantallas-pista {
     transition: none;
   }
 }
