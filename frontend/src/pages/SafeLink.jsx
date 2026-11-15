@@ -228,7 +228,6 @@ function SafeLink() {
           resultado={resultado.caso}
           canal={resultado.canal}
           subtitulo={resultado.subtitulo}
-          conFaro={false}
           onNoAbrir={() => {
             setResultado(null)
             setAviso('')

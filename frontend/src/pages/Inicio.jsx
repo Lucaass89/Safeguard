@@ -237,7 +237,6 @@ function Veredicto({ resultado, guardado, onOtro }) {
       resultado={resultado}
       canal={mensaje ? 'whatsapp' : 'enlace'}
       subtitulo={mensaje ? 'Mensaje sin enlaces' : undefined}
-      conFaro={false}
       onNoAbrir={onOtro}
     >
       {guardado === false ? <p className="inicio-veredicto-nota">No se pudo guardar en tu historial.</p> : null}

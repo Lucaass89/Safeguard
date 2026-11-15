@@ -24,7 +24,7 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   suscripción automática ni pago anual.
 - **SafeLink** (puerta Personas, `/personas`, gratis): detector propio que devuelve un semáforo
   (verde, amarillo, rojo, gris) con el motivo, para URL, QR, PDF, correo y WhatsApp. **Faro** es el chat que
-  explica cada resultado (función `safelink-faro`). No consulta VirusTotal ni Google Safe Browsing en el veredicto.
+  explica cada resultado (función `safelink-faro`), en la web y en la app. No consulta VirusTotal ni Google Safe Browsing en el veredicto.
 
 ## Estructura del repo
 
@@ -34,6 +34,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
+  La portada muestra `public/capturas/recorrido-{claro,oscuro}.mp4`, una grabación real de la app con capítulos
+  (`src/lib/recorridoApp.js` tiene los segundos de inicio). Se grabó con la cuenta de prueba `cuenta.demo@example.com`
+  (nombre "Ana Prueba"); si cambian esas pantallas hay que volver a grabarla y ajustar los inicios.
 - `extension/` — extensión de Chrome (MV3) "SafeLink": pinta un color según la pestaña activa. Avisa, no bloquea.
   `extension/detector.js` no se edita a mano: lo genera `npm run extension` desde `src/lib/extension.js` (mismo detector
   que la web) y la CI falla si quedó atrasado. La lista de `amenazas` se baja cada 6 horas y se busca en la compu; solo

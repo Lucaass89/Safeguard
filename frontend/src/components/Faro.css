@@ -240,3 +240,15 @@
     opacity: 0.2;
   }
 }
+
+@media (max-width: 560px) {
+  .veredicto-cabeza .faro-abrir {
+    flex: 1 0 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .veredicto-cabeza .faro {
+    margin-top: 4px;
+  }
+}
