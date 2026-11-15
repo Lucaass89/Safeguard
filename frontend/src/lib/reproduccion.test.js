@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { debeReproducirse, elementoVisible, leerModo, modoReproduccion } from './reproduccion.js'
+import { debeAndar, elementoVisible, leerModo, modoReproduccion } from './reproduccion.js'
 
 test('con mouse se reproduce al apuntar, en el celular al verse y con movimiento reducido solo con el botón', () => {
   assert.equal(modoReproduccion({ puedeApuntar: true, movimientoReducido: false }), 'apuntar')
@@ -20,13 +20,14 @@ test('leerModo usa las consultas del navegador y sin navegador queda en botón',
   assert.equal(leerModo(undefined), 'boton')
 })
 
-test('cada modo mira solo su disparador', () => {
-  assert.equal(debeReproducirse({ modo: 'apuntar', apuntado: true }), true)
-  assert.equal(debeReproducirse({ modo: 'apuntar', visible: true }), false)
-  assert.equal(debeReproducirse({ modo: 'pantalla', visible: true }), true)
-  assert.equal(debeReproducirse({ modo: 'pantalla', apuntado: true }), false)
-  assert.equal(debeReproducirse({ modo: 'boton', pedido: true }), true)
-  assert.equal(debeReproducirse({ modo: 'boton', visible: true, apuntado: true }), false)
+test('el recorrido anda solo si se ve, no está en pausa y no se pidió menos movimiento', () => {
+  assert.equal(debeAndar({ modo: 'apuntar', visible: true }), true)
+  assert.equal(debeAndar({ modo: 'pantalla', visible: true }), true)
+  assert.equal(debeAndar({ modo: 'pantalla', visible: false }), false)
+  assert.equal(debeAndar({ modo: 'apuntar', visible: true, pausado: true }), false)
+  assert.equal(debeAndar({ modo: 'boton', visible: true }), false)
+  assert.equal(debeAndar({ modo: 'boton', visible: true, pedido: true }), true)
+  assert.equal(debeAndar({ modo: 'boton', visible: false, pedido: true }), false)
 })
 
 test('elementoVisible elige el que no está oculto por el tema', () => {

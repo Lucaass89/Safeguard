@@ -1,4 +1,4 @@
-export const UMBRAL_VISIBLE = 0.85
+export const UMBRAL_VISIBLE = 0.5
 
 export function modoReproduccion({ puedeApuntar, movimientoReducido }) {
   if (movimientoReducido) return 'boton'
@@ -13,10 +13,9 @@ export function leerModo(ventana = globalThis.window) {
   })
 }
 
-export function debeReproducirse({ modo, apuntado = false, visible = false, pedido = false }) {
-  if (modo === 'apuntar') return apuntado
-  if (modo === 'pantalla') return visible
-  return pedido
+export function debeAndar({ modo, visible = false, pedido = false, pausado = false }) {
+  if (pausado || !visible) return false
+  return modo !== 'boton' || pedido
 }
 
 export function elementoVisible(elementos, estilo = (el) => globalThis.getComputedStyle(el)) {
