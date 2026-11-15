@@ -21,11 +21,28 @@ const accesos = [
 ]
 
 const beneficios = [
-  ['simulacion', 'Práctica con casos reales', 'Campañas de phishing simulado por correo, con plantillas en español de bancos, ARCA, envíos y Mercado Libre.'],
-  ['explicacion', 'Aprendizaje en el momento', 'Si alguien cae, ve enseguida qué tenía que mirar. No hay sanciones ni exposición.'],
-  ['semaforo', 'Un color y el motivo', 'SafeLink responde verde, amarillo o rojo, y explica por qué, antes de abrir un enlace, un PDF o un correo.'],
-  ['nube', 'Sin instalar nada', 'PhishGuard funciona en la nube. SafeLink avisa y no bloquea la navegación.'],
+  ['simulacion', 'PhishGuard', 'Práctica con casos reales', 'Campañas de phishing simulado por correo, con plantillas en español de bancos, ARCA, envíos y Mercado Libre.'],
+  ['explicacion', 'PhishGuard', 'Aprendizaje en el momento', 'Si alguien cae, ve enseguida qué tenía que mirar. No hay sanciones ni exposición.'],
+  ['semaforo', 'SafeLink', 'Un color y el motivo', 'SafeLink responde verde, amarillo o rojo, y explica por qué, antes de abrir un enlace, un PDF o un correo.'],
+  ['nube', 'Los dos', 'Sin instalar nada', 'PhishGuard funciona en la nube. SafeLink avisa y no bloquea la navegación.'],
 ]
+
+const UTILIDADES = {
+  extension: ['M9 4.5h3.5v2a1.5 1.5 0 0 0 3 0v-2H19v4.5h-2a1.5 1.5 0 0 0 0 3h2V19h-4.5v-2a1.5 1.5 0 0 0-3 0v2H5v-4.5h2a1.5 1.5 0 0 0 0-3H5V4.5h4z'],
+  precios: ['M4 12.5 12.5 4H20v7.5L11.5 20z', 'M15.5 8.5h.01'],
+  contacto: ['M4 6.5h16v11H4z', 'm4.5 7 7.5 6 7.5-6'],
+  flecha: ['M5 12h14', 'm13 6 6 6-6 6'],
+}
+
+function IconoChico({ nombre, className = 'portada-icono-chico' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {UTILIDADES[nombre].map((d) => (
+        <path key={d} d={d} />
+      ))}
+    </svg>
+  )
+}
 
 const comoTrabaja = [
   {
@@ -286,9 +303,21 @@ function Landing() {
     <div className="portada">
       <div className="portada-utilidades">
         <div className="portada-ancho portada-utilidades-fila">
-          <a href="/safelink.zip" download="safelink.zip">Extensión de Chrome</a>
-          <Link to="/empresas#precios">Precios</Link>
-          <Link to="/contacto">Contacto</Link>
+          <p className="portada-utilidades-lema">Plataforma argentina contra el phishing, para equipos y personas</p>
+          <nav className="portada-utilidades-enlaces" aria-label="Accesos rápidos">
+            <a href="/safelink.zip" download="safelink.zip">
+              <IconoChico nombre="extension" />
+              Extensión de Chrome
+            </a>
+            <Link to="/empresas#precios">
+              <IconoChico nombre="precios" />
+              Precios
+            </Link>
+            <Link to="/contacto">
+              <IconoChico nombre="contacto" />
+              Contacto
+            </Link>
+          </nav>
         </div>
       </div>
 
@@ -334,8 +363,9 @@ function Landing() {
             </Link>
           </nav>
           <div className="portada-acciones">
-            <Link className="portada-boton" to={destino}>
+            <Link className="portada-boton portada-boton-ingresar" to={destino}>
               {etiqueta}
+              <IconoChico nombre="flecha" className="portada-flecha" />
             </Link>
             <TemaControl icono />
             <button
@@ -453,17 +483,26 @@ function Landing() {
             <TableroEjemplo />
           </section>
 
-          <section className="portada-beneficios">
-            <h2>¿Qué obtenés con SafeGuard?</h2>
+          <section className="portada-beneficios" aria-labelledby="portada-beneficios-titulo">
+            <div className="portada-beneficios-cabeza">
+              <p className="portada-ceja">Beneficios</p>
+              <h2 id="portada-beneficios-titulo">¿Qué obtenés con SafeGuard?</h2>
+              <p>Lo que gana tu equipo con PhishGuard y lo que ganás vos con SafeLink, sin cambiar cómo trabajan.</p>
+            </div>
             <div className="portada-beneficios-grilla">
-              {beneficios.map(([icono, titulo, texto]) => (
+              {beneficios.map(([icono, modulo, titulo, texto]) => (
                 <Link key={titulo} className="portada-beneficio" to={`/funcion/${icono}`}>
-                  <span className="portada-beneficio-icono">
-                    <IconoFuncion nombre={icono} className="portada-icono" />
+                  <span className="portada-beneficio-arriba">
+                    <span className="portada-beneficio-icono">
+                      <IconoFuncion nombre={icono} className="portada-icono" />
+                    </span>
+                    <span className="portada-beneficio-modulo">{modulo}</span>
                   </span>
-                  <span>
-                    <strong>{titulo}</strong>
-                    <span>{texto}</span>
+                  <strong>{titulo}</strong>
+                  <span className="portada-beneficio-texto">{texto}</span>
+                  <span className="portada-beneficio-mas">
+                    Conocer más
+                    <IconoChico nombre="flecha" className="portada-flecha" />
                   </span>
                 </Link>
               ))}
