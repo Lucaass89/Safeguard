@@ -13,6 +13,7 @@
     "eval:urls": "node eval/evaluar_urls.js",
     "eval:faro": "node eval/evaluar_faro.js",
     "extension": "vite build --config vite.extension.config.js",
+    "recorrido": "node scripts/recorrido/grabar.js",
     "lint": "eslint .",
     "test": "node --test src/lib/*.test.js",
     "preview": "vite preview"
