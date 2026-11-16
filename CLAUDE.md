@@ -22,6 +22,10 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   Los pagos de ARS 37.500 hechos antes cuentan como 25 personas, y los viejos de prueba de ARS 500 siguen valiendo.
   Si la vuelta de Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. No hay
   suscripción automática ni pago anual.
+  Verificación en dos pasos obligatoria para administrar PhishGuard: `PhishGuardAcceso` envuelve las pantallas en
+  `DosPasos` (app de códigos TOTP de Supabase) y en la base `phishguard_org_id()` solo devuelve la organización con
+  sesión `aal2`. Cualquier usuario la activa o desactiva desde el perfil. Si alguien pierde el celular, se le borra el
+  factor a mano en `auth.mfa_factors` después de confirmar su identidad.
 - **SafeLink** (puerta Personas, `/personas`, gratis): detector propio que devuelve un semáforo
   (verde, amarillo, rojo, gris) con el motivo, para URL, QR, PDF, correo y WhatsApp. **Faro** es el chat que
   explica cada resultado (función `safelink-faro`), en la web y en la app. No consulta VirusTotal ni Google Safe Browsing en el veredicto.
