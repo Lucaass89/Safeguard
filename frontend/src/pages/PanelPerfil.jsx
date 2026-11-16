@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import FilaAjuste from '../components/FilaAjuste.jsx'
+import { PerfilDosPasos } from '../components/DosPasos.jsx'
 import TarjetaMetrica, { ListaMetricas } from '../components/TarjetaMetrica.jsx'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { nombreEmpresa } from '../lib/formato.js'
@@ -353,6 +354,7 @@ function PerfilSeguridad({ usuario }) {
             </button>
           </form>
         )}
+        <PerfilDosPasos />
         <FilaAjuste
           titulo="Sesiones abiertas"
           nota="Si perdiste el celular o entraste desde otro lado, salí de SafeGuard en este dispositivo y en todos los demás."

@@ -9,6 +9,7 @@ import FormEmpresa from './FormEmpresa.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
 import '../pages/PhishGuard.css'
+import DosPasos from './DosPasos.jsx'
 
 function esCheckoutReal(valor) {
   try {
@@ -168,7 +169,13 @@ function PhishGuardAcceso() {
     return <p className="phish-estado">Revisando tu plan…</p>
   }
 
-  if (sesion && esAdministrador(membresia.rol)) return <Outlet />
+  if (sesion && esAdministrador(membresia.rol)) {
+    return (
+      <DosPasos>
+        <Outlet />
+      </DosPasos>
+    )
+  }
 
   return (
     <div className="phish">
