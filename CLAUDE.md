@@ -83,4 +83,5 @@ Los documentos de `docs/` describen solo lo que el código y la base publicada h
 lleva su estado: "Implementada", "Implementada en el repositorio, falta aplicarla en la base publicada",
 "Prototipo", "Planificada" o "Fuera del trabajo final". Al cambiar algo del producto, revisar que la propuesta,
 el ERS y los casos de prueba sigan coincidiendo, incluidos los conteos de pruebas y commits que cita el anexo
-(tag `entrega-tfc`). Hay migraciones de PhishGuard en el repo que todavía no se aplicaron en la base publicada.
+(tag `entrega-tfc`). Al 16/11/2026 todas las migraciones del repo están aplicadas en la base publicada; las nuevas se
+aplican a mano o con el MCP de Supabase (la integración de Supabase apunta a otro repositorio).
