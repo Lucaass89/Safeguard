@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { analizar } from './analisis.js'
 import {
+  barrasLogo,
+  LOGO,
   ICONOS,
   iconoDe,
   tituloIcono,
@@ -169,5 +171,23 @@ test('los símbolos quedan dentro del ícono a cualquier tamaño', () => {
       }
     }
   }
-  assert.deepEqual(trazosSimbolo('punto', 16), [])
+  assert.deepEqual(trazosSimbolo('logo', 16), [])
+})
+
+test('sin resultado se muestra el logo de SafeGuard', () => {
+  assert.equal(iconoDe('neutro').simbolo, 'logo')
+  assert.equal(iconoDe(undefined).simbolo, 'logo')
+})
+
+test('el logo entra centrado en el ícono a cualquier tamaño', () => {
+  for (const lado of [16, 32, 48, 128]) {
+    const barras = barrasLogo(lado)
+    assert.equal(barras.length, LOGO.barras.length)
+    const puntos = barras.flat()
+    for (const [x, y] of puntos) assert.ok(x >= 0 && x <= lado && y >= 0 && y <= lado, `${lado}`)
+    const xs = puntos.map(([x]) => x)
+    const ys = puntos.map(([, y]) => y)
+    assert.ok(Math.abs((Math.min(...xs) + Math.max(...xs)) / 2 - lado / 2) < lado * 0.05)
+    assert.ok(Math.abs((Math.min(...ys) + Math.max(...ys)) / 2 - lado / 2) < lado * 0.05)
+  }
 })

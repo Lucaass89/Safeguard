@@ -1,5 +1,7 @@
 import {
   analizar,
+  barrasLogo,
+  LOGO,
   iconoDe,
   tituloIcono,
   trazosSimbolo,
@@ -37,10 +39,26 @@ function encabezados() {
 const TAMANOS = [16, 32, 48]
 const dibujados = new Map()
 
+function dibujarLogo(ctx, lado) {
+  const degradado = ctx.createLinearGradient(0, 0, 0, lado)
+  for (const [parada, color] of LOGO.degradado) degradado.addColorStop(parada, color)
+  ctx.fillStyle = degradado
+  for (const barra of barrasLogo(lado)) {
+    ctx.beginPath()
+    barra.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
+    ctx.closePath()
+    ctx.fill()
+  }
+}
+
 function dibujar(nivel, lado) {
   const { color, simbolo } = iconoDe(nivel)
   const lienzo = new OffscreenCanvas(lado, lado)
   const ctx = lienzo.getContext('2d')
+  if (simbolo === 'logo') {
+    dibujarLogo(ctx, lado)
+    return ctx.getImageData(0, 0, lado, lado)
+  }
   const c = lado / 2
   ctx.beginPath()
   ctx.moveTo(c, lado * 0.04)
@@ -52,21 +70,14 @@ function dibujar(nivel, lado) {
   ctx.closePath()
   ctx.fillStyle = color
   ctx.fill()
-  if (simbolo === 'punto') {
+  ctx.strokeStyle = '#ffffff'
+  ctx.lineWidth = Math.max(1.6, lado * 0.12)
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  for (const trazo of trazosSimbolo(simbolo, lado)) {
     ctx.beginPath()
-    ctx.arc(c, c, lado * 0.14, 0, Math.PI * 2)
-    ctx.fillStyle = '#ffffff'
-    ctx.fill()
-  } else {
-    ctx.strokeStyle = '#ffffff'
-    ctx.lineWidth = Math.max(1.6, lado * 0.12)
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
-    for (const trazo of trazosSimbolo(simbolo, lado)) {
-      ctx.beginPath()
-      trazo.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
-      ctx.stroke()
-    }
+    trazo.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
+    ctx.stroke()
   }
   return ctx.getImageData(0, 0, lado, lado)
 }

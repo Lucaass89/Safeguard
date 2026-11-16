@@ -38,8 +38,8 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   (textos en `src/lib/recorridoApp.js`, segundos de inicio en `src/data/recorridoApp.json`). Se graba con
   `npm run recorrido` (`scripts/recorrido/`, ver su README) y la cuenta de prueba `cuenta.demo@example.com`
   ("Ana Prueba"); si cambian esas pantallas hay que volver a grabarla.
-- `extension/` — extensión de Chrome (MV3) "SafeLink": el ícono es un escudo del color del resultado con su símbolo
-  (dibujado en `background.js` con `iconoDe` y `trazosSimbolo`). Avisa, no bloquea. `npm run extension:zip` arma
+- `extension/` — extensión de Chrome (MV3) "SafeLink": sin resultado el ícono es el logo de SafeGuard; con resultado, un escudo del color con su símbolo
+  (dibujado en `background.js` con `iconoDe`, `trazosSimbolo` y `barrasLogo`). Avisa, no bloquea. `npm run extension:zip` arma
   `public/safelink.zip`, que es lo que baja la portada.
   `extension/detector.js` no se edita a mano: lo genera `npm run extension` desde `src/lib/extension.js` (mismo detector
   que la web) y la CI falla si quedó atrasado. La lista de `amenazas` se baja cada 6 horas y se busca en la compu; solo
