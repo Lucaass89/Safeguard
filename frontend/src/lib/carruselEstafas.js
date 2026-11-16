@@ -124,3 +124,32 @@ export function indiceVisible(desplazamiento, anchoTarjeta, total) {
   if (total <= 0 || anchoTarjeta <= 0) return 0
   return Math.min(Math.max(Math.round(desplazamiento / anchoTarjeta), 0), total - 1)
 }
+
+export const INTERVALO_MS = 6500
+
+export function tarjetasVisibles(ancho) {
+  if (!(ancho > 0)) return 1
+  if (ancho >= 1040) return 3
+  if (ancho >= 680) return 2
+  return 1
+}
+
+export function ultimaPosicion(total, visibles) {
+  return Math.max(total - Math.max(visibles, 1), 0)
+}
+
+export function siguienteCircular(actual, total, visibles) {
+  const ultima = ultimaPosicion(total, visibles)
+  if (total <= 0) return 0
+  return actual >= ultima ? 0 : actual + 1
+}
+
+export function anteriorCircular(actual, total, visibles) {
+  const ultima = ultimaPosicion(total, visibles)
+  if (total <= 0) return 0
+  return actual <= 0 ? ultima : Math.min(actual - 1, ultima)
+}
+
+export function debeAvanzarSolo({ reproduciendo, apuntado, enfocado, visible, pestanaVisible, movimientoReducido }) {
+  return Boolean(reproduciendo && visible && pestanaVisible && !apuntado && !enfocado && !movimientoReducido)
+}
