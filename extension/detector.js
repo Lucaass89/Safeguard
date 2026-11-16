@@ -24604,7 +24604,7 @@ var ICONOS = {
 	},
 	neutro: {
 		color: "#1a52be",
-		simbolo: "punto",
+		simbolo: "logo",
 		titulo: ""
 	}
 };
@@ -24636,5 +24636,30 @@ function trazosSimbolo(simbolo, lado) {
 	], [[c, c + r * .85], [c, c + r * .9]]];
 	return [];
 }
+var LOGO = {
+	ancho: 267,
+	alto: 269,
+	barras: [
+		"4,154 5,188 137,262 142,263 142,231",
+		"4,89 6,123 201,227 227,193 195,190",
+		"4,8 12,8 67,37 46,37 47,40 257,154 233,186 214,177 208,173 214,165 212,163 6,52",
+		"30,8 118,8 238,74 240,59 266,73 266,124 109,37 84,37"
+	],
+	degradado: [
+		[0, "#2ad4ee"],
+		[.34, "#1e8ed4"],
+		[.66, "#1a52be"],
+		[1, "#1a1c8c"]
+	]
+};
+function barrasLogo(lado, margen = .06) {
+	const escala = lado * (1 - margen * 2) / Math.max(LOGO.ancho, LOGO.alto);
+	const dx = (lado - LOGO.ancho * escala) / 2;
+	const dy = (lado - LOGO.alto * escala) / 2;
+	return LOGO.barras.map((barra) => barra.split(" ").map((par) => {
+		const [x, y] = par.split(",").map(Number);
+		return [dx + x * escala, dy + y * escala];
+	}));
+}
 //#endregion
-export { HORAS_LISTA, ICONOS, MAX_LARGO_AVISO, MAX_MOTIVOS, MAX_RECORDADAS, SITIO, analizar, debeAbrir, debeAvisar, dominiosARevisar, enlaceAlPanel, esPagina, estadoDe, iconoDe, indiceDeAmenazas, listaVigente, peorAmenaza, recordar, textoAviso, tituloIcono, trazosSimbolo, urlParaAbrir };
+export { HORAS_LISTA, ICONOS, LOGO, MAX_LARGO_AVISO, MAX_MOTIVOS, MAX_RECORDADAS, SITIO, analizar, barrasLogo, debeAbrir, debeAvisar, dominiosARevisar, enlaceAlPanel, esPagina, estadoDe, iconoDe, indiceDeAmenazas, listaVigente, peorAmenaza, recordar, textoAviso, tituloIcono, trazosSimbolo, urlParaAbrir };
