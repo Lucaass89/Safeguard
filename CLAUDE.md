@@ -52,8 +52,13 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   `nombre`, `archivo` y `novedades`) y el APK va en `public/app/`. Si la app instalada tiene un número menor, Inicio y Perfil
   muestran "Actualizar", que baja el APK con el gestor de descargas de Android (`actualizarApp.js`, `useActualizacion.js`).
   Para publicar una versión: subir `versionCode`/`versionName` en `android/app/build.gradle.kts` y el número de
-  `SafeGuardApp/N` en `MainActivity`, compilar, copiar el APK a `public/app/` y actualizar `version.json`. Todas las versiones
-  tienen que estar firmadas con la misma clave, o Android no deja instalar encima.
+  `SafeGuardApp/N` en `MainActivity`, compilar, copiar el APK a `public/app/` y actualizar `version.json`.
+  Firma: desde la 1.4 todas las versiones se firman con la clave de publicación propia (alias `safeguard`, huella SHA-256
+  `26:BE:D1:08:…:44:B0:63`). La clave no está en el repo: está en los secretos de GitHub `SG_FIRMA_BASE64` (el `.jks` en
+  base64) y `SG_FIRMA_CLAVE`, y la guarda el equipo. `.github/workflows/android-apk.yml` compila el APK firmado
+  (`assembleRelease`) al cambiar `android/` o a mano, y lo deja como artefacto. Para compilar en una compu: variables
+  `SG_FIRMA_ARCHIVO` (ruta al `.jks`) y `SG_FIRMA_CLAVE`. Sin la clave, el APK de publicación sale sin firmar. Si se pierde,
+  las apps instaladas no se pueden actualizar sin desinstalar.
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
   La portada muestra `public/capturas/recorrido-{claro,oscuro}.mp4`, una grabación real de la app con capítulos
   (textos en `src/lib/recorridoApp.js`, segundos de inicio en `src/data/recorridoApp.json`). Se graba con
