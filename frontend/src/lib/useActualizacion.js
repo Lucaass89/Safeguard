@@ -27,5 +27,6 @@ export function useActualizacion() {
   }, [enApp])
 
   const instalada = versionApp()
-  return { ultima, estado, instalada, enApp, hayNueva: enApp && necesitaActualizar(instalada, ultima) }
+  const esWeb = enApp && instalada < 1
+  return { ultima, estado, instalada, enApp, esWeb, hayNueva: enApp && necesitaActualizar(instalada, ultima) }
 }

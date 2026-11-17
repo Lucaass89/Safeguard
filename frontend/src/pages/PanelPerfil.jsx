@@ -424,12 +424,13 @@ function PreferenciaPortapapeles() {
 }
 
 function VersionApp() {
-  const { ultima, hayNueva, estado, instalada, enApp } = useActualizacion()
+  const { ultima, hayNueva, estado, instalada, enApp, esWeb } = useActualizacion()
   if (!enApp) return null
 
   return (
-    <FilaAjuste titulo="Versión de la app" nota={textoVersion({ instalada, ultima, estado })}>
+    <FilaAjuste titulo="Versión de la app" nota={textoVersion({ instalada, ultima, estado })} apilado={esWeb}>
       {hayNueva ? <BotonActualizar ultima={ultima} /> : null}
+      {esWeb && ultima ? <BotonActualizar ultima={ultima} nueva /> : null}
     </FilaAjuste>
   )
 }
@@ -438,6 +439,9 @@ function PreferenciaAvisos() {
   const avisos = useAvisos()
   const app = appParaAvisos()
   if (app === 'web') return null
+  if (app === 'pwa') {
+    return <FilaAjuste titulo="Avisos al celular" nota="Llegan con la app de Android. Bajala desde Versión de la app." />
+  }
   if (app === 'vieja') {
     return <FilaAjuste titulo="Avisos al celular" nota="Para recibir avisos, actualizá la app desde Versión de la app." />
   }
