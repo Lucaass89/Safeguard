@@ -154,3 +154,36 @@ export function useResumenSemana() {
   const vigente = usuarioId && leido.usuarioId === usuarioId
   return { texto: vigente ? leido.texto : null, conteo: vigente ? leido.conteo : null, recargar }
 }
+
+export function useTotalesPropios() {
+  const { sesion } = useSesion()
+  const usuarioId = sesion?.user?.id ?? null
+  const [leido, setLeido] = useState({ usuarioId: null, total: 0, peligrosos: 0 })
+  const [version, setVersion] = useState(0)
+
+  useEffect(() => {
+    if (!usuarioId) return undefined
+    let activo = true
+    const contar = (consulta) => consulta.then(({ count, error }) => (error ? null : count ?? 0))
+    const base = () =>
+      supabase.from('safelink_analisis').select('id', { count: 'exact', head: true }).eq('usuario_id', usuarioId)
+
+    Promise.all([contar(base()), contar(base().eq('nivel_riesgo', 'rojo'))]).then(([total, peligrosos]) => {
+      if (!activo || total === null || peligrosos === null) return
+      setLeido({ usuarioId, total, peligrosos })
+    })
+
+    return () => {
+      activo = false
+    }
+  }, [usuarioId, version])
+
+  const recargar = () => setVersion((actual) => actual + 1)
+  const vigente = usuarioId && leido.usuarioId === usuarioId
+  return { total: vigente ? leido.total : 0, peligrosos: vigente ? leido.peligrosos : 0, recargar }
+}
+
+export async function borrarAnalisis(ids) {
+  const { error } = await supabase.from('safelink_analisis').delete().in('id', ids)
+  return !error
+}
