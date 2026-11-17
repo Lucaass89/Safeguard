@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
-import { leerUltimaVersion, necesitaActualizar, nombreDescarga } from './actualizarApp.js'
+import { leerUltimaVersion, necesitaActualizar, nombreDescarga, nombreInstalada, textoVersion } from './actualizarApp.js'
 
 const valida = { version: 3, nombre: '1.3', archivo: '/app/safeguard-1.3.apk', novedades: 'Avisos.', desinstalar: false }
 
@@ -38,5 +38,21 @@ describe('actualizar la app', () => {
     const ultima = leerUltimaVersion(publicado)
     assert.ok(ultima)
     assert.ok(readFileSync(new URL(`../../public${ultima.archivo}`, import.meta.url)).length > 100000)
+  })
+})
+
+describe('qué versión tenés', () => {
+  test('nombra la versión instalada', () => {
+    assert.equal(nombreInstalada(2), '1.1 o 1.2')
+    assert.equal(nombreInstalada(4), '1.4')
+    assert.equal(nombreInstalada(7), '7')
+    assert.equal(nombreInstalada(0), 'desconocida')
+  })
+
+  test('explica el estado', () => {
+    assert.match(textoVersion({ instalada: 3, ultima: null, estado: 'consultando' }), /^Tenés la 1\.3\. Buscando/)
+    assert.match(textoVersion({ instalada: 3, ultima: null, estado: 'error' }), /No pudimos ver/)
+    assert.match(textoVersion({ instalada: 3, ultima: valida, estado: 'lista' }), /^Tenés la 1\.3\. Es la última\.$/)
+    assert.match(textoVersion({ instalada: 2, ultima: valida, estado: 'lista' }), /Hay una nueva: 1\.3\. Avisos\./)
   })
 })

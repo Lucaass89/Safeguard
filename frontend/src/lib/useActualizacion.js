@@ -4,6 +4,7 @@ import { esAppNativa, versionApp } from './esAppNativa.js'
 
 export function useActualizacion() {
   const [ultima, setUltima] = useState(null)
+  const [estado, setEstado] = useState('consultando')
   const enApp = esAppNativa()
 
   useEffect(() => {
@@ -12,13 +13,19 @@ export function useActualizacion() {
     fetch('/app/version.json', { cache: 'no-store' })
       .then((respuesta) => (respuesta.ok ? respuesta.json() : null))
       .then((datos) => {
-        if (activo) setUltima(leerUltimaVersion(datos))
+        if (!activo) return
+        const leida = leerUltimaVersion(datos)
+        setUltima(leida)
+        setEstado(leida ? 'lista' : 'error')
       })
-      .catch(() => {})
+      .catch(() => {
+        if (activo) setEstado('error')
+      })
     return () => {
       activo = false
     }
   }, [enApp])
 
-  return { ultima, hayNueva: enApp && necesitaActualizar(versionApp(), ultima) }
+  const instalada = versionApp()
+  return { ultima, estado, instalada, enApp, hayNueva: enApp && necesitaActualizar(instalada, ultima) }
 }

@@ -10,6 +10,7 @@ import { TEMAS_AVISO, textoEstado } from '../lib/avisos.js'
 import { appParaAvisos, cambiarTema, useAvisos } from '../lib/useAvisos.js'
 import { useActualizacion } from '../lib/useActualizacion.js'
 import { BotonActualizar } from '../components/ActualizarApp.jsx'
+import { textoVersion } from '../lib/actualizarApp.js'
 import { supabase } from '../lib/supabase.js'
 import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
@@ -423,14 +424,11 @@ function PreferenciaPortapapeles() {
 }
 
 function VersionApp() {
-  const { ultima, hayNueva } = useActualizacion()
-  if (!ultima) return null
+  const { ultima, hayNueva, estado, instalada, enApp } = useActualizacion()
+  if (!enApp) return null
 
   return (
-    <FilaAjuste
-      titulo="Versión de la app"
-      nota={hayNueva ? `Hay una nueva: ${ultima.nombre}. ${ultima.novedades}` : `Tenés la última (${ultima.nombre} o más nueva).`}
-    >
+    <FilaAjuste titulo="Versión de la app" nota={textoVersion({ instalada, ultima, estado })}>
       {hayNueva ? <BotonActualizar ultima={ultima} /> : null}
     </FilaAjuste>
   )
