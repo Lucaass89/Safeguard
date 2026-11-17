@@ -176,12 +176,9 @@ function CarruselEstafas() {
     >
       <div className="carrusel-cabeza">
         <div>
-          <p className="carrusel-ceja">Casos reales, revisados</p>
-          <h2 id={`${id}-titulo`}>Estafas que circulan, revisadas por SafeLink</h2>
-          <p>
-            Mensajes armados como los que se denuncian en Argentina. El color y los motivos los calcula el detector de
-            SafeLink en tu navegador, igual que cuando pegás algo vos. Los enlaces son inventados: no los abras.
-          </p>
+          <p className="carrusel-ceja">Casos reales</p>
+          <h2 id={`${id}-titulo`}>Estafas que circulan hoy</h2>
+          <p>Así se ven los engaños más comunes. Los enlaces son inventados: no los abras.</p>
         </div>
         <div className="carrusel-controles">
           <button
@@ -241,13 +238,7 @@ function CarruselEstafas() {
                   <strong>{nivel.titulo}</strong>
                   <span>{nivel.texto}</span>
                 </p>
-                {ejemplo.veredicto.motivos.length > 0 && (
-                  <ul>
-                    {ejemplo.veredicto.motivos.map((motivo) => (
-                      <li key={motivo}>{motivo}</li>
-                    ))}
-                  </ul>
-                )}
+                {ejemplo.veredicto.motivos.length > 0 && <p className="carrusel-motivo">{ejemplo.veredicto.motivos[0]}</p>}
               </div>
               <div className="carrusel-consejo">
                 <span className="carrusel-consejo-titulo">Qué hacer</span>
