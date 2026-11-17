@@ -129,6 +129,15 @@ function Privacidad() {
           la simulación sigue igual.
         </p>
         <p>
+          Si quien administra activó los avisos en la app de Android, el mismo aviso
+          le llega al celular con el nombre y el área. Para eso guardamos en{' '}
+          <code>push_dispositivos</code> el identificador que Firebase Cloud Messaging
+          (Google) le da a ese celular, unido a su cuenta. Se borra al apagar los
+          avisos de PhishGuard en Perfil, al borrar la cuenta o cuando Firebase dice
+          que ya no sirve. Los avisos de mantenimientos y de estafas de la semana
+          van a todos los celulares anotados en ese tema y no usan la cuenta.
+        </p>
+        <p>
           El informe en <code>/panel/informe</code> usa los mismos datos del tablero.
           Quien administra puede guardarlo o imprimirlo desde el navegador. Lista a
           cada persona por nombre, para esa cuenta, y el texto dice que no es una

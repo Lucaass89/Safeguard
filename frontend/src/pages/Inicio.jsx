@@ -17,6 +17,7 @@ import { elegirPortapapeles, olvidarCopiado, usePortapapeles } from '../lib/port
 import { guardarRacha, leerRacha, siguienteRacha, textoRacha } from '../lib/racha.js'
 import { saludoPara } from '../lib/saludo.js'
 import { useResumenSemana, useTotalesPropios } from '../lib/useAnalisisPropios.js'
+import { activarAvisos, apagarAvisos, puedeAvisar, useAvisos } from '../lib/useAvisos.js'
 import { useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -610,6 +611,26 @@ function Novedades() {
   )
 }
 
+function OfertaAvisos() {
+  const avisos = useAvisos()
+  if (!puedeAvisar() || avisos.decidido) return null
+
+  return (
+    <section className="inicio-oferta" aria-labelledby="inicio-avisos-titulo">
+      <div className="inicio-oferta-texto">
+        <h2 id="inicio-avisos-titulo">¿Te avisamos al celular?</h2>
+        <p>Mantenimientos, estafas de la semana y avisos de tu equipo. Lo cambiás en Perfil.</p>
+      </div>
+      <button type="button" className="inicio-oferta-si" onClick={() => activarAvisos({})}>
+        Activar
+      </button>
+      <button type="button" className="inicio-oferta-no" aria-label="Ahora no" onClick={apagarAvisos}>
+        <Icono nombre="cerrar" />
+      </button>
+    </section>
+  )
+}
+
 function Inicio() {
   const { sesion } = useSesion()
   const [parametros] = useSearchParams()
@@ -671,6 +692,7 @@ function Inicio() {
         </section>
       ) : null}
 
+      <OfertaAvisos />
       <OjoHoy edicion={estafas} />
       <MePaso />
       <ListaSeguridad estado={lista} onAlternar={alternarTarea} />

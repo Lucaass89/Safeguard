@@ -3,6 +3,7 @@ import Bienvenida from './Bienvenida.jsx'
 import Logo from './Logo.jsx'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import '../lib/portapapeles.js'
+import { useRegistrarAvisos } from '../lib/useAvisos.js'
 import { useSesion } from '../lib/useSesion.js'
 import './AppShell.css'
 
@@ -120,6 +121,7 @@ function AppShell({ children }) {
   const { sesion, cargando } = useSesion()
   const membresia = useMembresia()
   const admin = Boolean(sesion) && !cargando && !membresia.cargando && esAdministrador(membresia.rol)
+  useRegistrarAvisos(sesion)
 
   return (
     <div className="app-shell">

@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
+import { cuentaDeServicio, enviarAvisos } from './fcm.ts'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -112,8 +113,35 @@ Deno.serve(async (req) => {
 
   const { data: admins } = await admin
     .from('usuarios_admin')
-    .select('email, rol')
+    .select('email, rol, auth_user_id')
     .eq('organizacion_id', campana.organizacion_id)
+
+  let alCelular = 0
+  const cuenta = cuentaDeServicio()
+  const idsAdmin = [
+    ...new Set((admins ?? []).filter((fila) => administra(fila.rol)).map((fila) => fila.auth_user_id).filter(Boolean)),
+  ] as string[]
+  if (cuenta && idsAdmin.length > 0) {
+    const { data: celulares } = await admin
+      .from('push_dispositivos')
+      .select('token')
+      .in('usuario_id', idsAdmin)
+      .eq('phishguard', true)
+    const tokens = (celulares ?? []).map((fila) => fila.token)
+    try {
+      const resultado = await enviarAvisos(cuenta, tokens, {
+        titulo: `PhishGuard: ${persona.nombre} tocó el enlace`,
+        texto: `${areaDe(persona.departamento)}. No es una sanción: ya vio la explicación en el momento.`,
+        ruta: '/phishguard/tablero',
+      })
+      alCelular = resultado.enviados
+      if (resultado.invalidos.length > 0) {
+        await admin.from('push_dispositivos').delete().in('token', resultado.invalidos)
+      }
+    } catch {
+      alCelular = 0
+    }
+  }
 
   const destinatarios = [
     ...new Set(
@@ -125,8 +153,8 @@ Deno.serve(async (req) => {
   ] as string[]
 
   if (destinatarios.length === 0) {
-    await soltar()
-    return json({ ok: true, aviso: 'sin destinatario' })
+    if (alCelular === 0) await soltar()
+    return json({ ok: true, aviso: alCelular > 0 ? 'enviado' : 'sin destinatario' })
   }
 
   const area = areaDe(persona.departamento)
@@ -146,6 +174,7 @@ Deno.serve(async (req) => {
 
   const cred = credencialesGmail()
   if (!cred) {
+    if (alCelular > 0) return json({ ok: true, aviso: 'enviado' })
     await soltar()
     return json({ ok: false, error: 'Falta el correo para avisar' }, 500)
   }
@@ -179,7 +208,7 @@ Deno.serve(async (req) => {
       enviados += 1
     }
   } catch (e) {
-    if (enviados === 0) await soltar()
+    if (enviados === 0 && alCelular === 0) await soltar()
     const mensaje = e instanceof Error ? e.message : 'No se pudo enviar el aviso'
     return json({ ok: false, error: mensaje }, 500)
   }

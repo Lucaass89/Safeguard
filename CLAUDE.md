@@ -41,6 +41,13 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   copiado se mandan a SafeLink. Muestra la estafa del momento (`estafasSemana.js` o `consejoDelDia.js`), "¿Te pasó
   algo?" (`mePaso.js`), la lista de seguridad (`listaSeguridad.js`), lecciones (`lecciones.js`), logros (`logros.js`) y
   las novedades de `src/data/novedades.json` (para avisar mantenimientos o funciones nuevas, se agrega ahí).
+- Notificaciones (app 1.3 o más nueva): Firebase Cloud Messaging, proyecto `safeguard-3b268`
+  (`android/app/google-services.json`). La web pide activarlas con `safeguard://notificaciones?anuncios=1&estafas=1&phishguard=1`
+  (`src/lib/avisos.js`, `useAvisos.js`); la app se anota a los temas `anuncios` y `estafas` y devuelve el token con el evento
+  `sg-push`. Con sesión, el token se guarda con `push_registrar` en `push_dispositivos` y `phishguard-avisar-caida` avisa al
+  celular de quien administra. Los mantenimientos se mandan desde la consola de Firebase al tema `anuncios`; las estafas
+  de la semana, con `.github/workflows/avisar-estafas.yml` cuando cambia la fecha de `EDICION`. Las dos cosas necesitan
+  el secreto `FCM_SERVICE_ACCOUNT` (cuenta de servicio de Firebase) en Supabase y en GitHub.
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
   La portada muestra `public/capturas/recorrido-{claro,oscuro}.mp4`, una grabación real de la app con capítulos
   (textos en `src/lib/recorridoApp.js`, segundos de inicio en `src/data/recorridoApp.json`). Se graba con
