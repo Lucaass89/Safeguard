@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { normalizarAvisos, recibirRespuesta, TEMAS_AVISO, textoEstado, urlAvisos } from './avisos.js'
+import { estadoApp, normalizarAvisos, recibirRespuesta, TEMAS_AVISO, textoEstado, urlAvisos } from './avisos.js'
 
 describe('avisos al celular', () => {
   test('sin nada guardado, no está decidido y los temas arrancan prendidos', () => {
@@ -43,5 +43,15 @@ describe('avisos al celular', () => {
   test('cuenta los temas prendidos', () => {
     const estado = normalizarAvisos({ decidido: true, activos: true, permiso: 'si', temas: { estafas: false } })
     assert.equal(textoEstado(estado), `2 de ${TEMAS_AVISO.length} prendidos`)
+  })
+})
+
+describe('versión de la app', () => {
+  test('en la web no hay avisos y en apps viejas hay que actualizar', () => {
+    assert.equal(estadoApp(false, 0), 'web')
+    assert.equal(estadoApp(true, 2), 'vieja')
+    assert.equal(estadoApp(true, 1), 'vieja')
+    assert.equal(estadoApp(true, 3), 'lista')
+    assert.equal(estadoApp(true, 4), 'lista')
   })
 })

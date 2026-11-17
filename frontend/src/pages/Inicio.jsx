@@ -17,7 +17,7 @@ import { elegirPortapapeles, olvidarCopiado, usePortapapeles } from '../lib/port
 import { guardarRacha, leerRacha, siguienteRacha, textoRacha } from '../lib/racha.js'
 import { saludoPara } from '../lib/saludo.js'
 import { useResumenSemana, useTotalesPropios } from '../lib/useAnalisisPropios.js'
-import { activarAvisos, apagarAvisos, puedeAvisar, useAvisos } from '../lib/useAvisos.js'
+import { activarAvisos, apagarAvisos, appParaAvisos, useAvisos } from '../lib/useAvisos.js'
 import { useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -613,7 +613,23 @@ function Novedades() {
 
 function OfertaAvisos() {
   const avisos = useAvisos()
-  if (!puedeAvisar() || avisos.decidido) return null
+  const app = appParaAvisos()
+  if (app === 'web' || avisos.decidido) return null
+
+  if (app === 'vieja') {
+    return (
+      <section className="inicio-oferta" aria-labelledby="inicio-avisos-titulo">
+        <div className="inicio-oferta-texto">
+          <h2 id="inicio-avisos-titulo">Actualizá la app para recibir avisos</h2>
+          <p>Instalá la versión 1.3 de SafeGuard y te avisamos al celular.</p>
+        </div>
+        <span />
+        <button type="button" className="inicio-oferta-no" aria-label="Cerrar" onClick={apagarAvisos}>
+          <Icono nombre="cerrar" />
+        </button>
+      </section>
+    )
+  }
 
   return (
     <section className="inicio-oferta" aria-labelledby="inicio-avisos-titulo">
