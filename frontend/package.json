@@ -17,7 +17,8 @@
     "recorrido": "node scripts/recorrido/grabar.js",
     "lint": "eslint .",
     "test": "node --test src/lib/*.test.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "video:extension": "node scripts/instalar-extension/grabar.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

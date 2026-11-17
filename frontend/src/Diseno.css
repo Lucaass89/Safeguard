@@ -430,21 +430,21 @@ html[data-tema='claro'] {
   --sg-text: #3a2a1c;
   --sg-muted: #6e5843;
   --sg-line: #d8c9b3;
-  --sg-accent: #9c6b43;
+  --sg-accent: #b8895f;
   --sg-titulo: #3a2a1c;
   --sg-cuerpo: #5a4634;
   --sg-sombra-caja: 0 1px 2px rgb(58 42 28 / 5%), 0 12px 32px -20px rgb(58 42 28 / 28%);
-  --sg-blue: #9c6b43;
-  --sg-degradado: linear-gradient(135deg, #8a5a35 0%, #b07e52 100%);
-  --sg-degradado-hover: linear-gradient(135deg, #9c6b43 0%, #c0915f 100%);
-  --sg-brillo: 0 12px 32px -12px rgb(156 107 67 / 55%);
+  --sg-blue: #b8895f;
+  --sg-degradado: linear-gradient(135deg, #b08158 0%, #cfa47a 100%);
+  --sg-degradado-hover: linear-gradient(135deg, #b8895f 0%, #dbb68e 100%);
+  --sg-brillo: 0 12px 32px -12px rgb(184 137 95 / 55%);
 
   background: #e9dfcf;
 }
 
 html[data-tema='claro'] body {
   background:
-    radial-gradient(1000px 560px at 88% 0, rgb(156 107 67 / 6%), transparent 62%),
+    radial-gradient(1000px 560px at 88% 0, rgb(184 137 95 / 6%), transparent 62%),
     linear-gradient(180deg, #efe6d8 0%, #e9dfcf 45%, #e3d7c4 100%);
   background-color: #e9dfcf;
   color: var(--sg-cuerpo);
@@ -458,7 +458,7 @@ html[data-tema='claro'] .portada {
 html[data-tema='claro'] .sg-landing {
   --ink: #3a2a1c;
   --navy: #3a2a1c;
-  --blue: #9c6b43;
+  --blue: #b8895f;
   --muted: #6e5843;
   --line: #d8c9b3;
   --white: #fbf7f0;
@@ -474,10 +474,10 @@ html[data-tema='claro'] .portada {
   --h-linea: #d8c9b3;
   --h-tinta: #3a2a1c;
   --h-suave: #6e5843;
-  --h-verde: #9c6b43;
-  --h-verde-hondo: #7d5232;
+  --h-verde: #b8895f;
+  --h-verde-hondo: #a07450;
   --h-verde-suave: #d8c9b3;
-  --h-banda: linear-gradient(135deg, #3a2a1c 0%, #6b4a31 55%, #9c6b43 100%);
+  --h-banda: linear-gradient(135deg, #5e4330 0%, #8f6a4a 55%, #b8895f 100%);
   --h-banda-texto: #fbf5ec;
   --h-banda-suave: #ead9c3;
   --h-oscuro: #3a2a1c;
@@ -522,7 +522,7 @@ html[data-tema='claro'] body .sg-landing .site-header {
 }
 
 html[data-tema='claro'] .portada .portada-hero {
-  background: linear-gradient(135deg, #3a2a1c 0%, #6b4a31 55%, #9c6b43 100%);
+  background: linear-gradient(135deg, #5e4330 0%, #8f6a4a 55%, #b8895f 100%);
 }
 
 html[data-tema='claro'] body .portada .portada-hero .portada-boton-blanco {
@@ -573,7 +573,7 @@ html[data-tema='claro'] body .sg-landing .site-footer .brand > span:last-child {
 }
 
 html[data-tema='claro'] body .sg-landing .site-footer .brand > span:last-child > span {
-  color: #e0b98f;
+  color: #ead0b0;
 }
 
 html[data-tema='claro'] body .panel-lienzo :is(.panel-seccion, .panel-card, .panel-plan, .panel-datos-empresa details, .tarjeta-metrica, .metricas-franja > *),
@@ -610,7 +610,7 @@ html[data-tema='claro'] body :is(.mesa-hoja, .mesa-grupos section) {
 }
 
 html[data-tema='claro'] body .check-empleado:has(input:checked) {
-  border-color: #c49a72;
+  border-color: #d6b48f;
   background: #ead9c2;
 }
 
@@ -649,8 +649,8 @@ html[data-tema] body .portada .portada-pie nav h2 {
 }
 
 html[data-tema='claro'] {
-  --sg-degradado: linear-gradient(135deg, #9c6b43 0%, #b07e52 100%);
-  --sg-brillo: 0 12px 32px -12px rgb(156 107 67 / 65%);
+  --sg-degradado: linear-gradient(135deg, #b8895f 0%, #cfa47a 100%);
+  --sg-brillo: 0 12px 32px -12px rgb(184 137 95 / 65%);
 }
 
 html[data-tema='claro'] body :is(
@@ -665,25 +665,25 @@ html[data-tema='claro'] body :is(
   .panel-plan-accion,
   .phish-armar
 ) {
-  box-shadow: 0 1px 0 rgb(255 255 255 / 18%) inset, 0 6px 18px -10px rgb(156 107 67 / 70%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 18%) inset, 0 6px 18px -10px rgb(184 137 95 / 70%);
 }
 
 html[data-tema='claro'] body :is(.portada .portada-boton, .sg-landing .sl-boton, .panel-boton, .panel-boton-borde, .phish-armar, .pg-cta, .pg-cta-secundario, .nav-cta):focus-visible {
-  outline: 3px solid #e0b98f;
+  outline: 3px solid #ead0b0;
 }
 
 html[data-tema='claro'] .portada .portada-hero-grilla > .probador::before,
 html[data-tema='claro'] .sg-landing .sl-hero > .probador::before {
-  background: radial-gradient(closest-side, rgb(156 107 67 / 34%), rgb(156 107 67 / 12%) 55%, transparent 75%);
+  background: radial-gradient(closest-side, rgb(184 137 95 / 34%), rgb(184 137 95 / 12%) 55%, transparent 75%);
 }
 
 html[data-tema='claro'] body .panel-lienzo :is(input, select, textarea):focus-visible {
-  border-color: #b07e52;
-  outline: 2px solid rgb(156 107 67 / 55%);
+  border-color: #cfa47a;
+  outline: 2px solid rgb(184 137 95 / 55%);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html[data-tema='claro'] body :is(.portada .portada-beneficio):hover {
-    border-color: rgb(156 107 67 / 45%);
+    border-color: rgb(184 137 95 / 45%);
   }
 }

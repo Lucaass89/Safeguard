@@ -648,5 +648,5 @@ html[data-tema='oscuro'] .inicio-juego-real {
 
 html[data-tema='claro'] .inicio {
   --inicio-secundario: #5a4634;
-  --inicio-boton: #3a2a1c;
+  --inicio-boton: #b8895f;
 }

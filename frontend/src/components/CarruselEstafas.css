@@ -438,6 +438,6 @@ html[data-tema='claro'] .carrusel {
   --c-suave: var(--h-suave, #6e5843);
   --c-linea: var(--h-linea, #d8c9b3);
   --c-campo: var(--h-gris, #f6efe4);
-  --c-acento: var(--h-verde, #9c6b43);
+  --c-acento: var(--h-verde, #b8895f);
   --c-gris: #6e5843;
 }

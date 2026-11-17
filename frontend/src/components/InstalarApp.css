@@ -62,7 +62,7 @@ body:has(.landing-puertas) .instalar-app {
 }
 
 html[data-tema='claro'] .instalar-app-si {
-  background: #9c6b43;
+  background: #b8895f;
   color: #ffffff;
 }
 

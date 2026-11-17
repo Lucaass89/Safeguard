@@ -1,0 +1,11 @@
+{
+  "duracion": 34,
+  "inicios": {
+    "descargar": 0,
+    "descomprimir": 5.4,
+    "abrir": 11,
+    "modo": 16.2,
+    "cargar": 20,
+    "fijar": 27.4
+  }
+}

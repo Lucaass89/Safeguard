@@ -22,7 +22,7 @@ function pintar(preferencia) {
   const siguiente = apariencia(preferencia)
   document.documentElement.dataset.tema = siguiente
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.setAttribute('content', siguiente === 'oscuro' ? '#070d1a' : '#f5f7fb')
+  if (meta) meta.setAttribute('content', siguiente === 'oscuro' ? '#070d1a' : '#e9dfcf')
   window.dispatchEvent(new CustomEvent('sg-tema', { detail: siguiente }))
   return siguiente
 }

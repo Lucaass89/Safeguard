@@ -332,7 +332,7 @@ html[data-tema='oscuro'] .phish-pago .phish-pago-monto {
 
 html[data-tema='claro'] .phish {
   --phish-secundario: #5a4634;
-  --phish-boton: #3a2a1c;
+  --phish-boton: #b8895f;
 }
 
 html[data-tema='claro'] .phish-pago .phish-pago-monto {

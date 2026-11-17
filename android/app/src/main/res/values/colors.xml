@@ -7,7 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="papel">#F5F7FB</color>
-    <color name="tinta">#0F1B2D</color>
-    <color name="azul">#1A52BE</color>
+    <color name="papel">#E9DFCF</color>
+    <color name="papel_abajo">#F6EFE4</color>
+    <color name="tinta">#3A2A1C</color>
+    <color name="acento">#B8895F</color>
 </resources>
