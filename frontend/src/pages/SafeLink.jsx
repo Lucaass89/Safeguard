@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
 import Resultado from '../components/Resultado.jsx'
 import { agruparActividad } from '../lib/agruparActividad.js'
@@ -232,7 +233,9 @@ function SafeLink() {
   const [resultado, setResultado] = useState(null)
   const [revisando, setRevisando] = useState(null)
   const [filtro, setFiltro] = useState('todos')
-  const { sesion } = useSesion()
+  const { sesion, cargando: cargandoSesion } = useSesion()
+  const [parametros, setParametros] = useSearchParams()
+  const compartido = parametros.get('compartido')
   const revisados = useAnalisisPropios({ limite: 60 })
   const totales = useTotalesPropios()
   const portapapeles = usePortapapeles()
@@ -284,6 +287,18 @@ function SafeLink() {
     }
     ejecutar(tipo, texto.trim())
   }
+
+  const alCompartir = useEffectEvent((texto) => {
+    setParametros({}, { replace: true })
+    setEntrada(texto.trim())
+    revisarTexto(texto)
+  })
+
+  useEffect(() => {
+    if (cargandoSesion || !compartido?.trim()) return undefined
+    const espera = window.setTimeout(() => alCompartir(compartido), 0)
+    return () => window.clearTimeout(espera)
+  }, [compartido, cargandoSesion])
 
   async function pegarYRevisar() {
     const texto = await navigator.clipboard.readText().catch(() => portapapeles.enlace ?? '')
