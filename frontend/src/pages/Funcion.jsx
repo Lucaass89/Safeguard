@@ -12,8 +12,6 @@ const coloresSemaforo = [
   ['rojo', 'Rojo', 'No lo abras'],
 ]
 
-const claseColor = { Verde: 'fn-verde', Amarillo: 'fn-amarillo', Rojo: 'fn-rojo' }
-
 function Muestra({ muestra }) {
   if (muestra.semaforo) {
     return (
@@ -109,33 +107,6 @@ function Funcion() {
           <Muestra muestra={funcion.muestra} />
         </header>
 
-        <ul className="fn-datos" aria-label="En pocas palabras">
-          {funcion.datos.map(([valor, etiqueta]) => (
-            <li key={valor}>
-              <strong>{valor}</strong>
-              <span>{etiqueta}</span>
-            </li>
-          ))}
-        </ul>
-
-        <section className="fn-bloque fn-dos">
-          <div>
-            <p className="fn-ceja">Para qué sirve</p>
-            <h2>Por qué te conviene</h2>
-            {funcion.paraQue.map((parrafo) => (
-              <p key={parrafo}>{parrafo}</p>
-            ))}
-          </div>
-          <aside className="fn-cuando">
-            <h3>Cuándo usarlo</h3>
-            <ul>
-              {funcion.cuando.map((caso) => (
-                <li key={caso}>{caso}</li>
-              ))}
-            </ul>
-          </aside>
-        </section>
-
         <section className="fn-bloque" id="como-funciona">
           <p className="fn-ceja">Paso a paso</p>
           <h2>Cómo funciona</h2>
@@ -150,19 +121,6 @@ function Funcion() {
               </li>
             ))}
           </ol>
-        </section>
-
-        <section className="fn-bloque">
-          <p className="fn-ceja">Por dentro</p>
-          <h2>{funcion.revisa.titulo}</h2>
-          <ul className="fn-revisa">
-            {funcion.revisa.items.map(([titulo, texto]) => (
-              <li key={titulo} className={claseColor[titulo]}>
-                <h3>{titulo}</h3>
-                <p>{texto}</p>
-              </li>
-            ))}
-          </ul>
         </section>
 
         <section className="fn-bloque fn-consejos">
@@ -189,27 +147,6 @@ function Funcion() {
             ))}
           </div>
           <p className="fn-nota">{funcion.nota}</p>
-        </section>
-
-        <section className="fn-bloque">
-          <p className="fn-ceja">Seguí explorando</p>
-          <h2>Otras funciones</h2>
-          <ul className="fn-relacionadas">
-            {funcion.relacionadas.map((clave) => {
-              const otra = funciones[clave]
-              return (
-                <li key={clave}>
-                  <Link to={`/funcion/${clave}`}>
-                    <IconoFuncion nombre={clave} className="fn-icono-svg" />
-                    <span>
-                      <small>{otra.parte}</small>
-                      <strong>{otra.titulo}</strong>
-                    </span>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
         </section>
 
         <section className="fn-cierre">
