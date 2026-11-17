@@ -55,7 +55,7 @@ html[data-tema] body .portada .portada-hero h1 {
   line-height: 1.04;
 }
 
-html[data-tema] body :is(.portada .portada-cuerpo h2, .portada .portada-cierre h2, .sg-landing .sl-cuerpo h2, .sg-landing .pg-bloque h2) {
+html[data-tema] body :is(.portada .portada-cuerpo h2, .sg-landing .sl-cuerpo h2, .sg-landing .pg-bloque h2) {
   font-size: clamp(28px, 3.4vw, 40px);
 }
 
@@ -64,7 +64,7 @@ html[data-tema] body :is(.portada .portada-hero-texto > p, .sg-landing .sl-hero-
   line-height: 1.6;
 }
 
-html[data-tema] body :is(.portada .portada-caja-dividida > div > p, .portada .portada-servicio > div > p, .portada .portada-dos-columnas > p, .portada .portada-cierre-tarjeta > div > p) {
+html[data-tema] body :is(.portada .portada-caja-dividida > div > p) {
   font-size: 18px;
 }
 
@@ -72,7 +72,7 @@ html[data-tema='oscuro'] body :is(.portada, .sg-landing) :is(h1, h2, h3) {
   color: var(--sg-titulo);
 }
 
-html[data-tema='oscuro'] body :is(.portada-hero-texto > p, .portada-caja-dividida > div > p, .portada-servicio > div > p, .portada-dos-columnas > p, .portada-cierre-tarjeta > div > p, .sl-hero-texto > p, .pg-banda p, .panel-lead) {
+html[data-tema='oscuro'] body :is(.portada-hero-texto > p, .portada-caja-dividida > div > p, .sl-hero-texto > p, .pg-banda p, .panel-lead) {
   color: var(--sg-cuerpo);
 }
 
@@ -243,27 +243,15 @@ html[data-tema='oscuro'] .portada .portada-hero .portada-boton-borde-blanco {
   border-color: rgb(148 163 184 / 38%);
 }
 
-html[data-tema='oscuro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-como-tarjeta, .portada .portada-accesos a, .portada .portada-tablero, .portada .portada-luz, .portada .portada-cierre-tarjeta, .probador, .elegir-personas, .form-empresa) {
+html[data-tema='oscuro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-luz, .probador, .elegir-personas, .form-empresa) {
   border: 1px solid var(--sg-borde-suave);
   background: var(--sg-vidrio);
   backdrop-filter: blur(10px);
 }
 
-html[data-tema='oscuro'] .portada .portada-cifras,
 html[data-tema='oscuro'] .portada .portada-pie {
   border-top: 1px solid var(--h-linea);
   background: rgb(5 10 22 / 55%);
-}
-
-html[data-tema='oscuro'] .portada .portada-cierre {
-  background: transparent;
-}
-
-html[data-tema='oscuro'] .portada .portada-cifras strong {
-  background: linear-gradient(135deg, #8eb4ff 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 .portada .portada-hero-grilla,
@@ -414,11 +402,11 @@ html[data-tema='oscuro'] body .panel-lienzo :is(.tabla-wrap, .tabla-equipo td) {
     animation: sg-entrar 620ms 140ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 
-  html[data-tema] body :is(.portada .portada-beneficio, .portada .portada-accesos a) {
+  html[data-tema] body :is(.portada .portada-beneficio) {
     transition: transform 200ms ease, border-color 200ms ease;
   }
 
-  html[data-tema] body :is(.portada .portada-beneficio, .portada .portada-accesos a):hover {
+  html[data-tema] body :is(.portada .portada-beneficio):hover {
     border-color: rgb(59 130 246 / 45%);
     transform: translateY(-2px);
   }
@@ -507,7 +495,7 @@ html[data-tema='claro'] body .portada .portada-hero .probador h2.probador-titulo
   color: #0b1a33;
 }
 
-html[data-tema='claro'] body :is(.portada-caja-dividida > div > p, .portada-servicio > div > p, .portada-dos-columnas > p, .portada-cierre-tarjeta > div > p, .sl-hero-texto > p, .pg-banda p, .panel-lead, .portada-como-cabeza > p) {
+html[data-tema='claro'] body :is(.portada-caja-dividida > div > p, .sl-hero-texto > p, .pg-banda p, .panel-lead) {
   color: var(--sg-cuerpo);
 }
 
@@ -542,14 +530,13 @@ html[data-tema='claro'] body .portada .portada-hero .portada-boton-borde-blanco 
   color: #f1f5fb;
 }
 
-html[data-tema='claro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-como-tarjeta, .portada .portada-accesos a, .portada .portada-tablero, .portada .portada-luz, .portada .portada-cierre-tarjeta, .elegir-personas, .form-empresa, .sg-landing .pg-tablero, .sg-landing .sl-banda, .sg-landing .pg-precio-pago) {
+html[data-tema='claro'] body :is(.portada .portada-caja, .portada .portada-beneficio, .portada .portada-luz, .elegir-personas, .form-empresa, .sg-landing .pg-tablero, .sg-landing .sl-banda, .sg-landing .pg-precio-pago) {
   border: 1px solid #cdd5e1;
   background: #f3f5f8;
   box-shadow: var(--sg-sombra-caja);
 }
 
-html[data-tema='claro'] body .portada .portada-caja .portada-luz,
-html[data-tema='claro'] body .portada .portada-caja .portada-accesos a {
+html[data-tema='claro'] body .portada .portada-caja .portada-luz {
   background: #e8ecf2;
   box-shadow: none;
 }
@@ -560,20 +547,8 @@ html[data-tema='claro'] body .probador {
   box-shadow: 0 30px 60px -32px rgb(7 13 26 / 55%);
 }
 
-html[data-tema='claro'] .portada .portada-cifras,
 html[data-tema='claro'] .portada .portada-pie {
   background: #0b1a33;
-}
-
-html[data-tema='claro'] .portada .portada-cierre {
-  background: linear-gradient(135deg, #0b1a33 0%, #0f2350 60%, #163a7a 100%);
-}
-
-html[data-tema='claro'] .portada .portada-cifras strong {
-  background: linear-gradient(135deg, #8eb4ff 0%, #5b9bff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 html[data-tema='claro'] body .sg-landing .site-footer {
@@ -665,8 +640,4 @@ html[data-tema='claro'] body .slapp-entrada {
 
 html[data-tema] body .portada .portada-pie nav h2 {
   color: var(--h-oscuro-texto);
-}
-
-html[data-tema] body .portada .portada-cierre .portada-ceja {
-  color: var(--h-verde);
 }
