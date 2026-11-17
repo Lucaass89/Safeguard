@@ -484,5 +484,5 @@
 
 html[data-tema='claro'] .fn {
   --fn-borde: var(--sg-line, #5a4634);
-  --fn-acento: var(--sg-accent, #9c6b43);
+  --fn-acento: var(--sg-accent, #b8895f);
 }

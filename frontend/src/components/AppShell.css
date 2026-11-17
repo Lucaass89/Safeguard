@@ -29,8 +29,8 @@ html[data-tema='claro'] .app-shell {
   --sg-text: #3a2a1c;
   --sg-muted: #6e5843;
   --sg-line: #d8c9b3;
-  --sg-blue: #9c6b43;
-  --sg-accent: #9c6b43;
+  --sg-blue: #b8895f;
+  --sg-accent: #b8895f;
   --sg-enlace: #6b5644;
   --sg-texto-2: #5a4634;
   --sg-tonal: color-mix(in srgb, #3a2a1c 6%, transparent);
@@ -116,11 +116,11 @@ html[data-tema='oscuro'] .app-nav {
 
 html[data-tema='claro'] .app-nav-activa .app-nav-icono,
 html[data-tema='claro'] .app-acceso-icono {
-  color: #9c6b43;
+  color: #b8895f;
 }
 
 html[data-tema='claro'] .app-shell .panel-boton {
-  background: #9c6b43;
+  background: #b8895f;
   color: #ffffff;
 }
 
@@ -490,9 +490,9 @@ html[data-tema='oscuro'] .app-shell .perfil-app .perfil-borrar {
 }
 
 html[data-tema='claro'] .app-nav-activa .app-nav-icono {
-  color: #e0b98f;
+  color: #ead0b0;
 }
 
 html[data-tema='claro'] .app-acceso-icono {
-  color: #e0b98f;
+  color: #ead0b0;
 }

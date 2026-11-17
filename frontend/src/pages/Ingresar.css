@@ -302,7 +302,7 @@
 }
 
 html[data-tema='claro'] .acceso-boton:hover:not(:disabled) {
-  background: #7d5232;
+  background: #a07450;
 }
 
 html[data-tema='claro'] .sg-landing .acceso-caja {
@@ -334,11 +334,11 @@ html[data-tema='claro'] .sg-landing .acceso-pestanas button.activa {
 }
 
 html[data-tema='claro'] .sg-landing .acceso-form input:focus {
-  border-color: #9c6b43;
+  border-color: #b8895f;
 }
 
 html[data-tema='claro'] .sg-landing .acceso-boton {
-  background: #9c6b43;
+  background: #b8895f;
 }
 
 html[data-tema='claro'] .sg-landing .acceso-boton:hover:not(:disabled) {

@@ -671,7 +671,7 @@ html[data-tema='claro'] .sg-landing .pg-banda .pg-cta,
 html[data-tema='claro'] .sg-landing .sl-lado a,
 html[data-tema='claro'] .sg-landing .sl-lado button,
 html[data-tema='claro'] .sg-landing .adquirir-precio {
-  background: #9c6b43;
+  background: #b8895f;
   color: #ffffff;
 }
 
@@ -679,7 +679,7 @@ html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover,
 html[data-tema='claro'] .sg-landing .sl-lado a:hover,
 html[data-tema='claro'] .sg-landing .sl-lado button:hover,
 html[data-tema='claro'] .sg-landing .adquirir-precio:hover {
-  background: #7d5232;
+  background: #a07450;
   color: #ffffff;
 }
 
@@ -935,7 +935,7 @@ html[data-tema='claro'] .pg-incluye div {
 
 html[data-tema='claro'] .sl-lado a,
 html[data-tema='claro'] .sl-lado button {
-  background: #9c6b43;
+  background: #b8895f;
 }
 
 html[data-tema='claro'] .sl-lugares div {
@@ -950,29 +950,29 @@ html[data-tema='claro'] .sl-lugares div {
 }
 
 html[data-tema='claro'] .adquirir-precio {
-  background: var(--blue, #9c6b43);
+  background: var(--blue, #b8895f);
 }
 
 html[data-tema='claro'] .adquirir-precio:hover {
-  background: #7d5232;
+  background: #a07450;
 }
 
 html[data-tema='claro'] .sg-landing .sl-boton {
-  border: 1px solid #9c6b43;
-  background: #9c6b43;
+  border: 1px solid #b8895f;
+  background: #b8895f;
 }
 
 html[data-tema='claro'] .sg-landing .sl-boton:hover {
-  border-color: #7d5232;
-  background: #7d5232;
+  border-color: #a07450;
+  background: #a07450;
 }
 
 html[data-tema='claro'] .sg-landing .pg-precios li.pg-precio-activo {
-  border-top: 3px solid #9c6b43;
+  border-top: 3px solid #b8895f;
 }
 
 html[data-tema='claro'] .sg-landing .pg-precios li.pg-precio-activo strong {
-  color: #9c6b43;
+  color: #b8895f;
 }
 
 html[data-tema='claro'] .pg,
@@ -1025,7 +1025,7 @@ html[data-tema='claro'] .pg-precio-nota {
 }
 
 html[data-tema='claro'] .pg-precio-pago {
-  border-left: 3px solid var(--blue, #9c6b43);
+  border-left: 3px solid var(--blue, #b8895f);
   background: #ead9c2;
   color: #3a2a1c;
 }
@@ -1037,7 +1037,7 @@ html[data-tema='claro'] .sl-lado button:disabled {
 html[data-tema='claro'] .sl-lugares a,
 html[data-tema='claro'] .sl-cuerpo a,
 html[data-tema='claro'] .nota a {
-  color: #8a5a35;
+  color: #b08158;
 }
 
 html[data-tema='claro'] .sl-secundario {
@@ -1049,17 +1049,17 @@ html[data-tema='claro'] .adquirir-acepto {
 }
 
 html[data-tema='claro'] .adquirir-acepto a {
-  color: #8a5a35;
+  color: #b08158;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta,
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta {
-  background: #9c6b43;
+  background: #b8895f;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover,
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover {
-  background: #7d5232;
+  background: #a07450;
 }
 
 html[data-tema='claro'] .sg-landing .pg-tablero {
@@ -1067,5 +1067,5 @@ html[data-tema='claro'] .sg-landing .pg-tablero {
 }
 
 html[data-tema='claro'] .sg-landing .pg-riel span {
-  color: #9c6b43;
+  color: #b8895f;
 }

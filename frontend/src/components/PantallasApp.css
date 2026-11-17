@@ -10,7 +10,7 @@
 html[data-tema='claro'] .pantallas {
   --t-marco: #3a2a1c;
   --t-borde: #5a4634;
-  --t-brillo: rgb(156 107 67 / 16%);
+  --t-brillo: rgb(184 137 95 / 16%);
 }
 
 .pantallas .recorrido-texto > p {
@@ -360,7 +360,7 @@ html[data-tema='claro'] .pantallas-captura-claro {
 }
 
 html[data-tema='claro'] .pantallas {
-  --t-brillo: rgb(156 107 67 / 22%);
+  --t-brillo: rgb(184 137 95 / 22%);
 }
 
 @media (max-width: 900px) {

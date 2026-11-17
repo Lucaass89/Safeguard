@@ -2371,7 +2371,7 @@ table.persona-tabla td:first-child,
 }
 
 html[data-tema='claro'] .mesa-grupos .panel-empresas {
-  border-top-color: #c49a72;
+  border-top-color: #d6b48f;
 }
 
 html[data-tema='claro'] .mesa-hoja,
@@ -2556,8 +2556,8 @@ html[data-tema='claro'] .sg-landing .panel-lienzo {
   --sg-text: #3a2a1c;
   --sg-muted: #6e5843;
   --sg-line: #d8c9b3;
-  --sg-blue: #9c6b43;
-  --sg-accent: #9c6b43;
+  --sg-blue: #b8895f;
+  --sg-accent: #b8895f;
   color: #3a2a1c;
 }
 
@@ -2576,7 +2576,7 @@ html[data-tema='claro'] .panel-empresas .panel-campo select {
 
 html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton,
 html[data-tema='claro'] .sg-landing .panel-lienzo a.panel-boton {
-  background: #9c6b43;
+  background: #b8895f;
 }
 
 html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton:hover:not(:disabled),
@@ -2589,21 +2589,21 @@ html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton:focus-visible:not
 
 html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton-borde:hover:not(:disabled),
 html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton-borde:focus-visible:not(:disabled) {
-  border-color: #e0b98f;
+  border-color: #ead0b0;
 }
 
 @media (min-width: 901px) {
   html[data-tema='claro'] .mesa-grupos .panel-empresas {
-    border-top: 3px solid #9c6b43;
+    border-top: 3px solid #b8895f;
   }
 }
 
 html[data-tema='claro'] .panel-plan-accion {
-  background: #9c6b43;
+  background: #b8895f;
 }
 
 html[data-tema='claro'] .panel-plan-accion:hover {
-  background: #7d5232;
+  background: #a07450;
 }
 
 html[data-tema='claro'] .check-empleado {
@@ -2612,7 +2612,7 @@ html[data-tema='claro'] .check-empleado {
 }
 
 html[data-tema='claro'] .check-empleado:has(input:checked) {
-  border-color: #9c6b43;
+  border-color: #b8895f;
   background: #f1e4d2;
 }
 
@@ -2623,7 +2623,7 @@ html[data-tema='claro'] .azar-cantidad input {
 
 html[data-tema='claro'] .mesa-hoja a span:last-child {
   background: #f1e4d2;
-  color: #9c6b43;
+  color: #b8895f;
 }
 
 html[data-tema='claro'] .perfil-nota {
