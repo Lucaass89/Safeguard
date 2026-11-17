@@ -56,5 +56,6 @@ export function textoEstado(estado) {
 
 export function estadoApp(esApp, version) {
   if (!esApp) return 'web'
+  if (!Number.isInteger(version) || version < 1) return 'pwa'
   return version >= VERSION_CON_AVISOS ? 'lista' : 'vieja'
 }

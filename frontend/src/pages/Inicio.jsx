@@ -615,16 +615,22 @@ function Novedades() {
 }
 
 function OfertaActualizar() {
-  const { ultima, hayNueva } = useActualizacion()
+  const { ultima, hayNueva, esWeb } = useActualizacion()
   const [cerrada, setCerrada] = useState(() => leerJson('sg-actualizacion-cerrada', null))
-  if (!hayNueva || cerrada === ultima.nombre) return null
+  if (!ultima || (!hayNueva && !esWeb) || cerrada === ultima.nombre) return null
 
   return (
     <section className="inicio-oferta inicio-actualizar" aria-labelledby="inicio-actualizar-titulo">
       <div className="inicio-oferta-texto">
-        <h2 id="inicio-actualizar-titulo">Hay una versión nueva de la app ({ultima.nombre})</h2>
-        <p>{ultima.novedades || 'Trae mejoras y arreglos.'}</p>
-        <BotonActualizar ultima={ultima} className="inicio-actualizar-boton" />
+        <h2 id="inicio-actualizar-titulo">
+          {esWeb ? 'Bajá la app de Android' : `Hay una versión nueva de la app (${ultima.nombre})`}
+        </h2>
+        <p>
+          {esWeb
+            ? 'Estás usando la app web. La de Android suma los avisos al celular.'
+            : ultima.novedades || 'Trae mejoras y arreglos.'}
+        </p>
+        <BotonActualizar ultima={ultima} nueva={esWeb} className="inicio-actualizar-boton" />
       </div>
       <span />
       <button
@@ -645,9 +651,7 @@ function OfertaActualizar() {
 function OfertaAvisos() {
   const avisos = useAvisos()
   const app = appParaAvisos()
-  if (app === 'web' || avisos.decidido) return null
-
-  if (app === 'vieja') return null
+  if (app !== 'lista' || avisos.decidido) return null
 
   return (
     <section className="inicio-oferta" aria-labelledby="inicio-avisos-titulo">

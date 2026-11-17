@@ -54,5 +54,6 @@ describe('qué versión tenés', () => {
     assert.match(textoVersion({ instalada: 3, ultima: null, estado: 'error' }), /No pudimos ver/)
     assert.match(textoVersion({ instalada: 3, ultima: valida, estado: 'lista' }), /^Tenés la 1\.3\. Es la última\.$/)
     assert.match(textoVersion({ instalada: 2, ultima: valida, estado: 'lista' }), /Hay una nueva: 1\.3\. Avisos\./)
+    assert.match(textoVersion({ instalada: 0, ultima: valida, estado: 'lista' }), /app web: se actualiza sola/)
   })
 })

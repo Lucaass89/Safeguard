@@ -29,6 +29,9 @@ export function nombreInstalada(numero) {
 }
 
 export function textoVersion({ instalada, ultima, estado }) {
+  if (!Number.isInteger(instalada) || instalada < 1) {
+    return 'Estás usando SafeGuard como app web: se actualiza sola. Para recibir avisos al celular, bajá la app de Android.'
+  }
   const tuya = `Tenés la ${nombreInstalada(instalada)}.`
   if (estado === 'consultando') return `${tuya} Buscando si hay una nueva…`
   if (estado === 'error' || !ultima) return `${tuya} No pudimos ver si hay una nueva. Revisá la conexión y volvé a abrir Perfil.`

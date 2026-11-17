@@ -53,5 +53,6 @@ describe('versión de la app', () => {
     assert.equal(estadoApp(true, 1), 'vieja')
     assert.equal(estadoApp(true, 3), 'lista')
     assert.equal(estadoApp(true, 4), 'lista')
+    assert.equal(estadoApp(true, 0), 'pwa')
   })
 })
