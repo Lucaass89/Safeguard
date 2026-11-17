@@ -37,6 +37,10 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   - Rutas en `src/App.jsx`: `/panel/*` en la web; `/safelink`, `/phishguard/*` y `/perfil` solo dentro de la app Android (`esAppNativa`).
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).
+- Inicio de la app (`src/pages/Inicio.jsx`) no revisa nada: lo compartido desde WhatsApp (`/?compartido=…`) y el enlace
+  copiado se mandan a SafeLink. Muestra la estafa del momento (`estafasSemana.js` o `consejoDelDia.js`), "¿Te pasó
+  algo?" (`mePaso.js`), la lista de seguridad (`listaSeguridad.js`), lecciones (`lecciones.js`), logros (`logros.js`) y
+  las novedades de `src/data/novedades.json` (para avisar mantenimientos o funciones nuevas, se agrega ahí).
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
   La portada muestra `public/capturas/recorrido-{claro,oscuro}.mp4`, una grabación real de la app con capítulos
   (textos en `src/lib/recorridoApp.js`, segundos de inicio en `src/data/recorridoApp.json`). Se graba con
