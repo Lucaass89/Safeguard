@@ -38,12 +38,13 @@ async function tokenDeAcceso(cuenta) {
 }
 
 const crudo = process.env.FCM_SERVICE_ACCOUNT
+const prueba = process.env.PRUEBA === 'true'
 if (!crudo) {
   console.log('Falta el secreto FCM_SERVICE_ACCOUNT: no se manda el aviso.')
-  process.exit(0)
+  process.exit(prueba ? 1 : 0)
 }
 
-if (!hayEdicionNueva(anterior(), EDICION.fecha)) {
+if (!prueba && !hayEdicionNueva(anterior(), EDICION.fecha)) {
   console.log('La edición no cambió: no se manda el aviso.')
   process.exit(0)
 }
@@ -60,6 +61,7 @@ const respuesta = await fetch(`https://fcm.googleapis.com/v1/projects/${cuenta.p
   method: 'POST',
   headers: { Authorization: `Bearer ${acceso}`, 'Content-Type': 'application/json' },
   body: JSON.stringify({
+    validate_only: prueba,
     message: {
       topic: 'estafas',
       notification: { title: aviso.titulo, body: aviso.texto },
@@ -72,4 +74,4 @@ if (!respuesta.ok) {
   console.error(`Firebase respondió ${respuesta.status}: ${await respuesta.text()}`)
   process.exit(1)
 }
-console.log(`Aviso enviado: ${aviso.texto}`)
+console.log(prueba ? `Prueba correcta: Firebase aceptó la clave y el aviso, sin mandarlo (${aviso.texto})` : `Aviso enviado: ${aviso.texto}`)
