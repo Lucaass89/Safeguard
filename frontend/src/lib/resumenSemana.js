@@ -39,3 +39,12 @@ export function resumenSemana(filas) {
   }
   return `Esta semana revisaste ${revisado}${separador} detectaste ${peligrosos} ${peligrosos === 1 ? 'peligroso' : 'peligrosos'}.`
 }
+
+export function conteoSemaforo(filas) {
+  const cuenta = { total: filas.length, verde: 0, amarillo: 0, rojo: 0, gris: 0 }
+  for (const fila of filas) {
+    const nivel = fila.nivel_riesgo in cuenta && fila.nivel_riesgo !== 'total' ? fila.nivel_riesgo : 'gris'
+    cuenta[nivel] += 1
+  }
+  return cuenta
+}

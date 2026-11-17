@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { inicioDeSemana, resumenSemana } from './resumenSemana.js'
+import { conteoSemaforo, inicioDeSemana, resumenSemana } from './resumenSemana.js'
 
 const fila = (entrada, nivel_riesgo = 'verde') => ({ entrada, nivel_riesgo })
 const varias = (n, entrada, nivel) => Array.from({ length: n }, () => fila(entrada, nivel))
@@ -49,5 +49,31 @@ describe('resumen de la semana', () => {
     const domingo = new Date(2026, 9, 18, 15)
     assert.deepEqual(inicioDeSemana(domingo), new Date(2026, 9, 12))
     assert.deepEqual(inicioDeSemana(new Date(2026, 9, 12, 0, 5)), new Date(2026, 9, 12))
+  })
+})
+
+describe('semáforo de la semana', () => {
+  test('cuenta cada color', () => {
+    assert.deepEqual(conteoSemaforo([...varias(3, 'web'), ...varias(2, 'qr', 'rojo'), fila('pdf', 'amarillo')]), {
+      total: 6,
+      verde: 3,
+      amarillo: 1,
+      rojo: 2,
+      gris: 0,
+    })
+  })
+
+  test('lo desconocido cuenta como gris', () => {
+    assert.deepEqual(conteoSemaforo([fila('web', null), fila('web', 'violeta'), fila('web', 'total')]), {
+      total: 3,
+      verde: 0,
+      amarillo: 0,
+      rojo: 0,
+      gris: 3,
+    })
+  })
+
+  test('sin filas da todo en cero', () => {
+    assert.deepEqual(conteoSemaforo([]), { total: 0, verde: 0, amarillo: 0, rojo: 0, gris: 0 })
   })
 })

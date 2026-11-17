@@ -7,6 +7,8 @@ import { veredictoDe } from '../lib/veredicto.js'
 import { analizar, motivosLimpios } from '../lib/analisis.js'
 import { guardarAnalisis, revisarEnlace, revisarWhatsapp } from '../lib/enriquecer.js'
 import { registrarRespuesta } from '../lib/entrenamiento.js'
+import { guardarRacha, leerRacha, siguienteRacha, textoRacha } from '../lib/racha.js'
+import { saludoPara } from '../lib/saludo.js'
 import { versionApp } from '../lib/esAppNativa.js'
 import { CANALES, elegirMensaje, marcarVisto } from '../lib/estafaOReal.js'
 import { edicionVigente, fechaLegible } from '../lib/estafasSemana.js'
@@ -49,6 +51,53 @@ function Icono({ nombre }) {
     )
   }
 
+  if (nombre === 'qr-codigo') {
+    return (
+      <svg {...trazo}>
+        <rect x="4" y="4" width="6" height="6" rx="1" />
+        <rect x="14" y="4" width="6" height="6" rx="1" />
+        <rect x="4" y="14" width="6" height="6" rx="1" />
+        <path d="M14 14h2.5v2.5H14zM17.5 17.5H20V20h-2.5zM14 19.5h1M19.5 14v1" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'mensaje') {
+    return (
+      <svg {...trazo}>
+        <path d="M5 6.5h14v9H8.5L5 18.2V6.5Z" />
+        <path d="M8.5 10h7M8.5 12.8h4.5" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'pdf') {
+    return (
+      <svg {...trazo}>
+        <path d="M7 3.5h7l4 4v13H7a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1Z" />
+        <path d="M14 3.5v4h4" />
+        <path d="M9 13h6M9 16.5h4" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'correo') {
+    return (
+      <svg {...trazo}>
+        <rect x="3.5" y="5.5" width="17" height="13" rx="1.5" />
+        <path d="m4 7 8 6 8-6" />
+      </svg>
+    )
+  }
+
+  if (nombre === 'cerrar') {
+    return (
+      <svg {...trazo}>
+        <path d="m6 6 12 12M18 6 6 18" />
+      </svg>
+    )
+  }
+
   if (nombre === 'equipo') {
     return (
       <svg {...trazo}>
@@ -65,6 +114,39 @@ function Icono({ nombre }) {
       <path d="M8.2 11.4 6.8 12.8a3.2 3.2 0 0 0 4.5 4.5l1.4-1.4" />
       <path d="M15.8 12.6 17.2 11.2a3.2 3.2 0 0 0-4.5-4.5L11.3 8.1" />
     </svg>
+  )
+}
+
+const ATAJOS = [
+  { to: '/safelink/qr', icono: 'qr-codigo', titulo: 'QR' },
+  { to: '/safelink/whatsapp', icono: 'mensaje', titulo: 'Mensaje' },
+  { to: '/safelink/pdf', icono: 'pdf', titulo: 'PDF' },
+  { to: '/safelink/correo', icono: 'correo', titulo: 'Correo' },
+]
+
+const EJEMPLO = 'https://mercadolibre-pagos-verificar.com/login'
+
+const LUCES = [
+  ['verde', 'Seguros'],
+  ['amarillo', 'Precaución'],
+  ['rojo', 'Peligrosos'],
+]
+
+function SemaforoSemana({ conteo, texto }) {
+  if (!conteo || conteo.total === 0) return null
+  return (
+    <section className="inicio-semaforo" aria-labelledby="inicio-semaforo-titulo">
+      <h2 id="inicio-semaforo-titulo">Tu semana</h2>
+      <ul className="inicio-semaforo-luces">
+        {LUCES.map(([nivel, nombre]) => (
+          <li key={nivel} className={`inicio-luz inicio-luz-${nivel}`}>
+            <strong>{conteo[nivel]}</strong>
+            <span>{nombre}</span>
+          </li>
+        ))}
+      </ul>
+      {texto ? <p className="inicio-semaforo-texto">{texto}</p> : null}
+    </section>
   )
 }
 
@@ -144,6 +226,7 @@ function TarjetaEstafas({ edicion }) {
 function EstafaOReal() {
   const [mensaje, setMensaje] = useState(() => elegirMensaje())
   const [acerto, setAcerto] = useState(null)
+  const [racha, setRacha] = useState(() => leerRacha())
   const [foco, setFoco] = useState(null)
   const explicacion = useRef(null)
   const primerBoton = useRef(null)
@@ -164,6 +247,9 @@ function EstafaOReal() {
   function responder(dijoEstafa) {
     if (respondio) return
     const bien = dijoEstafa === mensaje.estafa
+    const nueva = siguienteRacha(racha, bien)
+    setRacha(nueva)
+    guardarRacha(nueva)
     setAcerto(bien)
     setFoco('explicacion')
     marcarVisto(mensaje.id)
@@ -189,6 +275,11 @@ function EstafaOReal() {
       <div className="inicio-juego-cabeza">
         <h2 id="inicio-juego-titulo">¿Estafa o real?</h2>
         <p>Mirá el mensaje y elegí. La explicación aparece al toque.</p>
+        {textoRacha(racha) ? (
+          <p className={racha.racha > 0 ? 'inicio-juego-racha inicio-juego-racha-viva' : 'inicio-juego-racha'}>
+            {textoRacha(racha)}
+          </p>
+        ) : null}
       </div>
       <figure className="inicio-juego-mensaje">
         <figcaption>
@@ -199,7 +290,9 @@ function EstafaOReal() {
         <p>{mensaje.texto}</p>
       </figure>
       {respondio ? (
-        <div className={`inicio-juego-explicacion inicio-juego-${mensaje.estafa ? 'estafa' : 'real'}`}>
+        <div
+          className={`inicio-juego-explicacion inicio-juego-${mensaje.estafa ? 'estafa' : 'real'} ${acerto ? 'inicio-juego-acerto' : 'inicio-juego-erro'}`}
+        >
           <h3 ref={explicacion} tabIndex={-1}>
             {resultado}
           </h3>
@@ -217,10 +310,15 @@ function EstafaOReal() {
         </div>
       ) : (
         <div className="inicio-juego-botones">
-          <button ref={primerBoton} type="button" className="inicio-juego-boton" onClick={() => responder(true)}>
+          <button
+            ref={primerBoton}
+            type="button"
+            className="inicio-juego-boton inicio-juego-boton-estafa"
+            onClick={() => responder(true)}
+          >
             Estafa
           </button>
-          <button type="button" className="inicio-juego-boton" onClick={() => responder(false)}>
+          <button type="button" className="inicio-juego-boton inicio-juego-boton-real" onClick={() => responder(false)}>
             Real
           </button>
         </div>
@@ -338,47 +436,60 @@ function Inicio() {
 
   return (
     <div className="inicio">
-      {resumen.texto && actividad.items.length > 0 ? <p className="inicio-resumen">{resumen.texto}</p> : null}
-      <FilaEquipo />
-
-      <form className="inicio-revisar" onSubmit={revisar}>
-        <div className="inicio-campo">
-          <label className="inicio-etiqueta" htmlFor="inicio-enlace">
-            Pegá un enlace para revisarlo
-          </label>
-          <input
-            ref={campoEnlace}
-            id="inicio-enlace"
-            type="text"
-            name="enlace"
-            value={enlace}
-            onChange={(evento) => {
-              setEnlace(evento.target.value)
-              if (aviso) setAviso('')
-              if (resultado) setResultado(null)
-            }}
-            placeholder="ejemplo.com/promo"
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck="false"
-            inputMode="url"
-            enterKeyHint="go"
-          />
-          <Link className="inicio-qr" to="/safelink/qr" aria-label="Escanear un QR">
-            <Icono nombre="qr" />
-          </Link>
-          <button
-            type="submit"
-            className="inicio-enviar"
-            aria-label={analizando ? 'Revisando el enlace' : 'Revisar el enlace'}
-            aria-busy={analizando}
-            disabled={analizando}
-          >
-            {analizando ? <span className="inicio-girando" aria-hidden="true" /> : <Icono nombre="flecha" />}
-          </button>
-        </div>
-      </form>
+      <section className="inicio-hero" aria-labelledby="inicio-hero-titulo">
+        <p className="inicio-saludo">{saludoPara(sesion?.user)}</p>
+        <h1 id="inicio-hero-titulo" className="inicio-hero-titulo">
+          ¿Qué te llegó?
+        </h1>
+        <form className="inicio-revisar" onSubmit={revisar}>
+          <div className="inicio-campo">
+            <label className="inicio-etiqueta" htmlFor="inicio-enlace">
+              Pegá un enlace para revisarlo
+            </label>
+            <input
+              ref={campoEnlace}
+              id="inicio-enlace"
+              type="text"
+              name="enlace"
+              value={enlace}
+              onChange={(evento) => {
+                setEnlace(evento.target.value)
+                if (aviso) setAviso('')
+                if (resultado) setResultado(null)
+              }}
+              placeholder="ejemplo.com/promo"
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck="false"
+              inputMode="url"
+              enterKeyHint="go"
+            />
+            <Link className="inicio-qr" to="/safelink/qr" aria-label="Escanear un QR">
+              <Icono nombre="qr" />
+            </Link>
+            <button
+              type="submit"
+              className="inicio-enviar"
+              aria-label={analizando ? 'Revisando el enlace' : 'Revisar el enlace'}
+              aria-busy={analizando}
+              disabled={analizando}
+            >
+              {analizando ? <span className="inicio-girando" aria-hidden="true" /> : <Icono nombre="flecha" />}
+            </button>
+          </div>
+        </form>
+        <nav className="inicio-atajos" aria-label="Revisar otra cosa">
+          {ATAJOS.map((atajo) => (
+            <Link key={atajo.to} className="inicio-atajo" to={atajo.to}>
+              <span className="inicio-atajo-icono">
+                <Icono nombre={atajo.icono} />
+              </span>
+              <span>{atajo.titulo}</span>
+            </Link>
+          ))}
+        </nav>
+      </section>
       {aviso ? <p className="inicio-aviso">{aviso}</p> : null}
       {analizando ? (
         <p className="inicio-revisando" role="status">
@@ -400,23 +511,28 @@ function Inicio() {
         </section>
       ) : null}
       {portapapeles.disponible && !portapapeles.preferencia && !analizando && !resultado ? (
-        <section className="inicio-copiado" aria-labelledby="inicio-ofrecer-titulo">
-          <h2 id="inicio-ofrecer-titulo">¿Te avisamos cuando copies un enlace?</h2>
-          <p>
-            Al abrir SafeGuard, miramos si copiaste un enlace y te ofrecemos revisarlo. Android te avisa cada vez
-            que se lee lo copiado. Lo podés cambiar en Perfil.
-          </p>
-          <div className="inicio-copiado-acciones">
-            <button type="button" className="inicio-copiado-si" onClick={() => elegirPortapapeles(true)}>
-              Activar
-            </button>
-            <button type="button" className="inicio-copiado-no" onClick={() => elegirPortapapeles(false)}>
-              Ahora no
-            </button>
+        <section className="inicio-oferta" aria-labelledby="inicio-ofrecer-titulo">
+          <div className="inicio-oferta-texto">
+            <h2 id="inicio-ofrecer-titulo">¿Te avisamos si copiás un enlace?</h2>
+            <p>Al abrir la app te ofrecemos revisarlo. Lo cambiás en Perfil.</p>
           </div>
+          <button type="button" className="inicio-oferta-si" onClick={() => elegirPortapapeles(true)}>
+            Activar
+          </button>
+          <button
+            type="button"
+            className="inicio-oferta-no"
+            aria-label="Ahora no"
+            onClick={() => elegirPortapapeles(false)}
+          >
+            <Icono nombre="cerrar" />
+          </button>
         </section>
       ) : null}
       {resultado ? <Veredicto resultado={resultado} guardado={guardado} onOtro={revisarOtro} /> : null}
+
+      <SemaforoSemana conteo={resumen.conteo} texto={resumen.texto} />
+      <FilaEquipo />
 
       <section className="inicio-bloque" aria-labelledby="inicio-actividad">
         <h2 id="inicio-actividad">Actividad reciente</h2>
@@ -425,9 +541,22 @@ function Inicio() {
         ) : actividad.error ? (
           <p className="inicio-vacio">No se pudo leer tu actividad. Probá de nuevo en un rato.</p>
         ) : actividad.items.length === 0 ? (
-          <p className="inicio-vacio">
-            Todavía no revisaste nada. Pegá un enlace arriba y el resultado aparece acá.
-          </p>
+          <div className="inicio-vacio-caja">
+            <span className="inicio-vacio-luces" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+            <p className="inicio-vacio">Todavía no revisaste nada. Lo que revises aparece acá con su color.</p>
+            <button
+              type="button"
+              className="inicio-ejemplo"
+              disabled={Boolean(analizando)}
+              onClick={() => revisarDireccion(EJEMPLO)}
+            >
+              Probá con un ejemplo
+            </button>
+          </div>
         ) : (
           <ListaActividad>
             {agruparActividad(actividad.items).map((item) => (
