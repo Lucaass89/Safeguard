@@ -6,6 +6,8 @@ import TarjetaMetrica, { ListaMetricas } from '../components/TarjetaMetrica.jsx'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { nombreEmpresa } from '../lib/formato.js'
 import { elegirPortapapeles, usePortapapeles } from '../lib/portapapeles.js'
+import { TEMAS_AVISO, textoEstado } from '../lib/avisos.js'
+import { cambiarTema, puedeAvisar, useAvisos } from '../lib/useAvisos.js'
 import { supabase } from '../lib/supabase.js'
 import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
@@ -418,6 +420,35 @@ function PreferenciaPortapapeles() {
   )
 }
 
+function PreferenciaAvisos() {
+  const avisos = useAvisos()
+  if (!puedeAvisar()) return null
+
+  return (
+    <>
+      <FilaAjuste
+        titulo="Avisos al celular"
+        nota={
+          avisos.permiso === 'no'
+            ? 'Android no dio permiso. Activalos en Ajustes › Aplicaciones › SafeGuard › Notificaciones.'
+            : textoEstado(avisos)
+        }
+      />
+      {TEMAS_AVISO.map((tema) => (
+        <FilaAjuste key={tema.id} tocable titulo={tema.titulo} nota={tema.nota}>
+          <input
+            type="checkbox"
+            role="switch"
+            className="perfil-interruptor"
+            checked={avisos.activos && avisos.temas[tema.id]}
+            onChange={(evento) => cambiarTema(tema.id, evento.target.checked)}
+          />
+        </FilaAjuste>
+      ))}
+    </>
+  )
+}
+
 const TEMAS = [
   { id: 'claro', etiqueta: 'Claro' },
   { id: 'oscuro', etiqueta: 'Oscuro' },
@@ -805,6 +836,7 @@ function PanelPerfil({ variante }) {
           </div>
           <PreferenciaTema />
           <PreferenciaPortapapeles />
+          <PreferenciaAvisos />
         </section>
       )}
 

@@ -2,4 +2,7 @@
     <string name="app_name">SafeGuard</string>
     <string name="sin_conexion">No hay conexión. Revisá internet y probá de nuevo.</string>
     <string name="reintentar">Reintentar</string>
+    <string name="canal_avisos" translatable="false">avisos</string>
+    <string name="canal_avisos_nombre">Avisos de SafeGuard</string>
+    <string name="canal_avisos_descripcion">Mantenimientos, estafas de la semana y avisos de PhishGuard.</string>
 </resources>
