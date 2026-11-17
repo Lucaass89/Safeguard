@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { detalleDe } from '../lib/agruparActividad.js'
 import ChipEstado from './ChipEstado.jsx'
@@ -76,12 +77,96 @@ export function ListaActividad({ children }) {
   return <ul className="lista-actividad">{children}</ul>
 }
 
-function FilaActividad({ item, to, onClick }) {
+const ANCHO_ACCION = 92
+
+function Deslizable({ acciones, children }) {
+  const [corrido, setCorrido] = useState(0)
+  const gesto = useRef(null)
+  const movio = useRef(false)
+  const ancho = acciones.length * ANCHO_ACCION
+
+  function empezar(evento) {
+    gesto.current = { x: evento.clientX, y: evento.clientY, desde: corrido, activo: false }
+    movio.current = false
+  }
+
+  function mover(evento) {
+    const actual = gesto.current
+    if (!actual) return
+    const dx = evento.clientX - actual.x
+    const dy = evento.clientY - actual.y
+    if (!actual.activo) {
+      if (Math.abs(dx) < 8) return
+      if (Math.abs(dy) > Math.abs(dx)) {
+        gesto.current = null
+        return
+      }
+      actual.activo = true
+      movio.current = true
+      evento.currentTarget.setPointerCapture?.(evento.pointerId)
+    }
+    setCorrido(Math.min(0, Math.max(-ancho, actual.desde + dx)))
+  }
+
+  function soltar() {
+    const actual = gesto.current
+    gesto.current = null
+    if (!actual?.activo) return
+    setCorrido((valor) => (valor < -ancho / 2 ? -ancho : 0))
+  }
+
+  return (
+    <li className="fila-deslizable">
+      <div className="fila-acciones">
+        {acciones.map((accion) => (
+          <button
+            key={accion.etiqueta}
+            type="button"
+            className={`fila-accion fila-accion-${accion.tono}`}
+            style={{ width: ANCHO_ACCION }}
+            onFocus={() => setCorrido(-ancho)}
+            onClick={() => {
+              setCorrido(0)
+              accion.onClick()
+            }}
+          >
+            {accion.etiqueta}
+          </button>
+        ))}
+      </div>
+      <div
+        className="fila-frente"
+        style={{ transform: `translateX(${corrido}px)` }}
+        onPointerDown={empezar}
+        onPointerMove={mover}
+        onPointerUp={soltar}
+        onPointerCancel={soltar}
+        onClickCapture={(evento) => {
+          if (movio.current) {
+            evento.preventDefault()
+            evento.stopPropagation()
+            movio.current = false
+            return
+          }
+          if (corrido !== 0) {
+            evento.preventDefault()
+            evento.stopPropagation()
+            setCorrido(0)
+          }
+        }}
+      >
+        {children}
+      </div>
+    </li>
+  )
+}
+
+function FilaActividad({ item, to, onClick, acciones = null }) {
   const esDireccion = item.entrada === 'web' || item.entrada === 'qr'
   const detalle = [item.diferencia && item.veces === 1 ? null : detalleDe(item), item.cuando].filter(Boolean).join(' · ')
   const contenido = (
     <>
-      <span className="fila-actividad-icono">
+      <span className={`fila-actividad-icono fila-actividad-icono-${item.nivelRiesgo ?? 'gris'}`}>
         <Icono nombre={item.entrada} />
       </span>
       <span className="fila-actividad-texto">
@@ -108,19 +193,18 @@ function FilaActividad({ item, to, onClick }) {
     </>
   )
 
-  return (
-    <li>
-      {to ? (
-        <Link className="fila-actividad" to={to}>
-          {contenido}
-        </Link>
-      ) : (
-        <button type="button" className="fila-actividad" onClick={onClick}>
-          {contenido}
-        </button>
-      )}
-    </li>
+  const fila = to ? (
+    <Link className="fila-actividad" to={to}>
+      {contenido}
+    </Link>
+  ) : (
+    <button type="button" className="fila-actividad" onClick={onClick}>
+      {contenido}
+    </button>
   )
+
+  if (acciones?.length) return <Deslizable acciones={acciones}>{fila}</Deslizable>
+  return <li>{fila}</li>
 }
 
 export default FilaActividad

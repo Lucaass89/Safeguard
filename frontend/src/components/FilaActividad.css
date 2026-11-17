@@ -132,3 +132,70 @@
   width: 18px;
   height: 18px;
 }
+
+.fila-actividad-icono-verde,
+.fila-actividad-icono-amarillo,
+.fila-actividad-icono-rojo {
+  --fila-luz: #13795b;
+  background: color-mix(in srgb, var(--fila-luz) 14%, transparent);
+  color: var(--fila-luz);
+}
+
+.fila-actividad-icono-amarillo { --fila-luz: #9a6400; }
+.fila-actividad-icono-rojo { --fila-luz: #b42318; }
+
+html[data-tema='oscuro'] .fila-actividad-icono-verde { --fila-luz: #34d399; }
+html[data-tema='oscuro'] .fila-actividad-icono-amarillo { --fila-luz: #fbbf24; }
+html[data-tema='oscuro'] .fila-actividad-icono-rojo { --fila-luz: #f87171; }
+
+.fila-deslizable {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.fila-acciones {
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: flex;
+}
+
+.fila-accion {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 0 8px;
+  border: 0;
+  color: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.fila-accion-otra {
+  background: var(--sg-accent);
+}
+
+.fila-accion-borrar {
+  background: #b42318;
+}
+
+.fila-accion:focus-visible {
+  outline: 2px solid var(--sg-text);
+  outline-offset: -4px;
+}
+
+.fila-frente {
+  position: relative;
+  background: var(--sg-bg);
+  touch-action: pan-y;
+  transition: transform 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fila-frente {
+    transition: none;
+  }
+}
