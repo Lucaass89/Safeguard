@@ -48,6 +48,12 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   celular de quien administra. Los mantenimientos se mandan desde la consola de Firebase al tema `anuncios`; las estafas
   de la semana, con `.github/workflows/avisar-estafas.yml` cuando cambia la fecha de `EDICION`. Las dos cosas necesitan
   el secreto `FCM_SERVICE_ACCOUNT` (cuenta de servicio de Firebase) en Supabase y en GitHub.
+- Actualizar la app: `public/app/version.json` dice cuál es la última (`version` = número de `SafeGuardApp/N` del user agent,
+  `nombre`, `archivo` y `novedades`) y el APK va en `public/app/`. Si la app instalada tiene un número menor, Inicio y Perfil
+  muestran "Actualizar", que baja el APK con el gestor de descargas de Android (`actualizarApp.js`, `useActualizacion.js`).
+  Para publicar una versión: subir `versionCode`/`versionName` en `android/app/build.gradle.kts` y el número de
+  `SafeGuardApp/N` en `MainActivity`, compilar, copiar el APK a `public/app/` y actualizar `version.json`. Todas las versiones
+  tienen que estar firmadas con la misma clave, o Android no deja instalar encima.
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
   La portada muestra `public/capturas/recorrido-{claro,oscuro}.mp4`, una grabación real de la app con capítulos
   (textos en `src/lib/recorridoApp.js`, segundos de inicio en `src/data/recorridoApp.json`). Se graba con
