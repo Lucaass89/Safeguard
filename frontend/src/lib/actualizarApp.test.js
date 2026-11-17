@@ -3,12 +3,14 @@ import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
 import { leerUltimaVersion, necesitaActualizar, nombreDescarga } from './actualizarApp.js'
 
-const valida = { version: 3, nombre: '1.3', archivo: '/app/safeguard-1.3.apk', novedades: 'Avisos.' }
+const valida = { version: 3, nombre: '1.3', archivo: '/app/safeguard-1.3.apk', novedades: 'Avisos.', desinstalar: false }
 
 describe('actualizar la app', () => {
   test('acepta un aviso de versión bien armado', () => {
     assert.deepEqual(leerUltimaVersion(valida), valida)
     assert.equal(leerUltimaVersion({ ...valida, novedades: 3 }).novedades, '')
+    assert.equal(leerUltimaVersion({ ...valida, desinstalar: true }).desinstalar, true)
+    assert.equal(leerUltimaVersion({ ...valida, desinstalar: 'si' }).desinstalar, false)
   })
 
   test('rechaza lo raro', () => {

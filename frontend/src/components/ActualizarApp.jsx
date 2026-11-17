@@ -17,7 +17,14 @@ export function BotonActualizar({ ultima, className = '' }) {
       </a>
       {bajando ? (
         <span className="actualizar-nota" role="status">
-          Cuando termine, tocá la notificación de Android y elegí Instalar.
+          {ultima.desinstalar
+            ? 'Cuando termine: primero desinstalá SafeGuard (mantené apretado el ícono › Desinstalar) y después tocá la notificación de Android y elegí Instalar.'
+            : 'Cuando termine, tocá la notificación de Android y elegí Instalar.'}
+        </span>
+      ) : ultima.desinstalar ? (
+        <span className="actualizar-nota">
+          Esta vez cambia la firma de la app: hay que desinstalar la versión que tenés antes de instalar la nueva, y
+          después volver a ingresar.
         </span>
       ) : null}
     </span>

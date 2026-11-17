@@ -5,3 +5,5 @@
 **/.env.*.local
 frontend/dist
 supabase/.temp
+*.jks
+*.keystore
