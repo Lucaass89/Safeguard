@@ -73,7 +73,7 @@ function Landing() {
 
     function pintar() {
       const claro = document.documentElement.dataset.tema !== 'oscuro'
-      meta?.setAttribute('content', claro ? '#ffffff' : '#070d1a')
+      meta?.setAttribute('content', claro ? '#f3ebde' : '#070d1a')
     }
 
     pintar()
@@ -122,10 +122,10 @@ function Landing() {
         <div className="portada-ancho portada-utilidades-fila">
           <p className="portada-utilidades-lema">Hecho en Argentina para que no caigas en estafas por internet</p>
           <nav className="portada-utilidades-enlaces" aria-label="Accesos rápidos">
-            <a href="/safelink.zip" download="safelink.zip">
+            <Link to="/personas#instalar">
               <IconoChico nombre="extension" />
               Extensión de Chrome
-            </a>
+            </Link>
             <Link to="/empresas#precios">
               <IconoChico nombre="precios" />
               Precios
@@ -262,7 +262,7 @@ function Landing() {
             <h2>Productos</h2>
             <Link to="/empresas">PhishGuard</Link>
             <Link to="/personas">SafeLink</Link>
-            <a href="/safelink.zip" download="safelink.zip">Extensión de Chrome</a>
+            <Link to="/personas#instalar">Extensión de Chrome</Link>
           </nav>
           <nav aria-label="Cuenta">
             <h2>Cuenta</h2>

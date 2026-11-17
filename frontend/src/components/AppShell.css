@@ -489,10 +489,3 @@ html[data-tema='oscuro'] .app-shell .perfil-app .perfil-borrar {
   background: color-mix(in srgb, #fca5a5 10%, transparent);
 }
 
-html[data-tema='claro'] .app-nav-activa .app-nav-icono {
-  color: #ead0b0;
-}
-
-html[data-tema='claro'] .app-acceso-icono {
-  color: #ead0b0;
-}
