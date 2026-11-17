@@ -45,7 +45,7 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   (`android/app/google-services.json`). La web pide activarlas con `safeguard://notificaciones?anuncios=1&estafas=1&phishguard=1`
   (`src/lib/avisos.js`, `useAvisos.js`); la app se anota a los temas `anuncios` y `estafas` y devuelve el token con el evento
   `sg-push`. Con sesión, el token se guarda con `push_registrar` en `push_dispositivos` y `phishguard-avisar-caida` avisa al
-  celular de quien administra. Los mantenimientos se mandan desde la consola de Firebase al tema `anuncios`; las estafas
+  celular de quien administra. Los mantenimientos se mandan con la tarea `.github/workflows/avisar.yml` (a mano: título, texto, tema y pantalla) o desde la consola de Firebase al tema `anuncios`; las estafas
   de la semana, con `.github/workflows/avisar-estafas.yml` cuando cambia la fecha de `EDICION`. Las dos cosas necesitan
   el secreto `FCM_SERVICE_ACCOUNT` (cuenta de servicio de Firebase) en Supabase y en GitHub.
 - Actualizar la app: `public/app/version.json` dice cuál es la última (`version` = número de `SafeGuardApp/N` del user agent,
