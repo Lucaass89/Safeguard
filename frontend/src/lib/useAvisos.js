@@ -1,11 +1,15 @@
 import { useEffect, useSyncExternalStore } from 'react'
-import { normalizarAvisos, recibirRespuesta, urlAvisos, VERSION_CON_AVISOS } from './avisos.js'
+import { estadoApp, normalizarAvisos, recibirRespuesta, urlAvisos, VERSION_CON_AVISOS } from './avisos.js'
 import { esAppNativa, versionApp } from './esAppNativa.js'
 import { guardarJson, leerJson } from './guardadoLocal.js'
 import { supabase } from './supabase.js'
 
 const CLAVE = 'sg-avisos'
 const CAMBIO = 'sg-avisos-cambio'
+
+export function appParaAvisos() {
+  return estadoApp(esAppNativa(), versionApp())
+}
 
 export function puedeAvisar() {
   return esAppNativa() && versionApp() >= VERSION_CON_AVISOS

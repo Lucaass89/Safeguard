@@ -54,3 +54,7 @@ export function textoEstado(estado) {
   return prendidos === TEMAS_AVISO.length ? 'Todos prendidos' : `${prendidos} de ${TEMAS_AVISO.length} prendidos`
 }
 
+export function estadoApp(esApp, version) {
+  if (!esApp) return 'web'
+  return version >= VERSION_CON_AVISOS ? 'lista' : 'vieja'
+}

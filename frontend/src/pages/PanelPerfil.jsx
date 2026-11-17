@@ -7,7 +7,7 @@ import { rutaEnApp } from '../lib/esAppNativa.js'
 import { nombreEmpresa } from '../lib/formato.js'
 import { elegirPortapapeles, usePortapapeles } from '../lib/portapapeles.js'
 import { TEMAS_AVISO, textoEstado } from '../lib/avisos.js'
-import { cambiarTema, puedeAvisar, useAvisos } from '../lib/useAvisos.js'
+import { appParaAvisos, cambiarTema, useAvisos } from '../lib/useAvisos.js'
 import { supabase } from '../lib/supabase.js'
 import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
@@ -422,7 +422,11 @@ function PreferenciaPortapapeles() {
 
 function PreferenciaAvisos() {
   const avisos = useAvisos()
-  if (!puedeAvisar()) return null
+  const app = appParaAvisos()
+  if (app === 'web') return null
+  if (app === 'vieja') {
+    return <FilaAjuste titulo="Avisos al celular" nota="Para recibir avisos, instalá la versión 1.3 de la app." />
+  }
 
   return (
     <>
