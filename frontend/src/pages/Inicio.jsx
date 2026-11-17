@@ -30,18 +30,6 @@ function Icono({ nombre }) {
     'aria-hidden': true,
   }
 
-  if (nombre === 'qr') {
-    return (
-      <svg {...trazo}>
-        <path d="M4.5 8.5V6.2A1.7 1.7 0 0 1 6.2 4.5H8.5" />
-        <path d="M15.5 4.5h2.3A1.7 1.7 0 0 1 19.5 6.2V8.5" />
-        <path d="M19.5 15.5v2.3a1.7 1.7 0 0 1-1.7 1.7H15.5" />
-        <path d="M8.5 19.5H6.2a1.7 1.7 0 0 1-1.7-1.7V15.5" />
-        <path d="M7.5 12h9" />
-      </svg>
-    )
-  }
-
   if (nombre === 'flecha') {
     return (
       <svg {...trazo}>
@@ -51,16 +39,6 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'qr-codigo') {
-    return (
-      <svg {...trazo}>
-        <rect x="4" y="4" width="6" height="6" rx="1" />
-        <rect x="14" y="4" width="6" height="6" rx="1" />
-        <rect x="4" y="14" width="6" height="6" rx="1" />
-        <path d="M14 14h2.5v2.5H14zM17.5 17.5H20V20h-2.5zM14 19.5h1M19.5 14v1" />
-      </svg>
-    )
-  }
 
   if (nombre === 'mensaje') {
     return (
@@ -118,7 +96,6 @@ function Icono({ nombre }) {
 }
 
 const ATAJOS = [
-  { to: '/safelink/qr', icono: 'qr-codigo', titulo: 'QR' },
   { to: '/safelink/whatsapp', icono: 'mensaje', titulo: 'Mensaje' },
   { to: '/safelink/pdf', icono: 'pdf', titulo: 'PDF' },
   { to: '/safelink/correo', icono: 'correo', titulo: 'Correo' },
@@ -465,9 +442,6 @@ function Inicio() {
               inputMode="url"
               enterKeyHint="go"
             />
-            <Link className="inicio-qr" to="/safelink/qr" aria-label="Escanear un QR">
-              <Icono nombre="qr" />
-            </Link>
             <button
               type="submit"
               className="inicio-enviar"

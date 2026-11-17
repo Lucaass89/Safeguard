@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import { Link } from 'react-router'
 import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
 import Resultado from '../components/Resultado.jsx'
 import { agruparActividad } from '../lib/agruparActividad.js'
@@ -22,7 +21,6 @@ const TIPOS = [
   { id: 'mensaje', etiqueta: 'Mensaje' },
   { id: 'pdf', etiqueta: 'PDF' },
   { id: 'correo', etiqueta: 'Correo' },
-  { id: 'qr', etiqueta: 'QR' },
 ]
 
 const CAMPOS = {
@@ -93,18 +91,6 @@ function Icono({ nombre }) {
     )
   }
 
-  if (nombre === 'qr') {
-    return (
-      <svg {...trazo}>
-        <path d="M4.5 8.5V6.2A1.7 1.7 0 0 1 6.2 4.5H8.5" />
-        <path d="M15.5 4.5h2.3A1.7 1.7 0 0 1 19.5 6.2V8.5" />
-        <path d="M19.5 15.5v2.3a1.7 1.7 0 0 1-1.7 1.7H15.5" />
-        <path d="M8.5 19.5H6.2a1.7 1.7 0 0 1-1.7-1.7V15.5" />
-        <path d="M7.5 12h9" />
-      </svg>
-    )
-  }
-
   return (
     <svg {...trazo}>
       <path d="M8 7h8M8 12h8M8 17h5" />
@@ -114,7 +100,6 @@ function Icono({ nombre }) {
 
 function resumenDe(tipo, entrada, archivo) {
   if (tipo === 'pdf') return archivo || 'PDF'
-  if (tipo === 'qr') return 'Código QR'
   const linea = entrada.trim().split('\n')[0]
   return linea.length > 72 ? `${linea.slice(0, 72)}…` : linea
 }
@@ -159,7 +144,7 @@ function SafeLink() {
 
   async function revisar(evento) {
     evento.preventDefault()
-    if (revisando || tipo === 'qr') return
+    if (revisando) return
     if (tipo === 'pdf' && !pdf) {
       setAviso('Elegí un PDF para revisarlo.')
       return
@@ -276,7 +261,7 @@ function SafeLink() {
             Pegar
           </button>
         </div>
-      ) : tipo === 'pdf' ? (
+      ) : (
         <div className="slapp-entrada">
           <input
             ref={archivoRef}
@@ -298,14 +283,6 @@ function SafeLink() {
             <span className="slapp-grande-nota">{archivo || 'Un PDF, antes de abrirlo'}</span>
           </button>
         </div>
-      ) : (
-        <div className="slapp-entrada">
-          <Link className="slapp-grande" to="/safelink/qr">
-            <Icono nombre="qr" />
-            <span>Abrir la cámara</span>
-            <span className="slapp-grande-nota">Leé el QR antes de abrirlo</span>
-          </Link>
-        </div>
       )}
 
       {aviso ? (
@@ -314,11 +291,9 @@ function SafeLink() {
         </p>
       ) : null}
 
-      {tipo === 'qr' ? null : (
-        <button type="submit" className="slapp-revisar" disabled={revisando || vacio} aria-busy={revisando}>
-          {revisando ? 'Revisando…' : 'Revisar'}
-        </button>
-      )}
+      <button type="submit" className="slapp-revisar" disabled={revisando || vacio} aria-busy={revisando}>
+        {revisando ? 'Revisando…' : 'Revisar'}
+      </button>
 
       <section className="slapp-bloque" aria-labelledby="slapp-ultimos">
         <h2 id="slapp-ultimos">Últimos revisados</h2>
