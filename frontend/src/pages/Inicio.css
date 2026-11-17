@@ -83,7 +83,7 @@ html[data-tema='oscuro'] .inicio {
 }
 
 html[data-tema='claro'] .inicio-campo {
-  box-shadow: 0 8px 24px rgb(15 27 45 / 9%);
+  box-shadow: 0 8px 24px rgb(58 42 28 / 9%);
 }
 
 .inicio-campo:focus-within {
@@ -644,4 +644,9 @@ html[data-tema='oscuro'] .inicio-juego-real {
   .inicio-estafa summary::after {
     transition: none;
   }
+}
+
+html[data-tema='claro'] .inicio {
+  --inicio-secundario: #5a4634;
+  --inicio-boton: #3a2a1c;
 }

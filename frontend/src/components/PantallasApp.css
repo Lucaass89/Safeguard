@@ -8,9 +8,9 @@
 }
 
 html[data-tema='claro'] .pantallas {
-  --t-marco: #111a2c;
-  --t-borde: #3a465e;
-  --t-brillo: rgb(26 82 190 / 16%);
+  --t-marco: #3a2a1c;
+  --t-borde: #5a4634;
+  --t-brillo: rgb(156 107 67 / 16%);
 }
 
 .pantallas .recorrido-texto > p {
@@ -356,5 +356,15 @@ html[data-tema='claro'] .pantallas-captura-claro {
 
   .portada .recorrido .pantallas-pie {
     text-align: center;
+  }
+}
+
+html[data-tema='claro'] .pantallas {
+  --t-brillo: rgb(156 107 67 / 22%);
+}
+
+@media (max-width: 900px) {
+  html[data-tema='claro'] .pantallas-telefono {
+    box-shadow: 0 16px 28px -20px rgb(58 42 28 / 45%);
   }
 }

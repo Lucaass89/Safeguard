@@ -160,3 +160,24 @@ html[data-tema='claro'] .dos-pasos .dos-pasos-error {
     padding: 22px;
   }
 }
+
+html[data-tema='claro'] .dos-pasos-escudo {
+  background: var(--sg-degradado, #9c6b43);
+}
+
+html[data-tema='claro'] .dos-pasos-qr {
+  background: #fbf7f0;
+}
+
+html[data-tema='claro'] .dos-pasos .dos-pasos-codigo:focus-visible {
+  border-color: var(--sg-accent, #9c6b43);
+  outline: 2px solid var(--sg-accent, #9c6b43);
+}
+
+html[data-tema='claro'] .dos-pasos-boton {
+  background: var(--sg-degradado, #9c6b43);
+}
+
+html[data-tema='claro'] .dos-pasos-boton:focus-visible {
+  outline: 3px solid #e0b98f;
+}

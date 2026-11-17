@@ -2370,18 +2370,8 @@ table.persona-tabla td:first-child,
   }
 }
 
-html[data-tema='claro'] .check-empleado:has(input:checked) {
-  border-color: #8eb0d8;
-  background: #ffffff;
-}
-
-html[data-tema='claro'] .mesa-hoja a span:last-child {
-  background: #ffffff;
-  color: #1a52be;
-}
-
 html[data-tema='claro'] .mesa-grupos .panel-empresas {
-  border-top-color: #8eb0d8;
+  border-top-color: #c49a72;
 }
 
 html[data-tema='claro'] .mesa-hoja,
@@ -2392,11 +2382,10 @@ html[data-tema='claro'] .panel-personas .panel-campo textarea,
 html[data-tema='claro'] .panel-empresas .panel-campo input,
 html[data-tema='claro'] .panel-empresas .panel-campo textarea,
 html[data-tema='claro'] .panel-empresas .panel-campo select {
-  background: #ffffff;
-  color: #0f1b2d;
-  border-color: #dce3ee;
+  background: #fbf7f0;
+  color: #3a2a1c;
+  border-color: #d8c9b3;
 }
-
 
 .panel-plan {
   margin: 20px 0 28px;
@@ -2560,4 +2549,97 @@ html[data-tema='oscuro'] .panel-plan-lleno .panel-plan-barra span {
 
 html[data-tema='oscuro'] .panel-ok {
   color: #34d399;
+}
+
+html[data-tema='claro'] .sg-landing .panel-lienzo {
+  --sg-bg: #f6efe4;
+  --sg-text: #3a2a1c;
+  --sg-muted: #6e5843;
+  --sg-line: #d8c9b3;
+  --sg-blue: #9c6b43;
+  --sg-accent: #9c6b43;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .sg-landing .panel-lienzo .panel-header h1,
+html[data-tema='claro'] .sg-landing .panel-lienzo h2 {
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .panel-personas .panel-campo input,
+html[data-tema='claro'] .panel-personas .panel-campo textarea,
+html[data-tema='claro'] .panel-empresas .panel-campo input,
+html[data-tema='claro'] .panel-empresas .panel-campo textarea,
+html[data-tema='claro'] .panel-empresas .panel-campo select {
+  border-color: #d8c9b3;
+}
+
+html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton,
+html[data-tema='claro'] .sg-landing .panel-lienzo a.panel-boton {
+  background: #9c6b43;
+}
+
+html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton:hover:not(:disabled),
+html[data-tema='claro'] .sg-landing .panel-lienzo a.panel-boton:hover:not(:disabled),
+html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton:focus-visible:not(:disabled) {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #d6c3a8 55%, transparent),
+    0 8px 20px rgb(58 42 28 / 14%);
+}
+
+html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton-borde:hover:not(:disabled),
+html[data-tema='claro'] .sg-landing .panel-lienzo .panel-boton-borde:focus-visible:not(:disabled) {
+  border-color: #e0b98f;
+}
+
+@media (min-width: 901px) {
+  html[data-tema='claro'] .mesa-grupos .panel-empresas {
+    border-top: 3px solid #9c6b43;
+  }
+}
+
+html[data-tema='claro'] .panel-plan-accion {
+  background: #9c6b43;
+}
+
+html[data-tema='claro'] .panel-plan-accion:hover {
+  background: #7d5232;
+}
+
+html[data-tema='claro'] .check-empleado {
+  border: 1px solid #d8c9b3;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .check-empleado:has(input:checked) {
+  border-color: #9c6b43;
+  background: #f1e4d2;
+}
+
+html[data-tema='claro'] .azar-cantidad input {
+  border: 1px solid #d8c9b3;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .mesa-hoja a span:last-child {
+  background: #f1e4d2;
+  color: #9c6b43;
+}
+
+html[data-tema='claro'] .perfil-nota {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .perfil-candado {
+  color: #6e5843;
+}
+
+@media print {
+  html[data-tema='claro'],
+  html[data-tema='claro'] body,
+  html[data-tema='claro'] .sg-landing,
+  html[data-tema='claro'] .pagina-interior,
+  html[data-tema='claro'] .informe {
+    color: #3a2a1c !important;
+  }
 }

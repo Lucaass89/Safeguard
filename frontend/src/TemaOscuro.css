@@ -1,11 +1,11 @@
 html[data-tema='claro'] {
-  --sg-bg: #f5f7fb;
+  --sg-bg: #f6efe4;
   --sg-surface: #ffffff;
-  --sg-text: #0f1b2d;
-  --sg-muted: #52627a;
-  --sg-line: #dce3ee;
-  --sg-blue: #1a52be;
-  --sg-accent: #1a52be;
+  --sg-text: #3a2a1c;
+  --sg-muted: #6e5843;
+  --sg-line: #d8c9b3;
+  --sg-blue: #9c6b43;
+  --sg-accent: #9c6b43;
   color-scheme: light;
 }
 

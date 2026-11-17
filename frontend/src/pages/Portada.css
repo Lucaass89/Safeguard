@@ -342,6 +342,7 @@ html[data-tema='oscuro'] .portada .portada-boton-borde-blanco {
 }
 
 .portada-hero {
+  overflow-x: clip;
   background: var(--h-banda);
   color: var(--h-banda-texto);
 }

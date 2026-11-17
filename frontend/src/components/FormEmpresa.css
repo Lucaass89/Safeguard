@@ -118,3 +118,11 @@ html[data-tema='oscuro'] .form-empresa {
     grid-template-columns: 1fr;
   }
 }
+
+html[data-tema='claro'] .form-empresa {
+  --fe-tinta: #3a2a1c;
+  --fe-suave: #6e5843;
+  --fe-linea: #d8c9b3;
+  --fe-campo: #f6efe4;
+  --fe-acento: #9c6b43;
+}
