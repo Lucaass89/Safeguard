@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import Marco from '../components/Marco.jsx'
 import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
+import VideoInstalar from '../components/VideoInstalar.jsx'
 import { useSesion } from '../lib/useSesion.js'
 import './Modulo.css'
 
@@ -62,8 +63,8 @@ function Personas() {
               cuenta.
             </p>
             <div className="sl-acciones">
-              <a className="sl-boton" href="/safelink.zip" download="safelink.zip">
-                Descargar la extensión
+              <a className="sl-boton" href="#instalar">
+                Instalar la extensión
               </a>
               {sesion && (
                 <Link className="sl-boton sl-boton-secundario" to="/panel/enlaces">
@@ -113,17 +114,14 @@ function Personas() {
               <h2>Extensión de Chrome</h2>
               <p>
                 Revisa la pestaña que estás viendo y pone un color en el ícono de la barra.
-                Avisa. No bloquea la página y no guarda el historial.{' '}
+                Avisa. No bloquea la página y no guarda el historial. Todavía no está en la tienda
+                de Chrome, así que se instala a mano en el modo de desarrollador: mirá el video.{' '}
                 <a href="/safelink.zip" download="safelink.zip">
                   Descargá la extensión
                 </a>
                 .
               </p>
-              <ol className="sl-pasos">
-                <li>Descargá el archivo y descomprimilo.</li>
-                <li>Abrí la página de extensiones de Chrome y activá el modo de desarrollador.</li>
-                <li>Elegí Cargar descomprimida y seleccioná la carpeta que se descomprimió.</li>
-              </ol>
+              <VideoInstalar />
             </section>
 
             <p className="sl-gratis">
