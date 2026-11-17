@@ -1,0 +1,31 @@
+.actualizar {
+  display: inline-grid;
+  justify-items: start;
+  gap: 6px;
+}
+
+.actualizar-boton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--sg-accent);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.actualizar-boton:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
+}
+
+.actualizar-nota {
+  max-width: 22em;
+  color: var(--sg-muted);
+  font-size: 13px;
+  line-height: 1.35;
+}

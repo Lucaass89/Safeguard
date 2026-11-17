@@ -8,6 +8,8 @@ import { nombreEmpresa } from '../lib/formato.js'
 import { elegirPortapapeles, usePortapapeles } from '../lib/portapapeles.js'
 import { TEMAS_AVISO, textoEstado } from '../lib/avisos.js'
 import { appParaAvisos, cambiarTema, useAvisos } from '../lib/useAvisos.js'
+import { useActualizacion } from '../lib/useActualizacion.js'
+import { BotonActualizar } from '../components/ActualizarApp.jsx'
 import { supabase } from '../lib/supabase.js'
 import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
@@ -420,12 +422,26 @@ function PreferenciaPortapapeles() {
   )
 }
 
+function VersionApp() {
+  const { ultima, hayNueva } = useActualizacion()
+  if (!ultima) return null
+
+  return (
+    <FilaAjuste
+      titulo="Versión de la app"
+      nota={hayNueva ? `Hay una nueva: ${ultima.nombre}. ${ultima.novedades}` : `Tenés la última (${ultima.nombre} o más nueva).`}
+    >
+      {hayNueva ? <BotonActualizar ultima={ultima} /> : null}
+    </FilaAjuste>
+  )
+}
+
 function PreferenciaAvisos() {
   const avisos = useAvisos()
   const app = appParaAvisos()
   if (app === 'web') return null
   if (app === 'vieja') {
-    return <FilaAjuste titulo="Avisos al celular" nota="Para recibir avisos, instalá la versión 1.3 de la app." />
+    return <FilaAjuste titulo="Avisos al celular" nota="Para recibir avisos, actualizá la app desde Versión de la app." />
   }
 
   return (
@@ -841,6 +857,7 @@ function PanelPerfil({ variante }) {
           <PreferenciaTema />
           <PreferenciaPortapapeles />
           <PreferenciaAvisos />
+          <VersionApp />
         </section>
       )}
 

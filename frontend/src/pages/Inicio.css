@@ -1346,3 +1346,12 @@ a.inicio-oferta-si {
     animation: none;
   }
 }
+
+.inicio-actualizar {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--sg-accent) 45%, var(--sg-line));
+}
+
+.inicio-actualizar-boton {
+  margin-top: 10px;
+}

@@ -18,6 +18,9 @@ import { guardarRacha, leerRacha, siguienteRacha, textoRacha } from '../lib/rach
 import { saludoPara } from '../lib/saludo.js'
 import { useResumenSemana, useTotalesPropios } from '../lib/useAnalisisPropios.js'
 import { activarAvisos, apagarAvisos, appParaAvisos, useAvisos } from '../lib/useAvisos.js'
+import { useActualizacion } from '../lib/useActualizacion.js'
+import { guardarJson, leerJson } from '../lib/guardadoLocal.js'
+import { BotonActualizar } from '../components/ActualizarApp.jsx'
 import { useCampanas } from '../lib/useCampanas.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -611,25 +614,40 @@ function Novedades() {
   )
 }
 
+function OfertaActualizar() {
+  const { ultima, hayNueva } = useActualizacion()
+  const [cerrada, setCerrada] = useState(() => leerJson('sg-actualizacion-cerrada', null))
+  if (!hayNueva || cerrada === ultima.nombre) return null
+
+  return (
+    <section className="inicio-oferta inicio-actualizar" aria-labelledby="inicio-actualizar-titulo">
+      <div className="inicio-oferta-texto">
+        <h2 id="inicio-actualizar-titulo">Hay una versión nueva de la app ({ultima.nombre})</h2>
+        <p>{ultima.novedades || 'Trae mejoras y arreglos.'}</p>
+        <BotonActualizar ultima={ultima} className="inicio-actualizar-boton" />
+      </div>
+      <span />
+      <button
+        type="button"
+        className="inicio-oferta-no"
+        aria-label="Ahora no"
+        onClick={() => {
+          guardarJson('sg-actualizacion-cerrada', ultima.nombre)
+          setCerrada(ultima.nombre)
+        }}
+      >
+        <Icono nombre="cerrar" />
+      </button>
+    </section>
+  )
+}
+
 function OfertaAvisos() {
   const avisos = useAvisos()
   const app = appParaAvisos()
   if (app === 'web' || avisos.decidido) return null
 
-  if (app === 'vieja') {
-    return (
-      <section className="inicio-oferta" aria-labelledby="inicio-avisos-titulo">
-        <div className="inicio-oferta-texto">
-          <h2 id="inicio-avisos-titulo">Actualizá la app para recibir avisos</h2>
-          <p>Instalá la versión 1.3 de SafeGuard y te avisamos al celular.</p>
-        </div>
-        <span />
-        <button type="button" className="inicio-oferta-no" aria-label="Cerrar" onClick={apagarAvisos}>
-          <Icono nombre="cerrar" />
-        </button>
-      </section>
-    )
-  }
+  if (app === 'vieja') return null
 
   return (
     <section className="inicio-oferta" aria-labelledby="inicio-avisos-titulo">
@@ -708,6 +726,7 @@ function Inicio() {
         </section>
       ) : null}
 
+      <OfertaActualizar />
       <OfertaAvisos />
       <OjoHoy edicion={estafas} />
       <MePaso />
