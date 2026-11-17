@@ -11,6 +11,16 @@
   --p-gris: #52627a;
 }
 
+html[data-tema='claro'] .probador {
+  --p-tinta: #3a2a1c;
+  --p-suave: #6e5843;
+  --p-linea: #d8c9b3;
+  --p-papel: #f6efe4;
+  --p-campo: #fbf7f0;
+  --p-acento: #9c6b43;
+  --p-gris: #6e5843;
+}
+
 html[data-tema='oscuro'] .probador {
   --p-tinta: #e6edf7;
   --p-suave: #a9b7cc;

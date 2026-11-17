@@ -410,3 +410,11 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+html[data-tema='claro'] .sim-leccion {
+  border: 1px solid #5a4634;
+}
+
+html[data-tema='claro'] .sim-boton {
+  background: #9c6b43;
+}

@@ -32,11 +32,11 @@ html[data-tema='oscuro'] .carrusel {
 }
 
 html[data-tema='claro'] .carrusel {
-  --c-papel: #f3f5f8;
-  --c-campo: #e8ecf2;
-  --c-linea: #cdd5e1;
+  --c-papel: #f6efe4;
+  --c-campo: #ece2d3;
+  --c-linea: #d8c9b3;
   --c-wa: #dcefd2;
-  --c-sms: #dfe5ee;
+  --c-sms: #ece2d3;
 }
 
 .carrusel-cabeza {
@@ -431,4 +431,13 @@ html[data-tema='claro'] .carrusel {
     animation: none;
     transform: scaleX(1);
   }
+}
+
+html[data-tema='claro'] .carrusel {
+  --c-tinta: var(--h-tinta, #3a2a1c);
+  --c-suave: var(--h-suave, #6e5843);
+  --c-linea: var(--h-linea, #d8c9b3);
+  --c-campo: var(--h-gris, #f6efe4);
+  --c-acento: var(--h-verde, #9c6b43);
+  --c-gris: #6e5843;
 }

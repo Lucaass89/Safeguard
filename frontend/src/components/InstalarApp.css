@@ -62,16 +62,20 @@ body:has(.landing-puertas) .instalar-app {
 }
 
 html[data-tema='claro'] .instalar-app-si {
-  background: #1a52be;
+  background: #9c6b43;
   color: #ffffff;
 }
 
-html[data-tema='claro'] .instalar-app-si:hover {
-  background: #c9d4e4;
+html[data-tema='claro'] body:has(.landing-puertas) .instalar-app {
+  border-top-color: #d8c9b3;
+  background: #fbf7f0;
+  color: #3a2a1c;
 }
 
 html[data-tema='claro'] body:has(.landing-puertas) .instalar-app {
-  border-top-color: #dce3ee;
-  background: #ffffff;
-  color: #0f1b2d;
+  border-top-color: #5a4634;
+}
+
+html[data-tema='claro'] .instalar-app-si:hover {
+  background: color-mix(in srgb, var(--sg-blue) 82%, #3a2a1c);
 }

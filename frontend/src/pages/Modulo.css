@@ -646,32 +646,32 @@ html[data-tema='oscuro'] .pg-precio-pago {
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda {
-  border: 1px solid #dce3ee;
-  background: #ffffff;
-  color: #0f1b2d;
+  border: 1px solid #d8c9b3;
+  background: #fbf7f0;
+  color: #3a2a1c;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda h1,
 html[data-tema='claro'] .sg-landing .pg-tablero h2,
 html[data-tema='claro'] .sg-landing .pg-tablero strong {
-  color: #0f1b2d;
+  color: #3a2a1c;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda p,
 html[data-tema='claro'] .sg-landing .pg-tablero li span {
-  color: #52627a;
+  color: #6e5843;
 }
 
 html[data-tema='claro'] .sg-landing .pg-tablero,
 html[data-tema='claro'] .sg-landing .pg-tablero li {
-  border-top-color: #dce3ee;
+  border-top-color: #d8c9b3;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta,
 html[data-tema='claro'] .sg-landing .sl-lado a,
 html[data-tema='claro'] .sg-landing .sl-lado button,
 html[data-tema='claro'] .sg-landing .adquirir-precio {
-  background: #1a52be;
+  background: #9c6b43;
   color: #ffffff;
 }
 
@@ -679,13 +679,13 @@ html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover,
 html[data-tema='claro'] .sg-landing .sl-lado a:hover,
 html[data-tema='claro'] .sg-landing .sl-lado button:hover,
 html[data-tema='claro'] .sg-landing .adquirir-precio:hover {
-  background: #153f94;
+  background: #7d5232;
   color: #ffffff;
 }
 
 html[data-tema='claro'] .sg-landing .pg-banda .pg-cta-secundario {
-  border-color: #c9d4e4;
-  color: #0f1b2d;
+  border-color: #d8c9b3;
+  color: #3a2a1c;
 }
 
 html[data-tema='claro'] .sl-verde {
@@ -796,7 +796,7 @@ html[data-tema='claro'] .sg-landing .sl-amarillo { color: #9a6400; background: r
 html[data-tema='claro'] .sg-landing .sl-rojo { color: #b42318; background: rgb(180 35 24 / 8%); border-color: rgb(180 35 24 / 22%); border-left-color: #b42318; }
 
 html[data-tema='claro'] .sg-landing .sl-banda p {
-  color: #0f1b2d;
+  color: #3a2a1c;
 }
 
 .sg-landing .pg-banda,
@@ -923,4 +923,149 @@ html[data-tema='oscuro'] .sg-landing .pg-precios li.pg-precio-activo strong {
   .sg-landing .pg-precios li {
     transition: none;
   }
+}
+
+html[data-tema='claro'] .pg-riel li + li {
+  border-left: 1px solid #d8c9b3;
+}
+
+html[data-tema='claro'] .pg-incluye div {
+  border-bottom: 1px solid #d8c9b3;
+}
+
+html[data-tema='claro'] .sl-lado a,
+html[data-tema='claro'] .sl-lado button {
+  background: #9c6b43;
+}
+
+html[data-tema='claro'] .sl-lugares div {
+  border-top: 1px solid #d8c9b3;
+}
+
+@media (max-width: 900px) {
+  html[data-tema='claro'] .pg-riel li,
+  html[data-tema='claro'] .pg-riel li + li {
+    border-top: 1px solid #d8c9b3;
+  }
+}
+
+html[data-tema='claro'] .adquirir-precio {
+  background: var(--blue, #9c6b43);
+}
+
+html[data-tema='claro'] .adquirir-precio:hover {
+  background: #7d5232;
+}
+
+html[data-tema='claro'] .sg-landing .sl-boton {
+  border: 1px solid #9c6b43;
+  background: #9c6b43;
+}
+
+html[data-tema='claro'] .sg-landing .sl-boton:hover {
+  border-color: #7d5232;
+  background: #7d5232;
+}
+
+html[data-tema='claro'] .sg-landing .pg-precios li.pg-precio-activo {
+  border-top: 3px solid #9c6b43;
+}
+
+html[data-tema='claro'] .sg-landing .pg-precios li.pg-precio-activo strong {
+  color: #9c6b43;
+}
+
+html[data-tema='claro'] .pg,
+html[data-tema='claro'] .sl {
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .pg-banda {
+  background: #3a2a1c;
+  color: #f6efe4;
+}
+
+html[data-tema='claro'] .pg-banda p {
+  color: #d8c9b3;
+}
+
+html[data-tema='claro'] .pg-banda .pg-cta:hover {
+  background: #f1e4d2;
+}
+
+html[data-tema='claro'] .pg-banda .pg-cta-secundario {
+  border: 1px solid #e3d7c4;
+}
+
+html[data-tema='claro'] .pg-tablero li span {
+  color: #e3d7c4;
+}
+
+html[data-tema='claro'] .pg-riel p,
+html[data-tema='claro'] .pg-incluye dd,
+html[data-tema='claro'] .pg-precio-cabeza p,
+html[data-tema='claro'] .sl-lado p,
+html[data-tema='claro'] .sl-banda p,
+html[data-tema='claro'] .sl-lugares dd,
+html[data-tema='claro'] .nota p,
+html[data-tema='claro'] .nota li {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .pg-precios span {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .pg-precio-regla {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .pg-precio-nota {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .pg-precio-pago {
+  border-left: 3px solid var(--blue, #9c6b43);
+  background: #ead9c2;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .sl-lado button:disabled {
+  background: #6e5843;
+}
+
+html[data-tema='claro'] .sl-lugares a,
+html[data-tema='claro'] .sl-cuerpo a,
+html[data-tema='claro'] .nota a {
+  color: #8a5a35;
+}
+
+html[data-tema='claro'] .sl-secundario {
+  color: #3a2a1c !important;
+}
+
+html[data-tema='claro'] .adquirir-acepto {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .adquirir-acepto a {
+  color: #8a5a35;
+}
+
+html[data-tema='claro'] .sg-landing .pg-banda .pg-cta,
+html[data-tema='claro'] .sg-landing .pg-banda .pg-cta {
+  background: #9c6b43;
+}
+
+html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover,
+html[data-tema='claro'] .sg-landing .pg-banda .pg-cta:hover {
+  background: #7d5232;
+}
+
+html[data-tema='claro'] .sg-landing .pg-tablero {
+  box-shadow: 0 24px 48px -28px rgb(58 42 28 / 35%);
+}
+
+html[data-tema='claro'] .sg-landing .pg-riel span {
+  color: #9c6b43;
 }

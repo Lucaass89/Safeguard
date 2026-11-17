@@ -32,7 +32,7 @@ html[data-tema='oscuro'] .phish {
 
 html[data-tema='claro'] .phish-campana,
 html[data-tema='claro'] .phish-vacio {
-  box-shadow: 0 10px 28px rgb(15 27 45 / 8%);
+  box-shadow: 0 10px 28px rgb(58 42 28 / 8%);
 }
 
 .phish-campana-cabeza {
@@ -328,4 +328,13 @@ html[data-tema='oscuro'] .phish-pago .phish-pago-monto {
 .phish-fab:focus-visible {
   outline: 2px solid var(--sg-accent);
   outline-offset: 2px;
+}
+
+html[data-tema='claro'] .phish {
+  --phish-secundario: #5a4634;
+  --phish-boton: #3a2a1c;
+}
+
+html[data-tema='claro'] .phish-pago .phish-pago-monto {
+  color: #3a2a1c;
 }

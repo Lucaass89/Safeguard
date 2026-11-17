@@ -96,3 +96,10 @@ html[data-tema='oscuro'] .elegir-personas {
   color: var(--ep-error);
   font-weight: 600;
 }
+
+html[data-tema='claro'] .elegir-personas {
+  --ep-tinta: #3a2a1c;
+  --ep-suave: #6e5843;
+  --ep-linea: #d8c9b3;
+  --ep-acento: #9c6b43;
+}

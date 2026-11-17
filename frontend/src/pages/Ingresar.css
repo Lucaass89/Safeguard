@@ -301,3 +301,64 @@
   }
 }
 
+html[data-tema='claro'] .acceso-boton:hover:not(:disabled) {
+  background: #7d5232;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-caja {
+  background: #fbf7f0;
+  border: 1px solid #d8c9b3;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-caja h1 {
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .sg-landing .boton-google:hover {
+  background: #f6efe4;
+  border-color: #d8c9b3;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-pestanas {
+  background: #f6efe4;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-pestanas button {
+  color: #6e5843;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-pestanas button.activa {
+  background: #fbf7f0;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-form input:focus {
+  border-color: #9c6b43;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-boton {
+  background: #9c6b43;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-boton:hover:not(:disabled) {
+  background: #d8c9b3;
+}
+
+html[data-tema='claro'] .sg-landing .boton-google {
+  background: #efe6d8;
+  color: #3a2a1c;
+  border-color: #d8c9b3;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-form input {
+  background: #efe6d8;
+  color: #3a2a1c;
+  border-color: #d8c9b3;
+}
+
+html[data-tema='claro'] .sg-landing .acceso-aviso {
+  background: #efe6d8;
+  color: #3a2a1c;
+  border-color: #d8c9b3;
+}

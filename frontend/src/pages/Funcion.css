@@ -481,3 +481,8 @@
   .fn-consejos,
   .fn-cierre { padding: 24px; }
 }
+
+html[data-tema='claro'] .fn {
+  --fn-borde: var(--sg-line, #5a4634);
+  --fn-acento: var(--sg-accent, #9c6b43);
+}

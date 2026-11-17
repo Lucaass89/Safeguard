@@ -29,8 +29,8 @@
 }
 
 html[data-tema='claro'] .veredicto {
-  --v-contenedor: #e7e9ee;
-  --v-sobre: #3a404b;
+  --v-contenedor: #ece2d3;
+  --v-sobre: #5a4634;
 }
 
 html[data-tema='claro'] .veredicto-seguro,
