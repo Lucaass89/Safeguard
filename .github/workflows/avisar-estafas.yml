@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - frontend/src/lib/estafasSemana.js
+  workflow_dispatch:
+    inputs:
+      prueba:
+        description: Solo validar con Firebase, sin mandar el aviso
+        type: boolean
+        default: true
 
 jobs:
   avisar:
@@ -20,3 +26,4 @@ jobs:
         run: node frontend/scripts/avisos/estafas-semana.mjs
         env:
           FCM_SERVICE_ACCOUNT: ${{ secrets.FCM_SERVICE_ACCOUNT }}
+          PRUEBA: ${{ github.event_name == 'workflow_dispatch' && inputs.prueba }}
