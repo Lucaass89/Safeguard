@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { diferenciaDominio, dominioBase } from './analisis.js'
 import { leerFragmento } from './fragmentos.js'
-import { inicioDeSemana, resumenSemana } from './resumenSemana.js'
+import { conteoSemaforo, inicioDeSemana, resumenSemana } from './resumenSemana.js'
 import { supabase } from './supabase.js'
 import { useSesion } from './useSesion.js'
 
@@ -123,7 +123,7 @@ export function useAnalisisPropios({ limite = 5 } = {}) {
 export function useResumenSemana() {
   const { sesion } = useSesion()
   const usuarioId = sesion?.user?.id ?? null
-  const [leido, setLeido] = useState({ usuarioId: null, texto: null })
+  const [leido, setLeido] = useState({ usuarioId: null, texto: null, conteo: null })
   const [version, setVersion] = useState(0)
 
   useEffect(() => {
@@ -138,7 +138,11 @@ export function useResumenSemana() {
       .limit(5000)
       .then(({ data, error }) => {
         if (!activo) return
-        setLeido({ usuarioId, texto: error ? null : resumenSemana(data ?? []) })
+        setLeido({
+          usuarioId,
+          texto: error ? null : resumenSemana(data ?? []),
+          conteo: error ? null : conteoSemaforo(data ?? []),
+        })
       })
 
     return () => {
@@ -147,6 +151,6 @@ export function useResumenSemana() {
   }, [usuarioId, version])
 
   const recargar = () => setVersion((actual) => actual + 1)
-  const texto = usuarioId && leido.usuarioId === usuarioId ? leido.texto : null
-  return { texto, recargar }
+  const vigente = usuarioId && leido.usuarioId === usuarioId
+  return { texto: vigente ? leido.texto : null, conteo: vigente ? leido.conteo : null, recargar }
 }

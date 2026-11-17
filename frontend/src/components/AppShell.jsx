@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import Bienvenida from './Bienvenida.jsx'
+import Logo from './Logo.jsx'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import '../lib/portapapeles.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -8,7 +9,7 @@ import './AppShell.css'
 const DESTINOS = [
   { to: '/', fin: true, etiqueta: 'Inicio', icono: 'inicio' },
   { to: '/phishguard', etiqueta: 'PhishGuard', icono: 'phish' },
-  { to: '/safelink', etiqueta: 'SafeLink', icono: 'enlace' },
+  { to: '/safelink', etiqueta: 'SafeLink', icono: 'enlace', excepto: '/safelink/qr' },
   { to: '/perfil', etiqueta: 'Perfil', icono: 'perfil' },
 ]
 
@@ -19,12 +20,12 @@ function tituloDe(pathname) {
   return 'Inicio'
 }
 
-function Icono({ nombre }) {
+function Icono({ nombre, relleno = false }) {
   const trazo = {
     viewBox: '0 0 24 24',
     width: '24',
     height: '24',
-    fill: 'none',
+    fill: relleno ? 'currentColor' : 'none',
     stroke: 'currentColor',
     strokeWidth: '1.8',
     strokeLinecap: 'round',
@@ -44,7 +45,19 @@ function Icono({ nombre }) {
     return (
       <svg {...trazo}>
         <path d="M12 3.5 19 6.4v5.2c0 4.2-2.7 7.1-7 8.9-4.3-1.8-7-4.7-7-8.9V6.4L12 3.5Z" />
-        <path d="m9.2 12.1 1.9 1.9 3.7-4" />
+        <path d="m9.2 12.1 1.9 1.9 3.7-4" fill="none" stroke={relleno ? '#ffffff' : 'currentColor'} />
+      </svg>
+    )
+  }
+
+  if (nombre === 'qr') {
+    return (
+      <svg {...trazo}>
+        <path d="M4.5 8.5V6.2A1.7 1.7 0 0 1 6.2 4.5H8.5" />
+        <path d="M15.5 4.5h2.3A1.7 1.7 0 0 1 19.5 6.2V8.5" />
+        <path d="M19.5 15.5v2.3a1.7 1.7 0 0 1-1.7 1.7H15.5" />
+        <path d="M8.5 19.5H6.2a1.7 1.7 0 0 1-1.7-1.7V15.5" />
+        <path d="M7.5 12h9" />
       </svg>
     )
   }
@@ -77,6 +90,31 @@ function Icono({ nombre }) {
   )
 }
 
+const RELLENABLES = new Set(['inicio', 'phish'])
+
+function ItemNav({ destino }) {
+  const { pathname } = useLocation()
+  const fuera = Boolean(destino.excepto) && pathname.startsWith(destino.excepto)
+
+  return (
+    <NavLink
+      to={destino.to}
+      end={destino.fin}
+      className={({ isActive }) => (isActive && !fuera ? 'app-nav-item app-nav-activa' : 'app-nav-item')}
+      aria-current={fuera ? 'false' : undefined}
+    >
+      {({ isActive }) => (
+        <>
+          <span className="app-nav-icono">
+            <Icono nombre={destino.icono} relleno={isActive && !fuera && RELLENABLES.has(destino.icono)} />
+          </span>
+          <span>{destino.etiqueta}</span>
+        </>
+      )}
+    </NavLink>
+  )
+}
+
 function AppShell({ children }) {
   const { pathname } = useLocation()
   const { sesion, cargando } = useSesion()
@@ -86,7 +124,16 @@ function AppShell({ children }) {
   return (
     <div className="app-shell">
       <header className="app-top">
-        <p className="app-top-titulo">{tituloDe(pathname)}</p>
+        {pathname === '/' ? (
+          <p className="app-top-titulo app-top-marca">
+            <Logo className="app-top-logo" />
+            <span>
+              Safe<span>Guard</span>
+            </span>
+          </p>
+        ) : (
+          <p className="app-top-titulo">{tituloDe(pathname)}</p>
+        )}
         <div className="app-top-acciones">
           {pathname === '/phishguard' && admin && (
             <Link className="app-top-equipo" to="/phishguard/empresa">
@@ -101,18 +148,21 @@ function AppShell({ children }) {
       </main>
       <Bienvenida />
       <nav className="app-nav" aria-label="Secciones">
-        {DESTINOS.map((destino) => (
-          <NavLink
-            key={destino.to}
-            to={destino.to}
-            end={destino.fin}
-            className={({ isActive }) => (isActive ? 'app-nav-item app-nav-activa' : 'app-nav-item')}
-          >
-            <span className="app-nav-icono">
-              <Icono nombre={destino.icono} />
-            </span>
-            <span>{destino.etiqueta}</span>
-          </NavLink>
+        {DESTINOS.slice(0, 2).map((destino) => (
+          <ItemNav key={destino.to} destino={destino} />
+        ))}
+        <NavLink
+          to="/safelink/qr"
+          className={({ isActive }) => (isActive ? 'app-nav-qr app-nav-qr-activo' : 'app-nav-qr')}
+          aria-label="Escanear un QR"
+        >
+          <span className="app-nav-qr-boton">
+            <Icono nombre="qr" />
+          </span>
+          <span>QR</span>
+        </NavLink>
+        {DESTINOS.slice(2).map((destino) => (
+          <ItemNav key={destino.to} destino={destino} />
         ))}
       </nav>
     </div>
