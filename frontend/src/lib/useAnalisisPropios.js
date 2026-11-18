@@ -158,7 +158,7 @@ export function useResumenSemana() {
 export function useTotalesPropios() {
   const { sesion } = useSesion()
   const usuarioId = sesion?.user?.id ?? null
-  const [leido, setLeido] = useState({ usuarioId: null, total: 0, peligrosos: 0 })
+  const [leido, setLeido] = useState({ usuarioId: null, total: 0, peligrosos: 0, seguros: 0, dudosos: 0 })
   const [version, setVersion] = useState(0)
 
   useEffect(() => {
@@ -168,9 +168,14 @@ export function useTotalesPropios() {
     const base = () =>
       supabase.from('safelink_analisis').select('id', { count: 'exact', head: true }).eq('usuario_id', usuarioId)
 
-    Promise.all([contar(base()), contar(base().eq('nivel_riesgo', 'rojo'))]).then(([total, peligrosos]) => {
-      if (!activo || total === null || peligrosos === null) return
-      setLeido({ usuarioId, total, peligrosos })
+    Promise.all([
+      contar(base()),
+      contar(base().eq('nivel_riesgo', 'rojo')),
+      contar(base().eq('nivel_riesgo', 'verde')),
+      contar(base().eq('nivel_riesgo', 'amarillo')),
+    ]).then(([total, peligrosos, seguros, dudosos]) => {
+      if (!activo || [total, peligrosos, seguros, dudosos].includes(null)) return
+      setLeido({ usuarioId, total, peligrosos, seguros, dudosos })
     })
 
     return () => {
@@ -180,7 +185,14 @@ export function useTotalesPropios() {
 
   const recargar = () => setVersion((actual) => actual + 1)
   const vigente = usuarioId && leido.usuarioId === usuarioId
-  return { total: vigente ? leido.total : 0, peligrosos: vigente ? leido.peligrosos : 0, recargar }
+  return {
+    total: vigente ? leido.total : 0,
+    peligrosos: vigente ? leido.peligrosos : 0,
+    seguros: vigente ? leido.seguros : 0,
+    dudosos: vigente ? leido.dudosos : 0,
+    cargando: Boolean(usuarioId) && !vigente,
+    recargar,
+  }
 }
 
 export async function borrarAnalisis(ids) {

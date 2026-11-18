@@ -59,6 +59,13 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   (`assembleRelease`) al cambiar `android/` o a mano, y lo deja como artefacto. Para compilar en una compu: variables
   `SG_FIRMA_ARCHIVO` (ruta al `.jks`) y `SG_FIRMA_CLAVE`. Sin la clave, el APK de publicación sale sin firmar. Si se pierde,
   las apps instaladas no se pueden actualizar sin desinstalar.
+- Perfil de la app (`src/pages/PerfilApp.jsx`): tarjeta de la cuenta, nivel de protección (`proteccion.js`), lo revisado por color
+  y un menú con subpantallas `/perfil/:seccion` (seguridad, avisos, familia, reportes, apariencia, datos, version, ayuda, cuenta);
+  las de configuración reusan `PanelPerfil` con `seccion`. "Celulares con avisos" usa `push_mis_dispositivos` y `push_borrar_otros`.
+  "Cuidar a un familiar" (`familia.js`): la persona cuidada crea un código de 6 letras que vence a los 30 minutos
+  (`familia_crear_codigo`), quien cuida lo carga (`familia_aceptar`), y cuando la persona cuidada guarda un análisis rojo
+  la función `familia-avisar` manda un aviso al celular de quien la cuida (como mucho uno cada 10 minutos). Migración
+  `20261118120000_perfil_familia.sql`.
 - `android/` — contenedor WebView en Java (`com.safeguard.app`) que carga el sitio publicado; usa la cámara para QR.
   La portada muestra `public/capturas/recorrido-{claro,oscuro}.mp4`, una grabación real de la app con capítulos
   (textos en `src/lib/recorridoApp.js`, segundos de inicio en `src/data/recorridoApp.json`). Se graba con
