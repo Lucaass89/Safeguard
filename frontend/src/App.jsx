@@ -6,7 +6,7 @@ import PhishGuardAcceso from './components/PhishGuardAcceso.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import AppShell from './components/AppShell.jsx'
 import { esAppNativa } from './lib/esAppNativa.js'
-import { PerfilSeccion } from './pages/OpcionesApp.jsx'
+import PerfilApp, { PerfilSeccionApp } from './pages/PerfilApp.jsx'
 import PhishGuard from './pages/PhishGuard.jsx'
 import SafeLink from './pages/SafeLink.jsx'
 import Inicio from './pages/Inicio.jsx'
@@ -68,8 +68,8 @@ function App() {
           <Route path="phishguard/informe" element={<PanelInforme />} />
         </Route>
         <Route element={<RutaPrivada />}>
-          <Route path="perfil" element={<PanelPerfil variante="app" />} />
-          <Route path="perfil/cuenta" element={<PerfilSeccion />} />
+          <Route path="perfil" element={<PerfilApp />} />
+          <Route path="perfil/:seccion" element={<PerfilSeccionApp />} />
           <Route path="safelink/enlaces" element={<PanelEnlaces />} />
           <Route path="safelink/whatsapp" element={<PanelWhatsapp />} />
           <Route path="safelink/pdf" element={<PanelPdf />} />
