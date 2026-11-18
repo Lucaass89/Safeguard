@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
 import Resultado from '../components/Resultado.jsx'
 import { agruparActividad } from '../lib/agruparActividad.js'
@@ -484,6 +484,15 @@ function SafeLink() {
           </>
         )}
       </section>
+      {sesion ? (
+        <Link className="slapp-reportes" to="/perfil/reportes">
+          <span>
+            <strong>Tus reportes</strong>
+            <small>Lo que nos avisaste y en qué quedó</small>
+          </span>
+          <span aria-hidden="true">›</span>
+        </Link>
+      ) : null}
     </form>
   )
 }

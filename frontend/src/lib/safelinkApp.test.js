@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import {
   agruparPorDia,
+  destinoSafeLink,
   filtrarPorNivel,
   fraseDeNivel,
   pasoEn,
@@ -96,5 +97,25 @@ describe('textos', () => {
     assert.equal(fraseDeNivel('peligroso'), 'No lo abras')
     assert.equal(fraseDeNivel('seguro'), 'Podés seguir')
     assert.equal(fraseDeNivel('cualquiera'), 'No lo pudimos revisar del todo')
+  })
+})
+
+describe('destinoSafeLink', () => {
+  test('sin nada va a SafeLink', () => {
+    assert.equal(destinoSafeLink(''), '/safelink')
+    assert.equal(destinoSafeLink('?url=%20%20'), '/safelink')
+  })
+
+  test('pasa el enlace para revisarlo', () => {
+    assert.equal(
+      destinoSafeLink('?url=https%3A%2F%2Fejemplo.com%2Fpromo'),
+      '/safelink?compartido=https%3A%2F%2Fejemplo.com%2Fpromo',
+    )
+  })
+
+  test('recorta lo muy largo', () => {
+    const largo = 'https://a.com/' + 'x'.repeat(3000)
+    const destino = destinoSafeLink(`?url=${encodeURIComponent(largo)}`)
+    assert.equal(decodeURIComponent(destino.split('=')[1]).length, 2048)
   })
 })
