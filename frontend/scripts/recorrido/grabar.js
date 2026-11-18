@@ -66,7 +66,7 @@ async function contexto(navegador, tema, sesion, idUsuario) {
     ...telefono,
     viewport: { width: ANCHO, height: ALTO },
     deviceScaleFactor: 2,
-    userAgent: `${telefono.userAgent} SafeGuardApp`,
+    userAgent: `${telefono.userAgent} SafeGuardApp/4`,
     permissions: ['camera'],
     storageState: sesion,
   })
@@ -123,7 +123,7 @@ async function revisarEnlace(pagina, direccion, lento) {
   if (lento) await campo.pressSequentially(direccion, { delay: 50 })
   else await campo.fill(direccion)
   if (lento) await pagina.waitForTimeout(500)
-  await pagina.getByRole('button', { name: 'Revisar' }).click()
+  await pagina.getByRole('button', { name: 'Revisar', exact: true }).click()
   await pagina.getByText('Peligroso').first().waitFor({ timeout: 25000 })
 }
 
@@ -143,13 +143,10 @@ function capitulos(sesion, idUsuario) {
   return {
     qr: {
       ...logueado,
-      preparar: async (p) => {
-        await p.goto(`${BASE}/safelink`, { waitUntil: 'networkidle' })
-        await p.getByRole('button', { name: 'QR', exact: true }).click()
-      },
+      preparar: (p) => p.goto(`${BASE}/safelink`, { waitUntil: 'networkidle' }),
       pasos: async (p) => {
-        await p.waitForTimeout(800)
-        await p.getByText('Abrir la cámara').click()
+        await p.waitForTimeout(900)
+        await p.getByRole('link', { name: 'Escanear un QR' }).click()
         await p.waitForURL(/\/safelink\/qr/)
         await p.waitForTimeout(900)
         await p.getByRole('button', { name: 'Usar la cámara' }).click()
@@ -170,36 +167,28 @@ function capitulos(sesion, idUsuario) {
     },
     mensaje: {
       ...logueado,
-      preparar: async (p) => {
-        await p.goto(`${BASE}/safelink`, { waitUntil: 'networkidle' })
-        await p.getByRole('button', { name: 'Mensaje', exact: true }).click()
-      },
+      preparar: (p) => p.goto(`${BASE}/safelink`, { waitUntil: 'networkidle' }),
       pasos: async (p) => {
         await p.waitForTimeout(600)
         await p
           .locator('.slapp-entrada textarea')
           .pressSequentially('Hola ma, cambié de número, agendame este. Necesito que me transfieras $85.000 urgente.', { delay: 30 })
         await p.waitForTimeout(500)
-        await p.getByRole('button', { name: 'Revisar' }).click()
+        await p.getByRole('button', { name: 'Revisar', exact: true }).click()
         await p.getByText('Peligroso').first().waitFor({ timeout: 25000 })
         await p.waitForTimeout(2600)
       },
     },
     pdf: {
       ...logueado,
-      preparar: async (p) => {
-        await p.goto(`${BASE}/safelink`, { waitUntil: 'networkidle' })
-        await p.getByRole('button', { name: 'PDF', exact: true }).click()
-      },
+      preparar: (p) => p.goto(`${BASE}/safelink`, { waitUntil: 'networkidle' }),
       pasos: async (p) => {
         await p.waitForTimeout(800)
         const [selector] = await Promise.all([
           p.waitForEvent('filechooser'),
-          p.getByRole('button', { name: 'Elegir archivo' }).click(),
+          p.getByRole('button', { name: 'Subir un PDF' }).click(),
         ])
         await selector.setFiles(PDF)
-        await p.waitForTimeout(900)
-        await p.getByRole('button', { name: 'Revisar' }).click()
         await p.getByText('Peligroso').first().waitFor({ timeout: 25000 })
         await p.waitForTimeout(1800)
         await bajar(p, 300)
@@ -214,7 +203,7 @@ function capitulos(sesion, idUsuario) {
       },
       pasos: async (p) => {
         await p.waitForTimeout(900)
-        await p.getByRole('button', { name: /Faro/ }).click()
+        await p.getByRole('button', { name: 'Preguntale a Faro', exact: true }).click()
         await p.waitForTimeout(1200)
         await p.getByRole('button', { name: '¿Por qué dio este resultado?' }).click()
         await p.waitForTimeout(600)
@@ -251,12 +240,13 @@ function capitulos(sesion, idUsuario) {
       ...logueado,
       preparar: (p) => p.goto(`${BASE}/perfil`, { waitUntil: 'networkidle' }),
       pasos: async (p) => {
-        await p.waitForTimeout(1500)
+        await p.waitForTimeout(1800)
         for (let i = 0; i < 3; i += 1) {
-          await bajar(p, 380)
-          await p.waitForTimeout(1400)
+          await bajar(p, 420)
+          await p.waitForTimeout(1300)
         }
-        await p.waitForTimeout(900)
+        await p.getByRole('link', { name: /Cuidar a un familiar/ }).click()
+        await p.waitForTimeout(2600)
       },
     },
   }
