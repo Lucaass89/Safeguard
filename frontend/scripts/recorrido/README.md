@@ -5,7 +5,7 @@ portada ("Así funciona la app en tu celular"). Usarlo cuando cambia alguna de e
 
 ## Qué hace
 
-1. Entra con la cuenta de prueba y graba siete capítulos en tema oscuro y claro: QR, enlace, mensaje, PDF, Faro,
+1. Entra con la cuenta de prueba y graba siete capítulos en tema oscuro y claro: QR (desde el botón del medio), enlace, mensaje, PDF, Faro,
    ingreso y perfil. Cada uno es una grabación real de la app, cuadro por cuadro, a resolución completa.
 2. El QR se lee con una cámara de prueba de Chrome que muestra `cartel-qr.png`, un cartel de estacionamiento con un QR
    a `https://mercadopago-cobro.com/pagar`. El PDF es `aviso-cuenta.pdf`, un aviso falso de Banco Nación con un enlace a

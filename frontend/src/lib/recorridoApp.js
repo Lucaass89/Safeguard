@@ -9,7 +9,7 @@ export const CAPITULOS = [
   { id: 'pdf', titulo: 'Revisá un PDF', texto: 'Mira los enlaces que trae adentro antes de que lo abras.', inicio: tiempos.inicios.pdf },
   { id: 'faro', titulo: 'Preguntale a Faro', texto: 'Te explica el resultado con palabras simples.', inicio: tiempos.inicios.faro },
   { id: 'ingreso', titulo: 'Ingresá', texto: 'Con Google o con tu correo. Con cuenta guardás tu historial.', inicio: tiempos.inicios.ingreso },
-  { id: 'perfil', titulo: 'Tu perfil', texto: 'Tu actividad, tu seguridad, tus datos y el tema de la app.', inicio: tiempos.inicios.perfil },
+  { id: 'perfil', titulo: 'Tu perfil', texto: 'Tu nivel de protección, lo que revisaste, tus avisos y cuidar a un familiar.', inicio: tiempos.inicios.perfil },
 ]
 
 export function capituloEn(tiempo, capitulos = CAPITULOS) {
