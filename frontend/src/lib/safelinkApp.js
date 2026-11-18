@@ -91,3 +91,10 @@ const FRASES = {
 export function fraseDeNivel(clave) {
   return FRASES[clave] ?? FRASES.sin_verificar
 }
+
+export function destinoSafeLink(busqueda = '') {
+  const parametros = new URLSearchParams(busqueda)
+  const traido = (parametros.get('url') ?? parametros.get('texto') ?? '').trim().slice(0, 2048)
+  if (!traido) return '/safelink'
+  return `/safelink?compartido=${encodeURIComponent(traido)}`
+}

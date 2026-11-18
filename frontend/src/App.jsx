@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import InstalarApp from './components/InstalarApp.jsx'
 import PanelShell from './components/PanelShell.jsx'
 import Layout from './components/Layout.jsx'
@@ -6,6 +6,7 @@ import PhishGuardAcceso from './components/PhishGuardAcceso.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import AppShell from './components/AppShell.jsx'
 import { esAppNativa } from './lib/esAppNativa.js'
+import { destinoSafeLink } from './lib/safelinkApp.js'
 import PerfilApp, { PerfilSeccionApp } from './pages/PerfilApp.jsx'
 import PhishGuard from './pages/PhishGuard.jsx'
 import SafeLink from './pages/SafeLink.jsx'
@@ -40,6 +41,11 @@ function MarcoApp() {
   return <AppShell />
 }
 
+function AlSafeLink() {
+  const { search } = useLocation()
+  return <Navigate to={destinoSafeLink(search)} replace />
+}
+
 function Entrada() {
   if (esAppNativa()) {
     return (
@@ -70,10 +76,10 @@ function App() {
         <Route element={<RutaPrivada />}>
           <Route path="perfil" element={<PerfilApp />} />
           <Route path="perfil/:seccion" element={<PerfilSeccionApp />} />
-          <Route path="safelink/enlaces" element={<PanelEnlaces />} />
-          <Route path="safelink/whatsapp" element={<PanelWhatsapp />} />
-          <Route path="safelink/pdf" element={<PanelPdf />} />
-          <Route path="safelink/correo" element={<PanelCorreo />} />
+          <Route path="safelink/enlaces" element={<AlSafeLink />} />
+          <Route path="safelink/whatsapp" element={<AlSafeLink />} />
+          <Route path="safelink/pdf" element={<AlSafeLink />} />
+          <Route path="safelink/correo" element={<AlSafeLink />} />
           <Route path="safelink/qr" element={<PanelQr />} />
         </Route>
       </Route>

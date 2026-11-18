@@ -35,6 +35,8 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
 - `frontend/` — la aplicación: React 19, Vite 8, react-router 8, supabase-js. JavaScript/JSX, un CSS por página.
   - `src/pages/` pantallas, `src/components/` piezas comunes, `src/lib/` lógica y pruebas, `src/data/` marcas y plataformas.
   - Rutas en `src/App.jsx`: `/panel/*` en la web; `/safelink`, `/phishguard/*` y `/perfil` solo dentro de la app Android (`esAppNativa`).
+    En la app, `/safelink/enlaces`, `/whatsapp`, `/correo` y `/pdf` llevan a `/safelink` (con `?url=` pasa a revisarse solo, `destinoSafeLink`);
+    las pantallas viejas `Panel*.jsx` quedan solo para la web. `/safelink/qr` sigue siendo el lector.
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).
 - Inicio de la app (`src/pages/Inicio.jsx`) no revisa nada: lo compartido desde WhatsApp (`/?compartido=…`) y el enlace

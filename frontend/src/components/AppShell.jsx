@@ -16,6 +16,7 @@ const DESTINOS = [
 
 function tituloDe(pathname) {
   if (pathname.startsWith('/phishguard')) return 'PhishGuard'
+  if (pathname.startsWith('/safelink/qr')) return 'QR'
   if (pathname.startsWith('/safelink')) return 'SafeLink'
   if (pathname.startsWith('/perfil')) return 'Perfil'
   return 'Inicio'
