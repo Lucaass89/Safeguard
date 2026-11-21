@@ -4,7 +4,7 @@ import Bienvenida from '../components/Bienvenida.jsx'
 import { supabase } from '../lib/supabase.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
-import SafeLink from './SafeLink.jsx'
+import { HistorialWeb, InicioSafeLinkWeb } from '../components/SafeLinkWeb.jsx'
 import './Panel.css'
 
 function primerNombre(nombre, email) {
@@ -49,11 +49,11 @@ function ResumenPhishGuard({ acceso }) {
 
   if (!acceso) {
     return (
-      <section className="mesa-phish mesa-phish-cerrado" aria-labelledby="mesa-phish-titulo">
-        <div>
-          <h2 id="mesa-phish-titulo">PhishGuard, para tu equipo</h2>
-          <p>Simulá correos de phishing en tu empresa o escuela y enseñale a cada persona en el momento en que cae.</p>
+      <section className="slw-tarjeta mesa-phish" aria-labelledby="mesa-phish-titulo">
+        <div className="slw-tarjeta-cabeza">
+          <h2 id="mesa-phish-titulo">PhishGuard</h2>
         </div>
+        <p className="slw-nota">Simulá correos de phishing en tu empresa o escuela y enseñale a cada persona en el momento en que cae.</p>
         <Link className="mesa-phish-boton" to="/adquirir">
           Conocer PhishGuard
         </Link>
@@ -68,42 +68,41 @@ function ResumenPhishGuard({ acceso }) {
   const porcentaje = correos > 0 ? Math.round((clics / correos) * 100) : 0
 
   return (
-    <section className="mesa-tablero" aria-labelledby="mesa-tablero-titulo">
-      <div className="mesa-tablero-cabeza">
-        <h2 id="mesa-tablero-titulo">Tu equipo en PhishGuard</h2>
-        <Link className="mesa-tablero-ir" to={campanas === 0 ? '/panel/campanas' : '/panel/tablero'}>
-          {campanas === 0 ? 'Armar una campaña' : 'Ver el tablero'}
-        </Link>
+    <section className="slw-tarjeta mesa-phish" aria-labelledby="mesa-phish-titulo">
+      <div className="slw-tarjeta-cabeza">
+        <h2 id="mesa-phish-titulo">Tu equipo</h2>
+        <Link to={campanas === 0 ? '/panel/campanas' : '/panel/tablero'}>{campanas === 0 ? 'Armar una campaña' : 'Tablero'}</Link>
       </div>
-      <p className="mesa-tablero-lectura">{tablero ? lectura(campanas, correos, clics, datos) : 'Buscando los datos del equipo…'}</p>
-      {correos > 0 && (
+      {!tablero ? (
+        <p className="slw-nota">Buscando los datos del equipo…</p>
+      ) : correos === 0 ? (
+        <p className="slw-nota">{lectura(campanas, correos, clics, datos)}</p>
+      ) : (
         <>
-          <ul className="metricas-franja">
-            <li>
-              <strong>{campanas}</strong>
-              <span>Campañas</span>
-            </li>
-            <li>
-              <strong>{correos}</strong>
-              <span>Correos</span>
-            </li>
-            <li>
-              <strong>{clics}</strong>
-              <span>Clics</span>
-            </li>
-            <li>
-              <strong>{datos}</strong>
-              <span>Datos ingresados</span>
-            </li>
-          </ul>
-          <div className="mesa-riesgo">
-            <div className="mesa-riesgo-pista" aria-hidden="true">
-              <span style={{ width: `${porcentaje}%` }} />
-            </div>
-            <p>
-              {clics} de {correos} correos con clic
-            </p>
+          <p className="mesa-phish-dato">
+            <strong>{porcentaje}%</strong> tocó el enlace
+          </p>
+          <div className="mesa-riesgo-pista" aria-hidden="true">
+            <span style={{ width: `${porcentaje}%` }} />
           </div>
+          <dl className="mesa-phish-cifras">
+            <div>
+              <dt>Campañas</dt>
+              <dd>{campanas}</dd>
+            </div>
+            <div>
+              <dt>Correos</dt>
+              <dd>{correos}</dd>
+            </div>
+            <div>
+              <dt>Clics</dt>
+              <dd>{clics}</dd>
+            </div>
+            <div>
+              <dt>Cargaron datos</dt>
+              <dd>{datos}</dd>
+            </div>
+          </dl>
         </>
       )}
     </section>
@@ -123,10 +122,9 @@ function Panel() {
       <header className="mesa-bienvenida">
         <p className="mesa-hola">{saludo ? `Hola, ${saludo}` : 'Hola'}</p>
         <h1 className="mesa-saludo">¿Qué te llegó?</h1>
-        <p>Pegá un enlace, un WhatsApp o un correo, o subí un PDF. Te decimos si es seguro antes de que lo abras.</p>
+        <p>Revisá un enlace, un WhatsApp, un correo o un PDF antes de abrirlo.</p>
       </header>
-      <SafeLink variante="web" modo="resumen" />
-      <ResumenPhishGuard acceso={acceso} />
+      <InicioSafeLinkWeb lateral={<ResumenPhishGuard acceso={acceso} />} />
     </div>
   )
 }
@@ -138,7 +136,7 @@ export function PanelHistorial() {
         <h1 className="mesa-saludo">Historial</h1>
         <p>Todo lo que revisaste con SafeLink, en la web y en la app.</p>
       </header>
-      <SafeLink variante="web" modo="historial" />
+      <HistorialWeb />
     </div>
   )
 }

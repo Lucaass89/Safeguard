@@ -5,7 +5,6 @@ import {
   destinoPanel,
   destinoSafeLink,
   enlaceTraido,
-  ultimosDe,
   filtrarPorNivel,
   fraseDeNivel,
   pasoEn,
@@ -139,13 +138,5 @@ describe('enlaceTraido', () => {
     assert.equal(enlaceTraido('?url=javascript%3Aalert(1)'), '')
     assert.equal(enlaceTraido('?url=hola%20mundo'), '')
     assert.equal(enlaceTraido(''), '')
-  })
-})
-
-describe('ultimosDe', () => {
-  test('se queda con los primeros', () => {
-    assert.deepEqual(ultimosDe([1, 2, 3, 4, 5, 6, 7]), [1, 2, 3, 4, 5])
-    assert.deepEqual(ultimosDe([1, 2], 5), [1, 2])
-    assert.deepEqual(ultimosDe(null), [])
   })
 })
