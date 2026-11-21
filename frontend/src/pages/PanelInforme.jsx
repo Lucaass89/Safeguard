@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
+import CabeceraPhishGuard from '../components/CabeceraPhishGuard.jsx'
 import { nombreEmpresa } from '../lib/formato.js'
 import { historialCaidas, resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
@@ -112,9 +113,7 @@ function PanelInforme() {
   if (!organizacion) {
     return (
       <div className="panel panel-empresas">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
+        <CabeceraPhishGuard seccion="Informe" titulo="Informe" texto="Esta cuenta no tiene el plan activo. SafeLink sigue disponible." />
         {error && <p className="panel-error">{error}</p>}
         <p className="panel-vacio">
           PhishGuard se paga por persona. Esta cuenta no tiene el plan activo.{' '}
@@ -126,25 +125,20 @@ function PanelInforme() {
 
   return (
     <div className="panel panel-empresas informe">
-      <header className="panel-header">
-        <Link className="panel-volver informe-no-imprimir" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
-        <p className="informe-fecha">{fecha}</p>
-        <h1>Informe de {nombreEmpresa(organizacion.nombre_empresa)}</h1>
-        <p className="panel-lead">
-          Quién tocó el enlace, quién se capacitó y quién mejoró en el refuerzo. Es para
-          la empresa o la escuela. No es una sanción.
-        </p>
-        <div className="panel-acciones informe-no-imprimir">
-          <button type="button" className="panel-boton" onClick={() => window.print()}>
+      <CabeceraPhishGuard
+        seccion={`Informe · ${fecha}`}
+        titulo={`Informe de ${nombreEmpresa(organizacion.nombre_empresa)}`}
+        texto="Quién tocó el enlace, quién se capacitó y quién mejoró en el refuerzo. Es para la empresa o la escuela. No es una sanción."
+      >
+        <div className="panel-acciones pgc-acciones informe-no-imprimir">
+          <button type="button" className="pgc-boton" onClick={() => window.print()}>
             Guardar o imprimir
           </button>
-          <Link className="text-link" to={rutaEnApp('/panel/tablero')}>
+          <Link className="pgc-boton-sec" to={rutaEnApp('/panel/tablero')}>
             Ver el tablero
           </Link>
         </div>
-      </header>
+      </CabeceraPhishGuard>
 
       {error && <p className="panel-error">{error}</p>}
 
