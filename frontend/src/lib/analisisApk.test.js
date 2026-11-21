@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { analizar, descargaConfiable, esApk, MOTIVO_APK } from './analisis.js'
+import { analizar, combinarConEnriquecimiento, descargaConfiable, esApk, MOTIVO_APK } from './analisis.js'
 import { analizarCorreo, MOTIVO_APK_CORREO } from './analisisCorreo.js'
 import { analizarWhatsapp, MOTIVO_APK_MENSAJE } from './analisisWhatsapp.js'
 
@@ -100,5 +100,39 @@ describe('APK en un correo', () => {
     const resultado = analizarCorreo(correo('Descargá la versión nueva: https://www.whatsapp.com/android/WhatsApp.apk'))
     assert.equal(resultado.nivel, 'rojo')
     assert.ok(resultado.motivos.includes(MOTIVO_APK_CORREO))
+  })
+})
+
+describe('APK con lo que devuelve el servidor', () => {
+  const conServidor = (url, extra = {}) =>
+    combinarConEnriquecimiento(analizar(url), {
+      dominio: analizar(url).dominio,
+      destino: url,
+      archivo_peligroso: true,
+      ...extra,
+    })
+
+  test('F-Droid sigue en amarillo aunque el servidor vea que es una descarga', () => {
+    const final = conServidor('https://f-droid.org/F-Droid.apk')
+    assert.equal(final.nivel, 'amarillo')
+    assert.ok(!final.motivos.some((motivo) => motivo.includes('descarga de programa')))
+  })
+
+  test('el sitio oficial de una marca y el de SafeGuard siguen en amarillo', () => {
+    assert.equal(conServidor('https://www.whatsapp.com/android/WhatsApp.apk').nivel, 'amarillo')
+    assert.equal(conServidor('https://safeguardd.vercel.app/app/safeguard-1.4.apk').nivel, 'amarillo')
+  })
+
+  test('un APK de un sitio desconocido sigue en rojo', () => {
+    assert.equal(conServidor('https://pagos-ar.com/comprobante.apk').nivel, 'rojo')
+  })
+
+  test('si un enlace oficial redirige a un APK de otro sitio, da rojo', () => {
+    const final = combinarConEnriquecimiento(analizar('https://www.whatsapp.com/descargar'), {
+      dominio: 'descargas-apk.com',
+      destino: 'https://descargas-apk.com/WhatsApp.apk',
+      archivo_peligroso: true,
+    })
+    assert.equal(final.nivel, 'rojo')
   })
 })

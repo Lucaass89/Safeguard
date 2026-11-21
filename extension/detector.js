@@ -23842,6 +23842,14 @@ var RUTA_SENSIBLE = /(login|signin|verify|verification|wallet|seed|confirmar-cue
 var EXT_PELIGROSA = /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|jse|vbs|vbe|ps1|docm|xlsm)(?=$|[?#])/i;
 var EXT_APK = /\.apk(?=$|[?#])/i;
 var DESCARGAS_CONFIABLES = /* @__PURE__ */ new Set(["f-droid.org", "safeguardd.vercel.app"]);
+function esApk(direccion) {
+	try {
+		const url = new URL(direccion);
+		return EXT_APK.test(`${url.pathname}${url.search}`);
+	} catch {
+		return EXT_APK.test(String(direccion ?? ""));
+	}
+}
 function descargaConfiable(host) {
 	const limpio = String(host ?? "").toLowerCase();
 	return DESCARGAS_CONFIABLES.has(limpio) || DESCARGAS_CONFIABLES.has(dominioBase(limpio));
@@ -24457,7 +24465,10 @@ function combinarConEnriquecimiento(local, extra) {
 	if (edad) sumar("dominio_reciente", edad.puntos, edad.frase, edad.fuerza, "edad");
 	const certificado = typeof extra.cert_dias === "number" && juzgaDominio ? riesgoPorCertificado(extra.cert_dias) : null;
 	if (certificado) sumar("certificado_reciente", certificado.puntos, certificado.frase, "debil", "debiles");
-	if (extra.archivo_peligroso) sumar("destino_descarga", 55, "El destino es una descarga de programa o de aplicación.", "fuerte", "archivo");
+	const apkConfiable = esApk(extra.destino || local.url) && (oficial || descargaConfiable(hostFinal));
+	if (extra.archivo_peligroso && apkConfiable) {
+		if (!(actual.senales ?? []).some((senal) => senal.id === "apk_sitio_oficial")) sumar("apk_sitio_oficial", 25, `Descarga una app para instalar (.apk) desde ${dominioBase(hostFinal)}, que parece su sitio oficial. Igual, si está en el Play Store, instalala desde ahí.`, "media", "archivo");
+	} else if (extra.archivo_peligroso) sumar("destino_descarga", 55, "El destino es una descarga de programa o de aplicación.", "fuerte", "archivo");
 	if (extra.meta_destino) {
 		const meta = analizar(extra.meta_destino);
 		actual.motivos.push("La página se redirige sola hacia otro sitio.");

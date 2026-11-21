@@ -962,7 +962,19 @@ export function combinarConEnriquecimiento(local, extra) {
   const certificado = typeof extra.cert_dias === 'number' && juzgaDominio ? riesgoPorCertificado(extra.cert_dias) : null
   if (certificado) sumar('certificado_reciente', certificado.puntos, certificado.frase, 'debil', 'debiles')
 
-  if (extra.archivo_peligroso) {
+  const apkConfiable =
+    esApk(extra.destino || local.url) && (oficial || descargaConfiable(hostFinal))
+  if (extra.archivo_peligroso && apkConfiable) {
+    if (!(actual.senales ?? []).some((senal) => senal.id === 'apk_sitio_oficial')) {
+      sumar(
+        'apk_sitio_oficial',
+        25,
+        `Descarga una app para instalar (.apk) desde ${dominioBase(hostFinal)}, que parece su sitio oficial. Igual, si está en el Play Store, instalala desde ahí.`,
+        'media',
+        'archivo',
+      )
+    }
+  } else if (extra.archivo_peligroso) {
     sumar('destino_descarga', 55, 'El destino es una descarga de programa o de aplicación.', 'fuerte', 'archivo')
   }
 
