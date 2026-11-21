@@ -216,6 +216,16 @@ function Panel() {
     sesion.user.user_metadata?.name ??
     sesion.user.email
 
+  function volverAElegir() {
+    sessionStorage.setItem('sg-recibido', sesion.user.id)
+    setSaludoVisible(false)
+    setFase('elegir')
+    const url = new URL(window.location.href)
+    url.searchParams.delete('app')
+    url.searchParams.delete('url')
+    window.history.replaceState(null, '', `${url.pathname}${url.search}`)
+  }
+
   const cerrarSaludo = useCallback(() => {
     sessionStorage.setItem('sg-recibido', sesion.user.id)
     setSaludoVisible(false)
@@ -277,32 +287,13 @@ function Panel() {
         />
       )}
 
-      {fase !== 'elegir' && (
-        <button
-          type="button"
-          className="elegir-volver"
-          onClick={() => {
-            cerrarSaludo()
-            setFase('elegir')
-            const url = new URL(window.location.href)
-            url.searchParams.delete('app')
-            window.history.replaceState(null, '', `${url.pathname}${url.search}`)
-          }}
-        >
+      {fase === 'phishguard' && (
+        <button type="button" className="elegir-volver" onClick={volverAElegir}>
           ← Elegir otra aplicación
         </button>
       )}
 
-      {fase === 'safelink' && (
-        <>
-          <header className="mesa-bienvenida">
-            {lineaSaludo}
-            <h1 className="mesa-saludo">SafeLink</h1>
-            <p>Revisá un enlace, un WhatsApp, un correo o un PDF antes de abrirlo.</p>
-          </header>
-          <InicioSafeLinkWeb />
-        </>
-      )}
+      {fase === 'safelink' && <InicioSafeLinkWeb onVolver={volverAElegir} />}
 
       {fase === 'phishguard' && acceso && (
         <>

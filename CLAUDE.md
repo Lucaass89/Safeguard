@@ -42,8 +42,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
     `/safelink/qr` sigue siendo el lector.
     En la web, `/panel` pregunta qué aplicación usar con la pantalla partida de `components/ElegirApp.jsx`: oscura con
     un brillo azul (SafeLink) y coral (PhishGuard), y en el tema claro beige con los mismos brillos, a todo el ancho, con un dato real de cada una (`lib/elegirApp.js`). PhishGuard muestra su tablero y accesos; SafeLink abre
-    directo el diseño propio de compu (`components/SafeLinkWeb.jsx`, también con `?app=safelink` o `?url=`): tarjeta para revisar
-    (pegar, subir o soltar un PDF, foto de un QR, Ctrl+Enter), "Tu actividad" con la barra por color y una tabla con lo último. El panel no tiene barra lateral: se navega con las tarjetas, los "Volver" de cada pantalla y el menú de la cuenta
+    directo el diseño propio de compu (`components/SafeLinkWeb.jsx`, también con `?app=safelink` o `?url=`): una franja a todo
+    el ancho con brillo azul, "¿Qué te llegó?" y una barra tipo buscador (Enter revisa, Shift+Enter agrega una línea, se puede
+    soltar un PDF), con Pegar lo copiado, Subir un PDF y Foto de un QR; abajo, lo último que revisaste y tu actividad por color. El panel no tiene barra lateral: se navega con las tarjetas, los "Volver" de cada pantalla y el menú de la cuenta
     (Inicio del panel, Historial de SafeLink, Perfil). `/panel/historial` es una tabla con filtros, búsqueda, revisar de nuevo y borrar, más tus
     reportes (`MisReportes`). La lógica de revisar es la misma que la app (`revisarSafeLink.js`, `revisados.js`). `/panel/enlaces`, `/whatsapp`, `/pdf` y `/correo` llevan a `/panel` y conservan `?url=`
     (`destinoPanel`), que solo completa la caja.
