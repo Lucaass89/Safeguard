@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
+import CabeceraPhishGuard from '../components/CabeceraPhishGuard.jsx'
 import { copiarTexto } from '../lib/copiar.js'
 import { etiquetaEstado } from '../lib/estados.js'
 import { supabase } from '../lib/supabase.js'
@@ -406,10 +407,8 @@ function PanelCampanas() {
 
   if (!organizacion) {
     return (
-      <div className="panel">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
+      <div className="panel panel-empresas">
+        <CabeceraPhishGuard titulo="Campañas" texto="Esta cuenta no tiene el plan activo. SafeLink sigue disponible." />
         <p className="panel-vacio">
           PhishGuard se paga por persona. Esta cuenta no tiene el plan activo.{' '}
           <Link to="/adquirir">Adquirir PhishGuard</Link>
@@ -420,21 +419,16 @@ function PanelCampanas() {
 
   return (
     <div className="panel panel-empresas">
-      <header className="panel-header">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
-        <h1>Campañas</h1>
-        <p className="panel-lead">
-          Hay plantillas de banco, ARCA, colegio, envío y Mercado Libre, por correo,
-          WhatsApp o SMS. Quien cae recibe un refuerzo más difícil a las 3 semanas.
-        </p>
+      <CabeceraPhishGuard
+        titulo="Campañas"
+        texto="Hay plantillas de banco, ARCA, colegio, envío y Mercado Libre, por correo, WhatsApp o SMS. Quien cae recibe un refuerzo más difícil a las 3 semanas."
+      >
         <p className="panel-aviso">
           Si el canal es Mail, la simulación se envía directo a cada empleado, con aspecto
           de notificación real. Si es WhatsApp o SMS, te llega un kit a tu cuenta con el
           mensaje y los enlaces para mandar vos. Todo queda en el listado.
         </p>
-      </header>
+      </CabeceraPhishGuard>
 
       {error && <p className="panel-error">{error}</p>}
       {aviso && <p className="panel-aviso">{aviso}</p>}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { rutaEnApp } from '../lib/esAppNativa.js'
+import CabeceraPhishGuard from '../components/CabeceraPhishGuard.jsx'
 import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, reporteErrores } from '../lib/csvPersonas.js'
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { nombreEmpresa } from '../lib/formato.js'
@@ -633,17 +633,15 @@ function PanelEmpresa() {
 
   return (
     <div className="panel panel-empresas">
-      <header className="panel-header">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
-        <h1>{organizacion ? nombreEmpresa(organizacion.nombre_empresa) : 'PhishGuard es pago'}</h1>
-        <p className="panel-lead">
-          {organizacion
+      <CabeceraPhishGuard
+        seccion="Tu empresa"
+        titulo={organizacion ? nombreEmpresa(organizacion.nombre_empresa) : 'PhishGuard es pago'}
+        texto={
+          organizacion
             ? 'Acá cargás a la gente que va a recibir las simulaciones.'
-            : 'Esta cuenta no tiene el plan activo. SafeLink sigue disponible.'}
-        </p>
-      </header>
+            : 'Esta cuenta no tiene el plan activo. SafeLink sigue disponible.'
+        }
+      />
 
       {plan && <PlanContratado plan={plan} />}
 
