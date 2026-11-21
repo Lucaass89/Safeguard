@@ -41,7 +41,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
     En la app, `/safelink/enlaces`, `/whatsapp`, `/correo` y `/pdf` llevan a `/safelink` (con `?url=` pasa a revisarse solo, `destinoSafeLink`);
     `/safelink/qr` sigue siendo el lector.
     En la web, `/panel` pregunta qué aplicación usar con la pantalla partida de `components/ElegirApp.jsx`: oscura con
-    un brillo azul (SafeLink) y coral (PhishGuard), y en el tema claro beige con los mismos brillos, a todo el ancho, con un dato real de cada una (`lib/elegirApp.js`). PhishGuard muestra su tablero y accesos; SafeLink abre
+    un brillo azul (SafeLink) y coral (PhishGuard), y en el tema claro beige con los mismos brillos, a todo el ancho, con un dato real de cada una (`lib/elegirApp.js`). PhishGuard abre `components/PhishGuardWeb.jsx`: franja con el nombre de la organización, la frase de la última
+    campaña, el anillo con el % que tocó el enlace contra la anterior, los cuatro pasos del plan, la última campaña en barras,
+    las áreas para reforzar y los accesos (`lib/resumenPhishguard.js`, con los datos de `phishguard_tablero`). SafeLink abre
     directo el diseño propio de compu (`components/SafeLinkWeb.jsx`, también con `?app=safelink` o `?url=`): una franja a todo
     el ancho con brillo azul, "¿Qué te llegó?" y una barra tipo buscador (Enter revisa, Shift+Enter agrega una línea, se puede
     soltar un PDF), con Pegar lo copiado, Subir un PDF y Foto de un QR; abajo, lo último que revisaste y tu actividad por color. El panel no tiene barra lateral: se navega con las tarjetas, los "Volver" de cada pantalla y el menú de la cuenta
