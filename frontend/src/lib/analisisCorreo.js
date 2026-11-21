@@ -1,4 +1,7 @@
-import { analizar, dominioBase, dominioEsMarca, marcaEnTexto, nivelDesde, peorEnlace } from './analisis.js'
+import { analizar, dominioBase, dominioEsMarca, esApk, marcaEnTexto, nivelDesde, peorEnlace } from './analisis.js'
+
+export const MOTIVO_APK_CORREO =
+  'Te manda una app para instalar (.apk). Un banco, un organismo o una empresa no te manda apps por correo: no la instales.'
 
 const URGENCIA = [
   'urgente',
@@ -194,8 +197,15 @@ export function analizarCorreo(crudo) {
     nombreArchivo(m[1]),
   )
   const peligroso = archivos.find((nombreDeArchivo) => EXT_ADJUNTO.test(nombreDeArchivo.toLowerCase()))
+  const urls = [...(cuerpo.match(/https?:\/\/[^\s>]+/g) ?? [])].map((u) => u.replace(/[>)],]+$/, ''))
+  const apkAdjunto = archivos.some((nombreDeArchivo) => /\.apk$/i.test(nombreDeArchivo.trim()))
+  if (apkAdjunto || urls.some(esApk)) {
+    puntos += 55
+    senales.push(MOTIVO_APK_CORREO)
+  }
+
   if (peligroso) {
-    puntos += 45
+    puntos += apkAdjunto ? 0 : 45
     const visible = peligroso.split(/[/\\]/).pop()
     senales.push(`Trae un adjunto peligroso (${visible}).`)
     if (/\.(pdf|jpg|jpeg|png|docx?|xlsx?)\.(apk|exe|scr|js|html|htm)$/i.test(visible)) {
@@ -215,9 +225,8 @@ export function analizarCorreo(crudo) {
     senales.push('El texto apura para que no pienses.')
   }
 
-  const urls = [...(cuerpo.match(/https?:\/\/[^\s>]+/g) ?? [])]
   const enlaces = urls
-    .map((u) => analizar(u.replace(/[>)],]+$/, '')))
+    .map((u) => analizar(u))
     .filter(Boolean)
     .sort((a, b) => b.puntuacion - a.puntuacion)
   const peor = peorEnlace(enlaces)

@@ -64,6 +64,27 @@ const RUTA_SENSIBLE =
 const EXT_PELIGROSA =
   /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|jse|vbs|vbe|ps1|docm|xlsm)(?=$|[?#])/i
 
+const EXT_APK = /\.apk(?=$|[?#])/i
+
+const DESCARGAS_CONFIABLES = new Set(['f-droid.org', 'safeguardd.vercel.app'])
+
+export function esApk(direccion) {
+  try {
+    const url = new URL(direccion)
+    return EXT_APK.test(`${url.pathname}${url.search}`)
+  } catch {
+    return EXT_APK.test(String(direccion ?? ''))
+  }
+}
+
+export function descargaConfiable(host) {
+  const limpio = String(host ?? '').toLowerCase()
+  return DESCARGAS_CONFIABLES.has(limpio) || DESCARGAS_CONFIABLES.has(dominioBase(limpio))
+}
+
+export const MOTIVO_APK =
+  'Descarga una app para instalar (.apk) por fuera del Play Store. Así se instalan los virus que roban las cuentas del banco: no la instales.'
+
 const PARAM_REDIR =
   /^(url|redirect|redir|redirect_uri|next|dest|destination|goto|return|return_url|returnurl|continue|rurl|next_url)$/i
 
@@ -454,7 +475,19 @@ export function analizar(entrada) {
     )
   }
 
-  if (!oficial && EXT_PELIGROSA.test(`${url.pathname}${url.search}`)) {
+  const apk = EXT_APK.test(`${url.pathname}${url.search}`)
+  const apkConfiable = apk && (oficial || descargaConfiable(host))
+  if (apkConfiable) {
+    sumar(
+      'apk_sitio_oficial',
+      25,
+      `Descarga una app para instalar (.apk) desde ${base}, que parece su sitio oficial. Igual, si está en el Play Store, instalala desde ahí.`,
+      'media',
+      'archivo',
+    )
+  } else if (apk) {
+    sumar('descarga_apk', 55, MOTIVO_APK, 'fuerte', 'archivo')
+  } else if (!oficial && EXT_PELIGROSA.test(`${url.pathname}${url.search}`)) {
     sumar(
       'descarga_ejecutable',
       55,
