@@ -1,3 +1,5 @@
+import { rutaEnApp } from '../lib/esAppNativa.js'
+import { Link } from 'react-router'
 import { useId, useState } from 'react'
 import {
   codigoValido,
@@ -179,6 +181,9 @@ function DosPasos({ children }) {
 
   return (
     <section className="dos-pasos" aria-labelledby="dos-pasos-titulo">
+      <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
+        ← Volver a PhishGuard
+      </Link>
       <span className="dos-pasos-escudo" aria-hidden="true" />
       <h1 id="dos-pasos-titulo">
         {estado === 'codigo' ? 'Confirmá que sos vos' : 'Activá la verificación en dos pasos'}

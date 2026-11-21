@@ -181,3 +181,8 @@ html[data-tema='claro'] .dos-pasos-boton {
 html[data-tema='claro'] .dos-pasos-boton:focus-visible {
   outline: 3px solid #ead0b0;
 }
+
+.dos-pasos > .panel-volver {
+  display: inline-flex;
+  margin-bottom: 16px;
+}

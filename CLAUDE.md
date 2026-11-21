@@ -42,7 +42,8 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
     `/safelink/qr` sigue siendo el lector.
     En la web, `/panel` pregunta "¿Qué aplicación querés usar?". PhishGuard muestra su tablero y accesos; SafeLink abre
     directo el diseño propio de compu (`components/SafeLinkWeb.jsx`, también con `?app=safelink` o `?url=`): tarjeta para revisar
-    (pegar, subir o soltar un PDF, foto de un QR, Ctrl+Enter), "Tu actividad" con la barra por color y una tabla con lo último. `/panel/historial` es una tabla con filtros, búsqueda, revisar de nuevo y borrar, más tus
+    (pegar, subir o soltar un PDF, foto de un QR, Ctrl+Enter), "Tu actividad" con la barra por color y una tabla con lo último. El panel no tiene barra lateral: se navega con las tarjetas, los "Volver" de cada pantalla y el menú de la cuenta
+    (Inicio del panel, Historial de SafeLink, Perfil). `/panel/historial` es una tabla con filtros, búsqueda, revisar de nuevo y borrar, más tus
     reportes (`MisReportes`). La lógica de revisar es la misma que la app (`revisarSafeLink.js`, `revisados.js`). `/panel/enlaces`, `/whatsapp`, `/pdf` y `/correo` llevan a `/panel` y conservan `?url=`
     (`destinoPanel`), que solo completa la caja.
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).

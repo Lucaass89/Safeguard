@@ -142,6 +142,12 @@ function MenuCuenta({ sesion }) {
             {lineaEmpresa && <span className="nav-menu-empresa">{lineaEmpresa}</span>}
           </div>
           <hr className="nav-menu-linea" />
+          <Link role="menuitem" tabIndex={-1} to="/panel" onClick={() => setAbierto(false)}>
+            Inicio del panel
+          </Link>
+          <Link role="menuitem" tabIndex={-1} to="/panel/historial" onClick={() => setAbierto(false)}>
+            Historial de SafeLink
+          </Link>
           <Link role="menuitem" tabIndex={-1} to="/panel/perfil" onClick={() => setAbierto(false)}>
             Perfil
           </Link>
