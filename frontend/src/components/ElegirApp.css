@@ -35,12 +35,18 @@
   color: var(--ea-tinta, #ffffff);
 }
 
-html[data-tema='claro'] .ea-entrar {
-  background: rgb(58 42 28 / 9%);
+html[data-tema='claro'] .ea .ea-lado .ea-entrar {
+  background: var(--ea-acento);
+  color: #ffffff;
 }
 
-html[data-tema='claro'] .ea-lado:hover .ea-entrar {
-  background: rgb(58 42 28 / 15%);
+html[data-tema='claro'] .ea .ea-lado:hover .ea-entrar {
+  background: var(--ea-acento);
+  filter: brightness(1.08);
+}
+
+html[data-tema='claro'] .ea-fondo {
+  opacity: 0.22;
 }
 
 html[data-tema='claro'] .ea-lado:hover::after {
@@ -74,10 +80,12 @@ html[data-tema='claro'] .ea-lado:focus-visible {
 }
 
 .ea-safelink {
+  --ea-acento: #60a5fa;
   background: radial-gradient(90% 70% at 20% 100%, rgb(59 130 246 / 35%), transparent 60%), #0d1830;
 }
 
 .ea-phish {
+  --ea-acento: #f8846e;
   background: radial-gradient(90% 70% at 80% 100%, rgb(244 114 94 / 30%), transparent 60%), #121527;
   box-shadow: inset 1px 0 0 rgb(255 255 255 / 6%);
 }
@@ -87,12 +95,18 @@ html[data-tema='claro'] .ea {
 }
 
 html[data-tema='claro'] .ea-safelink {
-  background: radial-gradient(90% 70% at 20% 100%, rgb(59 110 210 / 22%), transparent 60%), #f3ebe0;
+  --ea-acento: #2f5fc4;
+  background:
+    radial-gradient(110% 85% at 15% 100%, rgb(70 120 220 / 38%), transparent 62%),
+    linear-gradient(180deg, #eef0f3 0%, #e6e9ef 100%);
 }
 
 html[data-tema='claro'] .ea-phish {
-  background: radial-gradient(90% 70% at 80% 100%, rgb(222 105 84 / 22%), transparent 60%), #efe4d8;
-  box-shadow: inset 1px 0 0 rgb(58 42 28 / 10%);
+  --ea-acento: #c4472f;
+  background:
+    radial-gradient(110% 85% at 85% 100%, rgb(232 112 86 / 40%), transparent 62%),
+    linear-gradient(180deg, #f6e9df 0%, #f2ddd0 100%);
+  box-shadow: inset 1px 0 0 rgb(58 42 28 / 12%);
 }
 
 .ea-hola {
@@ -101,6 +115,10 @@ html[data-tema='claro'] .ea-phish {
   left: clamp(28px, 5vw, 72px);
   font-size: 16px;
   opacity: 0.88;
+}
+
+.ea .ea-lado .ea-fondo {
+  color: var(--ea-acento);
 }
 
 .ea-fondo {
@@ -117,6 +135,11 @@ html[data-tema='claro'] .ea-phish {
 .ea-lado:hover .ea-fondo {
   transform: rotate(-6deg) scale(1.04);
   opacity: 0.22;
+}
+
+.ea .ea-lado .ea-etiqueta {
+  color: var(--ea-acento);
+  opacity: 1;
 }
 
 .ea-etiqueta {

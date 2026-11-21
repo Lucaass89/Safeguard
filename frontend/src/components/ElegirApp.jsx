@@ -36,7 +36,7 @@ function ElegirApp({ nombre, acceso, tablero, onElegir }) {
       <strong className="ea-nombre">PhishGuard</strong>
       <span className="ea-texto">Simulá correos de phishing y enseñale a cada persona en el momento.</span>
       <span className="ea-dato">
-        {acceso === false ? 'Se abre con el plan pago de la empresa' : acceso === null ? 'Revisando tu plan…' : datoPhish}
+        {acceso === false ? 'Se abre con el plan pago de la empresa' : acceso === null ? 'Revisando tu plan…' : datoPhish || 'Tu equipo, las campañas y el tablero'}
       </span>
       <span className="ea-entrar">{acceso === false ? 'Conocer PhishGuard' : 'Entrar a PhishGuard'} →</span>
     </>
