@@ -16,6 +16,7 @@ describe('actividad reciente', () => {
     assert.equal(grupos.length, 2)
     assert.equal(grupos[0].veces, 2)
     assert.equal(detalleDe(grupos[0]), '2 mensajes')
+    assert.equal(grupos[0].ids.length, 2)
     assert.equal(detalleDe(grupos[1]), 'Enlace')
   })
 

@@ -1,0 +1,193 @@
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+import { analizar } from './analisis.js'
+import {
+  barrasLogo,
+  LOGO,
+  ICONOS,
+  iconoDe,
+  tituloIcono,
+  trazosSimbolo,
+  debeAbrir,
+  debeAvisar,
+  enlaceAlPanel,
+  MAX_LARGO_AVISO,
+  textoAviso,
+  estadoDe,
+  esPagina,
+  indiceDeAmenazas,
+  listaVigente,
+  MAX_MOTIVOS,
+  peorAmenaza,
+  recordar,
+  urlParaAbrir,
+} from './extension.js'
+import { SIN_ABRIR, SIN_BASE } from './veredicto.js'
+
+const HORA = 60 * 60 * 1000
+
+test('solo las páginas http y https se revisan', () => {
+  assert.equal(esPagina('https://www.google.com/'), true)
+  assert.equal(esPagina('http://ejemplo.com'), true)
+  assert.equal(esPagina('chrome://extensions'), false)
+  assert.equal(esPagina('no es una url'), false)
+})
+
+test('una página verde no sale de la compu', () => {
+  const local = analizar('https://www.google.com/buscar?q=algo')
+  assert.equal(local.nivel, 'verde')
+  assert.equal(debeAbrir(local), false)
+  assert.equal(urlParaAbrir(local), null)
+})
+
+test('una página roja o un acortador se abren para confirmarlos, sin la parte después de #', () => {
+  assert.equal(urlParaAbrir(analizar('https://bna-acceso.com/clave#token=123')), 'https://bna-acceso.com/clave')
+  assert.equal(debeAbrir(analizar('https://bit.ly/3xQpaRk')), true)
+})
+
+test('la lista de amenazas vale por 6 horas', () => {
+  const ahora = 1_000_000_000_000
+  assert.equal(listaVigente({ filas: [], guardadaEn: ahora - 5 * HORA }, ahora), true)
+  assert.equal(listaVigente({ filas: [], guardadaEn: ahora - 7 * HORA }, ahora), false)
+  assert.equal(listaVigente({ filas: [], guardadaEn: ahora + HORA }, ahora), false)
+  assert.equal(listaVigente(null, ahora), false)
+  assert.equal(listaVigente({ guardadaEn: ahora }, ahora), false)
+})
+
+test('el índice se queda con el peor nivel de cada dominio e ignora filas raras', () => {
+  const indice = indiceDeAmenazas([
+    { dominio: 'Trucho.com', nivel: 'amarillo', veces_reportado: 1 },
+    { dominio: 'trucho.com', nivel: 'rojo', veces_reportado: 3 },
+    { dominio: 'sinpunto', nivel: 'rojo' },
+    { dominio: 'raro.com', nivel: 'verde' },
+    null,
+  ])
+  assert.equal(indice.size, 1)
+  assert.equal(indice.get('trucho.com').nivel, 'rojo')
+  assert.equal(indice.get('trucho.com').veces_reportado, 3)
+})
+
+test('peorAmenaza busca en todos los dominios del recorrido', () => {
+  const indice = indiceDeAmenazas([
+    { dominio: 'medio.com', nivel: 'amarillo' },
+    { dominio: 'final.com', nivel: 'rojo' },
+  ])
+  assert.equal(peorAmenaza(indice, ['limpio.com', 'medio.com', 'final.com']).nivel, 'rojo')
+  assert.equal(peorAmenaza(indice, ['limpio.com', undefined]), null)
+})
+
+test('un dominio denunciado en la base sale rojo aunque la dirección parezca normal', () => {
+  const local = analizar('https://promo-del-dia.com.ar/')
+  const indice = indiceDeAmenazas([{ dominio: 'promo-del-dia.com.ar', nivel: 'rojo', veces_reportado: 2 }])
+  const estado = estadoDe(local, { indice })
+  assert.equal(estado.nivel, 'rojo')
+  assert.ok(estado.motivos[0].includes('denunciado en la base de SafeLink (2 veces)'))
+})
+
+test('si no se pudo bajar la lista, el estado lo dice', () => {
+  const estado = estadoDe(analizar('https://www.google.com/'), { indice: null })
+  assert.ok(estado.motivos.includes(SIN_BASE))
+})
+
+test('si se intentó abrir y no respondió, el estado lo dice', () => {
+  const estado = estadoDe(analizar('https://bna-acceso.com/clave'), { indice: new Map(), intentoAbrir: true })
+  assert.ok(estado.motivos.includes(SIN_ABRIR))
+  assert.equal(estado.nivel, 'rojo')
+})
+
+test('el estado trae nivel, dominio, qué hacer y como mucho cuatro motivos', () => {
+  const estado = estadoDe(analizar('https://bna-acceso.com/clave'), { indice: new Map(), aviso: 'x' })
+  assert.equal(estado.nivel, 'rojo')
+  assert.equal(estado.dominio, 'bna-acceso.com')
+  assert.ok(estado.hacer.startsWith('No lo abras'))
+  assert.ok(estado.motivos.length <= MAX_MOTIVOS)
+  assert.equal(estado.aviso, 'x')
+})
+
+test('recordar guarda las últimas y descarta las más viejas', () => {
+  const mapa = new Map()
+  recordar(mapa, 'a', 1, 2)
+  recordar(mapa, 'b', 2, 2)
+  recordar(mapa, 'a', 3, 2)
+  recordar(mapa, 'c', 4, 2)
+  assert.deepEqual([...mapa.keys()], ['a', 'c'])
+  assert.equal(mapa.get('a'), 3)
+})
+
+test('avisa una sola vez por dominio, solo en rojo y solo si está activado', () => {
+  const rojo = { nivel: 'rojo', dominio: 'bna-acceso.com', motivos: ['x'] }
+  assert.equal(debeAvisar(rojo), true)
+  assert.equal(debeAvisar(rojo, { avisados: new Set(['bna-acceso.com']) }), false)
+  assert.equal(debeAvisar(rojo, { activo: false }), false)
+  assert.equal(debeAvisar({ ...rojo, nivel: 'amarillo' }), false)
+  assert.equal(debeAvisar({ nivel: 'rojo', dominio: '' }), false)
+  assert.equal(debeAvisar(null), false)
+})
+
+test('el aviso trae el dominio, el primer motivo y qué no hacer', () => {
+  const estado = estadoDe(analizar('https://bna-acceso.com/clave'), { indice: new Map() })
+  const aviso = textoAviso(estado)
+  assert.equal(aviso.titulo, 'Rojo: bna-acceso.com')
+  assert.ok(aviso.mensaje.startsWith(estado.motivos[0]))
+  assert.ok(aviso.mensaje.endsWith('No escribas claves ni datos de una tarjeta.'))
+})
+
+test('un motivo largo se corta en el aviso', () => {
+  const aviso = textoAviso({ nivel: 'rojo', dominio: 'a.com', motivos: ['palabra '.repeat(40)] })
+  const motivo = aviso.mensaje.split(' No escribas')[0]
+  assert.ok(motivo.length <= MAX_LARGO_AVISO)
+  assert.ok(motivo.endsWith('…'))
+})
+
+test('el enlace al panel lleva la dirección sin la parte después de #', () => {
+  const enlace = new URL(enlaceAlPanel('https://bna-acceso.com/clave?x=1#token=9'))
+  assert.equal(enlace.origin + enlace.pathname, 'https://safeguardd.vercel.app/panel/enlaces')
+  assert.equal(enlace.searchParams.get('url'), 'https://bna-acceso.com/clave?x=1')
+  assert.equal(new URL(enlaceAlPanel('chrome://extensions')).search, '')
+})
+
+test('cada nivel tiene su color y su símbolo, y lo desconocido queda neutro', () => {
+  assert.equal(iconoDe('rojo').simbolo, 'cruz')
+  assert.equal(iconoDe('verde').simbolo, 'tilde')
+  assert.equal(iconoDe('amarillo').simbolo, 'atencion')
+  assert.equal(iconoDe('gris').simbolo, 'pregunta')
+  assert.equal(iconoDe('otro'), ICONOS.neutro)
+  assert.equal(new Set(Object.values(ICONOS).map((i) => i.color)).size, Object.keys(ICONOS).length)
+})
+
+test('el título del ícono nombra el color y el dominio', () => {
+  assert.equal(tituloIcono({ nivel: 'rojo', dominio: 'bna-acceso.com' }), 'SafeLink · Rojo · bna-acceso.com')
+  assert.equal(tituloIcono({ nivel: 'neutro', dominio: '' }), 'SafeLink')
+  assert.equal(tituloIcono(null), 'SafeLink')
+})
+
+test('los símbolos quedan dentro del ícono a cualquier tamaño', () => {
+  for (const lado of [16, 32, 48]) {
+    for (const simbolo of ['tilde', 'cruz', 'atencion', 'pregunta']) {
+      const trazos = trazosSimbolo(simbolo, lado)
+      assert.ok(trazos.length > 0, simbolo)
+      for (const [x, y] of trazos.flat()) {
+        assert.ok(x >= 0 && x <= lado && y >= 0 && y <= lado, `${simbolo} ${lado}`)
+      }
+    }
+  }
+  assert.deepEqual(trazosSimbolo('logo', 16), [])
+})
+
+test('sin resultado se muestra el logo de SafeGuard', () => {
+  assert.equal(iconoDe('neutro').simbolo, 'logo')
+  assert.equal(iconoDe(undefined).simbolo, 'logo')
+})
+
+test('el logo entra centrado en el ícono a cualquier tamaño', () => {
+  for (const lado of [16, 32, 48, 128]) {
+    const barras = barrasLogo(lado)
+    assert.equal(barras.length, LOGO.barras.length)
+    const puntos = barras.flat()
+    for (const [x, y] of puntos) assert.ok(x >= 0 && x <= lado && y >= 0 && y <= lado, `${lado}`)
+    const xs = puntos.map(([x]) => x)
+    const ys = puntos.map(([, y]) => y)
+    assert.ok(Math.abs((Math.min(...xs) + Math.max(...xs)) / 2 - lado / 2) < lado * 0.05)
+    assert.ok(Math.abs((Math.min(...ys) + Math.max(...ys)) / 2 - lado / 2) < lado * 0.05)
+  }
+})

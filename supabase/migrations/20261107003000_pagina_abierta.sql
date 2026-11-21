@@ -29,3 +29,68 @@ begin
   return public.phishguard_ver_simulacion(p_token);
 end;
 $$;
+
+create or replace function public.phishguard_ver_simulacion(p_token text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  r record;
+begin
+  if p_token is null or length(p_token) < 8 then
+    return null;
+  end if;
+
+  update public.eventos_simulacion
+    set pagina_abierta = true
+  where token_unico = p_token
+    and pagina_abierta = false;
+
+  select
+    split_part(e.nombre, ' ', 1) as nombre,
+    ev.hizo_clic,
+    ev.ingreso_datos,
+    ev.completo_capacitacion,
+    ev.vio_reconocimiento,
+    c.canal,
+    c.es_refuerzo,
+    c.nombre_campana,
+    p.titulo,
+    p.asunto_mail,
+    p.remitente_falso,
+    p.cuerpo_html,
+    p.categoria,
+    p.nivel_dificultad,
+    p.canal as canal_plantilla,
+    p.metadata
+  into r
+  from public.eventos_simulacion ev
+  join public.empleados e on e.id = ev.empleado_id
+  join public.campanas c on c.id = ev.campana_id
+  left join public.plantillas_phishing p on p.id = c.plantilla_id
+  where ev.token_unico = p_token;
+
+  if not found then
+    return null;
+  end if;
+
+  return jsonb_build_object(
+    'nombre', r.nombre,
+    'hizo_clic', r.hizo_clic,
+    'ingreso_datos', r.ingreso_datos,
+    'capacitado', r.completo_capacitacion,
+    'reconocio', r.vio_reconocimiento,
+    'canal', coalesce(r.canal, r.canal_plantilla, 'email'),
+    'refuerzo', r.es_refuerzo,
+    'titulo', r.titulo,
+    'asunto', r.asunto_mail,
+    'remitente', r.remitente_falso,
+    'cuerpo', r.cuerpo_html,
+    'categoria', r.categoria,
+    'dificultad', r.nivel_dificultad,
+    'leccion', coalesce(r.metadata->'lesson', '{}'::jsonb)
+  );
+end;
+$$;

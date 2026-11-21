@@ -8,6 +8,7 @@ import App from './App.jsx'
 import { seguirSistema } from './lib/tema.js'
 import './TemaOscuro.css'
 import './pages/Noche.css'
+import './Diseno.css'
 
 seguirSistema()
 

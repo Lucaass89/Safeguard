@@ -2,6 +2,11 @@ import { analizar, dominioEsMarca, marcaEnTexto, nivelDesde, peorEnlace } from '
 
 const EXT_ADJUNTO = /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|js|jse|vbs|vbe|ps1|docm|xlsm|html|htm)$/i
 
+export function copiaParaPdfjs(datos) {
+  const bytes = datos instanceof Uint8Array ? datos : new Uint8Array(datos)
+  return bytes.slice()
+}
+
 export function inspeccionarBytes(datos) {
   const bytes = datos instanceof Uint8Array ? datos : new Uint8Array(datos)
   const fin = Math.min(bytes.length, 1_500_000)
@@ -63,7 +68,7 @@ export async function analizarPdf(archivo, cargar = cargarPdfjs) {
   const pdfjs = await cargar()
   const datos = await archivo.arrayBuffer()
   const marcas = inspeccionarBytes(datos)
-  const doc = await pdfjs.getDocument({ data: datos.slice(0) }).promise
+  const doc = await pdfjs.getDocument({ data: copiaParaPdfjs(datos) }).promise
   const senales = []
   const enlaces = []
   let puntos = 0

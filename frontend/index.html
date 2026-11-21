@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f3efe6" />
+    <meta name="theme-color" content="#e9dfcf" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -13,16 +13,16 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <script>
       (function () {
-        var tema = 'claro'
+        var tema = 'oscuro'
         try {
           var guardado = null
           try { guardado = localStorage.getItem('sg-tema') } catch (e) {}
-          if (guardado === 'oscuro') tema = 'oscuro'
-          if (guardado === 'sistema' && window.matchMedia('(prefers-color-scheme: dark)').matches) tema = 'oscuro'
+          if (guardado === 'claro') tema = 'claro'
+          if (guardado === 'sistema' && !window.matchMedia('(prefers-color-scheme: dark)').matches) tema = 'claro'
         } catch (e) {}
         document.documentElement.dataset.tema = tema
         var meta = document.querySelector('meta[name="theme-color"]')
-        if (meta) meta.setAttribute('content', tema === 'oscuro' ? '#1b2836' : '#f3eee6')
+        if (meta) meta.setAttribute('content', tema === 'oscuro' ? '#070d1a' : '#e9dfcf')
       })()
     </script>
     <meta
@@ -32,7 +32,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..800&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <title>SafeGuard — Protegé el clic. Enseñá en el momento.</title>

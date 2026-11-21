@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
+import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -38,6 +39,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -46,6 +50,8 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity {
 
     private static final String SITIO = "https://safeguardd.vercel.app";
+    static final String PREFERENCIAS = "avisos";
+    private static final String[] TEMAS = {"anuncios", "estafas"};
     private static final int MAXIMO_COMPARTIDO = 4000;
     private static final int MAXIMO_COPIADO = 2000;
     private static final Pattern PARECE_ENLACE = Pattern.compile(
@@ -80,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    private final ActivityResultLauncher<String> pedirPermisoAvisos = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            concedido -> {
+                aplicarTemas();
+                responderAvisos();
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
             return WindowInsetsCompat.CONSUMED;
         });
 
+        Avisos.crearCanal(this);
         prepararSitio(aviso, carga);
         String compartido = direccionCompartida(getIntent());
-        sitio.loadUrl(compartido != null ? compartido : SITIO);
+        String desdeAviso = direccionDeAviso(getIntent());
+        sitio.loadUrl(compartido != null ? compartido : desdeAviso != null ? desdeAviso : SITIO);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -129,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         String agente = ajustes.getUserAgentString();
         if (agente != null) {
             agente = agente.replace("; wv", "");
-            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp/2";
+            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp/4";
             ajustes.setUserAgentString(agente);
         }
 
@@ -143,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri destino = request.getUrl();
                 if (destino != null && "safeguard".equalsIgnoreCase(destino.getScheme())) {
                     if ("portapapeles".equalsIgnoreCase(destino.getHost())) revisarPortapapeles();
+                    if ("notificaciones".equalsIgnoreCase(destino.getHost())) configurarAvisos(destino);
                     return true;
                 }
                 return abrirAfuera(destino);
@@ -156,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (hasWindowFocus()) revisarPortapapeles();
+                if (preferencias().getBoolean("decidido", false)) responderAvisos();
             }
 
             @Override
@@ -281,6 +298,73 @@ public class MainActivity extends AppCompatActivity {
                 null);
     }
 
+    private SharedPreferences preferencias() {
+        return getSharedPreferences(PREFERENCIAS, MODE_PRIVATE);
+    }
+
+    private boolean tienePermisoAvisos() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void configurarAvisos(Uri pedido) {
+        SharedPreferences.Editor editor = preferencias().edit().putBoolean("decidido", true);
+        boolean alguno = false;
+        for (String tema : new String[]{"anuncios", "estafas", "phishguard"}) {
+            boolean prendido = "1".equals(pedido.getQueryParameter(tema));
+            editor.putBoolean(tema, prendido);
+            alguno = alguno || prendido;
+        }
+        editor.apply();
+
+        if (alguno && !tienePermisoAvisos()) {
+            pedirPermisoAvisos.launch(Manifest.permission.POST_NOTIFICATIONS);
+            return;
+        }
+        aplicarTemas();
+        responderAvisos();
+    }
+
+    private void aplicarTemas() {
+        SharedPreferences prefs = preferencias();
+        boolean permitido = tienePermisoAvisos();
+        FirebaseMessaging mensajeria = FirebaseMessaging.getInstance();
+        for (String tema : TEMAS) {
+            if (permitido && prefs.getBoolean(tema, false)) {
+                mensajeria.subscribeToTopic(tema);
+            } else {
+                mensajeria.unsubscribeFromTopic(tema);
+            }
+        }
+    }
+
+    private void responderAvisos() {
+        if (!estaEnNuestroSitio()) return;
+        boolean permitido = tienePermisoAvisos();
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(tarea -> {
+            String token = tarea.isSuccessful() ? tarea.getResult() : null;
+            if (token != null) preferencias().edit().putString("token", token).apply();
+            JSONObject detalle = new JSONObject();
+            try {
+                detalle.put("permiso", permitido ? "si" : "no");
+                if (token != null) detalle.put("token", token);
+            } catch (JSONException error) {
+                return;
+            }
+            if (sitio == null) return;
+            sitio.evaluateJavascript(
+                    "window.dispatchEvent(new CustomEvent('sg-push',{detail:" + detalle + "}))",
+                    null);
+        });
+    }
+
+    private String direccionDeAviso(Intent intento) {
+        if (intento == null) return null;
+        String ruta = Avisos.rutaSegura(intento.getStringExtra(Avisos.EXTRA_RUTA));
+        return ruta != null ? SITIO + ruta : null;
+    }
+
     private boolean pideCamara(PermissionRequest request) {
         for (String recurso : request.getResources()) {
             if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(recurso)) return true;
@@ -357,7 +441,13 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intento);
         setIntent(intento);
         String compartido = direccionCompartida(intento);
-        if (compartido != null && sitio != null) sitio.loadUrl(compartido);
+        String desdeAviso = direccionDeAviso(intento);
+        if (sitio == null) return;
+        if (compartido != null) {
+            sitio.loadUrl(compartido);
+        } else if (desdeAviso != null) {
+            sitio.loadUrl(desdeAviso);
+        }
     }
 
     @Override

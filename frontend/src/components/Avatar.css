@@ -6,7 +6,7 @@
   border-radius: 50%;
   background: color-mix(in srgb, var(--avatar-tinte, var(--sg-blue)) 22%, var(--sg-surface));
   color: var(--sg-text);
-  font-family: 'Space Grotesk', var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   font-weight: 700;
   line-height: 1;
   user-select: none;

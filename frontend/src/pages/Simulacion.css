@@ -16,9 +16,9 @@
   margin: 4rem auto;
   padding: 2.5rem;
   min-height: 0;
-  background: #131a26;
-  color: #f3f4f6;
-  border: 1px solid #26334d;
+  background: #0d1830;
+  color: #e6edf7;
+  border: 1px solid #1e2f52;
   border-radius: 16px;
   box-shadow: 0 10px 25px -5px rgb(0 0 0 / 50%);
   text-align: center;
@@ -42,11 +42,11 @@
 }
 
 .sim-leccion p {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sim-leccion .sim-nota {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .sim-boton {
@@ -54,7 +54,7 @@
   padding: 0 18px;
   border: 0;
   border-radius: 6px;
-  background: #2563eb;
+  background: #1a52be;
   color: white;
   font: inherit;
   font-weight: 500;
@@ -180,7 +180,7 @@
   min-height: 100vh;
   background: #ededed;
   color: #333;
-  font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 .tienda-barra {
@@ -322,7 +322,7 @@
   min-height: 100vh;
   background: #f5f5f5;
   color: #333;
-  font-family: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: Archivo, system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 .pago-barra {
@@ -409,4 +409,12 @@
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+
+html[data-tema='claro'] .sim-leccion {
+  border: 1px solid #5a4634;
+}
+
+html[data-tema='claro'] .sim-boton {
+  background: #b8895f;
 }

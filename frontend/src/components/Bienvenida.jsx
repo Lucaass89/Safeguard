@@ -1,15 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Logo from './Logo.jsx'
+import { primerNombre } from '../lib/saludo.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Bienvenida.css'
-
-function primerNombre(usuario) {
-  const meta = usuario.user_metadata ?? {}
-  const completo = (meta.full_name || meta.name || '').trim()
-  if (!completo || completo === usuario.email) return ''
-  return completo.split(/\s+/)[0]
-}
 
 function Bienvenida() {
   const { sesion, cargando } = useSesion()

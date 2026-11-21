@@ -17,7 +17,7 @@
         android:layout_height="3dp"
         android:layout_gravity="top"
         android:max="100"
-        android:progressTint="@color/azul"
+        android:progressTint="@color/acento"
         android:visibility="gone" />
 
     <LinearLayout

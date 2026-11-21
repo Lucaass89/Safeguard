@@ -56,22 +56,26 @@
 }
 
 body:has(.landing-puertas) .instalar-app {
-  border-top-color: #1e2a3a;
-  background: #10161e;
+  border-top-color: #1e2f52;
+  background: #0d1830;
   color: #f4f7fb;
 }
 
 html[data-tema='claro'] .instalar-app-si {
-  background: #e6d9cc;
-  color: #3c342c;
-}
-
-html[data-tema='claro'] .instalar-app-si:hover {
-  background: #d9c9b8;
+  background: #b8895f;
+  color: #ffffff;
 }
 
 html[data-tema='claro'] body:has(.landing-puertas) .instalar-app {
-  border-top-color: #e4d9cc;
-  background: #faf6f1;
-  color: #3c342c;
+  border-top-color: #d8c9b3;
+  background: #fbf7f0;
+  color: #3a2a1c;
+}
+
+html[data-tema='claro'] body:has(.landing-puertas) .instalar-app {
+  border-top-color: #5a4634;
+}
+
+html[data-tema='claro'] .instalar-app-si:hover {
+  background: color-mix(in srgb, var(--sg-blue) 82%, #3a2a1c);
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useSearchParams } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
@@ -20,10 +20,17 @@ function fecha(valor) {
   })
 }
 
+function entradaDesde(state, desdeUrl) {
+  if (typeof state?.entrada === 'string') return state.entrada
+  if (typeof desdeUrl === 'string' && /^https?:\/\//i.test(desdeUrl) && analizar(desdeUrl)) return desdeUrl.slice(0, 2048)
+  return ''
+}
+
 function PanelEnlaces() {
   const { sesion } = useSesion()
   const { state } = useLocation()
-  const entradaInicial = typeof state?.entrada === 'string' ? state.entrada : ''
+  const [parametros] = useSearchParams()
+  const entradaInicial = entradaDesde(state, parametros.get('url'))
   const [entrada, setEntrada] = useState(entradaInicial)
   const [resultado, setResultado] = useState(null)
   const [historial, setHistorial] = useState([])

@@ -13,8 +13,9 @@ export function agruparActividad(items, maximo = 5) {
     const grupo = porClave.get(clave)
     if (grupo) {
       grupo.veces += 1
+      grupo.ids.push(item.id)
     } else if (grupos.length < maximo) {
-      const nuevo = { ...item, veces: 1 }
+      const nuevo = { ...item, veces: 1, ids: [item.id] }
       porClave.set(clave, nuevo)
       grupos.push(nuevo)
     }

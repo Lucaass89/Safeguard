@@ -1,10 +1,11 @@
 .slapp {
-  --sl-secundario: #4a433c;
-  --sl-hero: #fffdfb;
-  --sl-hero-borde: #d4c4b0;
-  --sl-boton: #3c342c;
-  --sl-boton-texto: #faf6f1;
+  --sl-secundario: #2b3a52;
+  --sl-hero: #ffffff;
+  --sl-hero-borde: #c3cede;
+  --sl-boton: #0f1b2d;
+  --sl-boton-texto: #ffffff;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   max-width: 520px;
   margin: 0 auto;
@@ -13,68 +14,28 @@
 
 .slapp h1,
 .slapp h2 {
-  font-family: 'Space Grotesk', var(--sg-sans);
+  font-family: Archivo, var(--sg-sans);
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: inherit;
 }
 
 html[data-tema='oscuro'] .slapp {
-  color: #e6eef4;
+  color: #e6edf7;
   --sl-secundario: #d5deea;
-  --sl-hero: #172033;
+  --sl-hero: #1e2f52;
   --sl-hero-borde: #314664;
-  --sl-boton: #2563eb;
+  --sl-boton: #1a52be;
   --sl-boton-texto: #ffffff;
 }
 
-.slapp-tipos {
-  display: flex;
-  gap: 6px;
-  margin: 0 -16px;
-  padding: 2px 16px;
-  overflow-x: auto;
-  scroll-padding-inline: 16px;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-}
-
-.slapp-tipos::-webkit-scrollbar {
-  display: none;
-}
-
-.slapp-tipo {
-  flex: 1 0 auto;
-  min-height: 48px;
-  padding: 0 12px;
-  scroll-snap-align: start;
-  white-space: nowrap;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: var(--sg-tonal);
-  color: var(--sg-text);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.slapp-tipo-activo {
-  border-color: var(--sl-boton);
-  background: var(--sl-boton);
-  color: var(--sl-boton-texto);
-}
-
-.slapp-tipo:focus-visible,
-.slapp-pegar:focus-visible,
-.slapp-grande:focus-visible,
 .slapp-revisar:focus-visible {
   outline: 2px solid var(--sg-accent);
   outline-offset: 2px;
 }
 
 .slapp-entrada {
-  min-height: 188px;
+  min-height: 0;
   padding: 16px;
   border: 1px solid var(--sl-hero-borde);
   border-radius: 28px;
@@ -82,7 +43,7 @@ html[data-tema='oscuro'] .slapp {
 }
 
 html[data-tema='claro'] .slapp-entrada {
-  box-shadow: 0 10px 28px rgb(60 52 44 / 8%);
+  box-shadow: 0 10px 28px rgb(58 42 28 / 8%);
 }
 
 .slapp-etiqueta {
@@ -95,7 +56,7 @@ html[data-tema='claro'] .slapp-entrada {
 
 .slapp-entrada textarea {
   width: 100%;
-  min-height: 112px;
+  min-height: 72px;
   margin-top: 8px;
   padding: 0;
   border: 0;
@@ -118,61 +79,9 @@ html[data-tema='claro'] .slapp-entrada {
   opacity: 1;
 }
 
-.slapp-pegar,
-.slapp-revisar,
-.slapp-grande {
+.slapp-revisar {
   font: inherit;
   cursor: pointer;
-}
-
-.slapp-pegar {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 52px;
-  margin-top: 8px;
-  padding: 0 20px 0 16px;
-  border: 1.5px solid var(--sg-text);
-  border-radius: 14px;
-  background: var(--sg-surface);
-  color: var(--sg-text);
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.slapp-pegar svg {
-  width: 22px;
-  height: 22px;
-}
-
-.slapp-grande {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  min-height: 156px;
-  padding: 12px;
-  border: 0;
-  border-radius: 16px;
-  background: transparent;
-  color: var(--sg-text);
-  font-size: 18px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.slapp-grande svg {
-  width: 40px;
-  height: 40px;
-  color: var(--sg-accent);
-}
-
-.slapp-grande-nota {
-  color: var(--sl-secundario);
-  font-size: 14px;
-  font-weight: 600;
 }
 
 .slapp-archivo-input {
@@ -248,4 +157,443 @@ html[data-tema='oscuro'] .slapp-aviso {
 
 .slapp > .veredicto {
   margin-top: 0;
+}
+
+html[data-tema='claro'] .slapp {
+  --sl-secundario: #5a4634;
+  --sl-boton: #b8895f;
+  color: #3a2a1c;
+}
+
+.slapp {
+  --sl-verde: #13795b;
+  --sl-amarillo: #9a6400;
+  --sl-rojo: #b42318;
+  --sl-gris: #5a6b80;
+}
+
+html[data-tema='oscuro'] .slapp {
+  --sl-verde: #34d399;
+  --sl-amarillo: #fbbf24;
+  --sl-rojo: #f87171;
+  --sl-gris: #94a3b8;
+}
+
+.slapp-protegido {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--sl-verde) 12%, transparent);
+  color: var(--sg-text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.slapp-pegar-grande {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  min-height: 88px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--sl-boton);
+  color: var(--sl-boton-texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 14px 28px -18px color-mix(in srgb, var(--sl-boton) 90%, transparent);
+  transition: transform 160ms ease;
+}
+
+.slapp-pegar-grande:active {
+  transform: scale(0.98);
+}
+
+.slapp-pegar-grande:disabled {
+  opacity: 0.6;
+}
+
+.slapp-pegar-icono {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: rgb(255 255 255 / 18%);
+}
+
+.slapp-pegar-icono svg {
+  width: 28px;
+  height: 28px;
+}
+
+.slapp-pegar-texto {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.slapp-pegar-texto strong {
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.slapp-pegar-texto span {
+  overflow: hidden;
+  font-size: 14px;
+  opacity: 0.88;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slapp-detectado {
+  justify-self: start;
+  width: fit-content;
+  margin: 8px 0 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--sg-tonal);
+  color: var(--sl-secundario);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.slapp-botones {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.slapp-subir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 16px;
+  border: 1.5px solid var(--sl-hero-borde);
+  border-radius: 16px;
+  background: var(--sl-hero);
+  color: var(--sg-text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.slapp-subir svg {
+  width: 22px;
+  height: 22px;
+}
+
+.slapp-pegar-grande:focus-visible,
+.slapp-subir:focus-visible,
+.slapp-filtro:focus-visible,
+.slapp-resultado-barra button:focus-visible,
+.slapp-revisar:focus-visible {
+  outline: 2px solid var(--sg-accent);
+  outline-offset: 2px;
+}
+
+.slapp-pasos {
+  padding: 16px;
+  border: 1px solid var(--sl-hero-borde);
+  border-radius: 20px;
+  background: var(--sl-hero);
+}
+
+.slapp-pasos-titulo {
+  margin: 0 0 10px;
+  color: var(--sg-text);
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.slapp-pasos ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slapp-pasos li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sl-secundario);
+  font-size: 15px;
+  opacity: 0.55;
+}
+
+.slapp-pasos li.slapp-paso-hecho {
+  opacity: 1;
+}
+
+.slapp-pasos li.slapp-paso-actual {
+  color: var(--sg-text);
+  font-weight: 700;
+  opacity: 1;
+}
+
+.slapp-paso-marca {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border: 2px solid var(--sl-hero-borde);
+  border-radius: 50%;
+  color: #ffffff;
+}
+
+.slapp-paso-hecho .slapp-paso-marca {
+  border-color: var(--sl-verde);
+  background: var(--sl-verde);
+}
+
+.slapp-paso-hecho .slapp-paso-marca svg {
+  width: 14px;
+  height: 14px;
+}
+
+.slapp-paso-actual .slapp-paso-marca {
+  border-color: var(--sg-accent);
+  border-top-color: transparent;
+  animation: slapp-girar 800ms linear infinite;
+}
+
+@keyframes slapp-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.slapp-filtros {
+  display: flex;
+  gap: 6px;
+  margin: 0 -16px 8px;
+  padding: 2px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.slapp-filtros::-webkit-scrollbar {
+  display: none;
+}
+
+.slapp-filtro {
+  --filtro: var(--sg-text);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--sl-hero-borde);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sg-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.slapp-filtro-rojo { --filtro: var(--sl-rojo); }
+.slapp-filtro-amarillo { --filtro: var(--sl-amarillo); }
+.slapp-filtro-verde { --filtro: var(--sl-verde); }
+
+.slapp-filtro-rojo::before,
+.slapp-filtro-amarillo::before,
+.slapp-filtro-verde::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--filtro);
+  content: '';
+}
+
+.slapp-filtro-activo {
+  border-color: var(--filtro);
+  background: color-mix(in srgb, var(--filtro) 14%, transparent);
+}
+
+.slapp-dia + .slapp-dia {
+  margin-top: 12px;
+}
+
+.slapp-dia h3 {
+  margin: 4px 0 4px;
+  color: var(--sl-secundario);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.slapp-ayuda {
+  margin: 12px 0 0;
+  color: var(--sl-secundario);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.slapp-resultado {
+  --nivel: var(--sl-gris);
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.slapp-resultado-peligroso { --nivel: var(--sl-rojo); }
+.slapp-resultado-sospechoso { --nivel: var(--sl-amarillo); }
+.slapp-resultado-seguro,
+.slapp-resultado-sin_senales { --nivel: var(--sl-verde); }
+
+.slapp-resultado::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--nivel) 22%, var(--sg-bg)) 0%, var(--sg-bg) 55%);
+  content: '';
+}
+
+.slapp-resultado-hero {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 18px 8px 6px;
+  text-align: center;
+}
+
+.slapp-resultado-simbolo {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: var(--nivel);
+  color: #ffffff;
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--nivel) 22%, transparent);
+  animation: slapp-latir 520ms cubic-bezier(0.2, 0.8, 0.2, 1.2);
+}
+
+.slapp-resultado-simbolo svg {
+  width: 48px;
+  height: 48px;
+}
+
+@keyframes slapp-latir {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.slapp-resultado-nivel {
+  margin: 12px 0 0;
+  color: var(--nivel);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.slapp-resultado-frase {
+  margin: 0;
+  color: var(--sg-text);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.slapp-resultado-barra {
+  position: sticky;
+  z-index: 5;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--sl-hero-borde);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--sg-surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.slapp-resultado-barra button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.slapp-resultado-faro {
+  background: var(--sl-boton);
+  color: var(--sl-boton-texto);
+}
+
+.slapp-resultado-faro svg {
+  width: 20px;
+  height: 20px;
+}
+
+.slapp-resultado-otro {
+  background: var(--sg-tonal);
+  color: var(--sg-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slapp-pegar-grande,
+  .slapp-resultado-simbolo,
+  .slapp-paso-actual .slapp-paso-marca {
+    transition: none;
+    animation: none;
+  }
+}
+
+.slapp-reportes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--sg-line);
+  border-radius: 18px;
+  background: var(--sg-surface);
+  color: var(--sg-text);
+  text-decoration: none;
+}
+
+.slapp-reportes span:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.slapp-reportes small {
+  color: var(--sg-muted);
+  font-size: 0.92rem;
+}
+
+.slapp-reportes span:last-child {
+  font-size: 1.6rem;
+  color: var(--sg-muted);
 }

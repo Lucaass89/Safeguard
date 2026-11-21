@@ -1,166 +1,69 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
+import CarruselEstafas from '../components/CarruselEstafas.jsx'
 import IconoFuncion from '../components/IconoFuncion.jsx'
 import Logo from '../components/Logo.jsx'
+import PantallasApp from '../components/PantallasApp.jsx'
+import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
 import TemaControl from '../components/TemaControl.jsx'
-import { pasosCampana } from '../lib/pasosCampana.js'
 import { useSesion } from '../lib/useSesion.js'
-import './LandingInicio.css'
+import './Portada.css'
 
-const pilares = [
-  ['simulacion', 'Simulación', 'Campañas de phishing por correo, WhatsApp o SMS, con plantillas en español.'],
-  ['explicacion', 'Explicación', 'Si alguien cae, ve en el momento qué tenía que mirar. Sin sanciones.'],
-  ['semaforo', 'Semáforo', 'SafeLink responde verde, amarillo o rojo antes de abrir un enlace, un PDF o un correo.'],
-  ['nube', 'En la nube', 'PhishGuard no se instala en cada equipo. SafeLink avisa: no bloquea la navegación.'],
-]
+const UTILIDADES = {
+  extension: ['M9 4.5h3.5v2a1.5 1.5 0 0 0 3 0v-2H19v4.5h-2a1.5 1.5 0 0 0 0 3h2V19h-4.5v-2a1.5 1.5 0 0 0-3 0v2H5v-4.5h2a1.5 1.5 0 0 0 0-3H5V4.5h4z'],
+  precios: ['M4 12.5 12.5 4H20v7.5L11.5 20z', 'M15.5 8.5h.01'],
+  contacto: ['M4 6.5h16v11H4z', 'm4.5 7 7.5 6 7.5-6'],
+  flecha: ['M5 12h14', 'm13 6 6 6-6 6'],
+}
 
-const accesos = [
-  ['enlace', 'Enlace', 'Revisá un link antes de abrirlo.'],
-  ['whatsapp', 'WhatsApp', 'Pegá un mensaje sospechoso.'],
-  ['pdf', 'PDF', 'Subí un archivo y mirá si esconde algo.'],
-  ['correo', 'Correo', 'Comprobá si el remitente es real.'],
-]
+function IconoChico({ nombre, className = 'portada-icono-chico' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {UTILIDADES[nombre].map((d) => (
+        <path key={d} d={d} />
+      ))}
+    </svg>
+  )
+}
 
 const semaforo = [
-  ['verde', 'Verde', 'No aparecieron señales de riesgo. Podés continuar.'],
-  ['amarillo', 'Amarillo', 'Hay algo raro. Revisá antes de seguir.'],
-  ['rojo', 'Rojo', 'Fuentes de reputación marcaron esto como peligroso. No lo abras.'],
+  ['verde', 'Verde', 'No vimos nada raro.'],
+  ['amarillo', 'Amarillo', 'Hay algo dudoso. Mirá bien antes de seguir.'],
+  ['rojo', 'Rojo', 'Parece un engaño. No lo abras.'],
 ]
 
-const lugares = [
-  ['En la computadora', 'La extensión de Chrome marca la pestaña con un color. Avisa, no bloquea.'],
-  ['En el celular', 'La cámara lee el QR y analiza el enlace antes de abrirlo.'],
-  ['En el portapapeles', 'Si copiás un enlace peligroso, SafeLink te avisa antes del clic.'],
-  ['Con cuenta', 'Cada análisis queda en Mis enlaces. Sin cuenta, el chequeo no se guarda.'],
+const caminos = [
+  {
+    id: 'safelink',
+    icono: 'semaforo',
+    etiqueta: 'Gratis',
+    para: 'Para vos',
+    titulo: 'SafeLink',
+    texto: 'Revisá un enlace, un QR, un PDF, un correo o un mensaje de WhatsApp antes de abrirlo. Lo usás en la web, en el celular o en Chrome.',
+    destino: '/personas',
+    accion: 'Conocer SafeLink',
+  },
+  {
+    id: 'phishguard',
+    icono: 'simulacion',
+    etiqueta: 'Desde USD 1 por persona',
+    para: 'Para tu empresa o escuela',
+    titulo: 'PhishGuard',
+    texto: 'Le mandamos a tu equipo correos de práctica que imitan estafas reales. Si alguien cae, ve en el momento qué tenía que mirar, sin retos.',
+    destino: '/empresas',
+    accion: 'Conocer PhishGuard',
+  },
 ]
-
-function IconoPaso({ indice }) {
-  const comunes = {
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: '1.6',
-    strokeLinecap: 'round',
-    strokeLinejoin: 'round',
-    'aria-hidden': true,
-  }
-  if (indice === 0) {
-    return (
-      <svg className="paso-icono" {...comunes}>
-        <path d="m4.2 3 11.2 8.2H11L8.6 16.4 6.8 15.6 9.2 11.2 6.4 13.6 4.2 3Z" />
-        <path d="M16.4 4.6a2.6 2.6 0 0 1 0 3.4" />
-        <path d="M18.6 2.8a5 5 0 0 1 0 7" />
-      </svg>
-    )
-  }
-  if (indice === 1) {
-    return (
-      <svg className="paso-icono" {...comunes}>
-        <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
-        <path d="m4.5 7 7.5 5.5L19.5 7" />
-      </svg>
-    )
-  }
-  if (indice === 2) {
-    return (
-      <svg className="paso-icono" {...comunes}>
-        <path d="M4 19V5" />
-        <path d="M4 19h16" />
-        <path d="M8 16v-3" />
-        <path d="M12 16V9" />
-        <path d="M16 16v-6" />
-      </svg>
-    )
-  }
-  return (
-    <svg className="paso-icono" {...comunes}>
-      <path d="M6 5.5h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H10l-4 3v-3H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" />
-      <path d="M12 13.4h.01" />
-      <path d="M12 8.2a1.8 1.8 0 0 1 1.8 1.8c0 1.3-1.8 1.6-1.8 2.8" />
-    </svg>
-  )
-}
 
 function Marca() {
-  return <Logo className="brand-escudo" />
-}
-
-function IconoProducto({ nombre }) {
-  const trazo = {
-    viewBox: '0 0 24 24',
-    width: '22',
-    height: '22',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: '1.8',
-    strokeLinecap: 'round',
-    strokeLinejoin: 'round',
-    'aria-hidden': true,
-  }
-
-  if (nombre === 'phish') {
-    return (
-      <svg {...trazo}>
-        <path d="M12 3.5 19 6.4v5.2c0 4.2-2.7 7.1-7 8.9-4.3-1.8-7-4.7-7-8.9V6.4L12 3.5Z" />
-        <path d="m9.2 12.1 1.9 1.9 3.7-4" />
-      </svg>
-    )
-  }
-
-  return (
-    <svg {...trazo}>
-      <path d="M10 13.5 13.5 10" />
-      <path d="M8.2 11.4 6.8 12.8a3.2 3.2 0 0 0 4.5 4.5l1.4-1.4" />
-      <path d="M15.8 12.6 17.2 11.2a3.2 3.2 0 0 0-4.5-4.5L11.3 8.1" />
-    </svg>
-  )
-}
-
-function MenuProducto({ id, titulo, texto, href, icono, abierto, activo, onAbrir, onCerrar }) {
-  return (
-    <div
-      className="header-menu"
-      onMouseEnter={onAbrir}
-      onMouseLeave={onCerrar}
-      onBlur={(evento) => {
-        if (!evento.currentTarget.contains(evento.relatedTarget)) onCerrar()
-      }}
-    >
-      <button
-        type="button"
-        className={activo ? 'header-menu-disparador header-activo' : 'header-menu-disparador'}
-        aria-expanded={abierto}
-        aria-controls={id}
-        aria-current={activo ? 'true' : undefined}
-        onClick={() => (abierto ? onCerrar() : onAbrir())}
-      >
-        {titulo}
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        </svg>
-      </button>
-      <div className="header-menu-panel" id={id} hidden={!abierto}>
-        <a href={href} onClick={onCerrar}>
-          <span className="header-menu-icono">
-            <IconoProducto nombre={icono} />
-          </span>
-          <span>
-            <strong>{titulo}</strong>
-            <span>{texto}</span>
-          </span>
-        </a>
-      </div>
-    </div>
-  )
+  return <Logo className="portada-escudo" />
 }
 
 function Landing() {
   const { sesion } = useSesion()
   const cabecera = useRef(null)
   const [menu, setMenu] = useState(false)
-  const [producto, setProducto] = useState(null)
   const [baja, setBaja] = useState(false)
-  const [seccion, setSeccion] = useState(() => window.location.hash)
   const destino = sesion ? '/panel' : '/ingresar'
   const etiqueta = sesion ? 'Mi panel' : 'Ingresar'
 
@@ -170,7 +73,7 @@ function Landing() {
 
     function pintar() {
       const claro = document.documentElement.dataset.tema !== 'oscuro'
-      meta?.setAttribute('content', claro ? '#f3eee6' : '#070b10')
+      meta?.setAttribute('content', claro ? '#f3ebde' : '#070d1a')
     }
 
     pintar()
@@ -185,15 +88,10 @@ function Landing() {
     function alBajar() {
       setBaja(window.scrollY > 8)
     }
-    function alHash() {
-      setSeccion(window.location.hash)
-    }
     alBajar()
     window.addEventListener('scroll', alBajar, { passive: true })
-    window.addEventListener('hashchange', alHash)
     return () => {
       window.removeEventListener('scroll', alBajar)
-      window.removeEventListener('hashchange', alHash)
     }
   }, [])
 
@@ -201,12 +99,10 @@ function Landing() {
     function afuera(evento) {
       if (cabecera.current?.contains(evento.target)) return
       setMenu(false)
-      setProducto(null)
     }
     function alTecla(evento) {
       if (evento.key !== 'Escape') return
       setMenu(false)
-      setProducto(null)
     }
     document.addEventListener('mousedown', afuera)
     window.addEventListener('keydown', alTecla)
@@ -218,67 +114,62 @@ function Landing() {
 
   function cerrar() {
     setMenu(false)
-    setProducto(null)
   }
 
   return (
-    <div className="landing-puertas page">
-      <header ref={cabecera} className={baja ? 'header header-baja' : 'header'}>
-        <div className="shell header-inner">
-          <Link className="brand" to="/" aria-label="SafeGuard, ir al inicio" onClick={cerrar}>
+    <div className="portada">
+      <div className="portada-utilidades">
+        <div className="portada-ancho portada-utilidades-fila">
+          <p className="portada-utilidades-lema">Hecho en Argentina para que no caigas en estafas por internet</p>
+          <nav className="portada-utilidades-enlaces" aria-label="Accesos rápidos">
+            <Link to="/personas#instalar">
+              <IconoChico nombre="extension" />
+              Extensión de Chrome
+            </Link>
+            <Link to="/empresas#precios">
+              <IconoChico nombre="precios" />
+              Precios
+            </Link>
+            <Link to="/contacto">
+              <IconoChico nombre="contacto" />
+              Contacto
+            </Link>
+          </nav>
+        </div>
+      </div>
+
+      <header ref={cabecera} className={baja ? 'portada-cabecera portada-cabecera-baja' : 'portada-cabecera'}>
+        <div className="portada-ancho portada-cabecera-fila">
+          <Link className="portada-marca" to="/" aria-label="SafeGuard, ir al inicio" onClick={cerrar}>
             <Marca />
-            <span className="brand-nombre">
-              <span className="brand-safe">Safe</span>
-              <span className="brand-guard">Guard</span>
+            <span>
+              Safe<span>Guard</span>
             </span>
           </Link>
           <nav
-            className={menu ? 'header-nav header-nav-abierta' : 'header-nav'}
+            className={menu ? 'portada-nav portada-nav-abierta' : 'portada-nav'}
             id="nav-principal"
             aria-label="Secciones"
           >
-            <MenuProducto
-              id="menu-phishguard"
-              titulo="PhishGuard"
-              texto="Simulaciones de phishing para el equipo."
-              href="#phishguard"
-              icono="phish"
-              abierto={producto === 'phish'}
-              activo={seccion === '#phishguard'}
-              onAbrir={() => setProducto('phish')}
-              onCerrar={() => setProducto((actual) => (actual === 'phish' ? null : actual))}
-            />
-            <MenuProducto
-              id="menu-safelink"
-              titulo="SafeLink"
-              texto="Revisá enlaces y mensajes antes de abrirlos."
-              href="#safelink"
-              icono="enlace"
-              abierto={producto === 'safe'}
-              activo={seccion === '#safelink'}
-              onAbrir={() => setProducto('safe')}
-              onCerrar={() => setProducto((actual) => (actual === 'safe' ? null : actual))}
-            />
-            <Link to="/contacto" onClick={cerrar}>Contacto</Link>
-            <Link className="header-cta header-cta-menu" to={destino} onClick={cerrar}>
+            <Link to="/personas" onClick={cerrar}>Para vos</Link>
+            <Link to="/empresas" onClick={cerrar}>Para empresas</Link>
+            <Link className="portada-boton portada-boton-menu" to={destino} onClick={cerrar}>
               {etiqueta}
             </Link>
           </nav>
-          <div className="header-acciones">
-            <Link className="header-cta" to={destino}>
+          <div className="portada-acciones">
+            <Link className="portada-boton portada-boton-ingresar" to={destino}>
               {etiqueta}
+              <IconoChico nombre="flecha" className="portada-flecha" />
             </Link>
             <TemaControl icono />
             <button
               type="button"
-              className="header-hamburguesa"
+              className="portada-hamburguesa"
               aria-label={menu ? 'Cerrar menú' : 'Abrir menú'}
               aria-expanded={menu}
               aria-controls="nav-principal"
-              onClick={() => {
-                setProducto(null)
-                setMenu((abierto) => !abierto)
-              }}
+              onClick={() => setMenu((abierto) => !abierto)}
             >
               <span />
               <span />
@@ -288,180 +179,106 @@ function Landing() {
         </div>
       </header>
 
-      <main className="main">
-        <div className="shell">
-          <section className="hero">
-            <p className="ceja">Protegé el clic</p>
-            <h1>
-              El ataque no rompe tus sistemas: <span>engaña a tu gente.</span>
-            </h1>
-            <p className="hero-text">
-              SafeGuard tiene dos partes. PhishGuard entrena al equipo con
-              simulaciones. SafeLink revisa lo que te llega antes de abrirlo.
-            </p>
-            <div className="hero-acciones">
-              <a className="door-cta" href="#phishguard">Ver PhishGuard</a>
-              <a className="door-cta door-cta-ghost" href="#safelink">Conocer SafeLink</a>
+      <main>
+        <section className="portada-hero">
+          <div className="portada-ancho portada-hero-grilla">
+            <div className="portada-hero-texto">
+              <h1>¿Te llegó algo raro? Revisalo antes de abrirlo.</h1>
+              <p>
+                Pegá el enlace que te mandaron y te decimos con un color si
+                parece seguro y por qué. Es gratis.
+              </p>
+              <div className="portada-hero-acciones">
+                <Link className="portada-boton portada-boton-blanco" to="/personas">Probar gratis</Link>
+                <Link className="portada-boton portada-boton-borde-blanco" to="/empresas">Soy una empresa</Link>
+              </div>
             </div>
-            <div className="hero-shield" aria-hidden="true">
-              <Logo />
-            </div>
-          </section>
+            <ProbadorEnlace />
+          </div>
+        </section>
 
-          <section className="pilares" aria-label="Qué cubre SafeGuard">
-            {pilares.map(([icono, titulo, texto]) => (
-              <Link key={titulo} className="pilar" to={`/funcion/${icono}`}>
-                <article>
-                  <IconoFuncion nombre={icono} />
-                  <h2>{titulo}</h2>
-                  <p>{texto}</p>
-                </article>
-              </Link>
-            ))}
-          </section>
-
-          <section className="accesos">
-            <div className="bloque-cabeza">
-              <p className="ceja">A un clic</p>
-              <h2>Revisá lo que te llega antes de abrirlo.</h2>
+        <div className="portada-ancho portada-cuerpo">
+          <section className="portada-caja portada-caja-dividida">
+            <div>
+              <h2>Un color y el motivo</h2>
+              <p>
+                No hace falta saber de computación. Te mostramos un color y te
+                explicamos en pocas palabras qué vimos.
+              </p>
             </div>
-            <div className="accesos-grilla">
-              {accesos.map(([icono, titulo, texto]) => (
-                <Link key={titulo} to={`/funcion/${icono}`}>
-                  <IconoFuncion nombre={icono} />
+            <ul className="portada-luces" aria-label="Los colores del semáforo">
+              {semaforo.map(([nivel, titulo, texto]) => (
+                <li key={nivel} className={`portada-luz portada-luz-${nivel}`}>
                   <strong>{titulo}</strong>
                   <span>{texto}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="portada-beneficios" aria-labelledby="portada-caminos-titulo">
+            <div className="portada-beneficios-cabeza">
+              <h2 id="portada-caminos-titulo">Dos formas de cuidarte</h2>
+            </div>
+            <div className="portada-beneficios-grilla">
+              {caminos.map((camino) => (
+                <Link key={camino.id} id={camino.id} className="portada-beneficio" to={camino.destino}>
+                  <span className="portada-beneficio-arriba">
+                    <span className="portada-beneficio-icono">
+                      <IconoFuncion nombre={camino.icono} className="portada-icono" />
+                    </span>
+                    <span className="portada-beneficio-modulo">{camino.etiqueta}</span>
+                  </span>
+                  <span className="portada-beneficio-para">{camino.para}</span>
+                  <strong>{camino.titulo}</strong>
+                  <span className="portada-beneficio-texto">{camino.texto}</span>
+                  <span className="portada-beneficio-mas">
+                    {camino.accion}
+                    <IconoChico nombre="flecha" className="portada-flecha" />
+                  </span>
                 </Link>
               ))}
             </div>
           </section>
 
-          <section className="banda" id="phishguard">
-            <div className="banda-texto">
-              <p className="ceja">Empresas</p>
-              <h2>PhishGuard entrena el criterio, no el firewall.</h2>
-              <p>
-                Simulación de phishing para PyMEs e instituciones educativas.
-                Queda registro de lo que pasó y una explicación corta, sin
-                sanciones. Se paga por persona.
-              </p>
-              <Link className="door-cta" to="/empresas">Ver PhishGuard</Link>
-            </div>
-            <aside className="tablero" aria-label="Vista previa del tablero">
-              <h3>Tablero del equipo</h3>
-              <ul>
-                <li><strong>19</strong><span>Clics</span></li>
-                <li><strong>4</strong><span>Datos ingresados</span></li>
-              </ul>
-              <p>Ejemplo con datos ficticios</p>
-            </aside>
-          </section>
+          <CarruselEstafas />
 
-          <section className="pasos">
-            <div className="bloque-cabeza">
-              <p className="ceja">Cómo funciona</p>
-              <h2>Una campaña, de punta a punta.</h2>
-            </div>
-            <ol>
-              {pasosCampana.map((paso, i) => (
-                <li key={paso.titulo}>
-                  <div className="paso-cabeza">
-                    <IconoPaso indice={i} />
-                    <span>{i + 1}</span>
-                  </div>
-                  <h3>{paso.titulo}</h3>
-                  <p>{paso.texto}</p>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          <section className="banda banda-inversa" id="safelink">
-            <div className="banda-texto">
-              <p className="ceja">Personas</p>
-              <h2>SafeLink responde con un color, no con un informe.</h2>
-              <p>
-                Pegá un enlace, un WhatsApp, un PDF o un correo. El semáforo
-                dice si conviene abrirlo, y por qué. La cuenta es opcional.
-              </p>
-              <Link className="door-cta door-cta-ghost" to="/personas">Conocer SafeLink</Link>
-            </div>
-            <div className="semaforo">
-              {semaforo.map(([nivel, titulo, texto]) => (
-                <article className={`luz luz-${nivel}`} key={nivel}>
-                  <h3>{titulo}</h3>
-                  <p>{texto}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="lugares">
-            <div className="bloque-cabeza">
-              <p className="ceja">Dónde aparece</p>
-              <h2>El aviso llega antes del clic.</h2>
-            </div>
-            <div className="lugares-grilla">
-              {lugares.map(([titulo, texto]) => (
-                <article key={titulo}>
-                  <h3>{titulo}</h3>
-                  <p>{texto}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="portal">
-            <p className="ceja">Tu cuenta</p>
-            <h2>Todas las revisiones, en un solo lugar.</h2>
-            <p>
-              Con cuenta, SafeLink guarda el historial. PhishGuard abre el
-              tablero, las campañas y el informe del equipo.
-            </p>
-            <Link className="door-cta" to={sesion ? '/panel' : '/ingresar'}>
-              {sesion ? 'Ir a mi panel' : 'Ingresar'}
-            </Link>
-          </section>
-
-          <section className="doors">
-            <article className="door door-empresas">
-              <p className="door-tag">Empresas</p>
-              <h2 className="door-title">PhishGuard</h2>
-              <p className="door-text">
-                Simulaciones de phishing por correo, WhatsApp o SMS. Queda
-                registrado quién hizo clic y quien cae ve una explicación corta,
-                sin sanciones.
-              </p>
-              <p className="door-meta">Se paga por persona</p>
-              <Link className="door-cta" to="/empresas">
-                Ver PhishGuard
-              </Link>
-            </article>
-            <article className="door door-personas">
-              <p className="door-tag">Personas</p>
-              <h2 className="door-title">SafeLink</h2>
-              <p className="door-text">
-                Pegá un enlace, un WhatsApp, un PDF o un correo. SafeLink
-                responde verde, amarillo o rojo, con el motivo, antes de que lo
-                abras.
-              </p>
-              <p className="door-meta">Gratis</p>
-              <Link className="door-cta" to="/personas">
-                Conocer SafeLink
-              </Link>
-            </article>
-          </section>
+          <PantallasApp />
         </div>
       </main>
 
-      <footer className="footer">
-        <div className="shell footer-linea">
-          <p>SafeGuard no reemplaza al antivirus ni al firewall: protege el eslabón humano.</p>
-          <p className="footer-enlaces">
+      <footer className="portada-pie">
+        <div className="portada-ancho portada-pie-grilla">
+          <div>
+            <Link className="portada-marca portada-marca-pie" to="/" aria-label="SafeGuard, ir al inicio">
+              <Marca />
+              <span>
+                Safe<span>Guard</span>
+              </span>
+            </Link>
+            <p>SafeGuard te ayuda a reconocer los engaños antes de hacer clic.</p>
+          </div>
+          <nav aria-label="Productos">
+            <h2>Productos</h2>
+            <Link to="/empresas">PhishGuard</Link>
+            <Link to="/personas">SafeLink</Link>
+            <Link to="/personas#instalar">Extensión de Chrome</Link>
+          </nav>
+          <nav aria-label="Cuenta">
+            <h2>Cuenta</h2>
+            <Link to={destino}>{etiqueta}</Link>
+            <Link to="/empresas#precios">Precios</Link>
+            <Link to="/contacto">Contacto</Link>
+          </nav>
+          <nav aria-label="Legales">
+            <h2>Legales</h2>
             <Link to="/terminos">Términos y condiciones</Link>
             <Link to="/privacidad">Privacidad</Link>
-            <Link to="/contacto">Contacto</Link>
-          </p>
+          </nav>
+        </div>
+        <div className="portada-ancho portada-pie-final">
+          <small>© 2026 SafeGuard</small>
+          <p className="portada-pie-lema">Antes de hacer clic, SafeGuard. Personas atentas, organizaciones protegidas.</p>
         </div>
       </footer>
     </div>

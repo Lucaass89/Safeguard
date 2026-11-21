@@ -61,6 +61,34 @@ function IconoFuncion({ nombre, className = 'tarjeta-icono' }) {
       </svg>
     )
   }
+  if (nombre === 'qr') {
+    return (
+      <svg {...comunes}>
+        <rect x="4" y="4" width="6" height="6" rx="1" />
+        <rect x="14" y="4" width="6" height="6" rx="1" />
+        <rect x="4" y="14" width="6" height="6" rx="1" />
+        <path d="M14 14h2v2h-2zM18 14h2M14 18v2M18 18h2v2" />
+      </svg>
+    )
+  }
+  if (nombre === 'extension') {
+    return (
+      <svg {...comunes}>
+        <rect x="3.5" y="5" width="17" height="14" rx="2" />
+        <path d="M3.5 9h17" />
+        <circle cx="6.5" cy="7" r=".5" />
+        <circle cx="12" cy="14" r="2.5" />
+      </svg>
+    )
+  }
+  if (nombre === 'faro') {
+    return (
+      <svg {...comunes}>
+        <path d="M5.5 6.5h13a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H11l-4 3v-3H5.5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z" />
+        <path d="M8.5 11.5h7M8.5 14h4" />
+      </svg>
+    )
+  }
   if (nombre === 'pdf') {
     return (
       <svg {...comunes}>

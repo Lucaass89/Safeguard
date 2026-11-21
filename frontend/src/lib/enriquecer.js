@@ -116,9 +116,16 @@ export async function guardarAnalisis(sesion, resultado, entrada, texto = null) 
     puntuacion_riesgo: resultado.puntuacion,
     entrada,
   })
-  if (!texto) return consulta
-
   const respuesta = await consulta.select('id').single()
-  if (!respuesta.error) guardarFragmento(respuesta.data?.id, texto)
+  if (respuesta.error) return respuesta
+  if (texto) guardarFragmento(respuesta.data?.id, texto)
+  if (resultado.nivel === 'rojo' && respuesta.data?.id) avisarFamilia(respuesta.data.id)
   return respuesta
+}
+
+export function avisarFamilia(analisisId) {
+  supabase.functions.invoke('familia-avisar', { body: { analisis_id: analisisId } }).then(
+    () => {},
+    () => {},
+  )
 }

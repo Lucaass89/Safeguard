@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { diferenciaDominio, dominioBase } from './analisis.js'
 import { leerFragmento } from './fragmentos.js'
-import { inicioDeSemana, resumenSemana } from './resumenSemana.js'
+import { conteoSemaforo, inicioDeSemana, resumenSemana } from './resumenSemana.js'
 import { supabase } from './supabase.js'
 import { useSesion } from './useSesion.js'
 
@@ -123,7 +123,7 @@ export function useAnalisisPropios({ limite = 5 } = {}) {
 export function useResumenSemana() {
   const { sesion } = useSesion()
   const usuarioId = sesion?.user?.id ?? null
-  const [leido, setLeido] = useState({ usuarioId: null, texto: null })
+  const [leido, setLeido] = useState({ usuarioId: null, texto: null, conteo: null })
   const [version, setVersion] = useState(0)
 
   useEffect(() => {
@@ -138,7 +138,11 @@ export function useResumenSemana() {
       .limit(5000)
       .then(({ data, error }) => {
         if (!activo) return
-        setLeido({ usuarioId, texto: error ? null : resumenSemana(data ?? []) })
+        setLeido({
+          usuarioId,
+          texto: error ? null : resumenSemana(data ?? []),
+          conteo: error ? null : conteoSemaforo(data ?? []),
+        })
       })
 
     return () => {
@@ -147,6 +151,51 @@ export function useResumenSemana() {
   }, [usuarioId, version])
 
   const recargar = () => setVersion((actual) => actual + 1)
-  const texto = usuarioId && leido.usuarioId === usuarioId ? leido.texto : null
-  return { texto, recargar }
+  const vigente = usuarioId && leido.usuarioId === usuarioId
+  return { texto: vigente ? leido.texto : null, conteo: vigente ? leido.conteo : null, recargar }
+}
+
+export function useTotalesPropios() {
+  const { sesion } = useSesion()
+  const usuarioId = sesion?.user?.id ?? null
+  const [leido, setLeido] = useState({ usuarioId: null, total: 0, peligrosos: 0, seguros: 0, dudosos: 0 })
+  const [version, setVersion] = useState(0)
+
+  useEffect(() => {
+    if (!usuarioId) return undefined
+    let activo = true
+    const contar = (consulta) => consulta.then(({ count, error }) => (error ? null : count ?? 0))
+    const base = () =>
+      supabase.from('safelink_analisis').select('id', { count: 'exact', head: true }).eq('usuario_id', usuarioId)
+
+    Promise.all([
+      contar(base()),
+      contar(base().eq('nivel_riesgo', 'rojo')),
+      contar(base().eq('nivel_riesgo', 'verde')),
+      contar(base().eq('nivel_riesgo', 'amarillo')),
+    ]).then(([total, peligrosos, seguros, dudosos]) => {
+      if (!activo || [total, peligrosos, seguros, dudosos].includes(null)) return
+      setLeido({ usuarioId, total, peligrosos, seguros, dudosos })
+    })
+
+    return () => {
+      activo = false
+    }
+  }, [usuarioId, version])
+
+  const recargar = () => setVersion((actual) => actual + 1)
+  const vigente = usuarioId && leido.usuarioId === usuarioId
+  return {
+    total: vigente ? leido.total : 0,
+    peligrosos: vigente ? leido.peligrosos : 0,
+    seguros: vigente ? leido.seguros : 0,
+    dudosos: vigente ? leido.dudosos : 0,
+    cargando: Boolean(usuarioId) && !vigente,
+    recargar,
+  }
+}
+
+export async function borrarAnalisis(ids) {
+  const { error } = await supabase.from('safelink_analisis').delete().in('id', ids)
+  return !error
 }

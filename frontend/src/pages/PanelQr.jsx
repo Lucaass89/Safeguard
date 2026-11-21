@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { rutaEnApp } from '../lib/esAppNativa.js'
+import { esAppNativa, rutaEnApp } from '../lib/esAppNativa.js'
 import { useSesion } from '../lib/useSesion.js'
 import { dominioBase, FALLO_AL_SEGUIR } from '../lib/analisis.js'
 import { cerrarRevisionConDetalle, guardarAnalisis, urlParaRevisar } from '../lib/enriquecer.js'
@@ -639,9 +639,11 @@ function PanelQr() {
   return (
     <div className="panel panel-personas">
       <header className="panel-header">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=safelink')}>
-          ← Volver a las opciones
-        </Link>
+        {!esAppNativa() && (
+          <Link className="panel-volver" to={rutaEnApp('/panel?app=safelink')}>
+            ← Volver a las opciones
+          </Link>
+        )}
         <h1>Escanear un QR</h1>
         <p className="panel-lead">
           Apuntá la cámara al código o elegí una imagen de la galería. Te mostramos lo que trae antes de que hagas nada: no abrimos nada por vos.

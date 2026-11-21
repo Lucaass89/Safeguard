@@ -1,0 +1,38 @@
+name: avisar
+
+on:
+  workflow_dispatch:
+    inputs:
+      titulo:
+        description: Título del aviso (hasta 65 letras)
+        required: true
+      texto:
+        description: Texto del aviso (hasta 240 letras)
+        required: true
+      tema:
+        description: A quién le llega
+        type: choice
+        options:
+          - anuncios
+          - estafas
+        default: anuncios
+      ruta:
+        description: Pantalla que abre al tocarlo (por ejemplo / o /safelink)
+        default: /
+
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Mandar el aviso
+        run: node frontend/scripts/avisos/anuncio.mjs
+        env:
+          FCM_SERVICE_ACCOUNT: ${{ secrets.FCM_SERVICE_ACCOUNT }}
+          TITULO: ${{ inputs.titulo }}
+          TEXTO: ${{ inputs.texto }}
+          TEMA: ${{ inputs.tema }}
+          RUTA: ${{ inputs.ruta }}

@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Instalar SafeLink</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800&display=swap">
+<style>
+  :root {
+    --fondo: #e9dfcf;
+    --ventana: #f6efe4;
+    --barra: #ece2d3;
+    --campo: #fbf7f0;
+    --linea: #d8c9b3;
+    --tinta: #3a2a1c;
+    --suave: #6e5843;
+    --acento: #b8895f;
+    --acento-hondo: #a07450;
+    --acento-suave: #ead9c2;
+    --boton-texto: #ffffff;
+    --sombra: 0 30px 60px -30px rgb(58 42 28 / 45%);
+    --rotulo: #3a2a1c;
+    --rotulo-texto: #fbf5ec;
+    --rotulo-suave: #ead9c3;
+  }
+
+  :root[data-tema='oscuro'] {
+    --fondo: #070d1a;
+    --ventana: #0d1830;
+    --barra: #0a1428;
+    --campo: #081022;
+    --linea: #1e2f52;
+    --tinta: #e6edf7;
+    --suave: #94a3b8;
+    --acento: #3b82f6;
+    --acento-hondo: #8eb4ff;
+    --acento-suave: #13254a;
+    --boton-texto: #ffffff;
+    --sombra: 0 30px 60px -30px rgb(0 0 0 / 70%);
+    --rotulo: #13254a;
+    --rotulo-texto: #e6edf7;
+    --rotulo-suave: #c3d3f0;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    width: 1280px;
+    height: 720px;
+    margin: 0;
+    overflow: hidden;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-family: Archivo, 'Segoe UI', Roboto, system-ui, sans-serif;
+  }
+
+  .oculto { display: none !important; }
+
+  .ventana {
+    position: absolute;
+    top: 24px;
+    left: 64px;
+    width: 1152px;
+    height: 560px;
+    overflow: hidden;
+    border: 1px solid var(--linea);
+    border-radius: 14px;
+    background: var(--ventana);
+    box-shadow: var(--sombra);
+  }
+
+  .pestanas {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 44px;
+    padding: 0 16px;
+    background: var(--barra);
+  }
+
+  .puntos { display: flex; gap: 7px; align-self: center; margin-right: 14px; }
+  .puntos span { width: 12px; height: 12px; border-radius: 50%; background: var(--linea); }
+
+  .pestana {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 250px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 10px 10px 0 0;
+    background: var(--ventana);
+    font-size: 14px;
+  }
+
+  .pestana svg { width: 16px; height: 16px; flex: none; }
+
+  .direcciones {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 52px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .direcciones .icono { width: 20px; height: 20px; color: var(--suave); }
+
+  .campo-dir {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    height: 34px;
+    padding: 0 16px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: var(--campo);
+    font-size: 15px;
+  }
+
+  .campo-dir.activo { border-color: var(--acento); }
+  .campo-dir .caret { width: 2px; height: 18px; margin-left: 1px; background: var(--tinta); }
+
+  .boton-barra {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--suave);
+  }
+
+  .boton-barra.presionado { background: var(--acento-suave); }
+  .boton-barra svg { width: 20px; height: 20px; }
+  .logo-barra svg { width: 22px; height: 22px; }
+
+  .contenido { position: relative; height: calc(100% - 96px); }
+
+  .web {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: center;
+    height: 100%;
+    padding: 0 64px;
+  }
+
+  .web h1 { margin: 0; font-size: 46px; line-height: 1.08; letter-spacing: -0.02em; }
+  .web p { margin: 18px 0 0; color: var(--suave); font-size: 19px; line-height: 1.5; }
+
+  .boton {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    margin-top: 28px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--acento);
+    color: var(--boton-texto);
+    font: 700 17px Archivo, system-ui, sans-serif;
+  }
+
+  .presionado-boton { filter: brightness(0.9); transform: scale(0.97); }
+
+  .web-tarjeta {
+    padding: 28px;
+    border: 1px solid var(--linea);
+    border-radius: 16px;
+    background: var(--campo);
+  }
+
+  .web-tarjeta strong { display: block; font-size: 20px; }
+  .web-luz { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-size: 17px; }
+  .web-luz i { width: 14px; height: 14px; border-radius: 50%; }
+
+  .burbuja {
+    position: absolute;
+    top: 92px;
+    right: 80px;
+    width: 340px;
+    padding: 16px 18px;
+    border: 1px solid var(--linea);
+    border-radius: 14px;
+    background: var(--ventana);
+    box-shadow: var(--sombra);
+  }
+
+  .burbuja h3 { margin: 0 0 12px; font-size: 15px; }
+  .archivo { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+  .archivo svg { width: 28px; height: 28px; flex: none; color: var(--acento); }
+  .archivo small { display: block; color: var(--suave); font-size: 13px; }
+  .progreso { height: 6px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: var(--acento-suave); }
+  .progreso div { height: 100%; background: var(--acento); }
+
+  .explorador {
+    position: absolute;
+    top: 120px;
+    left: 230px;
+    width: 820px;
+    height: 400px;
+    overflow: hidden;
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    background: var(--ventana);
+    box-shadow: var(--sombra);
+  }
+
+  .explorador-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--linea);
+    background: var(--barra);
+    font-weight: 700;
+  }
+
+  .explorador-titulo svg { width: 20px; height: 20px; color: var(--acento); }
+  .explorador-cuerpo { display: grid; grid-template-columns: 190px 1fr; height: calc(100% - 46px); }
+  .lateral { padding: 14px; border-right: 1px solid var(--linea); color: var(--suave); font-size: 15px; }
+  .lateral div { padding: 8px 10px; border-radius: 8px; }
+  .lateral .elegido { background: var(--acento-suave); color: var(--tinta); font-weight: 700; }
+  .lista { padding: 10px 14px; }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 32px 1fr 200px;
+    align-items: center;
+    gap: 12px;
+    height: 46px;
+    padding: 0 10px;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  .fila svg { width: 26px; height: 26px; color: var(--acento); }
+  .fila span:last-child { color: var(--suave); font-size: 14px; }
+  .fila.marcada { background: var(--acento-suave); }
+
+  .menu-contextual {
+    position: absolute;
+    width: 220px;
+    padding: 6px;
+    border: 1px solid var(--linea);
+    border-radius: 10px;
+    background: var(--ventana);
+    box-shadow: var(--sombra);
+    font-size: 15px;
+  }
+
+  .menu-contextual div { padding: 9px 12px; border-radius: 6px; }
+  .menu-contextual .resaltado { background: var(--acento-suave); font-weight: 700; }
+
+  .extensiones { height: 100%; }
+
+  .ext-cabeza {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 28px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .ext-cabeza h2 { margin: 0; font-size: 24px; }
+  .modo { display: flex; align-items: center; gap: 14px; font-size: 16px; }
+
+  .interruptor {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    border-radius: 999px;
+    background: var(--linea);
+  }
+
+  .interruptor::after {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+    content: '';
+    transition: none;
+  }
+
+  .interruptor.prendido { background: var(--acento); }
+  .interruptor.prendido::after { left: 23px; }
+
+  .ext-acciones {
+    display: flex;
+    gap: 12px;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .ext-boton {
+    height: 38px;
+    padding: 0 18px;
+    border: 1px solid var(--linea);
+    border-radius: 8px;
+    background: var(--campo);
+    color: var(--acento-hondo);
+    font: 700 15px Archivo, system-ui, sans-serif;
+  }
+
+  .ext-boton.presionado { background: var(--acento-suave); }
+
+  .ext-tarjeta {
+    width: 400px;
+    margin: 24px 28px;
+    padding: 20px;
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    background: var(--campo);
+  }
+
+  .ext-tarjeta-arriba { display: flex; gap: 16px; }
+  .ext-tarjeta-arriba svg { width: 44px; height: 44px; flex: none; }
+  .ext-tarjeta strong { font-size: 17px; }
+  .ext-tarjeta small { color: var(--suave); font-size: 14px; }
+  .ext-tarjeta p { margin: 6px 0 0; color: var(--suave); font-size: 14px; line-height: 1.4; }
+
+  .ext-tarjeta-abajo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    color: var(--acento-hondo);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .vacio { margin: 40px 28px; color: var(--suave); font-size: 16px; }
+
+  .dialogo {
+    position: absolute;
+    top: 110px;
+    left: 260px;
+    width: 760px;
+    height: 400px;
+    overflow: hidden;
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    background: var(--ventana);
+    box-shadow: var(--sombra);
+  }
+
+  .dialogo .explorador-cuerpo { height: calc(100% - 46px - 66px); }
+
+  .dialogo-pie {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--linea);
+  }
+
+  .dialogo-pie .ext-boton.principal { border-color: var(--acento); background: var(--acento); color: var(--boton-texto); }
+
+  .menu-ext {
+    position: absolute;
+    top: 92px;
+    right: 120px;
+    width: 300px;
+    padding: 14px;
+    border: 1px solid var(--linea);
+    border-radius: 14px;
+    background: var(--ventana);
+    box-shadow: var(--sombra);
+  }
+
+  .menu-ext h3 { margin: 0 0 10px; font-size: 15px; }
+  .menu-ext-fila { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 8px; font-size: 15px; }
+  .menu-ext-fila > svg:first-child { width: 24px; height: 24px; }
+  .menu-ext-fila span { flex: 1; }
+  .alfiler { width: 22px; height: 22px; color: var(--suave); }
+  .alfiler.fijo { color: var(--acento); }
+
+  .rotulo {
+    position: absolute;
+    right: 64px;
+    bottom: 24px;
+    left: 64px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 92px;
+    padding: 0 28px;
+    border-radius: 14px;
+    background: var(--rotulo);
+    color: var(--rotulo-texto);
+  }
+
+  .rotulo-numero {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    flex: none;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--acento);
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .rotulo strong { display: block; font-size: 25px; letter-spacing: -0.01em; }
+  .rotulo span { display: block; margin-top: 4px; color: var(--rotulo-suave); font-size: 17px; }
+  .rotulo-avance { margin-left: auto; color: var(--rotulo-suave); font-size: 15px; white-space: nowrap; }
+
+  .cursor { position: absolute; z-index: 20; width: 28px; height: 28px; pointer-events: none; }
+  .cursor svg { width: 28px; height: 28px; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 35%)); }
+
+  .onda {
+    position: absolute;
+    z-index: 19;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border: 3px solid var(--acento);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="logo-degradado" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="269">
+      <stop offset="0" stop-color="#2ad4ee" />
+      <stop offset="0.34" stop-color="#1e8ed4" />
+      <stop offset="0.66" stop-color="#1a52be" />
+      <stop offset="1" stop-color="#1a1c8c" />
+    </linearGradient>
+    <symbol id="logo" viewBox="0 0 267 269">
+      <polygon fill="url(#logo-degradado)" points="4,154 5,188 137,262 142,263 142,231" />
+      <polygon fill="url(#logo-degradado)" points="4,89 6,123 201,227 227,193 195,190" />
+      <polygon fill="url(#logo-degradado)" points="4,8 12,8 67,37 46,37 47,40 257,154 233,186 214,177 208,173 214,165 212,163 6,52" />
+      <polygon fill="url(#logo-degradado)" points="30,8 118,8 238,74 240,59 266,73 266,124 109,37 84,37" />
+    </symbol>
+    <symbol id="zip" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M6 3h8l4 4v14H6z M14 3v4h4 M11 6h2 M11 9h2 M11 12h2 M10.5 15h3v3h-3z" /></symbol>
+    <symbol id="carpeta" viewBox="0 0 24 24"><path fill="currentColor" opacity=".85" d="M3 6.5A1.5 1.5 0 0 1 4.5 5h5l2 2.2h8A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" /></symbol>
+    <symbol id="pieza" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M9 4.5h3.5v2a1.5 1.5 0 0 0 3 0v-2H19v4.5h-2a1.5 1.5 0 0 0 0 3h2V19h-4.5v-2a1.5 1.5 0 0 0-3 0v2H5v-4.5h2a1.5 1.5 0 0 0 0-3H5V4.5h4z" /></symbol>
+    <symbol id="bajar" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11 M7 10.5l5 5 5-5 M5 19.5h14" /></symbol>
+    <symbol id="alfiler" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M9 3.5h6l-1 6 3 3v1.5H7V12.5l3-3z M12 14v6.5" /></symbol>
+    <symbol id="alfiler-lleno" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M9 3.5h6l-1 6 3 3v1.5H7V12.5l3-3z" /><path stroke="currentColor" stroke-width="1.8" d="M12 14v6.5" /></symbol>
+    <symbol id="atras" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5 M11 6l-6 6 6 6" /></symbol>
+    <symbol id="adelante" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14 M13 6l6 6-6 6" /></symbol>
+    <symbol id="recargar" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M19 12a7 7 0 1 1-2.05-4.95 M19 4.5V8h-3.5" /></symbol>
+  </defs>
+</svg>
+
+<div class="ventana">
+  <div class="pestanas">
+    <div class="puntos"><span></span><span></span><span></span></div>
+    <div class="pestana"><svg><use href="#logo" /></svg><span id="pestana-titulo">SafeLink · SafeGuard</span></div>
+  </div>
+  <div class="direcciones">
+    <svg class="icono"><use href="#atras" /></svg>
+    <svg class="icono"><use href="#adelante" /></svg>
+    <svg class="icono"><use href="#recargar" /></svg>
+    <div class="campo-dir" id="campo-dir"><span id="dir-texto">safeguardd.vercel.app/personas</span><i class="caret oculto" id="caret"></i></div>
+    <div class="boton-barra logo-barra oculto" id="fijado"><svg><use href="#logo" /></svg></div>
+    <div class="boton-barra" id="pieza"><svg><use href="#pieza" /></svg></div>
+    <div class="boton-barra" id="descargas"><svg><use href="#bajar" /></svg></div>
+  </div>
+  <div class="contenido">
+    <section class="web" id="vista-web">
+      <div>
+        <h1>Antes del clic, un color y el motivo.</h1>
+        <p>SafeLink revisa la página que abrís y te muestra un color en la barra.</p>
+        <span class="boton" id="boton-descargar">Descargar la extensión</span>
+      </div>
+      <div class="web-tarjeta">
+        <strong>Cómo te avisa</strong>
+        <div class="web-luz"><i style="background:#13795b"></i>Verde: no vimos nada raro</div>
+        <div class="web-luz"><i style="background:#c4922e"></i>Amarillo: mirá bien</div>
+        <div class="web-luz"><i style="background:#b42318"></i>Rojo: no la abras</div>
+      </div>
+    </section>
+
+    <section class="extensiones oculto" id="vista-ext">
+      <div class="ext-cabeza">
+        <h2>Extensiones</h2>
+        <div class="modo">Modo de desarrollador <div class="interruptor" id="interruptor"></div></div>
+      </div>
+      <div class="ext-acciones oculto" id="ext-acciones">
+        <span class="ext-boton" id="cargar" style="display:inline-flex;align-items:center">Cargar descomprimida</span>
+        <span class="ext-boton" style="display:inline-flex;align-items:center">Empaquetar extensión</span>
+        <span class="ext-boton" style="display:inline-flex;align-items:center">Actualizar</span>
+      </div>
+      <p class="vacio" id="vacio">Acá van a aparecer las extensiones que agregues.</p>
+      <div class="ext-tarjeta oculto" id="tarjeta">
+        <div class="ext-tarjeta-arriba">
+          <svg><use href="#logo" /></svg>
+          <div>
+            <strong>SafeLink</strong> <small id="version"></small>
+            <p>Revisa la página que abrís y te muestra un color en la barra.</p>
+          </div>
+        </div>
+        <div class="ext-tarjeta-abajo"><span>Detalles · Quitar</span><div class="interruptor prendido"></div></div>
+      </div>
+    </section>
+
+    <div class="burbuja oculto" id="burbuja">
+      <h3>Descargas recientes</h3>
+      <div class="archivo"><svg><use href="#zip" /></svg><div>safelink.zip<small id="burbuja-estado">Descargando…</small></div></div>
+      <div class="progreso"><div id="progreso"></div></div>
+    </div>
+
+    <div class="menu-ext oculto" id="menu-ext">
+      <h3>Extensiones</h3>
+      <div class="menu-ext-fila"><svg><use href="#logo" /></svg><span>SafeLink</span><svg class="alfiler" id="boton-alfiler"><use href="#alfiler" id="alfiler-uso" /></svg></div>
+    </div>
+  </div>
+</div>
+
+<div class="explorador oculto" id="explorador">
+  <div class="explorador-titulo"><svg><use href="#carpeta" /></svg>Descargas</div>
+  <div class="explorador-cuerpo">
+    <div class="lateral"><div>Escritorio</div><div class="elegido">Descargas</div><div>Documentos</div></div>
+    <div class="lista">
+      <div class="fila" id="fila-zip"><svg><use href="#zip" /></svg><span>safelink.zip</span><span>Archivo comprimido</span></div>
+      <div class="fila oculto" id="fila-carpeta"><svg><use href="#carpeta" /></svg><span>safelink</span><span>Carpeta</span></div>
+    </div>
+  </div>
+  <div class="menu-contextual oculto" id="menu-contextual" style="top:116px;left:430px">
+    <div>Abrir</div>
+    <div id="extraer">Extraer todo…</div>
+    <div>Copiar</div>
+    <div>Eliminar</div>
+  </div>
+</div>
+
+<div class="dialogo oculto" id="dialogo">
+  <div class="explorador-titulo"><svg><use href="#carpeta" /></svg>Elegí la carpeta de la extensión</div>
+  <div class="explorador-cuerpo">
+    <div class="lateral"><div>Escritorio</div><div class="elegido">Descargas</div><div>Documentos</div></div>
+    <div class="lista">
+      <div class="fila"><svg><use href="#zip" /></svg><span>safelink.zip</span><span>Archivo comprimido</span></div>
+      <div class="fila" id="dialogo-carpeta"><svg><use href="#carpeta" /></svg><span>safelink</span><span>Carpeta</span></div>
+    </div>
+  </div>
+  <div class="dialogo-pie"><span class="ext-boton" style="display:inline-flex;align-items:center">Cancelar</span><span class="ext-boton principal" id="seleccionar" style="display:inline-flex;align-items:center">Seleccionar carpeta</span></div>
+</div>
+
+<div class="rotulo">
+  <div class="rotulo-numero" id="rotulo-numero">1</div>
+  <div><strong id="rotulo-titulo"></strong><span id="rotulo-texto"></span></div>
+  <div class="rotulo-avance" id="rotulo-avance"></div>
+</div>
+
+<div class="onda oculto" id="onda"></div>
+<div class="cursor" id="cursor"><svg viewBox="0 0 24 24"><path d="M4 2.5 19.5 13l-7 1.2-3.6 6.3z" fill="#ffffff" stroke="#111111" stroke-width="1.4" stroke-linejoin="round" /></svg></div>
+
+<script>
+  const INICIOS = { descargar: 0, descomprimir: 5.4, abrir: 11, modo: 16.2, cargar: 20, fijar: 27.4 }
+  const DURACION = 34
+  const DIRECCION = 'chrome://extensions'
+
+  const MOVIMIENTOS = [
+    [0.6, 1.8, '#boton-descargar'],
+    [3.6, 4.4, '#descargas'],
+    [6.0, 7.0, '#fila-zip'],
+    [7.6, 8.2, '#extraer'],
+    [11.2, 12.0, '#campo-dir'],
+    [16.4, 17.4, '#interruptor'],
+    [20.2, 21.2, '#cargar'],
+    [21.9, 22.7, '#dialogo-carpeta'],
+    [23.2, 24.0, '#seleccionar'],
+    [27.6, 28.6, '#pieza'],
+    [29.3, 30.1, '#boton-alfiler'],
+    [31.0, 31.8, '#fijado'],
+  ]
+
+  const CLICS = [2.0, 7.2, 8.4, 12.2, 17.6, 21.4, 22.9, 24.2, 28.8, 30.3]
+
+  const $ = (selector) => document.querySelector(selector)
+  const mostrar = (selector, si) => $(selector).classList.toggle('oculto', !si)
+  const suave = (x) => (x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x))
+  const posiciones = new Map()
+  let capitulos = []
+
+  function centro(selector) {
+    if (!posiciones.has(selector)) {
+      const caja = $(selector).getBoundingClientRect()
+      posiciones.set(selector, [caja.left + caja.width / 2, caja.top + caja.height / 2])
+    }
+    return posiciones.get(selector)
+  }
+
+  function cursorEn(t) {
+    let desde = [1000, 640]
+    for (const [inicio, fin, destino] of MOVIMIENTOS) {
+      if (t < inicio) return desde
+      const hasta = centro(destino)
+      if (t < fin) {
+        const k = suave((t - inicio) / (fin - inicio))
+        return [desde[0] + (hasta[0] - desde[0]) * k, desde[1] + (hasta[1] - desde[1]) * k]
+      }
+      desde = hasta
+    }
+    return desde
+  }
+
+  function capituloEn(t) {
+    let indice = 0
+    capitulos.forEach((capitulo, i) => {
+      if (t >= INICIOS[capitulo.id]) indice = i
+    })
+    return indice
+  }
+
+  function render(t) {
+    const web = t < INICIOS.abrir + 1.6
+    mostrar('#vista-web', web)
+    mostrar('#vista-ext', !web)
+    $('#pestana-titulo').textContent = web ? 'SafeLink · SafeGuard' : 'Extensiones'
+    $('#boton-descargar').classList.toggle('presionado-boton', t >= 2.0 && t < 2.25)
+
+    const bajando = t >= 2.3 && t < INICIOS.descomprimir
+    mostrar('#burbuja', bajando)
+    const avance = suave((t - 2.4) / 1.2)
+    $('#progreso').style.width = `${avance * 100}%`
+    $('#burbuja-estado').textContent = avance < 1 ? 'Descargando…' : 'Listo · 1,1 MB'
+
+    mostrar('#explorador', t >= INICIOS.descomprimir && t < INICIOS.abrir)
+    $('#fila-zip').classList.toggle('marcada', t >= 7.2 && t < 8.6)
+    mostrar('#menu-contextual', t >= 7.25 && t < 8.5)
+    $('#extraer').classList.toggle('resaltado', t >= 8.0 && t < 8.5)
+    mostrar('#fila-carpeta', t >= 8.9)
+    $('#fila-carpeta').classList.toggle('marcada', t >= 8.9)
+
+    const escribiendo = t >= 12.2 && t < INICIOS.abrir + 1.6
+    $('#campo-dir').classList.toggle('activo', escribiendo)
+    mostrar('#caret', escribiendo)
+    let texto = 'safeguardd.vercel.app/personas'
+    if (t >= 12.2) {
+      const letras = Math.floor(suave((t - 12.4) / 1.6) * DIRECCION.length)
+      texto = t >= INICIOS.abrir + 1.6 ? DIRECCION : DIRECCION.slice(0, letras)
+    }
+    $('#dir-texto').textContent = texto
+
+    const modo = t >= 17.6
+    $('#interruptor').classList.toggle('prendido', modo)
+    mostrar('#ext-acciones', modo)
+    $('#cargar').classList.toggle('presionado', t >= 21.4 && t < 21.7)
+
+    mostrar('#dialogo', t >= 21.6 && t < 24.4)
+    $('#dialogo-carpeta').classList.toggle('marcada', t >= 22.9)
+
+    const cargada = t >= 24.6
+    mostrar('#tarjeta', cargada)
+    mostrar('#vacio', !cargada)
+
+    $('#pieza').classList.toggle('presionado', t >= 28.8 && t < 30.9)
+    mostrar('#menu-ext', t >= 28.9 && t < 30.9)
+    const fijada = t >= 30.3
+    $('#boton-alfiler').classList.toggle('fijo', fijada)
+    $('#alfiler-uso').setAttribute('href', fijada ? '#alfiler-lleno' : '#alfiler')
+    mostrar('#fijado', fijada)
+    $('#fijado').classList.toggle('presionado', t >= 31.8 && t < 33)
+
+    const indice = capituloEn(t)
+    const capitulo = capitulos[indice]
+    if (capitulo) {
+      $('#rotulo-numero').textContent = String(indice + 1)
+      $('#rotulo-titulo').textContent = capitulo.titulo
+      $('#rotulo-texto').textContent = capitulo.texto
+      $('#rotulo-avance').textContent = `Paso ${indice + 1} de ${capitulos.length}`
+    }
+
+    const [x, y] = cursorEn(t)
+    $('#cursor').style.transform = `translate(${x - 5}px, ${y - 3}px)`
+    const clic = CLICS.find((c) => t >= c && t < c + 0.4)
+    mostrar('#onda', clic !== undefined)
+    if (clic !== undefined) {
+      const k = (t - clic) / 0.4
+      $('#onda').style.left = `${x}px`
+      $('#onda').style.top = `${y}px`
+      $('#onda').style.transform = `scale(${0.4 + k})`
+      $('#onda').style.opacity = String(1 - k)
+    }
+  }
+
+  window.iniciar = function iniciar({ tema, version, pasos }) {
+    document.documentElement.dataset.tema = tema
+    $('#version').textContent = version
+    capitulos = pasos
+    posiciones.clear()
+    return { inicios: INICIOS, duracion: DURACION }
+  }
+
+  window.render = render
+</script>
+</body>
+</html>

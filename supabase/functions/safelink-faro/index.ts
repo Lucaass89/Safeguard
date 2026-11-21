@@ -392,6 +392,7 @@ function topeTokens(modo: Modo) {
 }
 
 const TOPE_USUARIO_DIA = 30
+const TIEMPO_MODELO_MS = 9000
 const TOPE_IP_DIA = 60
 const VENTANA_MS = 24 * 60 * 60 * 1000
 
@@ -470,7 +471,10 @@ async function tokensDelUsuario(admin: ReturnType<typeof createClient>, usuarioI
 async function pedirGemini(c: Consulta): Promise<{ texto: string | null; gasto: Gasto | null }> {
   const { nivel, pregunta, turnos, modo } = c
   const clave = claveGemini()
-  if (!clave) return { texto: null, gasto: null }
+  if (!clave) {
+    console.log('faro-sin-clave')
+    return { texto: null, gasto: null }
+  }
 
   const preferido = Deno.env.get('GEMINI_MODEL') || 'gemini-3.8-flash'
   const modelos = [...new Set([preferido, 'gemini-2.5-flash'])]
@@ -490,23 +494,32 @@ async function pedirGemini(c: Consulta): Promise<{ texto: string | null; gasto: 
 
   for (const modelo of modelos) {
     for (const generationConfig of configs) {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,
-        {
-          method: 'POST',
-          signal: AbortSignal.timeout(20000),
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': clave,
+      let res: Response
+      try {
+        res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,
+          {
+            method: 'POST',
+            signal: AbortSignal.timeout(TIEMPO_MODELO_MS),
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': clave,
+            },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: instrucciones(c) }] },
+              contents,
+              generationConfig,
+            }),
           },
-          body: JSON.stringify({
-            systemInstruction: { parts: [{ text: instrucciones(c) }] },
-            contents,
-            generationConfig,
-          }),
-        },
-      )
-      if (res.status === 404) break
+        )
+      } catch (error) {
+        console.log('faro-modelo', modelo, error instanceof Error ? error.name : 'error')
+        break
+      }
+      if (res.status === 404) {
+        console.log('faro-modelo', modelo, 404)
+        break
+      }
       if (res.status === 400) continue
       if (!res.ok) {
         const detalle = await res.text()

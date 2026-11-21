@@ -1,0 +1,29 @@
+name: avisar-estafas
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - frontend/src/lib/estafasSemana.js
+  workflow_dispatch:
+    inputs:
+      prueba:
+        description: Solo validar con Firebase, sin mandar el aviso
+        type: boolean
+        default: true
+
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Mandar el aviso de las estafas de la semana
+        run: node frontend/scripts/avisos/estafas-semana.mjs
+        env:
+          FCM_SERVICE_ACCOUNT: ${{ secrets.FCM_SERVICE_ACCOUNT }}
+          PRUEBA: ${{ github.event_name == 'workflow_dispatch' && inputs.prueba }}

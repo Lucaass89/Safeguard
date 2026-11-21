@@ -8,12 +8,29 @@
   </head>
   <body>
     <main id="resultado" class="neutro">
-      <p class="marca">SafeLink</p>
-      <h1 id="nivel">Mirando la pestaña</h1>
-      <p id="dominio" hidden></p>
+      <header class="cabeza">
+        <img src="icons/icon48.png" alt="" width="24" height="24" />
+        <span>SafeLink</span>
+      </header>
+
+      <section class="veredicto" aria-live="polite">
+        <h1 id="nivel"><span class="luz" aria-hidden="true"></span><span id="nivel-texto">Mirando la pestaña</span></h1>
+        <p id="dominio" hidden></p>
+      </section>
+
       <ul id="motivos" hidden></ul>
       <p id="hacer"></p>
       <p id="aviso" hidden></p>
+
+      <a id="completo" class="boton" href="#" target="_blank" rel="noopener" hidden>Ver el análisis completo</a>
+
+      <footer class="pie">
+        <label class="interruptor">
+          <input id="avisar" type="checkbox" checked />
+          <span>Avisarme con una notificación cuando una página da rojo</span>
+        </label>
+        <p>Avisa, no bloquea: vos decidís si seguís. Si la página da verde, la dirección no sale de tu compu.</p>
+      </footer>
     </main>
     <script type="module" src="popup.js"></script>
   </body>

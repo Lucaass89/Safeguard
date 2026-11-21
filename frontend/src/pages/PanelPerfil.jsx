@@ -1,23 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import FilaAjuste from '../components/FilaAjuste.jsx'
+import { PerfilDosPasos } from '../components/DosPasos.jsx'
 import TarjetaMetrica, { ListaMetricas } from '../components/TarjetaMetrica.jsx'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { nombreEmpresa } from '../lib/formato.js'
 import { elegirPortapapeles, usePortapapeles } from '../lib/portapapeles.js'
+import { TEMAS_AVISO, textoEstado } from '../lib/avisos.js'
+import { appParaAvisos, cambiarTema, useAvisos } from '../lib/useAvisos.js'
+import { useActualizacion } from '../lib/useActualizacion.js'
+import { BotonActualizar } from '../components/ActualizarApp.jsx'
+import { textoVersion } from '../lib/actualizarApp.js'
 import { supabase } from '../lib/supabase.js'
 import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
+import { metodosDe, ROLES, textoMetodo } from '../lib/cuentaUsuario.js'
 
 const AVISO_UNICO_ADMIN =
   'Sos el único administrador de tu empresa. Asigná a otra persona como administrador antes de eliminar tu cuenta.'
-
-const ROLES = {
-  Admin_Principal: 'Administrador principal',
-  Tecnico: 'Técnico',
-}
 
 function textoEliminar(pertenece) {
   if (pertenece) return 'Se borra tu cuenta y tu historial. La empresa y sus campañas quedan.'
@@ -31,33 +33,6 @@ function iniciales(nombre, correo) {
     ? `${partes[0][0]}${partes[partes.length - 1][0]}`
     : (partes[0] || correo.split('@')[0] || '')
   return base.slice(0, 2).toUpperCase() || '·'
-}
-
-function metodosDe(usuario) {
-  const identidades = Array.isArray(usuario.identities) ? usuario.identities : null
-  const proveedores = identidades
-    ? identidades.map((identidad) => identidad.provider)
-    : usuario.app_metadata?.providers
-  if (!Array.isArray(proveedores)) return null
-
-  const unicos = [...new Set(proveedores.filter((proveedor) => typeof proveedor === 'string'))]
-  return {
-    clave: unicos.includes('email'),
-    google: unicos.includes('google'),
-    otros: unicos.filter((proveedor) => proveedor !== 'email' && proveedor !== 'google'),
-  }
-}
-
-function textoMetodo(metodos) {
-  if (!metodos) return null
-  const partes = []
-  if (metodos.clave) partes.push('correo y contraseña')
-  if (metodos.google) partes.push('Google')
-  partes.push(...metodos.otros)
-  if (partes.length === 0) return null
-  if (partes.length === 1) return `Entrás con ${partes[0]}.`
-  const ultimo = partes[partes.length - 1]
-  return `Entrás con ${partes.slice(0, -1).join(', ')} y con ${ultimo}.`
 }
 
 function PerfilActividad({ usuarioId, variante }) {
@@ -353,6 +328,7 @@ function PerfilSeguridad({ usuario }) {
             </button>
           </form>
         )}
+        <PerfilDosPasos />
         <FilaAjuste
           titulo="Sesiones abiertas"
           nota="Si perdiste el celular o entraste desde otro lado, salí de SafeGuard en este dispositivo y en todos los demás."
@@ -416,6 +392,95 @@ function PreferenciaPortapapeles() {
   )
 }
 
+function VersionApp() {
+  const { ultima, hayNueva, estado, instalada, enApp, esWeb } = useActualizacion()
+  if (!enApp) return null
+
+  return (
+    <FilaAjuste titulo="Versión de la app" nota={textoVersion({ instalada, ultima, estado })} apilado={esWeb}>
+      {hayNueva ? <BotonActualizar ultima={ultima} /> : null}
+      {esWeb && ultima ? <BotonActualizar ultima={ultima} nueva /> : null}
+    </FilaAjuste>
+  )
+}
+
+function CelularesConAvisos() {
+  const avisos = useAvisos()
+  const [datos, setDatos] = useState(null)
+  const [aviso, setAviso] = useState('')
+
+  useEffect(() => {
+    let activo = true
+    supabase.rpc('push_mis_dispositivos').then(({ data, error }) => {
+      if (activo && !error) setDatos(Array.isArray(data) ? data[0] : data)
+    })
+    return () => {
+      activo = false
+    }
+  }, [aviso])
+
+  if (!datos || !datos.cantidad) return null
+  const otros = avisos.token ? datos.cantidad - 1 : datos.cantidad
+
+  async function borrarOtros() {
+    const { data, error } = await supabase.rpc('push_borrar_otros', { p_token: avisos.token ?? '' })
+    setAviso(error ? 'No se pudo. Probá de nuevo en un rato.' : `Listo: ${data} ${data === 1 ? 'celular dejó' : 'celulares dejaron'} de recibir avisos.`)
+  }
+
+  return (
+    <FilaAjuste
+      titulo="Celulares con avisos"
+      nota={
+        aviso ||
+        (datos.cantidad === 1 ? 'Los avisos de tu cuenta llegan a 1 celular.' : `Los avisos de tu cuenta llegan a ${datos.cantidad} celulares.`)
+      }
+      apilado={otros > 0}
+    >
+      {otros > 0 && !aviso ? (
+        <button type="button" className="panel-boton-borde" onClick={borrarOtros}>
+          Dejar de avisar en los demás
+        </button>
+      ) : null}
+    </FilaAjuste>
+  )
+}
+
+function PreferenciaAvisos() {
+  const avisos = useAvisos()
+  const app = appParaAvisos()
+  if (app === 'web') return null
+  if (app === 'pwa') {
+    return <FilaAjuste titulo="Avisos al celular" nota="Llegan con la app de Android. Bajala desde Versión de la app." />
+  }
+  if (app === 'vieja') {
+    return <FilaAjuste titulo="Avisos al celular" nota="Para recibir avisos, actualizá la app desde Versión de la app." />
+  }
+
+  return (
+    <>
+      <FilaAjuste
+        titulo="Avisos al celular"
+        nota={
+          avisos.permiso === 'no'
+            ? 'Android no dio permiso. Activalos en Ajustes › Aplicaciones › SafeGuard › Notificaciones.'
+            : textoEstado(avisos)
+        }
+      />
+      {TEMAS_AVISO.map((tema) => (
+        <FilaAjuste key={tema.id} tocable titulo={tema.titulo} nota={tema.nota}>
+          <input
+            type="checkbox"
+            role="switch"
+            className="perfil-interruptor"
+            checked={avisos.activos && avisos.temas[tema.id]}
+            onChange={(evento) => cambiarTema(tema.id, evento.target.checked)}
+          />
+        </FilaAjuste>
+      ))}
+    </>
+  )
+}
+
 const TEMAS = [
   { id: 'claro', etiqueta: 'Claro' },
   { id: 'oscuro', etiqueta: 'Oscuro' },
@@ -465,7 +530,7 @@ function nombreInicial(usuario) {
   return nombre
 }
 
-function PanelPerfil({ variante }) {
+function PanelPerfil({ variante, seccion = null }) {
   const { sesion } = useSesion()
   const { pertenece, cargando: cargandoMembresia, rol, organizacionId, unicoAdmin } = useMembresia()
   const usuario = sesion.user
@@ -690,9 +755,11 @@ function PanelPerfil({ variante }) {
 
   const enApp = variante === 'app'
   const nombreVisible = guardado.trim()
+  const mostrar = (nombre) => !enApp || !seccion || seccion === nombre
 
   return (
     <div className={enApp ? 'panel panel-personas perfil perfil-app' : 'panel panel-personas perfil'}>
+      {mostrar('cuenta') && (
       <header className="panel-header">
         <span className="perfil-avatar" aria-hidden="true">{iniciales(nombreVisible, correo)}</span>
         {enApp && editando ? (
@@ -732,8 +799,9 @@ function PanelPerfil({ variante }) {
           <h1>Tu perfil</h1>
         )}
       </header>
+      )}
 
-      {enApp && (
+      {enApp && mostrar('cuenta') && (
         <div className="perfil-cuenta-estado" aria-live="polite">
           {error && <p className="panel-error">{error}</p>}
           {aviso && <p className="panel-aviso">{aviso}</p>}
@@ -777,10 +845,11 @@ function PanelPerfil({ variante }) {
         </section>
       )}
 
-      <PerfilActividad usuarioId={usuario.id} variante={variante} />
-      {pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
-      <PerfilSeguridad usuario={usuario} />
+      {!seccion && <PerfilActividad usuarioId={usuario.id} variante={variante} />}
+      {!seccion && pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
+      {mostrar('seguridad') && <PerfilSeguridad usuario={usuario} />}
 
+      {mostrar('datos') && (
       <section className="ajuste perfil-datos" aria-labelledby="perfil-datos-titulo">
         <div className="ajuste-cabeza">
           <h2 id="perfil-datos-titulo">Tus datos</h2>
@@ -793,20 +862,58 @@ function PanelPerfil({ variante }) {
           <div aria-live="polite">
             {errorExportar && <p className="panel-error">{errorExportar}</p>}
           </div>
+          {enApp && seccion === 'datos' && (
+            <p className="perfil-legales">
+              <Link to="/privacidad">Política de privacidad</Link>
+              <Link to="/terminos">Términos y condiciones</Link>
+            </p>
+          )}
         </div>
       </section>
+      )}
 
-      {enApp && (
-        <section className="ajuste perfil-preferencias" aria-labelledby="perfil-preferencias-titulo">
+      {enApp && seccion === 'apariencia' && (
+        <section className="ajuste perfil-preferencias" aria-labelledby="perfil-apariencia-titulo">
           <div className="ajuste-cabeza">
-            <h2 id="perfil-preferencias-titulo">Preferencias</h2>
+            <h2 id="perfil-apariencia-titulo">Apariencia</h2>
           </div>
           <PreferenciaTema />
           <PreferenciaPortapapeles />
         </section>
       )}
 
-      {enApp && (
+      {enApp && seccion === 'avisos' && (
+        <section className="ajuste perfil-preferencias" aria-labelledby="perfil-avisos-titulo">
+          <div className="ajuste-cabeza">
+            <h2 id="perfil-avisos-titulo">Avisos al celular</h2>
+          </div>
+          <PreferenciaAvisos />
+          <CelularesConAvisos />
+        </section>
+      )}
+
+      {enApp && seccion === 'version' && (
+        <section className="ajuste perfil-preferencias" aria-labelledby="perfil-version-titulo">
+          <div className="ajuste-cabeza">
+            <h2 id="perfil-version-titulo">Versión de la app</h2>
+          </div>
+          <VersionApp />
+        </section>
+      )}
+
+      {enApp && !seccion && (
+        <section className="ajuste perfil-preferencias" aria-labelledby="perfil-preferencias-titulo">
+          <div className="ajuste-cabeza">
+            <h2 id="perfil-preferencias-titulo">Preferencias</h2>
+          </div>
+          <PreferenciaTema />
+          <PreferenciaPortapapeles />
+          <PreferenciaAvisos />
+          <VersionApp />
+        </section>
+      )}
+
+      {enApp && mostrar('cuenta') && (
         <div className="perfil-salir-zona">
           <button type="button" className="perfil-salir" onClick={abrirSalir}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -846,6 +953,7 @@ function PanelPerfil({ variante }) {
         </dialog>
       )}
 
+      {mostrar('cuenta') && (
       <section className="ajuste perfil-peligro" aria-labelledby="perfil-peligro-titulo">
         <div className="ajuste-cabeza">
           <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
@@ -871,6 +979,7 @@ function PanelPerfil({ variante }) {
           </button>
         </div>
       </section>
+      )}
 
       {modalAbierto && (
         <dialog

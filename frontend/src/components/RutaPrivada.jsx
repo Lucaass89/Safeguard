@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
-import { esAppNativa } from '../lib/esAppNativa.js'
 import { ContextoSesion, useSesion } from '../lib/useSesion.js'
+import { rutaParaVolver } from '../lib/volverTrasIngreso.js'
 import '../pages/Panel.css'
 
 const sesionVista = {
@@ -32,9 +32,7 @@ function RutaPrivada() {
 
   if (cargando) return <p className="panel-estado">Verificando tu sesión…</p>
   if (!sesion) {
-    if (!esAppNativa()) return <Navigate to="/ingresar" replace />
-    const volver = encodeURIComponent(`${pathname}${search}${hash}`)
-    return <Navigate to={`/ingresar?volver=${volver}`} replace />
+    return <Navigate to={rutaParaVolver({ pathname, search, hash })} replace />
   }
   return <Outlet />
 }

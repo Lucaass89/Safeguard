@@ -12,11 +12,14 @@
     "eval": "node eval/evaluar.js",
     "eval:urls": "node eval/evaluar_urls.js",
     "eval:faro": "node eval/evaluar_faro.js",
+    "extension": "vite build --config vite.extension.config.js",
+    "extension:zip": "cd ../extension && rm -f ../frontend/public/safelink.zip && zip -qrX -D ../frontend/public/safelink.zip manifest.json background.js config.js detector.js popup.html popup.css popup.js icons",
+    "recorrido": "node scripts/recorrido/grabar.js",
     "lint": "eslint .",
     "test": "node --test src/lib/*.test.js",
     "preview": "vite preview",
     "eval:legibilidad": "node eval/legibilidad.js",
-    "build:extension": "vite build --config vite.extension.config.js"
+    "video:extension": "node scripts/instalar-extension/grabar.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
