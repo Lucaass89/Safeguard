@@ -4,6 +4,7 @@ const RUTAS_APP = {
   '/panel': '/',
   '/panel?app=safelink': '/safelink',
   '/panel?app=phishguard': '/phishguard',
+  '/panel/historial': '/safelink',
   '/panel/enlaces': '/safelink/enlaces',
   '/panel/whatsapp': '/safelink/whatsapp',
   '/panel/pdf': '/safelink/pdf',

@@ -11,10 +11,7 @@ const SECCIONES = [
   {
     titulo: 'SafeLink',
     enlaces: [
-      ['/panel/enlaces', 'Enlaces', 'enlace'],
-      ['/panel/whatsapp', 'WhatsApp', 'mensaje'],
-      ['/panel/pdf', 'PDF', 'archivo'],
-      ['/panel/correo', 'Correo', 'correo'],
+      ['/panel/historial', 'Historial', 'historial'],
     ],
   },
   {
@@ -34,6 +31,7 @@ const SECCIONES = [
 
 const TRAZOS = {
   inicio: ['M4 11.5 12 5l8 6.5', 'M6.5 10v8.5h11V10'],
+  historial: ['M12 7.5V12l3 2', 'M4.8 12a7.2 7.2 0 1 0 2.1-5.1', 'M4.8 4.8v3.6h3.6'],
   enlace: ['M10 13.5 13.5 10', 'M8.4 11.6 7 13a3.4 3.4 0 0 0 4.8 4.8l1.4-1.4', 'M15.6 12.4 17 11a3.4 3.4 0 0 0-4.8-4.8L10.8 7.6'],
   mensaje: ['M5 18.5 6.2 15A7 7 0 1 1 9 17.8L5 18.5Z'],
   archivo: ['M7 3.5h7l4 4v13H7z', 'M14 3.5v4h4', 'M9.5 13h5', 'M9.5 16h5'],

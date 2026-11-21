@@ -15,6 +15,7 @@ import {
 import { usePortapapeles } from '../lib/portapapeles.js'
 import {
   agruparPorDia,
+  enlaceTraido,
   FILTROS,
   filtrarPorNivel,
   fraseDeNivel,
@@ -23,10 +24,12 @@ import {
   pasosRevision,
   textoProtegido,
   tipoDeEntrada,
+  ultimosDe,
 } from '../lib/safelinkApp.js'
 import { borrarAnalisis, useAnalisisPropios, useTotalesPropios } from '../lib/useAnalisisPropios.js'
 import { useSesion } from '../lib/useSesion.js'
 import { veredictoDe } from '../lib/veredicto.js'
+import MisReportes from '../components/MisReportes.jsx'
 import './SafeLink.css'
 
 const ENTRADA_DE = {
@@ -226,9 +229,32 @@ function PantallaResultado({ resultado, onCerrar }) {
   )
 }
 
-function SafeLink() {
+function Conteo({ totales }) {
+  if (totales.cargando || !totales.total) return null
+  return (
+    <ul className="slapp-conteo" aria-label="Lo que revisaste por color">
+      <li className="slapp-conteo-verde">
+        <strong>{totales.seguros}</strong>
+        <span>Seguros</span>
+      </li>
+      <li className="slapp-conteo-amarillo">
+        <strong>{totales.dudosos}</strong>
+        <span>Precaución</span>
+      </li>
+      <li className="slapp-conteo-rojo">
+        <strong>{totales.peligrosos}</strong>
+        <span>Peligrosos</span>
+      </li>
+    </ul>
+  )
+}
+
+function SafeLink({ variante = 'app', modo = 'completo' }) {
+  const web = variante === 'web'
+  const resumen = modo === 'resumen'
+  const conCaja = modo !== 'historial'
   const archivoRef = useRef(null)
-  const [entrada, setEntrada] = useState('')
+  const [entrada, setEntrada] = useState(() => (web ? enlaceTraido(window.location.search) : ''))
   const [aviso, setAviso] = useState('')
   const [resultado, setResultado] = useState(null)
   const [revisando, setRevisando] = useState(null)
@@ -242,7 +268,7 @@ function SafeLink() {
   const detectado = tipoDeEntrada(entrada)
   const agrupados = agruparActividad(revisados.items, 40)
   const filtrados = filtrarPorNivel(agrupados, filtro)
-  const dias = agruparPorDia(filtrados)
+  const dias = resumen ? [{ titulo: null, items: ultimosDe(agrupados, 5) }] : agruparPorDia(filtrados)
   const protegido = sesion ? textoProtegido(totales) : ''
 
   async function ejecutar(tipo, texto, archivo = null) {
@@ -367,9 +393,11 @@ function SafeLink() {
   }
 
   return (
-    <form className="slapp" onSubmit={revisar}>
-      {protegido ? <p className="slapp-protegido">{protegido}</p> : null}
+    <form className={web ? 'slapp slapp-web' : 'slapp'} onSubmit={revisar}>
+      {protegido && conCaja && !resumen ? <p className="slapp-protegido">{protegido}</p> : null}
 
+      {conCaja ? (
+      <>
       <button type="button" className="slapp-pegar-grande" onClick={pegarYRevisar} disabled={Boolean(revisando)}>
         <span className="slapp-pegar-icono">
           <Icono nombre="pegar" />
@@ -432,10 +460,21 @@ function SafeLink() {
           </button>
         </div>
       )}
+      {web && !revisando ? (
+        <Link className="slapp-qr-web" to="/panel/qr">
+          ¿Tenés un QR? Subí una foto o una captura
+        </Link>
+      ) : null}
+      </>
+      ) : null}
 
       <section className="slapp-bloque" aria-labelledby="slapp-ultimos">
-        <h2 id="slapp-ultimos">Lo que revisaste</h2>
-        {agrupados.length > 0 ? (
+        <div className="slapp-bloque-cabeza">
+          <h2 id="slapp-ultimos">{resumen ? 'Lo último que revisaste' : 'Lo que revisaste'}</h2>
+          {resumen && agrupados.length > 0 ? <Link to="/panel/historial">Ver todo</Link> : null}
+        </div>
+        {resumen ? <Conteo totales={totales} /> : null}
+        {agrupados.length > 0 && !resumen ? (
           <div className="slapp-filtros" role="group" aria-label="Filtrar por color">
             {FILTROS.map((opcion) => (
               <button
@@ -461,30 +500,40 @@ function SafeLink() {
             </p>
             <p>Probá con algo que te llegó: el enlace de un SMS, un WhatsApp que te pide datos o un PDF adjunto.</p>
           </div>
-        ) : filtrados.length === 0 ? (
+        ) : filtrados.length === 0 && !resumen ? (
           <p className="slapp-vacio">No hay revisiones con ese color.</p>
         ) : (
           <>
             {dias.map((dia) => (
-              <div key={dia.titulo} className="slapp-dia">
-                <h3>{dia.titulo}</h3>
+              <div key={dia.titulo ?? 'ultimos'} className="slapp-dia">
+                {dia.titulo ? <h3>{dia.titulo}</h3> : null}
                 <ListaActividad>
                   {dia.items.map((item) => (
                     <FilaActividad
                       key={item.id}
                       item={item}
                       onClick={() => abrirRevisado(item)}
-                      acciones={accionesDe(item)}
+                      acciones={resumen ? null : accionesDe(item)}
                     />
                   ))}
                 </ListaActividad>
               </div>
             ))}
-            {sesion ? <p className="slapp-ayuda">Deslizá una fila hacia la izquierda para borrarla o revisarla de nuevo.</p> : null}
+            {sesion && !resumen ? (
+              <p className="slapp-ayuda">
+                {web ? 'Arrastrá' : 'Deslizá'} una fila hacia la izquierda para borrarla o revisarla de nuevo.
+              </p>
+            ) : null}
           </>
         )}
       </section>
-      {sesion ? (
+      {sesion && web && modo === 'historial' ? (
+        <section className="slapp-bloque slapp-reportes-web" aria-labelledby="slapp-reportes-titulo">
+          <h2 id="slapp-reportes-titulo">Tus reportes</h2>
+          <MisReportes />
+        </section>
+      ) : null}
+      {sesion && !web ? (
         <Link className="slapp-reportes" to="/perfil/reportes">
           <span>
             <strong>Tus reportes</strong>

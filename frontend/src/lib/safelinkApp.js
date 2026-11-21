@@ -98,3 +98,19 @@ export function destinoSafeLink(busqueda = '') {
   if (!traido) return '/safelink'
   return `/safelink?compartido=${encodeURIComponent(traido)}`
 }
+
+export function destinoPanel(busqueda = '') {
+  const traido = new URLSearchParams(busqueda).get('url')?.trim().slice(0, 2048)
+  if (!traido) return '/panel'
+  return `/panel?url=${encodeURIComponent(traido)}`
+}
+
+export function enlaceTraido(busqueda = '') {
+  const traido = new URLSearchParams(busqueda).get('url')?.trim() ?? ''
+  if (!/^https?:\/\/\S+$/i.test(traido)) return ''
+  return traido.slice(0, 2048)
+}
+
+export function ultimosDe(items, cantidad = 5) {
+  return (items ?? []).slice(0, cantidad)
+}

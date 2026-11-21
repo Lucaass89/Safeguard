@@ -39,7 +39,11 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   - `src/pages/` pantallas, `src/components/` piezas comunes, `src/lib/` lógica y pruebas, `src/data/` marcas y plataformas.
   - Rutas en `src/App.jsx`: `/panel/*` en la web; `/safelink`, `/phishguard/*` y `/perfil` solo dentro de la app Android (`esAppNativa`).
     En la app, `/safelink/enlaces`, `/whatsapp`, `/correo` y `/pdf` llevan a `/safelink` (con `?url=` pasa a revisarse solo, `destinoSafeLink`);
-    las pantallas viejas `Panel*.jsx` quedan solo para la web. `/safelink/qr` sigue siendo el lector.
+    `/safelink/qr` sigue siendo el lector.
+    En la web, `/panel` es el Inicio: la misma caja única de SafeLink (`SafeLink` con `variante="web"` y `modo="resumen"`),
+    lo revisado por color, las últimas 5 revisiones y el resumen de PhishGuard. `/panel/historial` tiene todo el historial y
+    tus reportes (`MisReportes`). `/panel/enlaces`, `/whatsapp`, `/pdf` y `/correo` llevan a `/panel` y conservan `?url=`
+    (`destinoPanel`), que solo completa la caja.
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).
 - Inicio de la app (`src/pages/Inicio.jsx`) no revisa nada: lo compartido desde WhatsApp (`/?compartido=…`) y el enlace
@@ -86,7 +90,7 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   que la web) y la CI falla si quedó atrasado. La lista de `amenazas` se baja cada 6 horas y se busca en la compu; solo
   las páginas que no dan verde se mandan a `safelink-enriquecer`, sin la parte después de `#`.
   Cuando da rojo avisa con una notificación (una vez por dominio, se puede apagar). "Ver el análisis completo" abre
-  `/panel/enlaces?url=…`, que solo completa el campo; si no hay sesión, el ingreso vuelve ahí (`volverTrasIngreso.js`).
+  `/panel/enlaces?url=…`, que lleva a `/panel` y solo completa la caja; si no hay sesión, el ingreso vuelve ahí (`volverTrasIngreso.js`).
 - `backend/` — solo un `package.json` de Express, sin uso real.
 - `docs/` — entregables del TFC (propuesta, ERS, casos de prueba, benchmark, competencia, diagramas, evidencia).
 

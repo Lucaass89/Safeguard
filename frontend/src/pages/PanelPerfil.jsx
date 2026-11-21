@@ -102,7 +102,7 @@ function PerfilActividad({ usuarioId, variante }) {
           </ListaMetricas>
         )}
         {!cargando && !error && (
-          <Link className="perfil-historial" to={rutaEnApp('/panel/enlaces')}>
+          <Link className="perfil-historial" to={rutaEnApp('/panel/historial')}>
             Ver historial
             {variante === 'app' && (
               <svg viewBox="0 0 24 24" aria-hidden="true">
