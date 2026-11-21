@@ -3,19 +3,10 @@ import { Link, useSearchParams } from 'react-router'
 import FilaActividad, { ListaActividad } from '../components/FilaActividad.jsx'
 import Resultado from '../components/Resultado.jsx'
 import { agruparActividad } from '../lib/agruparActividad.js'
-import { analizarPdf } from '../lib/analisisPdf.js'
-import {
-  cerrarRevision,
-  enlaceParaAbrir,
-  guardarAnalisis,
-  revisarCorreo,
-  revisarEnlace,
-  revisarWhatsapp,
-} from '../lib/enriquecer.js'
+import { guardarAnalisis } from '../lib/enriquecer.js'
 import { usePortapapeles } from '../lib/portapapeles.js'
 import {
   agruparPorDia,
-  enlaceTraido,
   FILTROS,
   filtrarPorNivel,
   fraseDeNivel,
@@ -24,45 +15,12 @@ import {
   pasosRevision,
   textoProtegido,
   tipoDeEntrada,
-  ultimosDe,
 } from '../lib/safelinkApp.js'
 import { borrarAnalisis, useAnalisisPropios, useTotalesPropios } from '../lib/useAnalisisPropios.js'
 import { useSesion } from '../lib/useSesion.js'
 import { veredictoDe } from '../lib/veredicto.js'
-import MisReportes from '../components/MisReportes.jsx'
+import { CANAL_DE, casoDeRevisado, ENTRADA_DE, resumenDe, revisarTipo } from '../lib/revisarSafeLink.js'
 import './SafeLink.css'
-
-const ENTRADA_DE = {
-  enlace: 'web',
-  mensaje: 'whatsapp',
-  correo: 'correo',
-  pdf: 'pdf',
-}
-
-const CANAL_DE = {
-  enlace: 'enlace',
-  mensaje: 'whatsapp',
-  correo: 'correo',
-  pdf: 'pdf',
-  qr: 'qr',
-}
-
-const ENTRADA_A_TIPO = {
-  web: 'enlace',
-  whatsapp: 'mensaje',
-  correo: 'correo',
-  pdf: 'pdf',
-  qr: 'qr',
-}
-
-async function revisarTipo(tipo, entrada, archivo) {
-  if (tipo === 'enlace') return revisarEnlace(entrada)
-  if (tipo === 'mensaje') return revisarWhatsapp(entrada)
-  if (tipo === 'correo') return revisarCorreo(entrada)
-  const analisis = await analizarPdf(archivo)
-  const peor = enlaceParaAbrir(analisis.enlaces)
-  return cerrarRevision(analisis, peor?.url, [peor?.dominio])
-}
 
 function Icono({ nombre }) {
   const trazo = {
@@ -152,13 +110,7 @@ function SimboloNivel({ clave }) {
   )
 }
 
-function resumenDe(tipo, entrada, archivo) {
-  if (tipo === 'pdf') return archivo || 'PDF'
-  const linea = entrada.trim().split('\n')[0]
-  return linea.length > 72 ? `${linea.slice(0, 72)}…` : linea
-}
-
-function Pasos({ tipo }) {
+export function Pasos({ tipo }) {
   const [pasado, setPasado] = useState(0)
 
   useEffect(() => {
@@ -190,7 +142,7 @@ function Pasos({ tipo }) {
   )
 }
 
-function PantallaResultado({ resultado, onCerrar }) {
+export function PantallaResultado({ resultado, onCerrar }) {
   const contenedor = useRef(null)
   const { clave, titulo } = veredictoDe(resultado.caso)
 
@@ -229,32 +181,9 @@ function PantallaResultado({ resultado, onCerrar }) {
   )
 }
 
-function Conteo({ totales }) {
-  if (totales.cargando || !totales.total) return null
-  return (
-    <ul className="slapp-conteo" aria-label="Lo que revisaste por color">
-      <li className="slapp-conteo-verde">
-        <strong>{totales.seguros}</strong>
-        <span>Seguros</span>
-      </li>
-      <li className="slapp-conteo-amarillo">
-        <strong>{totales.dudosos}</strong>
-        <span>Precaución</span>
-      </li>
-      <li className="slapp-conteo-rojo">
-        <strong>{totales.peligrosos}</strong>
-        <span>Peligrosos</span>
-      </li>
-    </ul>
-  )
-}
-
-function SafeLink({ variante = 'app', modo = 'completo' }) {
-  const web = variante === 'web'
-  const resumen = modo === 'resumen'
-  const conCaja = modo !== 'historial'
+function SafeLink() {
   const archivoRef = useRef(null)
-  const [entrada, setEntrada] = useState(() => (web ? enlaceTraido(window.location.search) : ''))
+  const [entrada, setEntrada] = useState('')
   const [aviso, setAviso] = useState('')
   const [resultado, setResultado] = useState(null)
   const [revisando, setRevisando] = useState(null)
@@ -268,7 +197,7 @@ function SafeLink({ variante = 'app', modo = 'completo' }) {
   const detectado = tipoDeEntrada(entrada)
   const agrupados = agruparActividad(revisados.items, 40)
   const filtrados = filtrarPorNivel(agrupados, filtro)
-  const dias = resumen ? [{ titulo: null, items: ultimosDe(agrupados, 5) }] : agruparPorDia(filtrados)
+  const dias = agruparPorDia(filtrados)
   const protegido = sesion ? textoProtegido(totales) : ''
 
   async function ejecutar(tipo, texto, archivo = null) {
@@ -343,20 +272,7 @@ function SafeLink({ variante = 'app', modo = 'completo' }) {
 
   function abrirRevisado(item) {
     setAviso('')
-    const mensaje = item.entrada === 'whatsapp'
-    setResultado({
-      id: item.id,
-      caso: {
-        nivel: item.nivelRiesgo,
-        url: item.url,
-        dominio: item.dominio,
-        motivos: item.motivos,
-        diferencia: item.diferencia,
-        sinVerificar: item.nivelRiesgo === 'gris',
-      },
-      canal: CANAL_DE[ENTRADA_A_TIPO[item.entrada]] ?? 'enlace',
-      subtitulo: mensaje || item.entrada === 'pdf' || item.entrada === 'correo' ? item.texto : undefined,
-    })
+    setResultado(casoDeRevisado(item))
   }
 
   async function borrar(item) {
@@ -393,11 +309,9 @@ function SafeLink({ variante = 'app', modo = 'completo' }) {
   }
 
   return (
-    <form className={web ? 'slapp slapp-web' : 'slapp'} onSubmit={revisar}>
-      {protegido && conCaja && !resumen ? <p className="slapp-protegido">{protegido}</p> : null}
+    <form className="slapp" onSubmit={revisar}>
+      {protegido ? <p className="slapp-protegido">{protegido}</p> : null}
 
-      {conCaja ? (
-      <>
       <button type="button" className="slapp-pegar-grande" onClick={pegarYRevisar} disabled={Boolean(revisando)}>
         <span className="slapp-pegar-icono">
           <Icono nombre="pegar" />
@@ -460,21 +374,10 @@ function SafeLink({ variante = 'app', modo = 'completo' }) {
           </button>
         </div>
       )}
-      {web && !revisando ? (
-        <Link className="slapp-qr-web" to="/panel/qr">
-          ¿Tenés un QR? Subí una foto o una captura
-        </Link>
-      ) : null}
-      </>
-      ) : null}
 
       <section className="slapp-bloque" aria-labelledby="slapp-ultimos">
-        <div className="slapp-bloque-cabeza">
-          <h2 id="slapp-ultimos">{resumen ? 'Lo último que revisaste' : 'Lo que revisaste'}</h2>
-          {resumen && agrupados.length > 0 ? <Link to="/panel/historial">Ver todo</Link> : null}
-        </div>
-        {resumen ? <Conteo totales={totales} /> : null}
-        {agrupados.length > 0 && !resumen ? (
+        <h2 id="slapp-ultimos">Lo que revisaste</h2>
+        {agrupados.length > 0 ? (
           <div className="slapp-filtros" role="group" aria-label="Filtrar por color">
             {FILTROS.map((opcion) => (
               <button
@@ -500,40 +403,30 @@ function SafeLink({ variante = 'app', modo = 'completo' }) {
             </p>
             <p>Probá con algo que te llegó: el enlace de un SMS, un WhatsApp que te pide datos o un PDF adjunto.</p>
           </div>
-        ) : filtrados.length === 0 && !resumen ? (
+        ) : filtrados.length === 0 ? (
           <p className="slapp-vacio">No hay revisiones con ese color.</p>
         ) : (
           <>
             {dias.map((dia) => (
-              <div key={dia.titulo ?? 'ultimos'} className="slapp-dia">
-                {dia.titulo ? <h3>{dia.titulo}</h3> : null}
+              <div key={dia.titulo} className="slapp-dia">
+                <h3>{dia.titulo}</h3>
                 <ListaActividad>
                   {dia.items.map((item) => (
                     <FilaActividad
                       key={item.id}
                       item={item}
                       onClick={() => abrirRevisado(item)}
-                      acciones={resumen ? null : accionesDe(item)}
+                      acciones={accionesDe(item)}
                     />
                   ))}
                 </ListaActividad>
               </div>
             ))}
-            {sesion && !resumen ? (
-              <p className="slapp-ayuda">
-                {web ? 'Arrastrá' : 'Deslizá'} una fila hacia la izquierda para borrarla o revisarla de nuevo.
-              </p>
-            ) : null}
+            {sesion ? <p className="slapp-ayuda">Deslizá una fila hacia la izquierda para borrarla o revisarla de nuevo.</p> : null}
           </>
         )}
       </section>
-      {sesion && web && modo === 'historial' ? (
-        <section className="slapp-bloque slapp-reportes-web" aria-labelledby="slapp-reportes-titulo">
-          <h2 id="slapp-reportes-titulo">Tus reportes</h2>
-          <MisReportes />
-        </section>
-      ) : null}
-      {sesion && !web ? (
+      {sesion ? (
         <Link className="slapp-reportes" to="/perfil/reportes">
           <span>
             <strong>Tus reportes</strong>

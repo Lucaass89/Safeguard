@@ -40,9 +40,10 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   - Rutas en `src/App.jsx`: `/panel/*` en la web; `/safelink`, `/phishguard/*` y `/perfil` solo dentro de la app Android (`esAppNativa`).
     En la app, `/safelink/enlaces`, `/whatsapp`, `/correo` y `/pdf` llevan a `/safelink` (con `?url=` pasa a revisarse solo, `destinoSafeLink`);
     `/safelink/qr` sigue siendo el lector.
-    En la web, `/panel` es el Inicio: la misma caja única de SafeLink (`SafeLink` con `variante="web"` y `modo="resumen"`),
-    lo revisado por color, las últimas 5 revisiones y el resumen de PhishGuard. `/panel/historial` tiene todo el historial y
-    tus reportes (`MisReportes`). `/panel/enlaces`, `/whatsapp`, `/pdf` y `/correo` llevan a `/panel` y conservan `?url=`
+    En la web, `/panel` es el Inicio con un diseño propio de compu (`components/SafeLinkWeb.jsx`): tarjeta para revisar
+    (pegar, subir o soltar un PDF, foto de un QR, Ctrl+Enter), "Tu actividad" con la barra por color, el resumen de PhishGuard
+    y una tabla con lo último. `/panel/historial` es una tabla con filtros, búsqueda, revisar de nuevo y borrar, más tus
+    reportes (`MisReportes`). La lógica de revisar es la misma que la app (`revisarSafeLink.js`, `revisados.js`). `/panel/enlaces`, `/whatsapp`, `/pdf` y `/correo` llevan a `/panel` y conservan `?url=`
     (`destinoPanel`), que solo completa la caja.
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).

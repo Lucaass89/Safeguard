@@ -110,7 +110,3 @@ export function enlaceTraido(busqueda = '') {
   if (!/^https?:\/\/\S+$/i.test(traido)) return ''
   return traido.slice(0, 2048)
 }
-
-export function ultimosDe(items, cantidad = 5) {
-  return (items ?? []).slice(0, cantidad)
-}
