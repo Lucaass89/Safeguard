@@ -21,7 +21,7 @@ function CabeceraPhishGuard({ titulo, texto, organizacion = '', seccion = '', ch
   return (
     <header className="pgc-hero">
       <div className="pgc-adentro">
-        <Link className="pgc-volver" to="/panel?app=phishguard">
+        <Link className="pgc-volver informe-no-imprimir" to="/panel?app=phishguard">
           ← Volver a PhishGuard
         </Link>
         <p className="pgc-eti">{etiqueta}</p>
