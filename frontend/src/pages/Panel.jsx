@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import Bienvenida from '../components/Bienvenida.jsx'
+import ElegirApp from '../components/ElegirApp.jsx'
 import { HistorialWeb, InicioSafeLinkWeb } from '../components/SafeLinkWeb.jsx'
 import { esAppNativa } from '../lib/esAppNativa.js'
 import { supabase } from '../lib/supabase.js'
@@ -265,73 +266,15 @@ function Panel() {
     <div className="panel mesa">
       <Bienvenida />
       {fase === 'elegir' && (
-        <section className="elegir">
-          <header className="elegir-cabeza">
-            {lineaSaludo}
-            <h1>¿Qué aplicación querés usar?</h1>
-            <p>SafeLink revisa lo que te llega. PhishGuard entrena a tu equipo.</p>
-          </header>
-          <div className="elegir-corte">
-            <button type="button" className="elegir-lado elegir-safelink" onClick={() => { cerrarSaludo(); setFase('safelink') }}>
-              <span className="elegir-tope">
-                <strong>SafeLink</strong>
-                <span className="elegir-ir" aria-hidden="true">→</span>
-              </span>
-              <p>Revisá un enlace, un mensaje, un PDF o un correo.</p>
-              <ul className="elegir-usos">
-                <li>Enlace</li>
-                <li>WhatsApp</li>
-                <li>PDF</li>
-                <li>Correo</li>
-              </ul>
-            </button>
-            <div
-              className={
-                acceso === false
-                  ? 'elegir-lado elegir-phish elegir-cerrado'
-                  : 'elegir-lado elegir-phish'
-              }
-              role={acceso ? 'button' : undefined}
-              tabIndex={acceso ? 0 : undefined}
-              onClick={() => {
-                if (acceso) {
-                  cerrarSaludo()
-                  setFase('phishguard')
-                }
-              }}
-              onKeyDown={(evento) => {
-                if (!acceso) return
-                if (evento.key === 'Enter' || evento.key === ' ') {
-                  evento.preventDefault()
-                  cerrarSaludo()
-                  setFase('phishguard')
-                }
-              }}
-            >
-              <span className="elegir-tope">
-                <strong>PhishGuard</strong>
-                {acceso === false ? (
-                  <span className="elegir-plan">Plan pago</span>
-                ) : (
-                  <span className="elegir-ir" aria-hidden="true">→</span>
-                )}
-              </span>
-              <p>
-                {acceso
-                  ? 'Cargá al equipo y armá una simulación.'
-                  : acceso === false
-                    ? 'Esta parte no viene con la cuenta. Se abre cuando el plan está pago.'
-                    : 'Revisando tu plan…'}
-              </p>
-              <ul className="elegir-usos">
-                <li>Empresa</li>
-                <li>Campañas</li>
-                <li>Tablero</li>
-              </ul>
-              {acceso === false && <Link to="/adquirir">Adquirir PhishGuard</Link>}
-            </div>
-          </div>
-        </section>
+        <ElegirApp
+          nombre={saludo}
+          acceso={acceso}
+          tablero={tablero}
+          onElegir={(app) => {
+            cerrarSaludo()
+            setFase(app)
+          }}
+        />
       )}
 
       {fase !== 'elegir' && (
