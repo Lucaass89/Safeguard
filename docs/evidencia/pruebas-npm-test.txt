@@ -1,14 +1,3368 @@
 SafeGuard, pruebas automáticas del frontend
-Fecha: 12 de noviembre de 2026
+Fecha: 21 de noviembre de 2026
 Comando: npm test
-Commit de referencia: 4fd6b78
+Rama: la de la entrega, con main incluido
 
-1..107
-# tests 299
-# suites 44
-# pass 299
+
+
+TAP version 13
+# Subtest: actividad reciente
+    # Subtest: junta lo repetido del mismo día
+    ok 1 - junta lo repetido del mismo día
+      ---
+      duration_ms: 1.408041
+      type: 'test'
+      ...
+    # Subtest: no junta días ni resultados distintos
+    ok 2 - no junta días ni resultados distintos
+      ---
+      duration_ms: 0.252353
+      type: 'test'
+      ...
+    # Subtest: corta en el máximo pero sigue contando repetidos
+    ok 3 - corta en el máximo pero sigue contando repetidos
+      ---
+      duration_ms: 0.462328
+      type: 'test'
+      ...
+    # Subtest: plural de cada tipo
+    ok 4 - plural de cada tipo
+      ---
+      duration_ms: 0.192908
+      type: 'test'
+      ...
+    # Subtest: el fragmento es corto y de una línea
+    ok 5 - el fragmento es corto y de una línea
+      ---
+      duration_ms: 0.633114
+      type: 'test'
+      ...
+    1..5
+ok 1 - actividad reciente
+  ---
+  duration_ms: 6.088881
+  type: 'suite'
+  ...
+# Subtest: actualizar la app
+    # Subtest: acepta un aviso de versión bien armado
+    ok 1 - acepta un aviso de versión bien armado
+      ---
+      duration_ms: 4.857775
+      type: 'test'
+      ...
+    # Subtest: rechaza lo raro
+    ok 2 - rechaza lo raro
+      ---
+      duration_ms: 0.366258
+      type: 'test'
+      ...
+    # Subtest: pide actualizar solo a una app más vieja
+    ok 3 - pide actualizar solo a una app más vieja
+      ---
+      duration_ms: 0.286628
+      type: 'test'
+      ...
+    # Subtest: el nombre del archivo lleva la versión
+    ok 4 - el nombre del archivo lleva la versión
+      ---
+      duration_ms: 0.230206
+      type: 'test'
+      ...
+    # Subtest: el archivo publicado es válido y existe
+    ok 5 - el archivo publicado es válido y existe
+      ---
+      duration_ms: 7.71332
+      type: 'test'
+      ...
+    1..5
+ok 2 - actualizar la app
+  ---
+  duration_ms: 15.067436
+  type: 'suite'
+  ...
+# Subtest: qué versión tenés
+    # Subtest: nombra la versión instalada
+    ok 1 - nombra la versión instalada
+      ---
+      duration_ms: 0.194287
+      type: 'test'
+      ...
+    # Subtest: explica el estado
+    ok 2 - explica el estado
+      ---
+      duration_ms: 0.548654
+      type: 'test'
+      ...
+    1..2
+ok 3 - qué versión tenés
+  ---
+  duration_ms: 1.144026
+  type: 'suite'
+  ...
+# Subtest: nunca da Seguro si la dirección no se puede verificar
+    # Subtest: wwww.tikt0ok.-com
+    ok 1 - wwww.tikt0ok.-com
+      ---
+      duration_ms: 15.110876
+      type: 'test'
+      ...
+    # Subtest: wwww.tikt'ok.-com
+    ok 2 - wwww.tikt'ok.-com
+      ---
+      duration_ms: 1.270135
+      type: 'test'
+      ...
+    # Subtest: tiktok.-com
+    ok 3 - tiktok.-com
+      ---
+      duration_ms: 1.274746
+      type: 'test'
+      ...
+    # Subtest: sitio..com
+    ok 4 - sitio..com
+      ---
+      duration_ms: 1.57298
+      type: 'test'
+      ...
+    # Subtest: hola
+    ok 5 - hola
+      ---
+      duration_ms: 0.283184
+      type: 'test'
+      ...
+    # Subtest: ejemplo.c0m
+    ok 6 - ejemplo.c0m
+      ---
+      duration_ms: 2.473492
+      type: 'test'
+      ...
+    # Subtest: exa_mple.com
+    ok 7 - exa_mple.com
+      ---
+      duration_ms: 1.324409
+      type: 'test'
+      ...
+    # Subtest: -banco.com
+    ok 8 - -banco.com
+      ---
+      duration_ms: 1.300696
+      type: 'test'
+      ...
+    # Subtest: queda en gris con el motivo de formato
+    ok 9 - queda en gris con el motivo de formato
+      ---
+      duration_ms: 1.97793
+      type: 'test'
+      ...
+    # Subtest: un dominio inválido que imita una marca queda en Sospechoso, sin verificar
+    ok 10 - un dominio inválido que imita una marca queda en Sospechoso, sin verificar
+      ---
+      duration_ms: 2.184738
+      type: 'test'
+      ...
+    1..10
+ok 4 - nunca da Seguro si la dirección no se puede verificar
+  ---
+  duration_ms: 31.233265
+  type: 'suite'
+  ...
+# Subtest: doble w y letras cambiadas
+    # Subtest: wwww. no pasa como verde
+    ok 1 - wwww. no pasa como verde
+      ---
+      duration_ms: 4.482638
+      type: 'test'
+      ...
+    # Subtest: ww. no pasa como verde
+    ok 2 - ww. no pasa como verde
+      ---
+      duration_ms: 1.760017
+      type: 'test'
+      ...
+    # Subtest: una letra cambiada por un número es Peligroso; una letra de más en una marca corta, Precaución
+    ok 3 - una letra cambiada por un número es Peligroso; una letra de más en una marca corta, Precaución
+      ---
+      duration_ms: 8.543297
+      type: 'test'
+      ...
+    # Subtest: paypa1.com es Peligroso aun sin otra señal
+    ok 4 - paypa1.com es Peligroso aun sin otra señal
+      ---
+      duration_ms: 4.415138
+      type: 'test'
+      ...
+    1..4
+ok 5 - doble w y letras cambiadas
+  ---
+  duration_ms: 19.540268
+  type: 'suite'
+  ...
+# Subtest: URL malformada
+    # Subtest: "http://"
+    ok 1 - "http://"
+      ---
+      duration_ms: 0.294461
+      type: 'test'
+      ...
+    # Subtest: "ht!tp://exa mple"
+    ok 2 - "ht!tp://exa mple"
+      ---
+      duration_ms: 0.100515
+      type: 'test'
+      ...
+    # Subtest: javascript: es rojo y ftp: no se puede verificar
+    ok 3 - javascript: es rojo y ftp: no se puede verificar
+      ---
+      duration_ms: 0.234076
+      type: 'test'
+      ...
+    1..3
+ok 6 - URL malformada
+  ---
+  duration_ms: 0.778885
+  type: 'suite'
+  ...
+# Subtest: sitios reales siguen en verde
+    # Subtest: https://www.google.com
+    ok 1 - https://www.google.com
+      ---
+      duration_ms: 0.408738
+      type: 'test'
+      ...
+    # Subtest: mercadolibre.com.ar
+    ok 2 - mercadolibre.com.ar
+      ---
+      duration_ms: 0.541155
+      type: 'test'
+      ...
+    # Subtest: https://www.argentina.gob.ar
+    ok 3 - https://www.argentina.gob.ar
+      ---
+      duration_ms: 1.342091
+      type: 'test'
+      ...
+    # Subtest: www. normal no suma
+    ok 4 - www. normal no suma
+      ---
+      duration_ms: 0.343244
+      type: 'test'
+      ...
+    1..4
+ok 7 - sitios reales siguen en verde
+  ---
+  duration_ms: 2.841742
+  type: 'suite'
+  ...
+# Subtest: lo que no se pudo verificar después
+    # Subtest: si no se pudo abrir el sitio, un verde pasa a gris
+    ok 1 - si no se pudo abrir el sitio, un verde pasa a gris
+      ---
+      duration_ms: 1.236669
+      type: 'test'
+      ...
+    # Subtest: un rojo sigue rojo
+    ok 2 - un rojo sigue rojo
+      ---
+      duration_ms: 1.433825
+      type: 'test'
+      ...
+    # Subtest: una imitación de marca sigue en Sospechoso aunque no se pueda abrir
+    ok 3 - una imitación de marca sigue en Sospechoso aunque no se pueda abrir
+      ---
+      duration_ms: 1.791118
+      type: 'test'
+      ...
+    # Subtest: la base de amenazas no lo vuelve verde
+    ok 4 - la base de amenazas no lo vuelve verde
+      ---
+      duration_ms: 0.85763
+      type: 'test'
+      ...
+    # Subtest: el enriquecimiento no lo vuelve verde
+    ok 5 - el enriquecimiento no lo vuelve verde
+      ---
+      duration_ms: 1.683037
+      type: 'test'
+      ...
+    # Subtest: un acortador que termina en un dominio inválido queda sin verificar
+    ok 6 - un acortador que termina en un dominio inválido queda sin verificar
+      ---
+      duration_ms: 4.262459
+      type: 'test'
+      ...
+    1..6
+ok 8 - lo que no se pudo verificar después
+  ---
+  duration_ms: 11.651114
+  type: 'suite'
+  ...
+# Subtest: enlaces en un texto compartido o copiado
+    # Subtest: saca el enlace de un mensaje
+    ok 1 - saca el enlace de un mensaje
+      ---
+      duration_ms: 4.811657
+      type: 'test'
+      ...
+    # Subtest: encuentra un dominio sin https
+    ok 2 - encuentra un dominio sin https
+      ---
+      duration_ms: 2.541774
+      type: 'test'
+      ...
+    # Subtest: destapa un enlace camuflado
+    ok 3 - destapa un enlace camuflado
+      ---
+      duration_ms: 2.74447
+      type: 'test'
+      ...
+    # Subtest: no se come las w de más
+    ok 4 - no se come las w de más
+      ---
+      duration_ms: 1.567284
+      type: 'test'
+      ...
+    # Subtest: un texto sin enlaces no devuelve nada
+    ok 5 - un texto sin enlaces no devuelve nada
+      ---
+      duration_ms: 0.161268
+      type: 'test'
+      ...
+    1..5
+ok 9 - enlaces en un texto compartido o copiado
+  ---
+  duration_ms: 12.13431
+  type: 'suite'
+  ...
+# Subtest: mensajes
+    # Subtest: un mensaje con un enlace inválido no da verde
+    ok 1 - un mensaje con un enlace inválido no da verde
+      ---
+      duration_ms: 3.007915
+      type: 'test'
+      ...
+    # Subtest: revisar el enlace en el servidor no baja el nivel que ya tenía el texto del mensaje
+    ok 2 - revisar el enlace en el servidor no baja el nivel que ya tenía el texto del mensaje
+      ---
+      duration_ms: 9.588516
+      type: 'test'
+      ...
+    # Subtest: un enlace sano no sube por el piso del texto
+    ok 3 - un enlace sano no sube por el piso del texto
+      ---
+      duration_ms: 0.743068
+      type: 'test'
+      ...
+    1..3
+ok 10 - mensajes
+  ---
+  duration_ms: 13.618974
+  type: 'suite'
+  ...
+# Subtest: los bytes del PDF siguen disponibles aunque pdf.js se quede con su copia
+ok 11 - los bytes del PDF siguen disponibles aunque pdf.js se quede con su copia
+  ---
+  duration_ms: 2.12004
+  type: 'test'
+  ...
+# Subtest: la copia trae los mismos bytes y no comparte memoria
+ok 12 - la copia trae los mismos bytes y no comparte memoria
+  ---
+  duration_ms: 1.409359
+  type: 'test'
+  ...
+# Subtest: inspeccionarBytes encuentra lanzamientos y archivos adjuntos
+ok 13 - inspeccionarBytes encuentra lanzamientos y archivos adjuntos
+  ---
+  duration_ms: 0.356882
+  type: 'test'
+  ...
+# Subtest: lee el PDF aunque pdf.js se quede con los datos que recibe
+ok 14 - lee el PDF aunque pdf.js se quede con los datos que recibe
+  ---
+  duration_ms: 1.399949
+  type: 'test'
+  ...
+# Subtest: encuentra JavaScript y acciones automáticas en los bytes
+ok 15 - encuentra JavaScript y acciones automáticas en los bytes
+  ---
+  duration_ms: 0.213625
+  type: 'test'
+  ...
+# Subtest: abrir en la página 1 no cuenta como una acción automática
+ok 16 - abrir en la página 1 no cuenta como una acción automática
+  ---
+  duration_ms: 0.194595
+  type: 'test'
+  ...
+# Subtest: un CBU no se toma como un teléfono del exterior
+ok 17 - un CBU no se toma como un teléfono del exterior
+  ---
+  duration_ms: 3.801575
+  type: 'test'
+  ...
+# Subtest: un CBU escrito con espacios o guiones tampoco cuenta como teléfono
+ok 18 - un CBU escrito con espacios o guiones tampoco cuenta como teléfono
+  ---
+  duration_ms: 0.402405
+  type: 'test'
+  ...
+# Subtest: un CBU sin la palabra CBU sigue marcándose por su largo
+ok 19 - un CBU sin la palabra CBU sigue marcándose por su largo
+  ---
+  duration_ms: 0.681869
+  type: 'test'
+  ...
+# Subtest: los teléfonos del exterior se siguen detectando, aunque haya un CBU al lado
+ok 20 - los teléfonos del exterior se siguen detectando, aunque haya un CBU al lado
+  ---
+  duration_ms: 0.469258
+  type: 'test'
+  ...
+# Subtest: los teléfonos de Argentina no se marcan
+ok 21 - los teléfonos de Argentina no se marcan
+  ---
+  duration_ms: 0.382385
+  type: 'test'
+  ...
+# Subtest: un número de más de 15 dígitos no es un teléfono
+ok 22 - un número de más de 15 dígitos no es un teléfono
+  ---
+  duration_ms: 0.122148
+  type: 'test'
+  ...
+# Subtest: sinCbu deja intacto el resto del texto
+ok 23 - sinCbu deja intacto el resto del texto
+  ---
+  duration_ms: 0.286308
+  type: 'test'
+  ...
+# Subtest: anuncio a mano
+    # Subtest: arma el aviso con lo de por defecto
+    ok 1 - arma el aviso con lo de por defecto
+      ---
+      duration_ms: 2.387494
+      type: 'test'
+      ...
+    # Subtest: respeta el tema y la ruta
+    ok 2 - respeta el tema y la ruta
+      ---
+      duration_ms: 0.167242
+      type: 'test'
+      ...
+    # Subtest: rechaza lo que no sirve
+    ok 3 - rechaza lo que no sirve
+      ---
+      duration_ms: 0.287532
+      type: 'test'
+      ...
+    1..3
+ok 24 - anuncio a mano
+  ---
+  duration_ms: 4.010239
+  type: 'suite'
+  ...
+# Subtest: aviso de las estafas de la semana
+    # Subtest: lee la fecha de la edición del archivo
+    ok 1 - lee la fecha de la edición del archivo
+      ---
+      duration_ms: 1.148969
+      type: 'test'
+      ...
+    # Subtest: avisa solo si cambió la fecha
+    ok 2 - avisa solo si cambió la fecha
+      ---
+      duration_ms: 0.255804
+      type: 'test'
+      ...
+    # Subtest: arma el texto
+    ok 3 - arma el texto
+      ---
+      duration_ms: 1.934933
+      type: 'test'
+      ...
+    # Subtest: funciona con la edición publicada
+    ok 4 - funciona con la edición publicada
+      ---
+      duration_ms: 0.238942
+      type: 'test'
+      ...
+    1..4
+ok 25 - aviso de las estafas de la semana
+  ---
+  duration_ms: 4.883204
+  type: 'suite'
+  ...
+# Subtest: avisos al celular
+    # Subtest: sin nada guardado, no está decidido y los temas arrancan prendidos
+    ok 1 - sin nada guardado, no está decidido y los temas arrancan prendidos
+      ---
+      duration_ms: 2.009223
+      type: 'test'
+      ...
+    # Subtest: limpia lo raro
+    ok 2 - limpia lo raro
+      ---
+      duration_ms: 1.335326
+      type: 'test'
+      ...
+    # Subtest: arma la dirección que entiende la app
+    ok 3 - arma la dirección que entiende la app
+      ---
+      duration_ms: 0.430273
+      type: 'test'
+      ...
+    # Subtest: toma el permiso y el token que manda el celular
+    ok 4 - toma el permiso y el token que manda el celular
+      ---
+      duration_ms: 0.168898
+      type: 'test'
+      ...
+    # Subtest: si Android no da permiso, quedan apagados
+    ok 5 - si Android no da permiso, quedan apagados
+      ---
+      duration_ms: 0.184718
+      type: 'test'
+      ...
+    # Subtest: cuenta los temas prendidos
+    ok 6 - cuenta los temas prendidos
+      ---
+      duration_ms: 0.171605
+      type: 'test'
+      ...
+    1..6
+ok 26 - avisos al celular
+  ---
+  duration_ms: 5.468434
+  type: 'suite'
+  ...
+# Subtest: versión de la app
+    # Subtest: en la web no hay avisos y en apps viejas hay que actualizar
+    ok 1 - en la web no hay avisos y en apps viejas hay que actualizar
+      ---
+      duration_ms: 0.225076
+      type: 'test'
+      ...
+    1..1
+ok 27 - versión de la app
+  ---
+  duration_ms: 0.435526
+  type: 'suite'
+  ...
+# Subtest: cada ejemplo del carrusel da el color que muestra la portada
+ok 28 - cada ejemplo del carrusel da el color que muestra la portada
+  ---
+  duration_ms: 37.856848
+  type: 'test'
+  ...
+# Subtest: los ejemplos que no son verdes explican el motivo
+ok 29 - los ejemplos que no son verdes explican el motivo
+  ---
+  duration_ms: 19.690728
+  type: 'test'
+  ...
+# Subtest: hay estafas de varios canales y al menos un sitio real
+ok 30 - hay estafas de varios canales y al menos un sitio real
+  ---
+  duration_ms: 0.358149
+  type: 'test'
+  ...
+# Subtest: cada ejemplo trae un consejo para seguir
+ok 31 - cada ejemplo trae un consejo para seguir
+  ---
+  duration_ms: 0.22662
+  type: 'test'
+  ...
+# Subtest: siguienteIndice no se pasa de los bordes
+ok 32 - siguienteIndice no se pasa de los bordes
+  ---
+  duration_ms: 0.377119
+  type: 'test'
+  ...
+# Subtest: indiceVisible redondea a la tarjeta más cercana
+ok 33 - indiceVisible redondea a la tarjeta más cercana
+  ---
+  duration_ms: 0.354452
+  type: 'test'
+  ...
+# Subtest: motivosEnteros deja cada motivo completo y sin repetir
+ok 34 - motivosEnteros deja cada motivo completo y sin repetir
+  ---
+  duration_ms: 2.586982
+  type: 'test'
+  ...
+# Subtest: entran 3 tarjetas en la compu, 2 en la tablet y 1 en el celular
+ok 35 - entran 3 tarjetas en la compu, 2 en la tablet y 1 en el celular
+  ---
+  duration_ms: 0.262621
+  type: 'test'
+  ...
+# Subtest: avanza de a una y al llegar al final vuelve al principio
+ok 36 - avanza de a una y al llegar al final vuelve al principio
+  ---
+  duration_ms: 0.843129
+  type: 'test'
+  ...
+# Subtest: solo avanza solo si se ve y nadie lo está usando
+ok 37 - solo avanza solo si se ve y nadie lo está usando
+  ---
+  duration_ms: 0.861023
+  type: 'test'
+  ...
+# Subtest: el intervalo deja tiempo para leer una tarjeta
+ok 38 - el intervalo deja tiempo para leer una tarjeta
+  ---
+  duration_ms: 0.326062
+  type: 'test'
+  ...
+# Subtest: consejo del día
+    # Subtest: cada consejo está completo
+    ok 1 - cada consejo está completo
+      ---
+      duration_ms: 1.468861
+      type: 'test'
+      ...
+    # Subtest: el mismo día da el mismo consejo y al otro día cambia
+    ok 2 - el mismo día da el mismo consejo y al otro día cambia
+      ---
+      duration_ms: 0.423698
+      type: 'test'
+      ...
+    # Subtest: recorre todos en una semana
+    ok 3 - recorre todos en una semana
+      ---
+      duration_ms: 0.221798
+      type: 'test'
+      ...
+    1..3
+ok 39 - consejo del día
+  ---
+  duration_ms: 3.169081
+  type: 'suite'
+  ...
+# Subtest: nómina desde CSV
+    # Subtest: un correo sin arroba no entra en las filas válidas
+    ok 1 - un correo sin arroba no entra en las filas válidas
+      ---
+      duration_ms: 1.28089
+      type: 'test'
+      ...
+    1..1
+ok 40 - nómina desde CSV
+  ---
+  duration_ms: 2.433836
+  type: 'suite'
+  ...
+# Subtest: datos de la cuenta
+    # Subtest: cómo entrás
+    ok 1 - cómo entrás
+      ---
+      duration_ms: 0.73446
+      type: 'test'
+      ...
+    # Subtest: foto de Google solo si es https
+    ok 2 - foto de Google solo si es https
+      ---
+      duration_ms: 0.284492
+      type: 'test'
+      ...
+    # Subtest: nombre del rol
+    ok 3 - nombre del rol
+      ---
+      duration_ms: 0.280629
+      type: 'test'
+      ...
+    1..3
+ok 41 - datos de la cuenta
+  ---
+  duration_ms: 2.399401
+  type: 'suite'
+  ...
+# Subtest: acepta un CUIT con el dígito verificador correcto
+ok 42 - acepta un CUIT con el dígito verificador correcto
+  ---
+  duration_ms: 1.454671
+  type: 'test'
+  ...
+# Subtest: rechaza un CUIT con otro dígito, otro largo o un prefijo que no existe
+ok 43 - rechaza un CUIT con otro dígito, otro largo o un prefijo que no existe
+  ---
+  duration_ms: 0.277228
+  type: 'test'
+  ...
+# Subtest: deja las áreas sin repetir, sin importar mayúsculas ni separador
+ok 44 - deja las áreas sin repetir, sin importar mayúsculas ni separador
+  ---
+  duration_ms: 3.079968
+  type: 'test'
+  ...
+# Subtest: normaliza los datos de una empresa válida
+ok 45 - normaliza los datos de una empresa válida
+  ---
+  duration_ms: 0.495715
+  type: 'test'
+  ...
+# Subtest: marca cada campo obligatorio que falta
+ok 46 - marca cada campo obligatorio que falta
+  ---
+  duration_ms: 0.406048
+  type: 'test'
+  ...
+# Subtest: rechaza un CUIT mal escrito, un teléfono con letras y texto que arranca como fórmula
+ok 47 - rechaza un CUIT mal escrito, un teléfono con letras y texto que arranca como fórmula
+  ---
+  duration_ms: 0.31855
+  type: 'test'
+  ...
+# Subtest: no acepta más de 30 áreas
+ok 48 - no acepta más de 30 áreas
+  ---
+  duration_ms: 1.752825
+  type: 'test'
+  ...
+# Subtest: arma el formulario desde la organización guardada
+ok 49 - arma el formulario desde la organización guardada
+  ---
+  duration_ms: 0.318879
+  type: 'test'
+  ...
+# Subtest: no muestra el nombre provisorio de las organizaciones creadas sin datos
+ok 50 - no muestra el nombre provisorio de las organizaciones creadas sin datos
+  ---
+  duration_ms: 0.368352
+  type: 'test'
+  ...
+# Subtest: guarda y recupera el borrador, y no rompe si el almacenamiento falla
+ok 51 - guarda y recupera el borrador, y no rompe si el almacenamiento falla
+  ---
+  duration_ms: 0.927853
+  type: 'test'
+  ...
+# Subtest: sin factor verificado hay que activarla, aunque haya uno a medio configurar
+ok 52 - sin factor verificado hay que activarla, aunque haya uno a medio configurar
+  ---
+  duration_ms: 0.96488
+  type: 'test'
+  ...
+# Subtest: con factor verificado pide el código hasta que la sesión pase al segundo nivel
+ok 53 - con factor verificado pide el código hasta que la sesión pase al segundo nivel
+  ---
+  duration_ms: 0.230459
+  type: 'test'
+  ...
+# Subtest: separa los factores verificados de los que quedaron sin terminar
+ok 54 - separa los factores verificados de los que quedaron sin terminar
+  ---
+  duration_ms: 1.412937
+  type: 'test'
+  ...
+# Subtest: el código tiene seis números y se limpia lo que no es número
+ok 55 - el código tiene seis números y se limpia lo que no es número
+  ---
+  duration_ms: 0.37445
+  type: 'test'
+  ...
+# Subtest: la clave para cargar a mano se muestra en grupos de cuatro
+ok 56 - la clave para cargar a mano se muestra en grupos de cuatro
+  ---
+  duration_ms: 0.437042
+  type: 'test'
+  ...
+# Subtest: los errores se explican en criollo
+ok 57 - los errores se explican en criollo
+  ---
+  duration_ms: 0.525866
+  type: 'test'
+  ...
+# Subtest: dominio registrable con la Public Suffix List
+    # Subtest: google.com.ar y google.com.evil.com no son el mismo dominio
+    ok 1 - google.com.ar y google.com.evil.com no son el mismo dominio
+      ---
+      duration_ms: 2.040202
+      type: 'test'
+      ...
+    # Subtest: sufijos de dos niveles y subdominios
+    ok 2 - sufijos de dos niveles y subdominios
+      ---
+      duration_ms: 0.299148
+      type: 'test'
+      ...
+    # Subtest: cada sitio de un hosting compartido es un dominio aparte
+    ok 3 - cada sitio de un hosting compartido es un dominio aparte
+      ---
+      duration_ms: 0.165616
+      type: 'test'
+      ...
+    # Subtest: google.com.evil.com se juzga como evil.com
+    ok 4 - google.com.evil.com se juzga como evil.com
+      ---
+      duration_ms: 14.402664
+      type: 'test'
+      ...
+    1..4
+ok 58 - dominio registrable con la Public Suffix List
+  ---
+  duration_ms: 18.051501
+  type: 'suite'
+  ...
+# Subtest: formato inválido: nunca se repara
+    # Subtest: "wwww.tikt0ok.-com" imita una marca: queda sin verificar y en Sospechoso
+    ok 1 - "wwww.tikt0ok.-com" imita una marca: queda sin verificar y en Sospechoso
+      ---
+      duration_ms: 3.447036
+      type: 'test'
+      ...
+    # Subtest: "wwww.tikt'ok.-com" imita una marca: queda sin verificar y en Sospechoso
+    ok 2 - "wwww.tikt'ok.-com" imita una marca: queda sin verificar y en Sospechoso
+      ---
+      duration_ms: 1.310657
+      type: 'test'
+      ...
+    # Subtest: "https://google.com%40evil.com" imita una marca: queda sin verificar y en Sospechoso
+    ok 3 - "https://google.com%40evil.com" imita una marca: queda sin verificar y en Sospechoso
+      ---
+      duration_ms: 3.509683
+      type: 'test'
+      ...
+    # Subtest: "sitio..com"
+    ok 4 - "sitio..com"
+      ---
+      duration_ms: 0.987904
+      type: 'test'
+      ...
+    # Subtest: "-banco.com"
+    ok 5 - "-banco.com"
+      ---
+      duration_ms: 0.843505
+      type: 'test'
+      ...
+    # Subtest: "exa_mple.com"
+    ok 6 - "exa_mple.com"
+      ---
+      duration_ms: 0.896874
+      type: 'test'
+      ...
+    # Subtest: "hola"
+    ok 7 - "hola"
+      ---
+      duration_ms: 0.203005
+      type: 'test'
+      ...
+    # Subtest: "localhost:3000"
+    ok 8 - "localhost:3000"
+      ---
+      duration_ms: 0.260274
+      type: 'test'
+      ...
+    # Subtest: "ejemplo.c0m"
+    ok 9 - "ejemplo.c0m"
+      ---
+      duration_ms: 1.190843
+      type: 'test'
+      ...
+    # Subtest: "ejemplo.cosa"
+    ok 10 - "ejemplo.cosa"
+      ---
+      duration_ms: 0.828871
+      type: 'test'
+      ...
+    # Subtest: "co.uk"
+    ok 11 - "co.uk"
+      ---
+      duration_ms: 0.149065
+      type: 'test'
+      ...
+    # Subtest: "http://"
+    ok 12 - "http://"
+      ---
+      duration_ms: 0.135747
+      type: 'test'
+      ...
+    # Subtest: "https://xn--zz.com"
+    ok 13 - "https://xn--zz.com"
+      ---
+      duration_ms: 1.428684
+      type: 'test'
+      ...
+    # Subtest: "https://google.com:99999"
+    ok 14 - "https://google.com:99999"
+      ---
+      duration_ms: 0.148493
+      type: 'test'
+      ...
+    # Subtest: "goo gle.com"
+    ok 15 - "goo gle.com"
+      ---
+      duration_ms: 0.08902
+      type: 'test'
+      ...
+    # Subtest: "https://goo​gle.com"
+    ok 16 - "https://goo​gle.com"
+      ---
+      duration_ms: 0.147436
+      type: 'test'
+      ...
+    # Subtest: "https://goo\\ngle.com"
+    ok 17 - "https://goo\\ngle.com"
+      ---
+      duration_ms: 0.083606
+      type: 'test'
+      ...
+    # Subtest: "https://goo\\tgle.com"
+    ok 18 - "https://goo\\tgle.com"
+      ---
+      duration_ms: 0.06252
+      type: 'test'
+      ...
+    # Subtest: el carácter invisible no se borra para analizar lo que queda
+    ok 19 - el carácter invisible no se borra para analizar lo que queda
+      ---
+      duration_ms: 0.173832
+      type: 'test'
+      ...
+    # Subtest: un texto con esquema que no se puede leer no recibe otro https://
+    ok 20 - un texto con esquema que no se puede leer no recibe otro https://
+      ---
+      duration_ms: 0.136719
+      type: 'test'
+      ...
+    # Subtest: los espacios de los bordes, que quedan al pegar, no cuentan
+    ok 21 - los espacios de los bordes, que quedan al pegar, no cuentan
+      ---
+      duration_ms: 0.203962
+      type: 'test'
+      ...
+    # Subtest: vacío no es un enlace
+    ok 22 - vacío no es un enlace
+      ---
+      duration_ms: 0.11787
+      type: 'test'
+      ...
+    1..22
+ok 59 - formato inválido: nunca se repara
+  ---
+  duration_ms: 17.293679
+  type: 'suite'
+  ...
+# Subtest: esquema
+    # Subtest: sin esquema se lee como https
+    ok 1 - sin esquema se lee como https
+      ---
+      duration_ms: 0.412919
+      type: 'test'
+      ...
+    # Subtest: host con puerto sin esquema
+    ok 2 - host con puerto sin esquema
+      ---
+      duration_ms: 0.365657
+      type: 'test'
+      ...
+    # Subtest: javascript: es peligroso
+    ok 3 - javascript: es peligroso
+      ---
+      duration_ms: 0.189749
+      type: 'test'
+      ...
+    # Subtest: javascript: es peligroso
+    ok 4 - javascript: es peligroso
+      ---
+      duration_ms: 0.074868
+      type: 'test'
+      ...
+    # Subtest: data: es peligroso
+    ok 5 - data: es peligroso
+      ---
+      duration_ms: 0.06464
+      type: 'test'
+      ...
+    # Subtest: file: es peligroso
+    ok 6 - file: es peligroso
+      ---
+      duration_ms: 0.092597
+      type: 'test'
+      ...
+    # Subtest: vbscript: es peligroso
+    ok 7 - vbscript: es peligroso
+      ---
+      duration_ms: 0.061238
+      type: 'test'
+      ...
+    # Subtest: otro esquema no se puede verificar
+    ok 8 - otro esquema no se puede verificar
+      ---
+      duration_ms: 0.182249
+      type: 'test'
+      ...
+    1..8
+ok 60 - esquema
+  ---
+  duration_ms: 1.73009
+  type: 'suite'
+  ...
+# Subtest: host
+    # Subtest: wwww. suma y no se toma como www.
+    ok 1 - wwww. suma y no se toma como www.
+      ---
+      duration_ms: 1.341718
+      type: 'test'
+      ...
+    # Subtest: mayúsculas: el host se compara en minúscula y el camino se respeta
+    ok 2 - mayúsculas: el host se compara en minúscula y el camino se respeta
+      ---
+      duration_ms: 0.432908
+      type: 'test'
+      ...
+    # Subtest: punto final: mismo dominio, la dirección no se toca
+    ok 3 - punto final: mismo dominio, la dirección no se toca
+      ---
+      duration_ms: 0.170237
+      type: 'test'
+      ...
+    # Subtest: puertos: el de siempre no suma, uno raro sí
+    ok 4 - puertos: el de siempre no suma, uno raro sí
+      ---
+      duration_ms: 2.233326
+      type: 'test'
+      ...
+    # Subtest: userinfo: el host real es el que va después de la arroba
+    ok 5 - userinfo: el host real es el que va después de la arroba
+      ---
+      duration_ms: 0.816844
+      type: 'test'
+      ...
+    # Subtest: barra invertida: se juzga el host que abre el navegador
+    ok 6 - barra invertida: se juzga el host que abre el navegador
+      ---
+      duration_ms: 0.921713
+      type: 'test'
+      ...
+    # Subtest: percent-encoding en el host se marca como disfrazado
+    ok 7 - percent-encoding en el host se marca como disfrazado
+      ---
+      duration_ms: 4.227102
+      type: 'test'
+      ...
+    # Subtest: percent-encoding en el camino no cambia el host
+    ok 8 - percent-encoding en el camino no cambia el host
+      ---
+      duration_ms: 0.986739
+      type: 'test'
+      ...
+    # Subtest: IP escrita hexadecimal
+    ok 9 - IP escrita hexadecimal
+      ---
+      duration_ms: 0.506019
+      type: 'test'
+      ...
+    # Subtest: IP escrita numero
+    ok 10 - IP escrita numero
+      ---
+      duration_ms: 0.826309
+      type: 'test'
+      ...
+    # Subtest: IP escrita octal
+    ok 11 - IP escrita octal
+      ---
+      duration_ms: 0.168779
+      type: 'test'
+      ...
+    # Subtest: IP común e IPv6
+    ok 12 - IP común e IPv6
+      ---
+      duration_ms: 0.199156
+      type: 'test'
+      ...
+    # Subtest: subdominios de más
+    ok 13 - subdominios de más
+      ---
+      duration_ms: 2.172089
+      type: 'test'
+      ...
+    1..13
+ok 61 - host
+  ---
+  duration_ms: 15.542625
+  type: 'suite'
+  ...
+# Subtest: IDN, punycode y alfabetos
+    # Subtest: punycode y unicode llegan al mismo host
+    ok 1 - punycode y unicode llegan al mismo host
+      ---
+      duration_ms: 0.97428
+      type: 'test'
+      ...
+    # Subtest: letras cirílicas que imitan a Apple es rojo
+    ok 2 - letras cirílicas que imitan a Apple es rojo
+      ---
+      duration_ms: 1.276109
+      type: 'test'
+      ...
+    # Subtest: mezcla de cirílico y latino
+    ok 3 - mezcla de cirílico y latino
+      ---
+      duration_ms: 10.040876
+      type: 'test'
+      ...
+    # Subtest: todo en cirílico imitando latinas, sin marca
+    ok 4 - todo en cirílico imitando latinas, sin marca
+      ---
+      duration_ms: 0.871703
+      type: 'test'
+      ...
+    # Subtest: un dominio con ñ no es sospechoso por eso
+    ok 5 - un dominio con ñ no es sospechoso por eso
+      ---
+      duration_ms: 5.144841
+      type: 'test'
+      ...
+    # Subtest: letras de ancho completo se marcan si no es el sitio oficial
+    ok 6 - letras de ancho completo se marcan si no es el sitio oficial
+      ---
+      duration_ms: 1.939357
+      type: 'test'
+      ...
+    1..6
+ok 62 - IDN, punycode y alfabetos
+  ---
+  duration_ms: 20.55198
+  type: 'suite'
+  ...
+# Subtest: direcciones muy largas
+    # Subtest: pasar el máximo deja el resultado sin verificar, con motivo
+    ok 1 - pasar el máximo deja el resultado sin verificar, con motivo
+      ---
+      duration_ms: 1.160054
+      type: 'test'
+      ...
+    # Subtest: las señales fuertes se mantienen aunque sea larga
+    ok 2 - las señales fuertes se mantienen aunque sea larga
+      ---
+      duration_ms: 1.965477
+      type: 'test'
+      ...
+    1..2
+ok 63 - direcciones muy largas
+  ---
+  duration_ms: 3.275749
+  type: 'suite'
+  ...
+# Subtest: ¿estafa o real?
+    # Subtest: cada mensaje está completo y su id entra en la base
+    ok 1 - cada mensaje está completo y su id entra en la base
+      ---
+      duration_ms: 1.060821
+      type: 'test'
+      ...
+    # Subtest: hay estafas y mensajes reales
+    ok 2 - hay estafas y mensajes reales
+      ---
+      duration_ms: 0.277194
+      type: 'test'
+      ...
+    # Subtest: SafeLink nunca da Seguro el enlace de una estafa
+    ok 3 - SafeLink nunca da Seguro el enlace de una estafa
+      ---
+      duration_ms: 30.617152
+      type: 'test'
+      ...
+    # Subtest: los mensajes reales no traen enlaces para tocar
+    ok 4 - los mensajes reales no traen enlaces para tocar
+      ---
+      duration_ms: 0.337773
+      type: 'test'
+      ...
+    # Subtest: elige uno que no viste y nunca repite el actual
+    ok 5 - elige uno que no viste y nunca repite el actual
+      ---
+      duration_ms: 0.286832
+      type: 'test'
+      ...
+    1..5
+ok 64 - ¿estafa o real?
+  ---
+  duration_ms: 33.941621
+  type: 'suite'
+  ...
+# Subtest: estafas de la semana
+    # Subtest: se muestra mientras está vigente
+    ok 1 - se muestra mientras está vigente
+      ---
+      duration_ms: 0.927368
+      type: 'test'
+      ...
+    # Subtest: desaparece cuando vence
+    ok 2 - desaparece cuando vence
+      ---
+      duration_ms: 0.167928
+      type: 'test'
+      ...
+    # Subtest: sin estafas no hay card
+    ok 3 - sin estafas no hay card
+      ---
+      duration_ms: 0.264103
+      type: 'test'
+      ...
+    # Subtest: cada estafa trae ejemplo, qué mirar y una fuente con fecha
+    ok 4 - cada estafa trae ejemplo, qué mirar y una fuente con fecha
+      ---
+      duration_ms: 0.711498
+      type: 'test'
+      ...
+    # Subtest: los ejemplos no traen enlaces que se puedan tocar
+    ok 5 - los ejemplos no traen enlaces que se puedan tocar
+      ---
+      duration_ms: 0.349554
+      type: 'test'
+      ...
+    1..5
+ok 65 - estafas de la semana
+  ---
+  duration_ms: 4.921527
+  type: 'suite'
+  ...
+# Subtest: regresiones
+    # Subtest: "wwww.tikt0ok.-com" queda en amarillo e imita a tiktok
+    ok 1 - "wwww.tikt0ok.-com" queda en amarillo e imita a tiktok
+      ---
+      duration_ms: 1.146516
+      type: 'test'
+      ...
+    # Subtest: "wwww.tikt'ok.-com" queda en amarillo e imita a tiktok
+    ok 2 - "wwww.tikt'ok.-com" queda en amarillo e imita a tiktok
+      ---
+      duration_ms: 0.599106
+      type: 'test'
+      ...
+    # Subtest: "www.g0ogle.com" queda en rojo e imita a google
+    ok 3 - "www.g0ogle.com" queda en rojo e imita a google
+      ---
+      duration_ms: 0.836138
+      type: 'test'
+      ...
+    # Subtest: "tikt0ok.com" queda en amarillo e imita a tiktok
+    ok 4 - "tikt0ok.com" queda en amarillo e imita a tiktok
+      ---
+      duration_ms: 0.681232
+      type: 'test'
+      ...
+    1..4
+ok 66 - regresiones
+  ---
+  duration_ms: 4.11493
+  type: 'suite'
+  ...
+# Subtest: regla dura
+    # Subtest: ningún typosquat generado sobre la lista de marcas sale como Sin señales
+    ok 1 - ningún typosquat generado sobre la lista de marcas sale como Sin señales
+      ---
+      duration_ms: 1539.446449
+      type: 'test'
+      ...
+    1..1
+ok 67 - regla dura
+  ---
+  duration_ms: 1539.60468
+  type: 'suite'
+  ...
+# Subtest: set de evaluación
+    # Subtest: cumple los umbrales guardados
+    ok 1 - cumple los umbrales guardados
+      ---
+      duration_ms: 0.40585
+      type: 'test'
+      ...
+    # Subtest: una tasa peor que el umbral hace fallar la verificación
+    ok 2 - una tasa peor que el umbral hace fallar la verificación
+      ---
+      duration_ms: 0.2473
+      type: 'test'
+      ...
+    # Subtest: cada veredicto con puntos dice qué señal los sumó
+    ok 3 - cada veredicto con puntos dice qué señal los sumó
+      ---
+      duration_ms: 0.521319
+      type: 'test'
+      ...
+    1..3
+ok 68 - set de evaluación
+  ---
+  duration_ms: 1.457495
+  type: 'suite'
+  ...
+# Subtest: señales nuevas del set
+    # Subtest: una marca que es palabra común cuenta si viene escrita con trucos
+    ok 1 - una marca que es palabra común cuenta si viene escrita con trucos
+      ---
+      duration_ms: 1.628746
+      type: 'test'
+      ...
+    # Subtest: se compara también la forma literal del nombre
+    ok 2 - se compara también la forma literal del nombre
+      ---
+      duration_ms: 1.258186
+      type: 'test'
+      ...
+    # Subtest: las coordenadas de Google Maps no cuentan como una arroba sospechosa
+    ok 3 - las coordenadas de Google Maps no cuentan como una arroba sospechosa
+      ---
+      duration_ms: 1.523218
+      type: 'test'
+      ...
+    1..3
+ok 69 - señales nuevas del set
+  ---
+  duration_ms: 4.557207
+  type: 'suite'
+  ...
+# Subtest: solo las páginas http y https se revisan
+ok 70 - solo las páginas http y https se revisan
+  ---
+  duration_ms: 1.031861
+  type: 'test'
+  ...
+# Subtest: una página verde no sale de la compu
+ok 71 - una página verde no sale de la compu
+  ---
+  duration_ms: 4.516613
+  type: 'test'
+  ...
+# Subtest: una página roja o un acortador se abren para confirmarlos, sin la parte después de \#
+ok 72 - una página roja o un acortador se abren para confirmarlos, sin la parte después de \#
+  ---
+  duration_ms: 9.875824
+  type: 'test'
+  ...
+# Subtest: la lista de amenazas vale por 6 horas
+ok 73 - la lista de amenazas vale por 6 horas
+  ---
+  duration_ms: 0.198116
+  type: 'test'
+  ...
+# Subtest: el índice se queda con el peor nivel de cada dominio e ignora filas raras
+ok 74 - el índice se queda con el peor nivel de cada dominio e ignora filas raras
+  ---
+  duration_ms: 0.248788
+  type: 'test'
+  ...
+# Subtest: peorAmenaza busca en todos los dominios del recorrido
+ok 75 - peorAmenaza busca en todos los dominios del recorrido
+  ---
+  duration_ms: 0.221416
+  type: 'test'
+  ...
+# Subtest: un dominio denunciado en la base sale rojo aunque la dirección parezca normal
+ok 76 - un dominio denunciado en la base sale rojo aunque la dirección parezca normal
+  ---
+  duration_ms: 3.72712
+  type: 'test'
+  ...
+# Subtest: si no se pudo bajar la lista, el estado lo dice
+ok 77 - si no se pudo bajar la lista, el estado lo dice
+  ---
+  duration_ms: 0.642637
+  type: 'test'
+  ...
+# Subtest: si se intentó abrir y no respondió, el estado lo dice
+ok 78 - si se intentó abrir y no respondió, el estado lo dice
+  ---
+  duration_ms: 2.606894
+  type: 'test'
+  ...
+# Subtest: el estado trae nivel, dominio, qué hacer y como mucho cuatro motivos
+ok 79 - el estado trae nivel, dominio, qué hacer y como mucho cuatro motivos
+  ---
+  duration_ms: 1.962828
+  type: 'test'
+  ...
+# Subtest: recordar guarda las últimas y descarta las más viejas
+ok 80 - recordar guarda las últimas y descarta las más viejas
+  ---
+  duration_ms: 1.45354
+  type: 'test'
+  ...
+# Subtest: avisa una sola vez por dominio, solo en rojo y solo si está activado
+ok 81 - avisa una sola vez por dominio, solo en rojo y solo si está activado
+  ---
+  duration_ms: 0.190247
+  type: 'test'
+  ...
+# Subtest: el aviso trae el dominio, el primer motivo y qué no hacer
+ok 82 - el aviso trae el dominio, el primer motivo y qué no hacer
+  ---
+  duration_ms: 1.615279
+  type: 'test'
+  ...
+# Subtest: un motivo largo se corta en el aviso
+ok 83 - un motivo largo se corta en el aviso
+  ---
+  duration_ms: 0.093924
+  type: 'test'
+  ...
+# Subtest: el enlace al panel lleva la dirección sin la parte después de \#
+ok 84 - el enlace al panel lleva la dirección sin la parte después de \#
+  ---
+  duration_ms: 0.34618
+  type: 'test'
+  ...
+# Subtest: cada nivel tiene su color y su símbolo, y lo desconocido queda neutro
+ok 85 - cada nivel tiene su color y su símbolo, y lo desconocido queda neutro
+  ---
+  duration_ms: 0.15397
+  type: 'test'
+  ...
+# Subtest: el título del ícono nombra el color y el dominio
+ok 86 - el título del ícono nombra el color y el dominio
+  ---
+  duration_ms: 0.083171
+  type: 'test'
+  ...
+# Subtest: los símbolos quedan dentro del ícono a cualquier tamaño
+ok 87 - los símbolos quedan dentro del ícono a cualquier tamaño
+  ---
+  duration_ms: 0.29233
+  type: 'test'
+  ...
+# Subtest: sin resultado se muestra el logo de SafeGuard
+ok 88 - sin resultado se muestra el logo de SafeGuard
+  ---
+  duration_ms: 0.058611
+  type: 'test'
+  ...
+# Subtest: el logo entra centrado en el ícono a cualquier tamaño
+ok 89 - el logo entra centrado en el ícono a cualquier tamaño
+  ---
+  duration_ms: 0.659839
+  type: 'test'
+  ...
+# Subtest: cuidar a un familiar
+    # Subtest: limpia el código que escriben
+    ok 1 - limpia el código que escriben
+      ---
+      duration_ms: 0.676894
+      type: 'test'
+      ...
+    # Subtest: valida el código
+    ok 2 - valida el código
+      ---
+      duration_ms: 0.137527
+      type: 'test'
+      ...
+    # Subtest: lo muestra en dos partes
+    ok 3 - lo muestra en dos partes
+      ---
+      duration_ms: 0.146676
+      type: 'test'
+      ...
+    # Subtest: cuenta los minutos que le quedan
+    ok 4 - cuenta los minutos que le quedan
+      ---
+      duration_ms: 4.838922
+      type: 'test'
+      ...
+    # Subtest: explica cada vínculo
+    ok 5 - explica cada vínculo
+      ---
+      duration_ms: 0.260548
+      type: 'test'
+      ...
+    1..5
+ok 90 - cuidar a un familiar
+  ---
+  duration_ms: 7.023319
+  type: 'suite'
+  ...
+# Subtest: el gasto de tokens se lee como un entero
+ok 91 - el gasto de tokens se lee como un entero
+  ---
+  duration_ms: 1.176675
+  type: 'test'
+  ...
+# Subtest: sin el desglose, Faro usa lo anotado y no dice que no hay señales
+ok 92 - sin el desglose, Faro usa lo anotado y no dice que no hay señales
+  ---
+  duration_ms: 3.015168
+  type: 'test'
+  ...
+# Subtest: usa los mismos nombres de nivel que la tarjeta
+ok 93 - usa los mismos nombres de nivel que la tarjeta
+  ---
+  duration_ms: 13.143355
+  type: 'test'
+  ...
+# Subtest: Simple, Técnico y Avanzado cambian el contenido, en el análisis y en el resumen
+ok 94 - Simple, Técnico y Avanzado cambian el contenido, en el análisis y en el resumen
+  ---
+  duration_ms: 6.575304
+  type: 'test'
+  ...
+# Subtest: recibe el puntaje y el resumen de VirusTotal
+ok 95 - recibe el puntaje y el resumen de VirusTotal
+  ---
+  duration_ms: 3.203792
+  type: 'test'
+  ...
+# Subtest: el contexto es un solo objeto, con el nivel de la tarjeta y null donde no hay dato
+ok 96 - el contexto es un solo objeto, con el nivel de la tarjeta y null donde no hay dato
+  ---
+  duration_ms: 1.582122
+  type: 'test'
+  ...
+# Subtest: la fecha de registro queda en el resultado aunque no sume puntaje
+ok 97 - la fecha de registro queda en el resultado aunque no sume puntaje
+  ---
+  duration_ms: 3.72004
+  type: 'test'
+  ...
+# Subtest: el backend ya desplegado sigue recibiendo un nivel que entiende
+ok 98 - el backend ya desplegado sigue recibiendo un nivel que entiende
+  ---
+  duration_ms: 1.490627
+  type: 'test'
+  ...
+# Subtest: la lista numerada sale como lista, aunque venga pegada en un párrafo
+ok 99 - la lista numerada sale como lista, aunque venga pegada en un párrafo
+  ---
+  duration_ms: 0.932989
+  type: 'test'
+  ...
+# Subtest: el resumen armado solo sale con los dos pedidos, y una pregunta libre no lo dispara
+ok 100 - el resumen armado solo sale con los dos pedidos, y una pregunta libre no lo dispara
+  ---
+  duration_ms: 1.83574
+  type: 'test'
+  ...
+# Subtest: si el modelo falla o contradice el nivel, no se inventa un análisis
+ok 101 - si el modelo falla o contradice el nivel, no se inventa un análisis
+  ---
+  duration_ms: 3.759707
+  type: 'test'
+  ...
+# Subtest: explicar no es recomendar: el filtro solo frena consejos que contradicen el nivel
+ok 102 - explicar no es recomendar: el filtro solo frena consejos que contradicen el nivel
+  ---
+  duration_ms: 3.478558
+  type: 'test'
+  ...
+# Subtest: si el modelo dice "Dudoso", se cambia por el nombre de la tarjeta
+ok 103 - si el modelo dice "Dudoso", se cambia por el nombre de la tarjeta
+  ---
+  duration_ms: 2.011642
+  type: 'test'
+  ...
+# Subtest: una instrucción metida en la URL o en la pregunta no cambia el nivel
+ok 104 - una instrucción metida en la URL o en la pregunta no cambia el nivel
+  ---
+  duration_ms: 3.571697
+  type: 'test'
+  ...
+# Subtest: nunca dice "es seguro", "garantizado" ni que no abre el archivo
+ok 105 - nunca dice "es seguro", "garantizado" ni que no abre el archivo
+  ---
+  duration_ms: 5.824308
+  type: 'test'
+  ...
+# Subtest: pone mayúscula inicial a un nombre cargado en minúscula
+ok 106 - pone mayúscula inicial a un nombre cargado en minúscula
+  ---
+  duration_ms: 0.784618
+  type: 'test'
+  ...
+# Subtest: respeta las mayúsculas que eligió quien lo cargó
+ok 107 - respeta las mayúsculas que eligió quien lo cargó
+  ---
+  duration_ms: 0.129458
+  type: 'test'
+  ...
+# Subtest: devuelve vacío si no hay nombre
+ok 108 - devuelve vacío si no hay nombre
+  ---
+  duration_ms: 0.154676
+  type: 'test'
+  ...
+# Subtest: los puntos se reparten a lo ancho y el máximo queda arriba
+ok 109 - los puntos se reparten a lo ancho y el máximo queda arriba
+  ---
+  duration_ms: 2.542776
+  type: 'test'
+  ...
+# Subtest: los valores fuera de rango se acotan y lo vacío no rompe
+ok 110 - los valores fuera de rango se acotan y lo vacío no rompe
+  ---
+  duration_ms: 0.416947
+  type: 'test'
+  ...
+# Subtest: la línea y el área se arman con los puntos
+ok 111 - la línea y el área se arman con los puntos
+  ---
+  duration_ms: 0.279365
+  type: 'test'
+  ...
+# Subtest: las marcas del eje son redondas y arrancan en cero
+ok 112 - las marcas del eje son redondas y arrancan en cero
+  ---
+  duration_ms: 0.226316
+  type: 'test'
+  ...
+# Subtest: el porcentaje se redondea y no divide por cero
+ok 113 - el porcentaje se redondea y no divide por cero
+  ---
+  duration_ms: 1.804803
+  type: 'test'
+  ...
+# Subtest: guardado local
+    # Subtest: guarda y lee
+    ok 1 - guarda y lee
+      ---
+      duration_ms: 1.87447
+      type: 'test'
+      ...
+    # Subtest: sin dato, roto o sin almacenamiento devuelve lo de por defecto
+    ok 2 - sin dato, roto o sin almacenamiento devuelve lo de por defecto
+      ---
+      duration_ms: 0.256016
+      type: 'test'
+      ...
+    # Subtest: las listas solo guardan textos
+    ok 3 - las listas solo guardan textos
+      ---
+      duration_ms: 0.2559
+      type: 'test'
+      ...
+    # Subtest: alterna un elemento
+    ok 4 - alterna un elemento
+      ---
+      duration_ms: 1.348658
+      type: 'test'
+      ...
+    1..4
+ok 114 - guardado local
+  ---
+  duration_ms: 4.702606
+  type: 'suite'
+  ...
+# Subtest: cada paso tiene título, texto y un inicio dentro del video
+ok 115 - cada paso tiene título, texto y un inicio dentro del video
+  ---
+  duration_ms: 1.237939
+  type: 'test'
+  ...
+# Subtest: los pasos arrancan en orden y el primero en cero
+ok 116 - los pasos arrancan en orden y el primero en cero
+  ---
+  duration_ms: 0.230557
+  type: 'test'
+  ...
+# Subtest: el paso actual sale del segundo del video
+ok 117 - el paso actual sale del segundo del video
+  ---
+  duration_ms: 2.336788
+  type: 'test'
+  ...
+# Subtest: los pasos nombran lo que se ve en Chrome
+ok 118 - los pasos nombran lo que se ve en Chrome
+  ---
+  duration_ms: 0.326278
+  type: 'test'
+  ...
+# Subtest: lecciones de un minuto
+    # Subtest: son cortas
+    ok 1 - son cortas
+      ---
+      duration_ms: 0.878665
+      type: 'test'
+      ...
+    # Subtest: marca vistas sin repetir y las guarda
+    ok 2 - marca vistas sin repetir y las guarda
+      ---
+      duration_ms: 1.730547
+      type: 'test'
+      ...
+    # Subtest: las no vistas van primero
+    ok 3 - las no vistas van primero
+      ---
+      duration_ms: 1.574053
+      type: 'test'
+      ...
+    1..3
+ok 119 - lecciones de un minuto
+  ---
+  duration_ms: 5.462015
+  type: 'suite'
+  ...
+# Subtest: lista de seguridad
+    # Subtest: cada tarea dice qué hacer
+    ok 1 - cada tarea dice qué hacer
+      ---
+      duration_ms: 0.525669
+      type: 'test'
+      ...
+    # Subtest: cuenta lo hecho
+    ok 2 - cuenta lo hecho
+      ---
+      duration_ms: 0.205386
+      type: 'test'
+      ...
+    # Subtest: el aviso del portapapeles se marca solo si está activo
+    ok 3 - el aviso del portapapeles se marca solo si está activo
+      ---
+      duration_ms: 1.380962
+      type: 'test'
+      ...
+    # Subtest: completa con todo
+    ok 4 - completa con todo
+      ---
+      duration_ms: 0.1348
+      type: 'test'
+      ...
+    # Subtest: guarda y descarta ids que no existen
+    ok 5 - guarda y descarta ids que no existen
+      ---
+      duration_ms: 1.27492
+      type: 'test'
+      ...
+    1..5
+ok 120 - lista de seguridad
+  ---
+  duration_ms: 4.536381
+  type: 'suite'
+  ...
+# Subtest: logros
+    # Subtest: sin nada, ninguno
+    ok 1 - sin nada, ninguno
+      ---
+      duration_ms: 1.266669
+      type: 'test'
+      ...
+    # Subtest: se ganan con lo que hiciste
+    ok 2 - se ganan con lo que hiciste
+      ---
+      duration_ms: 0.208088
+      type: 'test'
+      ...
+    # Subtest: los umbrales
+    ok 3 - los umbrales
+      ---
+      duration_ms: 0.389678
+      type: 'test'
+      ...
+    1..3
+ok 121 - logros
+  ---
+  duration_ms: 3.103821
+  type: 'suite'
+  ...
+# Subtest: el dominio registrable sale de la lista de sufijos incluida, sin red
+ok 122 - el dominio registrable sale de la lista de sufijos incluida, sin red
+  ---
+  duration_ms: 2.812095
+  type: 'test'
+  ...
+# Subtest: cada marca está marcada para verificar a mano, y las no pedidas tienen su TODO
+ok 123 - cada marca está marcada para verificar a mano, y las no pedidas tienen su TODO
+  ---
+  duration_ms: 0.782797
+  type: 'test'
+  ...
+# Subtest: en un dominio oficial no se aplican señales de marca ni de palabras
+ok 124 - en un dominio oficial no se aplican señales de marca ni de palabras
+  ---
+  duration_ms: 9.403235
+  type: 'test'
+  ...
+# Subtest: un dominio oficial usado como subdominio de otro sí se marca
+ok 125 - un dominio oficial usado como subdominio de otro sí se marca
+  ---
+  duration_ms: 20.465953
+  type: 'test'
+  ...
+# Subtest: las letras cambiadas se deshacen antes de comparar (0→o, 1→l, 3→e, rn→m)
+ok 126 - las letras cambiadas se deshacen antes de comparar (0→o, 1→l, 3→e, rn→m)
+  ---
+  duration_ms: 8.83403
+  type: 'test'
+  ...
+# Subtest: uno o dos errores de tipeo en una marca de nombre largo es Peligroso
+ok 127 - uno o dos errores de tipeo en una marca de nombre largo es Peligroso
+  ---
+  duration_ms: 4.438303
+  type: 'test'
+  ...
+# Subtest: la marca en la ruta es fuerte con un dominio de trámite o una página para entrar, y no cuenta en una nota
+ok 128 - la marca en la ruta es fuerte con un dominio de trámite o una página para entrar, y no cuenta en una nota
+  ---
+  duration_ms: 5.852192
+  type: 'test'
+  ...
+# Subtest: un dominio con xn-- es una señal débil: solo no pasa de Sin señales
+ok 129 - un dominio con xn-- es una señal débil: solo no pasa de Sin señales
+  ---
+  duration_ms: 3.15216
+  type: 'test'
+  ...
+# Subtest: archivo de marcas
+    # Subtest: cada dominio oficial es un dominio registrable exacto
+    ok 1 - cada dominio oficial es un dominio registrable exacto
+      ---
+      duration_ms: 3.401862
+      type: 'test'
+      ...
+    # Subtest: ids únicos y ningún dominio oficial repetido entre marcas
+    ok 2 - ids únicos y ningún dominio oficial repetido entre marcas
+      ---
+      duration_ms: 0.247213
+      type: 'test'
+      ...
+    # Subtest: están las marcas pedidas para Argentina
+    ok 3 - están las marcas pedidas para Argentina
+      ---
+      duration_ms: 0.319106
+      type: 'test'
+      ...
+    # Subtest: las plataformas se escriben como nombres de dominio
+    ok 4 - las plataformas se escriben como nombres de dominio
+      ---
+      duration_ms: 0.467782
+      type: 'test'
+      ...
+    1..4
+ok 130 - archivo de marcas
+  ---
+  duration_ms: 5.629778
+  type: 'suite'
+  ...
+# Subtest: confusables y distancia
+    # Subtest: deshace números, rn, vv y homóglifos
+    ok 1 - deshace números, rn, vv y homóglifos
+      ---
+      duration_ms: 0.600707
+      type: 'test'
+      ...
+    # Subtest: Damerau-Levenshtein cuenta una inversión de letras vecinas como un solo error
+    ok 2 - Damerau-Levenshtein cuenta una inversión de letras vecinas como un solo error
+      ---
+      duration_ms: 0.532497
+      type: 'test'
+      ...
+    # Subtest: el umbral depende del largo
+    ok 3 - el umbral depende del largo
+      ---
+      duration_ms: 0.261558
+      type: 'test'
+      ...
+    1..3
+ok 131 - confusables y distancia
+  ---
+  duration_ms: 1.821992
+  type: 'suite'
+  ...
+# Subtest: dominios parecidos a una marca
+    # Subtest: tikt0ok.com es por lo menos Sospechoso
+    ok 1 - tikt0ok.com es por lo menos Sospechoso
+      ---
+      duration_ms: 15.080778
+      type: 'test'
+      ...
+    # Subtest: tiktko.com es por lo menos Sospechoso
+    ok 2 - tiktko.com es por lo menos Sospechoso
+      ---
+      duration_ms: 3.207378
+      type: 'test'
+      ...
+    # Subtest: www.g0ogle.com es por lo menos Sospechoso
+    ok 3 - www.g0ogle.com es por lo menos Sospechoso
+      ---
+      duration_ms: 3.16986
+      type: 'test'
+      ...
+    # Subtest: paypa1.com es por lo menos Sospechoso
+    ok 4 - paypa1.com es por lo menos Sospechoso
+      ---
+      duration_ms: 2.716771
+      type: 'test'
+      ...
+    # Subtest: rnercadopago.com.ar es por lo menos Sospechoso
+    ok 5 - rnercadopago.com.ar es por lo menos Sospechoso
+      ---
+      duration_ms: 2.766946
+      type: 'test'
+      ...
+    # Subtest: vvhatsapp.com es por lo menos Sospechoso
+    ok 6 - vvhatsapp.com es por lo menos Sospechoso
+      ---
+      duration_ms: 1.61191
+      type: 'test'
+      ...
+    # Subtest: 1nstagram.com es por lo menos Sospechoso
+    ok 7 - 1nstagram.com es por lo menos Sospechoso
+      ---
+      duration_ms: 2.213459
+      type: 'test'
+      ...
+    # Subtest: faceb00k.com es por lo menos Sospechoso
+    ok 8 - faceb00k.com es por lo menos Sospechoso
+      ---
+      duration_ms: 1.8005
+      type: 'test'
+      ...
+    # Subtest: mercadolirbe.com es por lo menos Sospechoso
+    ok 9 - mercadolirbe.com es por lo menos Sospechoso
+      ---
+      duration_ms: 1.780569
+      type: 'test'
+      ...
+    # Subtest: mercadolibre-ar.com es por lo menos Sospechoso
+    ok 10 - mercadolibre-ar.com es por lo menos Sospechoso
+      ---
+      duration_ms: 4.269652
+      type: 'test'
+      ...
+    # Subtest: bancogalicia-online.com es por lo menos Sospechoso
+    ok 11 - bancogalicia-online.com es por lo menos Sospechoso
+      ---
+      duration_ms: 7.411221
+      type: 'test'
+      ...
+    # Subtest: arca-tramites.com es por lo menos Sospechoso
+    ok 12 - arca-tramites.com es por lo menos Sospechoso
+      ---
+      duration_ms: 10.528975
+      type: 'test'
+      ...
+    # Subtest: andreani-envios.com es por lo menos Sospechoso
+    ok 13 - andreani-envios.com es por lo menos Sospechoso
+      ---
+      duration_ms: 12.306943
+      type: 'test'
+      ...
+    # Subtest: correo-argentino.com es por lo menos Sospechoso
+    ok 14 - correo-argentino.com es por lo menos Sospechoso
+      ---
+      duration_ms: 11.495039
+      type: 'test'
+      ...
+    # Subtest: uala-ar.com es por lo menos Sospechoso
+    ok 15 - uala-ar.com es por lo menos Sospechoso
+      ---
+      duration_ms: 3.848207
+      type: 'test'
+      ...
+    # Subtest: netfIix.com es por lo menos Sospechoso
+    ok 16 - netfIix.com es por lo menos Sospechoso
+      ---
+      duration_ms: 2.44567
+      type: 'test'
+      ...
+    # Subtest: "wwww.tikt0ok.-com" y "wwww.tikt'ok.-com" caen como imitación de TikTok
+    ok 17 - "wwww.tikt0ok.-com" y "wwww.tikt'ok.-com" caen como imitación de TikTok
+      ---
+      duration_ms: 5.941818
+      type: 'test'
+      ...
+    # Subtest: el motivo nombra la marca y su dominio oficial
+    ok 18 - el motivo nombra la marca y su dominio oficial
+      ---
+      duration_ms: 9.083874
+      type: 'test'
+      ...
+    # Subtest: con otra señal fuerte pasa a Peligroso
+    ok 19 - con otra señal fuerte pasa a Peligroso
+      ---
+      duration_ms: 16.573393
+      type: 'test'
+      ...
+    # Subtest: una marca de nombre largo es Peligroso sola; una corta y dudosa, Precaución
+    ok 20 - una marca de nombre largo es Peligroso sola; una corta y dudosa, Precaución
+      ---
+      duration_ms: 9.253469
+      type: 'test'
+      ...
+    # Subtest: un dominio nuevo suma como señal fuerte después de abrirlo
+    ok 21 - un dominio nuevo suma como señal fuerte después de abrirlo
+      ---
+      duration_ms: 6.020273
+      type: 'test'
+      ...
+    # Subtest: muestra la letra cambiada
+    ok 22 - muestra la letra cambiada
+      ---
+      duration_ms: 3.412687
+      type: 'test'
+      ...
+    1..22
+ok 132 - dominios parecidos a una marca
+  ---
+  duration_ms: 138.557446
+  type: 'suite'
+  ...
+# Subtest: marca en otra parte de la dirección
+    # Subtest: tiktok.com.verificar-cuenta.xyz: la marca está en el subdominio
+    ok 1 - tiktok.com.verificar-cuenta.xyz: la marca está en el subdominio
+      ---
+      duration_ms: 4.787096
+      type: 'test'
+      ...
+    # Subtest: google.com.evil.com y mercadolibre.com.ar.evil.com no pasan como oficiales
+    ok 2 - google.com.evil.com y mercadolibre.com.ar.evil.com no pasan como oficiales
+      ---
+      duration_ms: 3.272968
+      type: 'test'
+      ...
+    # Subtest: la marca en el camino junto a una página de acceso
+    ok 3 - la marca en el camino junto a una página de acceso
+      ---
+      duration_ms: 0.916918
+      type: 'test'
+      ...
+    # Subtest: la marca en un parámetro que nombra el dominio oficial
+    ok 4 - la marca en un parámetro que nombra el dominio oficial
+      ---
+      duration_ms: 1.409358
+      type: 'test'
+      ...
+    # Subtest: una nota que menciona la marca o un parámetro de seguimiento no suman
+    ok 5 - una nota que menciona la marca o un parámetro de seguimiento no suman
+      ---
+      duration_ms: 2.218523
+      type: 'test'
+      ...
+    1..5
+ok 133 - marca en otra parte de la dirección
+  ---
+  duration_ms: 12.887548
+  type: 'suite'
+  ...
+# Subtest: lista de confianza: dominio registrable exacto
+    # Subtest: los oficiales y sus subdominios son oficiales
+    ok 1 - los oficiales y sus subdominios son oficiales
+      ---
+      duration_ms: 0.386703
+      type: 'test'
+      ...
+    # Subtest: no alcanza con contener o terminar con el nombre
+    ok 2 - no alcanza con contener o terminar con el nombre
+      ---
+      duration_ms: 0.277983
+      type: 'test'
+      ...
+    # Subtest: https://www.google.com sigue en verde
+    ok 3 - https://www.google.com sigue en verde
+      ---
+      duration_ms: 0.39702
+      type: 'test'
+      ...
+    # Subtest: mercadolibre.com.ar sigue en verde
+    ok 4 - mercadolibre.com.ar sigue en verde
+      ---
+      duration_ms: 0.196695
+      type: 'test'
+      ...
+    # Subtest: www.galicia.ar sigue en verde
+    ok 5 - www.galicia.ar sigue en verde
+      ---
+      duration_ms: 0.809755
+      type: 'test'
+      ...
+    # Subtest: bancogalicia.com sigue en verde
+    ok 6 - bancogalicia.com sigue en verde
+      ---
+      duration_ms: 0.207587
+      type: 'test'
+      ...
+    # Subtest: www.tiktok.com sigue en verde
+    ok 7 - www.tiktok.com sigue en verde
+      ---
+      duration_ms: 0.203059
+      type: 'test'
+      ...
+    # Subtest: santanderrio.com.ar sigue en verde
+    ok 8 - santanderrio.com.ar sigue en verde
+      ---
+      duration_ms: 0.146716
+      type: 'test'
+      ...
+    # Subtest: mercadolivre.com.br sigue en verde
+    ok 9 - mercadolivre.com.br sigue en verde
+      ---
+      duration_ms: 0.127607
+      type: 'test'
+      ...
+    # Subtest: mercadolibre.com.ar/login sigue en verde
+    ok 10 - mercadolibre.com.ar/login sigue en verde
+      ---
+      duration_ms: 0.125144
+      type: 'test'
+      ...
+    1..10
+ok 134 - lista de confianza: dominio registrable exacto
+  ---
+  duration_ms: 3.283167
+  type: 'suite'
+  ...
+# Subtest: palabras reales que no son imitaciones
+    # Subtest: clarin.com
+    ok 1 - clarin.com
+      ---
+      duration_ms: 0.9805
+      type: 'test'
+      ...
+    # Subtest: infobae.com
+    ok 2 - infobae.com
+      ---
+      duration_ms: 0.944996
+      type: 'test'
+      ...
+    # Subtest: pagina12.com.ar
+    ok 3 - pagina12.com.ar
+      ---
+      duration_ms: 1.423673
+      type: 'test'
+      ...
+    # Subtest: finance.yahoo.com
+    ok 4 - finance.yahoo.com
+      ---
+      duration_ms: 1.260204
+      type: 'test'
+      ...
+    # Subtest: email.com
+    ok 5 - email.com
+      ---
+      duration_ms: 1.325114
+      type: 'test'
+      ...
+    # Subtest: apply.com
+    ok 6 - apply.com
+      ---
+      duration_ms: 0.502483
+      type: 'test'
+      ...
+    # Subtest: macro.com
+    ok 7 - macro.com
+      ---
+      duration_ms: 0.51474
+      type: 'test'
+      ...
+    # Subtest: marco.com
+    ok 8 - marco.com
+      ---
+      duration_ms: 0.455932
+      type: 'test'
+      ...
+    # Subtest: arcadia.com
+    ok 9 - arcadia.com
+      ---
+      duration_ms: 0.87513
+      type: 'test'
+      ...
+    # Subtest: telegraf.com
+    ok 10 - telegraf.com
+      ---
+      duration_ms: 0.596179
+      type: 'test'
+      ...
+    # Subtest: personalshop.com
+    ok 11 - personalshop.com
+      ---
+      duration_ms: 1.34009
+      type: 'test'
+      ...
+    # Subtest: españa.com
+    ok 12 - españa.com
+      ---
+      duration_ms: 0.735275
+      type: 'test'
+      ...
+    1..12
+ok 135 - palabras reales que no son imitaciones
+  ---
+  duration_ms: 11.811465
+  type: 'suite'
+  ...
+# Subtest: contenido de terceros
+    # Subtest: https://docs.google.com/forms/d/abc/viewform no es Seguro: avisa que el contenido es de otra persona
+    ok 1 - https://docs.google.com/forms/d/abc/viewform no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 0.521998
+      type: 'test'
+      ...
+    # Subtest: https://drive.google.com/file/d/abc/view no es Seguro: avisa que el contenido es de otra persona
+    ok 2 - https://drive.google.com/file/d/abc/view no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 0.360201
+      type: 'test'
+      ...
+    # Subtest: https://sites.google.com/view/algo no es Seguro: avisa que el contenido es de otra persona
+    ok 3 - https://sites.google.com/view/algo no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 0.234768
+      type: 'test'
+      ...
+    # Subtest: https://alguien.github.io no es Seguro: avisa que el contenido es de otra persona
+    ok 4 - https://alguien.github.io no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 0.878718
+      type: 'test'
+      ...
+    # Subtest: https://proyecto.firebaseapp.com no es Seguro: avisa que el contenido es de otra persona
+    ok 5 - https://proyecto.firebaseapp.com no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 0.64509
+      type: 'test'
+      ...
+    # Subtest: https://pagina.notion.site no es Seguro: avisa que el contenido es de otra persona
+    ok 6 - https://pagina.notion.site no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 0.852489
+      type: 'test'
+      ...
+    # Subtest: https://alguien.blogspot.com no es Seguro: avisa que el contenido es de otra persona
+    ok 7 - https://alguien.blogspot.com no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 1.028733
+      type: 'test'
+      ...
+    # Subtest: https://alguien.wixsite.com/sitio no es Seguro: avisa que el contenido es de otra persona
+    ok 8 - https://alguien.wixsite.com/sitio no es Seguro: avisa que el contenido es de otra persona
+      ---
+      duration_ms: 1.163706
+      type: 'test'
+      ...
+    # Subtest: la edad del dominio de la plataforma no cuenta como dato a favor
+    ok 9 - la edad del dominio de la plataforma no cuenta como dato a favor
+      ---
+      duration_ms: 0.715837
+      type: 'test'
+      ...
+    # Subtest: el nombre de la plataforma se respeta con el punto
+    ok 10 - el nombre de la plataforma se respeta con el punto
+      ---
+      duration_ms: 0.126791
+      type: 'test'
+      ...
+    # Subtest: una marca dentro de una plataforma de terceros es Peligroso
+    ok 11 - una marca dentro de una plataforma de terceros es Peligroso
+      ---
+      duration_ms: 2.339404
+      type: 'test'
+      ...
+    # Subtest: una marca en una página de Google Sites suma
+    ok 12 - una marca en una página de Google Sites suma
+      ---
+      duration_ms: 0.25668
+      type: 'test'
+      ...
+    1..12
+ok 136 - contenido de terceros
+  ---
+  duration_ms: 9.57147
+  type: 'suite'
+  ...
+# Subtest: acortadores
+    # Subtest: bit.ly no es Seguro hasta saber a dónde lleva
+    ok 1 - bit.ly no es Seguro hasta saber a dónde lleva
+      ---
+      duration_ms: 0.84422
+      type: 'test'
+      ...
+    # Subtest: el veredicto final sale del destino
+    ok 2 - el veredicto final sale del destino
+      ---
+      duration_ms: 9.482035
+      type: 'test'
+      ...
+    # Subtest: una redirección dentro del mismo sitio no se presenta como acortador
+    ok 3 - una redirección dentro del mismo sitio no se presenta como acortador
+      ---
+      duration_ms: 0.490955
+      type: 'test'
+      ...
+    1..3
+ok 137 - acortadores
+  ---
+  duration_ms: 11.032036
+  type: 'suite'
+  ...
+# Subtest: marca en un texto
+    # Subtest: encuentra marcas de una y de varias palabras
+    ok 1 - encuentra marcas de una y de varias palabras
+      ---
+      duration_ms: 0.235162
+      type: 'test'
+      ...
+    # Subtest: las palabras comunes solas no son una marca
+    ok 2 - las palabras comunes solas no son una marca
+      ---
+      duration_ms: 0.19073
+      type: 'test'
+      ...
+    1..2
+ok 138 - marca en un texto
+  ---
+  duration_ms: 0.534465
+  type: 'suite'
+  ...
+# Subtest: me pasó algo
+    # Subtest: cada situación tiene título y pasos
+    ok 1 - cada situación tiene título y pasos
+      ---
+      duration_ms: 1.19839
+      type: 'test'
+      ...
+    # Subtest: el primer paso siempre es actuar rápido o cortar
+    ok 2 - el primer paso siempre es actuar rápido o cortar
+      ---
+      duration_ms: 0.313538
+      type: 'test'
+      ...
+    # Subtest: busca por id
+    ok 3 - busca por id
+      ---
+      duration_ms: 0.192455
+      type: 'test'
+      ...
+    1..3
+ok 139 - me pasó algo
+  ---
+  duration_ms: 3.28576
+  type: 'suite'
+  ...
+# Subtest: novedades
+    # Subtest: las del archivo están completas
+    ok 1 - las del archivo están completas
+      ---
+      duration_ms: 0.717871
+      type: 'test'
+      ...
+    # Subtest: muestra las más nuevas, sin viejas ni futuras
+    ok 2 - muestra las más nuevas, sin viejas ni futuras
+      ---
+      duration_ms: 9.729295
+      type: 'test'
+      ...
+    # Subtest: no muestra las cerradas
+    ok 3 - no muestra las cerradas
+      ---
+      duration_ms: 0.193403
+      type: 'test'
+      ...
+    # Subtest: guarda las cerradas
+    ok 4 - guarda las cerradas
+      ---
+      duration_ms: 0.26606
+      type: 'test'
+      ...
+    1..4
+ok 140 - novedades
+  ---
+  duration_ms: 11.899838
+  type: 'suite'
+  ...
+# Subtest: recuerda la cantidad elegida para cada cuenta
+ok 141 - recuerda la cantidad elegida para cada cuenta
+  ---
+  duration_ms: 0.862443
+  type: 'test'
+  ...
+# Subtest: no guarda cantidades inválidas ni cuentas vacías
+ok 142 - no guarda cantidades inválidas ni cuentas vacías
+  ---
+  duration_ms: 0.227435
+  type: 'test'
+  ...
+# Subtest: si el navegador bloquea el almacenamiento, no rompe
+ok 143 - si el navegador bloquea el almacenamiento, no rompe
+  ---
+  duration_ms: 0.25805
+  type: 'test'
+  ...
+# Subtest: cada cantidad cae en el tramo publicado
+ok 144 - cada cantidad cae en el tramo publicado
+  ---
+  duration_ms: 0.888622
+  type: 'test'
+  ...
+# Subtest: con pocas personas se cobra el mínimo de USD 25
+ok 145 - con pocas personas se cobra el mínimo de USD 25
+  ---
+  duration_ms: 0.313647
+  type: 'test'
+  ...
+# Subtest: con 25 personas el total es justo el mínimo
+ok 146 - con 25 personas el total es justo el mínimo
+  ---
+  duration_ms: 0.245302
+  type: 'test'
+  ...
+# Subtest: toda la organización paga la tarifa del tramo en el que cae
+ok 147 - toda la organización paga la tarifa del tramo en el que cae
+  ---
+  duration_ms: 0.133832
+  type: 'test'
+  ...
+# Subtest: pasa a pesos con USD 1 igual a ARS 1.500 sin errores de redondeo
+ok 148 - pasa a pesos con USD 1 igual a ARS 1.500 sin errores de redondeo
+  ---
+  duration_ms: 0.173195
+  type: 'test'
+  ...
+# Subtest: rechaza cantidades que no son un número entero de personas
+ok 149 - rechaza cantidades que no son un número entero de personas
+  ---
+  duration_ms: 0.095388
+  type: 'test'
+  ...
+# Subtest: muestra los montos y los tramos en formato argentino
+ok 150 - muestra los montos y los tramos en formato argentino
+  ---
+  duration_ms: 11.772796
+  type: 'test'
+  ...
+# Subtest: el límite deja un 10 % por encima de lo contratado, redondeado hacia arriba
+ok 151 - el límite deja un 10 % por encima de lo contratado, redondeado hacia arriba
+  ---
+  duration_ms: 0.136456
+  type: 'test'
+  ...
+# Subtest: el plan cuenta solo a las personas activas contra lo contratado y el límite
+ok 152 - el plan cuenta solo a las personas activas contra lo contratado y el límite
+  ---
+  duration_ms: 0.476057
+  type: 'test'
+  ...
+# Subtest: sin cantidad guardada el plan cuenta como 25 personas
+ok 153 - sin cantidad guardada el plan cuenta como 25 personas
+  ---
+  duration_ms: 0.347501
+  type: 'test'
+  ...
+# Subtest: solo deja activar a tantas personas como lugares queden
+ok 154 - solo deja activar a tantas personas como lugares queden
+  ---
+  duration_ms: 0.232664
+  type: 'test'
+  ...
+# Subtest: nivel de protección
+    # Subtest: con todo hecho es 100 y no hay próximo paso
+    ok 1 - con todo hecho es 100 y no hay próximo paso
+      ---
+      duration_ms: 0.826831
+      type: 'test'
+      ...
+    # Subtest: sin nada es 0 y lo primero es la verificación en dos pasos
+    ok 2 - sin nada es 0 y lo primero es la verificación en dos pasos
+      ---
+      duration_ms: 0.201435
+      type: 'test'
+      ...
+    # Subtest: la lista suma en partes
+    ok 3 - la lista suma en partes
+      ---
+      duration_ms: 0.171101
+      type: 'test'
+      ...
+    # Subtest: lo que no aplica no cuenta
+    ok 4 - lo que no aplica no cuenta
+      ---
+      duration_ms: 0.190093
+      type: 'test'
+      ...
+    # Subtest: sin dos pasos, con el resto hecho
+    ok 5 - sin dos pasos, con el resto hecho
+      ---
+      duration_ms: 0.137177
+      type: 'test'
+      ...
+    1..5
+ok 155 - nivel de protección
+  ---
+  duration_ms: 3.463908
+  type: 'suite'
+  ...
+# Subtest: cada señal trae id, grupo, peso, texto y fuerza, y el texto es el motivo que se muestra
+ok 156 - cada señal trae id, grupo, peso, texto y fuerza, y el texto es el motivo que se muestra
+  ---
+  duration_ms: 16.533771
+  type: 'test'
+  ...
+# Subtest: las señales débiles juntas nunca llegan a Peligroso
+ok 157 - las señales débiles juntas nunca llegan a Peligroso
+  ---
+  duration_ms: 4.659436
+  type: 'test'
+  ...
+# Subtest: el final .click es una señal débil y sola no pasa de Precaución
+ok 158 - el final .click es una señal débil y sola no pasa de Precaución
+  ---
+  duration_ms: 1.103123
+  type: 'test'
+  ...
+# Subtest: una señal fuerte o dos medias de grupos distintos habilitan Peligroso; una media sola no
+ok 159 - una señal fuerte o dos medias de grupos distintos habilitan Peligroso; una media sola no
+  ---
+  duration_ms: 0.213057
+  type: 'test'
+  ...
+# Subtest: un dominio con marca imitada y una señal fuerte sigue siendo Peligroso
+ok 160 - un dominio con marca imitada y una señal fuerte sigue siendo Peligroso
+  ---
+  duration_ms: 3.233133
+  type: 'test'
+  ...
+# Subtest: los umbrales y los topes se pueden cambiar
+ok 161 - los umbrales y los topes se pueden cambiar
+  ---
+  duration_ms: 0.122861
+  type: 'test'
+  ...
+# Subtest: un dominio de 6 meses no es motivo; uno de 3 días sí, y explica por qué
+ok 162 - un dominio de 6 meses no es motivo; uno de 3 días sí, y explica por qué
+  ---
+  duration_ms: 3.941229
+  type: 'test'
+  ...
+# Subtest: contenido completo
+    # Subtest: todo resultado guarda el texto tal cual vino
+    ok 1 - todo resultado guarda el texto tal cual vino
+      ---
+      duration_ms: 7.946846
+      type: 'test'
+      ...
+    1..1
+ok 163 - contenido completo
+  ---
+  duration_ms: 8.683609
+  type: 'suite'
+  ...
+# Subtest: direcciones web
+    # Subtest: una URL pasa por el mismo motor que un enlace pegado
+    ok 1 - una URL pasa por el mismo motor que un enlace pegado
+      ---
+      duration_ms: 8.105234
+      type: 'test'
+      ...
+    # Subtest: un texto con un enlace adentro no se revisa solo, pero ofrece revisarlo
+    ok 2 - un texto con un enlace adentro no se revisa solo, pero ofrece revisarlo
+      ---
+      duration_ms: 0.254633
+      type: 'test'
+      ...
+    1..2
+ok 164 - direcciones web
+  ---
+  duration_ms: 8.510454
+  type: 'suite'
+  ...
+# Subtest: Wi-Fi
+    # Subtest: muestra el nombre y la seguridad, nunca conecta
+    ok 1 - muestra el nombre y la seguridad, nunca conecta
+      ---
+      duration_ms: 0.391774
+      type: 'test'
+      ...
+    # Subtest: avisa si la red es abierta o usa WEP
+    ok 2 - avisa si la red es abierta o usa WEP
+      ---
+      duration_ms: 0.152019
+      type: 'test'
+      ...
+    # Subtest: sin nombre de red no se puede verificar
+    ok 3 - sin nombre de red no se puede verificar
+      ---
+      duration_ms: 0.618841
+      type: 'test'
+      ...
+    1..3
+ok 165 - Wi-Fi
+  ---
+  duration_ms: 1.508073
+  type: 'suite'
+  ...
+# Subtest: SMS y teléfono
+    # Subtest: muestra el número y el texto en las dos formas de SMS
+    ok 1 - muestra el número y el texto en las dos formas de SMS
+      ---
+      duration_ms: 0.466407
+      type: 'test'
+      ...
+    # Subtest: avisa si el número es corto
+    ok 2 - avisa si el número es corto
+      ---
+      duration_ms: 0.200536
+      type: 'test'
+      ...
+    1..2
+ok 166 - SMS y teléfono
+  ---
+  duration_ms: 0.821914
+  type: 'suite'
+  ...
+# Subtest: contactos, ubicación y eventos
+    # Subtest: lee un vCard con varios datos y ofrece revisar su sitio
+    ok 1 - lee un vCard con varios datos y ofrece revisar su sitio
+      ---
+      duration_ms: 0.765405
+      type: 'test'
+      ...
+    # Subtest: lee un MECARD
+    ok 2 - lee un MECARD
+      ---
+      duration_ms: 0.372914
+      type: 'test'
+      ...
+    # Subtest: una ubicación con coordenadas válidas se muestra; una imposible no se verifica
+    ok 3 - una ubicación con coordenadas válidas se muestra; una imposible no se verifica
+      ---
+      duration_ms: 0.215278
+      type: 'test'
+      ...
+    1..3
+ok 167 - contactos, ubicación y eventos
+  ---
+  duration_ms: 1.506011
+  type: 'suite'
+  ...
+# Subtest: pagos
+    # Subtest: el control del código usa CRC-16/CCITT-FALSE
+    ok 1 - el control del código usa CRC-16/CCITT-FALSE
+      ---
+      duration_ms: 0.195947
+      type: 'test'
+      ...
+    # Subtest: valida los dígitos de un CBU
+    ok 2 - valida los dígitos de un CBU
+      ---
+      duration_ms: 0.236077
+      type: 'test'
+      ...
+    # Subtest: lee receptor, red, cuenta y monto, y aclara que no puede verificar al receptor
+    ok 3 - lee receptor, red, cuenta y monto, y aclara que no puede verificar al receptor
+      ---
+      duration_ms: 0.628839
+      type: 'test'
+      ...
+    # Subtest: avisa si el control no coincide o la cuenta no verifica
+    ok 4 - avisa si el control no coincide o la cuenta no verifica
+      ---
+      duration_ms: 0.341859
+      type: 'test'
+      ...
+    # Subtest: un pago mal armado no se puede verificar
+    ok 5 - un pago mal armado no se puede verificar
+      ---
+      duration_ms: 0.077721
+      type: 'test'
+      ...
+    1..5
+ok 168 - pagos
+  ---
+  duration_ms: 1.629503
+  type: 'suite'
+  ...
+# Subtest: sin formato reconocible
+    # Subtest: un código vacío, binario o de otra app queda en No pudimos verificarlo
+    ok 1 - un código vacío, binario o de otra app queda en No pudimos verificarlo
+      ---
+      duration_ms: 0.15528
+      type: 'test'
+      ...
+    1..1
+ok 169 - sin formato reconocible
+  ---
+  duration_ms: 0.21231
+  type: 'suite'
+  ...
+# Subtest: racha del juego
+    # Subtest: suma al acertar y vuelve a cero al errar, sin perder la mejor
+    ok 1 - suma al acertar y vuelve a cero al errar, sin perder la mejor
+      ---
+      duration_ms: 1.571657
+      type: 'test'
+      ...
+    # Subtest: guarda y lee
+    ok 2 - guarda y lee
+      ---
+      duration_ms: 0.253721
+      type: 'test'
+      ...
+    # Subtest: lo guardado roto o sin almacenamiento empieza de cero
+    ok 3 - lo guardado roto o sin almacenamiento empieza de cero
+      ---
+      duration_ms: 0.29508
+      type: 'test'
+      ...
+    # Subtest: texto para mostrar
+    ok 4 - texto para mostrar
+      ---
+      duration_ms: 1.2546
+      type: 'test'
+      ...
+    1..4
+ok 170 - racha del juego
+  ---
+  duration_ms: 4.234923
+  type: 'suite'
+  ...
+# Subtest: qué sale del sistema
+    # Subtest: al backend propio no le llega el fragmento
+    ok 1 - al backend propio no le llega el fragmento
+      ---
+      duration_ms: 0.58625
+      type: 'test'
+      ...
+    # Subtest: a un servicio externo le llega el sitio y la ruta, sin query, fragmento ni usuario
+    ok 2 - a un servicio externo le llega el sitio y la ruta, sin query, fragmento ni usuario
+      ---
+      duration_ms: 0.22664
+      type: 'test'
+      ...
+    # Subtest: Faro recibe la dirección recortada y deja igual lo que no es una dirección
+    ok 3 - Faro recibe la dirección recortada y deja igual lo que no es una dirección
+      ---
+      duration_ms: 1.422411
+      type: 'test'
+      ...
+    1..3
+ok 171 - qué sale del sistema
+  ---
+  duration_ms: 3.278476
+  type: 'suite'
+  ...
+# Subtest: dominios del recorrido
+    # Subtest: junta cada dominio de la cadena y de la redirección de la página, sin repetir
+    ok 1 - junta cada dominio de la cadena y de la redirección de la página, sin repetir
+      ---
+      duration_ms: 2.839075
+      type: 'test'
+      ...
+    1..1
+ok 172 - dominios del recorrido
+  ---
+  duration_ms: 3.179189
+  type: 'suite'
+  ...
+# Subtest: cadena de redirecciones
+    # Subtest: un dominio parecido a una marca que lleva al sitio real sigue en Sospechoso
+    ok 1 - un dominio parecido a una marca que lleva al sitio real sigue en Sospechoso
+      ---
+      duration_ms: 12.714235
+      type: 'test'
+      ...
+    # Subtest: un salto intermedio con señales se cuenta aunque el destino sea oficial
+    ok 2 - un salto intermedio con señales se cuenta aunque el destino sea oficial
+      ---
+      duration_ms: 4.265807
+      type: 'test'
+      ...
+    # Subtest: un salto intermedio sin señales no agrega motivos
+    ok 3 - un salto intermedio sin señales no agrega motivos
+      ---
+      duration_ms: 2.528857
+      type: 'test'
+      ...
+    # Subtest: si el destino también es un acortador pero ya se llegó al final, no dice que no se ve a dónde lleva
+    ok 4 - si el destino también es un acortador pero ya se llegó al final, no dice que no se ve a dónde lleva
+      ---
+      duration_ms: 2.338156
+      type: 'test'
+      ...
+    # Subtest: la redirección propia de la página se suma al final de la cadena
+    ok 5 - la redirección propia de la página se suma al final de la cadena
+      ---
+      duration_ms: 2.850783
+      type: 'test'
+      ...
+    1..5
+ok 173 - cadena de redirecciones
+  ---
+  duration_ms: 25.182916
+  type: 'suite'
+  ...
+# Subtest: cuando el servidor no llega al final
+    # Subtest: un dominio que no existe queda en No pudimos verificarlo, con el motivo real
+    ok 1 - un dominio que no existe queda en No pudimos verificarlo, con el motivo real
+      ---
+      duration_ms: 5.436248
+      type: 'test'
+      ...
+    # Subtest: una imitación de marca que no responde no baja de nivel
+    ok 2 - una imitación de marca que no responde no baja de nivel
+      ---
+      duration_ms: 1.970412
+      type: 'test'
+      ...
+    # Subtest: una redirección a una red interna se corta y nunca queda en verde
+    ok 3 - una redirección a una red interna se corta y nunca queda en verde
+      ---
+      duration_ms: 3.625494
+      type: 'test'
+      ...
+    # Subtest: una redirección a código javascript: es Peligroso
+    ok 4 - una redirección a código javascript: es Peligroso
+      ---
+      duration_ms: 0.871584
+      type: 'test'
+      ...
+    # Subtest: cinco saltos seguidos cortan el recorrido sin dar un veredicto limpio
+    ok 5 - cinco saltos seguidos cortan el recorrido sin dar un veredicto limpio
+      ---
+      duration_ms: 5.436089
+      type: 'test'
+      ...
+    1..5
+ok 174 - cuando el servidor no llega al final
+  ---
+  duration_ms: 17.556308
+  type: 'suite'
+  ...
+# Subtest: los capítulos arrancan en cero, van en orden y entran en el video
+ok 175 - los capítulos arrancan en cero, van en orden y entran en el video
+  ---
+  duration_ms: 1.686404
+  type: 'test'
+  ...
+# Subtest: capituloEn ubica el momento del video
+ok 176 - capituloEn ubica el momento del video
+  ---
+  duration_ms: 0.215585
+  type: 'test'
+  ...
+# Subtest: el avance va de 0 a 1 dentro de cada capítulo
+ok 177 - el avance va de 0 a 1 dentro de cada capítulo
+  ---
+  duration_ms: 0.264484
+  type: 'test'
+  ...
+# Subtest: con otros capítulos y duración se calcula igual
+ok 178 - con otros capítulos y duración se calcula igual
+  ---
+  duration_ms: 1.196132
+  type: 'test'
+  ...
+# Subtest: formatoTiempo muestra minutos y segundos
+ok 179 - formatoTiempo muestra minutos y segundos
+  ---
+  duration_ms: 0.178629
+  type: 'test'
+  ...
+# Subtest: registro de la simulación
+    # Subtest: una clave inventada no sale en la llamada
+    ok 1 - una clave inventada no sale en la llamada
+      ---
+      duration_ms: 1.84362
+      type: 'test'
+      ...
+    # Subtest: nombre, correo y clave de la tienda tampoco salen
+    ok 2 - nombre, correo y clave de la tienda tampoco salen
+      ---
+      duration_ms: 0.167173
+      type: 'test'
+      ...
+    1..2
+ok 180 - registro de la simulación
+  ---
+  duration_ms: 2.977921
+  type: 'suite'
+  ...
+# Subtest: reportar un error
+    # Subtest: la dirección sale sin la consulta ni el fragmento
+    ok 1 - la dirección sale sin la consulta ni el fragmento
+      ---
+      duration_ms: 2.504764
+      type: 'test'
+      ...
+    # Subtest: el contenido de un QR que no es web no se manda
+    ok 2 - el contenido de un QR que no es web no se manda
+      ---
+      duration_ms: 0.721965
+      type: 'test'
+      ...
+    # Subtest: sin elegir qué está mal, o con un nivel raro, no arma nada
+    ok 3 - sin elegir qué está mal, o con un nivel raro, no arma nada
+      ---
+      duration_ms: 0.172956
+      type: 'test'
+      ...
+    # Subtest: recorta el comentario y usa un canal válido
+    ok 4 - recorta el comentario y usa un canal válido
+      ---
+      duration_ms: 0.158806
+      type: 'test'
+      ...
+    # Subtest: un resultado nuevo cambia la clave del formulario
+    ok 5 - un resultado nuevo cambia la clave del formulario
+      ---
+      duration_ms: 0.179215
+      type: 'test'
+      ...
+    1..5
+ok 181 - reportar un error
+  ---
+  duration_ms: 4.908929
+  type: 'suite'
+  ...
+# Subtest: mis reportes e invitar
+    # Subtest: nombra el estado de cada reporte
+    ok 1 - nombra el estado de cada reporte
+      ---
+      duration_ms: 0.566064
+      type: 'test'
+      ...
+    # Subtest: el texto para invitar lleva el enlace y el primer nombre
+    ok 2 - el texto para invitar lleva el enlace y el primer nombre
+      ---
+      duration_ms: 0.374793
+      type: 'test'
+      ...
+    1..2
+ok 182 - mis reportes e invitar
+  ---
+  duration_ms: 1.939703
+  type: 'suite'
+  ...
+# Subtest: con mouse se reproduce al apuntar, en el celular al verse y con movimiento reducido solo con el botón
+ok 183 - con mouse se reproduce al apuntar, en el celular al verse y con movimiento reducido solo con el botón
+  ---
+  duration_ms: 0.906034
+  type: 'test'
+  ...
+# Subtest: leerModo usa las consultas del navegador y sin navegador queda en botón
+ok 184 - leerModo usa las consultas del navegador y sin navegador queda en botón
+  ---
+  duration_ms: 0.196362
+  type: 'test'
+  ...
+# Subtest: el recorrido anda solo si se ve, no está en pausa y no se pidió menos movimiento
+ok 185 - el recorrido anda solo si se ve, no está en pausa y no se pidió menos movimiento
+  ---
+  duration_ms: 0.217918
+  type: 'test'
+  ...
+# Subtest: elementoVisible elige el que no está oculto por el tema
+ok 186 - elementoVisible elige el que no está oculto por el tema
+  ---
+  duration_ms: 0.137708
+  type: 'test'
+  ...
+# Subtest: resumen de la semana
+    # Subtest: cuenta enlaces y peligrosos
+    ok 1 - cuenta enlaces y peligrosos
+      ---
+      duration_ms: 2.189602
+      type: 'test'
+      ...
+    # Subtest: singular
+    ok 2 - singular
+      ---
+      duration_ms: 0.213003
+      type: 'test'
+      ...
+    # Subtest: sin peligrosos
+    ok 3 - sin peligrosos
+      ---
+      duration_ms: 0.173765
+      type: 'test'
+      ...
+    # Subtest: separa por tipo
+    ok 4 - separa por tipo
+      ---
+      duration_ms: 0.18268
+      type: 'test'
+      ...
+    # Subtest: sospechosos y sin verificar no cuentan como peligrosos
+    ok 5 - sospechosos y sin verificar no cuentan como peligrosos
+      ---
+      duration_ms: 0.110336
+      type: 'test'
+      ...
+    # Subtest: sin revisiones
+    ok 6 - sin revisiones
+      ---
+      duration_ms: 0.089556
+      type: 'test'
+      ...
+    # Subtest: no infla lo que hace la app
+    ok 7 - no infla lo que hace la app
+      ---
+      duration_ms: 0.25783
+      type: 'test'
+      ...
+    # Subtest: la semana empieza el lunes
+    ok 8 - la semana empieza el lunes
+      ---
+      duration_ms: 1.525494
+      type: 'test'
+      ...
+    1..8
+ok 187 - resumen de la semana
+  ---
+  duration_ms: 5.903496
+  type: 'suite'
+  ...
+# Subtest: semáforo de la semana
+    # Subtest: cuenta cada color
+    ok 1 - cuenta cada color
+      ---
+      duration_ms: 0.451571
+      type: 'test'
+      ...
+    # Subtest: lo desconocido cuenta como gris
+    ok 2 - lo desconocido cuenta como gris
+      ---
+      duration_ms: 0.258178
+      type: 'test'
+      ...
+    # Subtest: sin filas da todo en cero
+    ok 3 - sin filas da todo en cero
+      ---
+      duration_ms: 0.095866
+      type: 'test'
+      ...
+    1..3
+ok 188 - semáforo de la semana
+  ---
+  duration_ms: 0.997062
+  type: 'suite'
+  ...
+# Subtest: qué pegaron
+    # Subtest: un enlace solo es un enlace
+    ok 1 - un enlace solo es un enlace
+      ---
+      duration_ms: 24.788999
+      type: 'test'
+      ...
+    # Subtest: un texto con espacios es un mensaje, aunque traiga un enlace
+    ok 2 - un texto con espacios es un mensaje, aunque traiga un enlace
+      ---
+      duration_ms: 0.180126
+      type: 'test'
+      ...
+    # Subtest: las cabeceras de un correo lo marcan como correo
+    ok 3 - las cabeceras de un correo lo marcan como correo
+      ---
+      duration_ms: 0.141633
+      type: 'test'
+      ...
+    # Subtest: vacío no es nada
+    ok 4 - vacío no es nada
+      ---
+      duration_ms: 0.216041
+      type: 'test'
+      ...
+    1..4
+ok 189 - qué pegaron
+  ---
+  duration_ms: 26.554899
+  type: 'suite'
+  ...
+# Subtest: pasos mientras revisa
+    # Subtest: cada tipo tiene sus pasos y lo desconocido usa los de enlace
+    ok 1 - cada tipo tiene sus pasos y lo desconocido usa los de enlace
+      ---
+      duration_ms: 1.47951
+      type: 'test'
+      ...
+    # Subtest: avanza con el tiempo y se queda en el último
+    ok 2 - avanza con el tiempo y se queda en el último
+      ---
+      duration_ms: 0.246021
+      type: 'test'
+      ...
+    1..2
+ok 190 - pasos mientras revisa
+  ---
+  duration_ms: 1.923897
+  type: 'suite'
+  ...
+# Subtest: historial
+    # Subtest: filtra por color
+    ok 1 - filtra por color
+      ---
+      duration_ms: 0.870095
+      type: 'test'
+      ...
+    # Subtest: nombra los días
+    ok 2 - nombra los días
+      ---
+      duration_ms: 20.586862
+      type: 'test'
+      ...
+    # Subtest: agrupa seguidos por día
+    ok 3 - agrupa seguidos por día
+      ---
+      duration_ms: 0.86104
+      type: 'test'
+      ...
+    1..3
+ok 191 - historial
+  ---
+  duration_ms: 22.921771
+  type: 'suite'
+  ...
+# Subtest: textos
+    # Subtest: lo que llevás protegido
+    ok 1 - lo que llevás protegido
+      ---
+      duration_ms: 0.337991
+      type: 'test'
+      ...
+    # Subtest: la frase grande del resultado
+    ok 2 - la frase grande del resultado
+      ---
+      duration_ms: 0.113603
+      type: 'test'
+      ...
+    1..2
+ok 192 - textos
+  ---
+  duration_ms: 0.57787
+  type: 'suite'
+  ...
+# Subtest: destinoSafeLink
+    # Subtest: sin nada va a SafeLink
+    ok 1 - sin nada va a SafeLink
+      ---
+      duration_ms: 0.183918
+      type: 'test'
+      ...
+    # Subtest: pasa el enlace para revisarlo
+    ok 2 - pasa el enlace para revisarlo
+      ---
+      duration_ms: 0.100386
+      type: 'test'
+      ...
+    # Subtest: recorta lo muy largo
+    ok 3 - recorta lo muy largo
+      ---
+      duration_ms: 0.372827
+      type: 'test'
+      ...
+    1..3
+ok 193 - destinoSafeLink
+  ---
+  duration_ms: 0.844224
+  type: 'suite'
+  ...
+# Subtest: saludo
+    # Subtest: cambia según la hora
+    ok 1 - cambia según la hora
+      ---
+      duration_ms: 0.594262
+      type: 'test'
+      ...
+    # Subtest: usa el primer nombre cuando lo hay
+    ok 2 - usa el primer nombre cuando lo hay
+      ---
+      duration_ms: 0.282118
+      type: 'test'
+      ...
+    # Subtest: sin nombre, o con el correo como nombre, saluda sin nombre
+    ok 3 - sin nombre, o con el correo como nombre, saluda sin nombre
+      ---
+      duration_ms: 0.185017
+      type: 'test'
+      ...
+    1..3
+ok 194 - saludo
+  ---
+  duration_ms: 2.115327
+  type: 'suite'
+  ...
+# Subtest: una marca sobre un dominio con nombre de trámite es Peligroso, con dos motivos y sin doble conteo
+ok 195 - una marca sobre un dominio con nombre de trámite es Peligroso, con dos motivos y sin doble conteo
+  ---
+  duration_ms: 21.593984
+  type: 'test'
+  ...
+# Subtest: "verificar" ya no cuenta como palabra de urgencia
+ok 196 - "verificar" ya no cuenta como palabra de urgencia
+  ---
+  duration_ms: 3.360764
+  type: 'test'
+  ...
+# Subtest: las palabras de urgencia se buscan en el camino, no en el nombre del sitio
+ok 197 - las palabras de urgencia se buscan en el camino, no en el nombre del sitio
+  ---
+  duration_ms: 4.8403
+  type: 'test'
+  ...
+# Subtest: las palabras sueltas, juntas, nunca pasan de verde
+ok 198 - las palabras sueltas, juntas, nunca pasan de verde
+  ---
+  duration_ms: 3.760788
+  type: 'test'
+  ...
+# Subtest: sin una marca imitada, el nombre de trámite no es señal fuerte
+ok 199 - sin una marca imitada, el nombre de trámite no es señal fuerte
+  ---
+  duration_ms: 3.611007
+  type: 'test'
+  ...
+# Subtest: una ruta para entrar a una cuenta no suma además como urgencia
+ok 200 - una ruta para entrar a una cuenta no suma además como urgencia
+  ---
+  duration_ms: 0.969176
+  type: 'test'
+  ...
+# Subtest: la edad solo es motivo cuando el dominio es muy reciente, y dice por qué
+ok 201 - la edad solo es motivo cuando el dominio es muy reciente, y dice por qué
+  ---
+  duration_ms: 2.60187
+  type: 'test'
+  ...
+# Subtest: el certificado solo es motivo cuando es muy nuevo
+ok 202 - el certificado solo es motivo cuando es muy nuevo
+  ---
+  duration_ms: 0.154116
+  type: 'test'
+  ...
+# Subtest: el CSV tiene las columnas pedidas y unas 15 URLs de cada tipo
+ok 203 - el CSV tiene las columnas pedidas y unas 15 URLs de cada tipo
+  ---
+  duration_ms: 1.872307
+  type: 'test'
+  ...
+# Subtest: los legítimos difíciles nunca salen Precaución ni Peligroso
+ok 204 - los legítimos difíciles nunca salen Precaución ni Peligroso
+  ---
+  duration_ms: 27.339514
+  type: 'test'
+  ...
+# Subtest: ninguna variante sintética sale como Seguro o Sin señales de riesgo
+ok 205 - ninguna variante sintética sale como Seguro o Sin señales de riesgo
+  ---
+  duration_ms: 77.710065
+  type: 'test'
+  ...
+# Subtest: stakelotemax7.click: Precaución solo por la dirección, Peligroso con la respuesta guardada de VirusTotal
+ok 206 - stakelotemax7.click: Precaución solo por la dirección, Peligroso con la respuesta guardada de VirusTotal
+  ---
+  duration_ms: 6.080995
+  type: 'test'
+  ...
+# Subtest: VirusTotal es una señal: de 1 a 4 motores es media, 5 o más es fuerte y sola lleva a Peligroso
+ok 207 - VirusTotal es una señal: de 1 a 4 motores es media, 5 o más es fuerte y sola lleva a Peligroso
+  ---
+  duration_ms: 2.250097
+  type: 'test'
+  ...
+# Subtest: VirusTotal nunca baja un veredicto
+ok 208 - VirusTotal nunca baja un veredicto
+  ---
+  duration_ms: 4.002196
+  type: 'test'
+  ...
+# Subtest: no empeora la línea base guardada
+ok 209 - no empeora la línea base guardada
+  ---
+  duration_ms: 120.310371
+  type: 'test'
+  ...
+# Subtest: "Seguro" solo para el dominio oficial de una marca de la lista
+ok 210 - "Seguro" solo para el dominio oficial de una marca de la lista
+  ---
+  duration_ms: 6.660096
+  type: 'test'
+  ...
+# Subtest: un dominio desconocido sin señales no promete seguridad
+ok 211 - un dominio desconocido sin señales no promete seguridad
+  ---
+  duration_ms: 7.499192
+  type: 'test'
+  ...
+# Subtest: verde con algo sin verificar o en plataforma de terceros no es "Seguro"
+ok 212 - verde con algo sin verificar o en plataforma de terceros no es "Seguro"
+  ---
+  duration_ms: 0.22402
+  type: 'test'
+  ...
+# Subtest: los demás niveles y cualquier valor raro
+ok 213 - los demás niveles y cualquier valor raro
+  ---
+  duration_ms: 0.106012
+  type: 'test'
+  ...
+# Subtest: los typosquats de las regresiones nunca salen como "Seguro" ni "Sin señales de riesgo"
+ok 214 - los typosquats de las regresiones nunca salen como "Seguro" ni "Sin señales de riesgo"
+  ---
+  duration_ms: 6.971065
+  type: 'test'
+  ...
+# Subtest: por qué no se pudo verificar, en una línea
+ok 215 - por qué no se pudo verificar, en una línea
+  ---
+  duration_ms: 2.243179
+  type: 'test'
+  ...
+# Subtest: si el sitio no responde, no va arriba como error: va abajo como nota informativa
+ok 216 - si el sitio no responde, no va arriba como error: va abajo como nota informativa
+  ---
+  duration_ms: 3.006055
+  type: 'test'
+  ...
+# Subtest: motivos cortos: tres a la vista y el resto plegado, sin repetir la nota
+ok 217 - motivos cortos: tres a la vista y el resto plegado, sin repetir la nota
+  ---
+  duration_ms: 1.524716
+  type: 'test'
+  ...
+# Subtest: los motivos salen ordenados por fuerza y peso, con las frases de una señal juntas
+ok 218 - los motivos salen ordenados por fuerza y peso, con las frases de una señal juntas
+  ---
+  duration_ms: 3.461561
+  type: 'test'
+  ...
+# Subtest: ningún texto de la tarjeta dice que el sitio es seguro o está garantizado
+ok 219 - ningún texto de la tarjeta dice que el sitio es seguro o está garantizado
+  ---
+  duration_ms: 0.747478
+  type: 'test'
+  ...
+# Subtest: la alerta lleva el dominio desarmado para que no se vuelva un enlace
+ok 220 - la alerta lleva el dominio desarmado para que no se vuelva un enlace
+  ---
+  duration_ms: 0.995932
+  type: 'test'
+  ...
+# Subtest: un caso del historial rearma la comparación solo con lo que se guardó
+ok 221 - un caso del historial rearma la comparación solo con lo que se guardó
+  ---
+  duration_ms: 2.571728
+  type: 'test'
+  ...
+# Subtest: solo se vuelve a rutas internas
+ok 222 - solo se vuelve a rutas internas
+  ---
+  duration_ms: 1.758577
+  type: 'test'
+  ...
+# Subtest: la ruta para ingresar lleva adónde volver
+ok 223 - la ruta para ingresar lleva adónde volver
+  ---
+  duration_ms: 0.368035
+  type: 'test'
+  ...
+# Subtest: el destino guardado sirve cuando el ingreso con Google vuelve sin parámetros
+ok 224 - el destino guardado sirve cuando el ingreso con Google vuelve sin parámetros
+  ---
+  duration_ms: 0.357
+  type: 'test'
+  ...
+# Subtest: no se guarda un destino externo
+ok 225 - no se guarda un destino externo
+  ---
+  duration_ms: 0.115156
+  type: 'test'
+  ...
+# Subtest: sin almacenamiento disponible no falla
+ok 226 - sin almacenamiento disponible no falla
+  ---
+  duration_ms: 1.468978
+  type: 'test'
+  ...
+1..226
+# tests 478
+# suites 69
+# pass 478
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 5921.191787
+# duration_ms 4734.959966
