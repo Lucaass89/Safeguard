@@ -32,7 +32,23 @@
 .ea .ea-lado,
 .ea .ea-lado:hover,
 .ea .ea-lado :is(strong, span) {
-  color: #ffffff;
+  color: var(--ea-tinta, #ffffff);
+}
+
+html[data-tema='claro'] .ea-entrar {
+  background: rgb(58 42 28 / 9%);
+}
+
+html[data-tema='claro'] .ea-lado:hover .ea-entrar {
+  background: rgb(58 42 28 / 15%);
+}
+
+html[data-tema='claro'] .ea-lado:hover::after {
+  background: rgb(255 255 255 / 25%);
+}
+
+html[data-tema='claro'] .ea-lado:focus-visible {
+  outline-color: var(--ea-tinta);
 }
 
 .ea-lado::after {
@@ -58,19 +74,25 @@
 }
 
 .ea-safelink {
-  background: linear-gradient(160deg, #0f766e 0%, #0b3b45 58%, #082233 100%);
+  background: radial-gradient(90% 70% at 20% 100%, rgb(59 130 246 / 35%), transparent 60%), #0d1830;
 }
 
 .ea-phish {
-  background: linear-gradient(200deg, #5b3fd1 0%, #2a1f5c 58%, #140f33 100%);
+  background: radial-gradient(90% 70% at 80% 100%, rgb(244 114 94 / 30%), transparent 60%), #121527;
+  box-shadow: inset 1px 0 0 rgb(255 255 255 / 6%);
+}
+
+html[data-tema='claro'] .ea {
+  --ea-tinta: #2f2216;
 }
 
 html[data-tema='claro'] .ea-safelink {
-  background: linear-gradient(160deg, #14b8a6 0%, #0f766e 55%, #115e59 100%);
+  background: radial-gradient(90% 70% at 20% 100%, rgb(59 110 210 / 22%), transparent 60%), #f3ebe0;
 }
 
 html[data-tema='claro'] .ea-phish {
-  background: linear-gradient(200deg, #8b5cf6 0%, #6d4fc2 55%, #4c3a8f 100%);
+  background: radial-gradient(90% 70% at 80% 100%, rgb(222 105 84 / 22%), transparent 60%), #efe4d8;
+  box-shadow: inset 1px 0 0 rgb(58 42 28 / 10%);
 }
 
 .ea-hola {
