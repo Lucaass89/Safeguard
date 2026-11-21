@@ -2,6 +2,7 @@ import {
   analizar,
   combinarConAmenaza,
   combinarConEnriquecimiento,
+  esApk,
   marcaEnTexto,
   nivelDesde,
   peorEnlace,
@@ -56,7 +57,12 @@ const CODIGO = [
   'codigo que te llego',
 ]
 
-const APP_FALSA = ['.apk', 'instalá esta', 'instala esta', 'descargá la app', 'descarga la app', 'instalá la aplicación', 'instala la aplicacion']
+export const MOTIVO_APK_MENSAJE =
+  'Te manda una app para instalar (.apk). Los bancos, los organismos y las empresas no mandan apps por mensaje: no la instales, aunque diga que es un comprobante.'
+
+const ARCHIVO_APK = /[\w-]\.apk\b/i
+
+const APP_FALSA = ['instalá esta', 'instala esta', 'descargá la app', 'descarga la app', 'instalá la aplicación', 'instala la aplicacion']
 
 const PLATA = [
   'hacé la transferencia',
@@ -218,6 +224,10 @@ export function analizarWhatsapp(crudo) {
   }
 
   const crudos = [...new Set([...extraerEnlaces(texto), ...extraerEnlaces(destapado)])]
+  if (crudos.some(esApk) || ARCHIVO_APK.test(texto) || ARCHIVO_APK.test(destapado)) {
+    puntos += 55
+    motivos.unshift(MOTIVO_APK_MENSAJE)
+  }
   const enlaces = crudos
     .map((e) => analizar(e))
     .filter(Boolean)
