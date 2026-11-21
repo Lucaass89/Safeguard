@@ -67,23 +67,31 @@ function useRevisionWeb(alGuardar) {
 
   function abrir(caso) {
     setResultado(caso)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.requestAnimationFrame(() => document.querySelector('.slw-resultado')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
   }
 
   return { ejecutar, revisando, resultado, setResultado, abrir, aviso, setAviso }
 }
 
-function TarjetaRevisar({ revision }) {
+function crecer(campo) {
+  if (!campo) return
+  campo.style.height = 'auto'
+  campo.style.height = `${Math.min(campo.scrollHeight, 220)}px`
+}
+
+function Buscador({ revision }) {
   const archivoRef = useRef(null)
+  const campoRef = useRef(null)
   const [entrada, setEntrada] = useState(() => enlaceTraido(window.location.search))
   const [arrastrando, setArrastrando] = useState(false)
-  const { ejecutar, revisando, resultado, setResultado, aviso, setAviso } = revision
+  const { ejecutar, revisando, aviso, setAviso } = revision
   const detectado = tipoDeEntrada(entrada)
 
   function revisarTexto(texto) {
     const tipo = tipoDeEntrada(texto)
     if (!tipo) {
       setAviso('Pegá o escribí algo para revisarlo.')
+      campoRef.current?.focus()
       return
     }
     ejecutar(tipo, texto.trim())
@@ -96,6 +104,7 @@ function TarjetaRevisar({ revision }) {
       return
     }
     setEntrada(texto.trim())
+    window.requestAnimationFrame(() => crecer(campoRef.current))
     revisarTexto(texto)
   }
 
@@ -111,23 +120,9 @@ function TarjetaRevisar({ revision }) {
     if (texto?.trim()) setEntrada(texto.trim())
   }
 
-  if (resultado) {
-    return (
-      <div className="slw-resultado">
-        <PantallaResultado
-          resultado={resultado}
-          onCerrar={() => {
-            setResultado(null)
-            setEntrada('')
-          }}
-        />
-      </div>
-    )
-  }
-
   return (
     <form
-      className={arrastrando ? 'slw-revisar slw-revisar-arrastrando' : 'slw-revisar'}
+      className={arrastrando ? 'slw-buscador slw-buscador-arrastrando' : 'slw-buscador'}
       onSubmit={(evento) => {
         evento.preventDefault()
         revisarTexto(entrada)
@@ -139,114 +134,130 @@ function TarjetaRevisar({ revision }) {
       onDragLeave={() => setArrastrando(false)}
       onDrop={soltar}
     >
-      <label className="slw-campo">
-        <span className="slw-etiqueta">Revisar algo que te llegó</span>
+      <div className="slw-barra-busqueda">
+        <label className="visualmente-oculto" htmlFor="slw-entrada">
+          Lo que te llegó
+        </label>
         <textarea
+          id="slw-entrada"
+          ref={campoRef}
           value={entrada}
+          rows={1}
           onChange={(evento) => {
             setEntrada(evento.target.value)
+            crecer(evento.target)
             if (aviso) setAviso('')
           }}
           onKeyDown={(evento) => {
-            if (evento.key === 'Enter' && (evento.ctrlKey || evento.metaKey)) {
+            if (evento.key === 'Enter' && !evento.shiftKey) {
               evento.preventDefault()
               revisarTexto(entrada)
             }
           }}
-          placeholder="Pegá acá un enlace, un mensaje de WhatsApp o un correo completo"
-          rows={5}
+          placeholder="Pegá lo que te mandaron…"
           autoComplete="off"
           spellCheck="false"
           disabled={Boolean(revisando)}
         />
-      </label>
-
+        <button type="submit" className="slw-boton" disabled={Boolean(revisando)}>
+          {revisando ? 'Revisando…' : 'Revisar'}
+        </button>
+      </div>
+      <p className="slw-detectado" aria-live="polite">
+        {detectado ? `Parece ${NOMBRE_TIPO[detectado]} · Enter para revisar, Shift + Enter para otra línea` : 'Enter para revisar · también podés soltar un PDF acá'}
+      </p>
+      <input
+        ref={archivoRef}
+        className="slw-archivo"
+        type="file"
+        accept="application/pdf,.pdf"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={(evento) => {
+          const elegido = evento.target.files?.[0]
+          evento.target.value = ''
+          if (elegido) ejecutar('pdf', '', elegido)
+        }}
+      />
+      <div className="slw-opciones">
+        <button type="button" onClick={pegar} disabled={Boolean(revisando)}>
+          <Icono nombre="pegar" />
+          Pegar lo copiado
+        </button>
+        <button type="button" onClick={() => archivoRef.current?.click()} disabled={Boolean(revisando)}>
+          <Icono nombre="pdf" />
+          Subir un PDF
+        </button>
+        <Link to="/panel/qr">
+          <Icono nombre="qr" />
+          Foto de un QR
+        </Link>
+      </div>
       {revisando ? <Pasos tipo={revisando} /> : null}
-
       {aviso ? (
         <p className="slw-aviso" role="status">
           {aviso}
         </p>
       ) : null}
-
-      <div className="slw-barra">
-        <div className="slw-herramientas">
-          <button type="button" className="slw-herramienta" onClick={pegar} disabled={Boolean(revisando)}>
-            <Icono nombre="pegar" />
-            Pegar
-          </button>
-          <input
-            ref={archivoRef}
-            className="slw-archivo"
-            type="file"
-            accept="application/pdf,.pdf"
-            tabIndex={-1}
-            aria-hidden="true"
-            onChange={(evento) => {
-              const elegido = evento.target.files?.[0]
-              evento.target.value = ''
-              if (elegido) ejecutar('pdf', '', elegido)
-            }}
-          />
-          <button type="button" className="slw-herramienta" onClick={() => archivoRef.current?.click()} disabled={Boolean(revisando)}>
-            <Icono nombre="pdf" />
-            Subir un PDF
-          </button>
-          <Link className="slw-herramienta" to="/panel/qr">
-            <Icono nombre="qr" />
-            Foto de un QR
-          </Link>
-        </div>
-      </div>
-      <div className="slw-pie">
-        <p className="slw-pista">
-          {detectado ? (
-            <span className="slw-detectado">Parece {NOMBRE_TIPO[detectado]} · </span>
-          ) : null}
-          <kbd>Ctrl</kbd> + <kbd>Enter</kbd> para revisar · podés soltar un PDF acá
-        </p>
-        <button type="submit" className="slw-boton" disabled={!detectado || Boolean(revisando)}>
-          {revisando ? 'Revisando…' : 'Revisar'}
-        </button>
-      </div>
     </form>
   )
 }
 
-function TarjetaActividad({ totales }) {
+function Actividad({ totales }) {
   const partes = partesDeTotales(totales)
   const frase = textoProtegido(totales)
   return (
-    <section className="slw-tarjeta slw-actividad" aria-labelledby="slw-actividad-titulo">
-      <div className="slw-tarjeta-cabeza">
-        <h2 id="slw-actividad-titulo">Tu actividad</h2>
-        <Link to="/panel/historial">Historial</Link>
-      </div>
+    <section className="slw-actividad" aria-labelledby="slw-actividad-titulo">
+      <h2 id="slw-actividad-titulo">Tu actividad</h2>
       {totales.cargando ? (
         <p className="slw-nota">Contando tus revisiones…</p>
       ) : partes.length === 0 ? (
-        <p className="slw-nota">Todavía no revisaste nada. Lo que revises queda acá, en la web y en la app.</p>
+        <p className="slw-nota">Todavía no revisaste nada.</p>
       ) : (
         <>
-          <p className="slw-total">
-            <strong>{totales.total}</strong> revisiones
-          </p>
-          <div className="slw-barra-niveles" role="img" aria-label={partes.map((parte) => `${parte.cantidad} ${parte.etiqueta}`).join(', ')}>
-            {partes.map((parte) =>
-              parte.cantidad > 0 ? <span key={parte.id} className={`slw-nivel-${parte.id}`} style={{ width: `${parte.porcentaje}%` }} /> : null,
-            )}
-          </div>
-          <ul className="slw-leyenda">
+          <ul className="slw-contadores">
             {partes.map((parte) => (
-              <li key={parte.id} className={`slw-nivel-${parte.id}`}>
-                <span aria-hidden="true" />
-                {parte.etiqueta}
+              <li key={parte.id} className={`slw-contador slw-nivel-${parte.id}`}>
+                <span>{parte.etiqueta}</span>
                 <strong>{parte.cantidad}</strong>
               </li>
             ))}
           </ul>
           {frase ? <p className="slw-frase">{frase}</p> : null}
         </>
+      )}
+    </section>
+  )
+}
+
+const FECHA_CORTA = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short' })
+
+function Ultimos({ items, cargando, onAbrir }) {
+  return (
+    <section className="slw-ultimos" aria-labelledby="slw-ultimos-titulo">
+      <div className="slw-cabeza">
+        <h2 id="slw-ultimos-titulo">Lo último que revisaste</h2>
+        {items.length > 0 ? <Link to="/panel/historial">Ver todo el historial</Link> : null}
+      </div>
+      {cargando ? (
+        <p className="slw-nota">Buscando tus revisiones…</p>
+      ) : items.length === 0 ? (
+        <p className="slw-nota">Cuando revises algo, aparece acá.</p>
+      ) : (
+        <ul className="slw-lista">
+          {items.map((item) => (
+            <li key={item.id}>
+              <button type="button" onClick={() => onAbrir(item)}>
+                <ChipEstado nivel={item.nivel} />
+                <span className="slw-lista-que">
+                  <strong>{item.titulo}</strong>
+                  {item.ruta ? <span>{item.ruta}</span> : null}
+                </span>
+                <span className="slw-lista-cuando">{FECHA_CORTA.format(new Date(item.fecha))}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </section>
   )
@@ -305,7 +316,7 @@ function TablaRevisados({ items, completo, onAbrir, onBorrar, onRevisar }) {
   )
 }
 
-export function InicioSafeLinkWeb({ lateral = null }) {
+export function InicioSafeLinkWeb({ onVolver }) {
   const revisados = useAnalisisPropios({ limite: 20 })
   const totales = useTotalesPropios()
   const revision = useRevisionWeb(() => {
@@ -316,28 +327,29 @@ export function InicioSafeLinkWeb({ lateral = null }) {
 
   return (
     <div className="slw-inicio">
-      <div className="slw-principal">
-        <TarjetaRevisar revision={revision} />
-      </div>
-      <aside className="slw-lateral">
-        <TarjetaActividad totales={totales} />
-        {lateral}
-      </aside>
-      {!revision.resultado ? (
-        <section className="slw-tarjeta slw-ultimos" aria-labelledby="slw-ultimos-titulo">
-          <div className="slw-tarjeta-cabeza">
-            <h2 id="slw-ultimos-titulo">Lo último que revisaste</h2>
-            {ultimos.length > 0 ? <Link to="/panel/historial">Ver todo el historial</Link> : null}
-          </div>
-          {revisados.cargando ? (
-            <p className="slw-nota">Buscando tus revisiones…</p>
-          ) : ultimos.length === 0 ? (
-            <p className="slw-nota">Cuando revises algo, aparece acá.</p>
-          ) : (
-            <TablaRevisados items={ultimos} onAbrir={(item) => revision.abrir(casoDeRevisado(item))} />
-          )}
-        </section>
-      ) : null}
+      <section className="slw-hero" aria-labelledby="slw-titulo">
+        <div className="slw-hero-adentro">
+          {onVolver ? (
+            <button type="button" className="slw-volver" onClick={onVolver}>
+              ← Elegir otra aplicación
+            </button>
+          ) : null}
+          <p className="slw-eti">SafeLink</p>
+          <h1 id="slw-titulo">¿Qué te llegó?</h1>
+          <p className="slw-sub">Pegá un enlace, un WhatsApp o un correo. Te decimos si es seguro antes de que lo abras.</p>
+          <Buscador revision={revision} />
+        </div>
+      </section>
+      {revision.resultado ? (
+        <div className="slw-resultado">
+          <PantallaResultado resultado={revision.resultado} onCerrar={() => revision.setResultado(null)} />
+        </div>
+      ) : (
+        <div className="slw-cuerpo">
+          <Ultimos items={ultimos} cargando={revisados.cargando} onAbrir={(item) => revision.abrir(casoDeRevisado(item))} />
+          <Actividad totales={totales} />
+        </div>
+      )}
     </div>
   )
 }
