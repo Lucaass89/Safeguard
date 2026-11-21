@@ -23840,6 +23840,13 @@ var PALABRAS_GANCHO = [
 ];
 var RUTA_SENSIBLE = /(login|signin|verify|verification|wallet|seed|confirmar-cuenta|verificar-cuenta|actualizar-datos|recuperar-clave|secure-login)/i;
 var EXT_PELIGROSA = /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|jse|vbs|vbe|ps1|docm|xlsm)(?=$|[?#])/i;
+var EXT_APK = /\.apk(?=$|[?#])/i;
+var DESCARGAS_CONFIABLES = /* @__PURE__ */ new Set(["f-droid.org", "safeguardd.vercel.app"]);
+function descargaConfiable(host) {
+	const limpio = String(host ?? "").toLowerCase();
+	return DESCARGAS_CONFIABLES.has(limpio) || DESCARGAS_CONFIABLES.has(dominioBase(limpio));
+}
+var MOTIVO_APK = "Descarga una app para instalar (.apk) por fuera del Play Store. Así se instalan los virus que roban las cuentas del banco: no la instales.";
 var PARAM_REDIR = /^(url|redirect|redir|redirect_uri|next|dest|destination|goto|return|return_url|returnurl|continue|rurl|next_url)$/i;
 var CONFUSOS = {
 	0: "o",
@@ -24174,7 +24181,10 @@ function analizar(entrada) {
 	else if (lectura.mezclaAlfabetos) sumar("mezcla_alfabetos", 45, "Mezcla letras latinas con letras de otro alfabeto que se ven iguales.", "fuerte", "engano");
 	else if (lectura.imitaLatinas) sumar("imita_latinas", 40, `Está escrito con letras de otro alfabeto que imitan a las latinas: parece "${aLatin(lectura.hostUnicode)}", pero no lo es.`, "fuerte", "engano");
 	else if (!oficial && !lectura.disfrazado && host.split(".").some((parte) => parte.startsWith("xn--"))) sumar("punycode", PUNTAJE.punycode.peso, `El nombre del sitio usa letras especiales (${lectura.hostUnicode}): a veces se usan para imitar a otro sitio, así que fijate bien cómo está escrito.`, "debil", "debiles");
-	if (!oficial && EXT_PELIGROSA.test(`${url.pathname}${url.search}`)) sumar("descarga_ejecutable", 55, "El enlace descarga un programa, una app o un archivo que puede ejecutarse.", "fuerte", "archivo");
+	const apk = EXT_APK.test(`${url.pathname}${url.search}`);
+	if (apk && (oficial || descargaConfiable(host))) sumar("apk_sitio_oficial", 25, `Descarga una app para instalar (.apk) desde ${base}, que parece su sitio oficial. Igual, si está en el Play Store, instalala desde ahí.`, "media", "archivo");
+	else if (apk) sumar("descarga_apk", 55, MOTIVO_APK, "fuerte", "archivo");
+	else if (!oficial && EXT_PELIGROSA.test(`${url.pathname}${url.search}`)) sumar("descarga_ejecutable", 55, "El enlace descarga un programa, una app o un archivo que puede ejecutarse.", "fuerte", "archivo");
 	if (url.protocol === "http:") sumar("sin_https", 20, "No tiene candado: es http, no https. Una página que pide datos no debería estar así.", "debil", "debiles");
 	if (!oficial && TLD_BARATOS.has(tld)) sumar("tld_barato", 20, `El final .${tld} se usa mucho en sitios truchos.`, "debil", "debiles");
 	if (plataforma?.tipo === "acortador") anotar("acortador", AVISO_ACORTADOR);

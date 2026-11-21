@@ -29,6 +29,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
 - **SafeLink** (puerta Personas, `/personas`, gratis): detector propio que devuelve un semáforo
   (verde, amarillo, rojo, gris) con el motivo, para URL, QR, PDF, correo y WhatsApp. **Faro** es el chat que
   explica cada resultado (función `safelink-faro`), en la web y en la app. No consulta VirusTotal ni Google Safe Browsing en el veredicto.
+  APK: un enlace a un `.apk` da rojo, salvo desde el sitio oficial de una marca de `marcas.json` o de `descargaConfiable`
+  (F-Droid y el sitio de SafeGuard), que da amarillo; nunca verde. En un WhatsApp o un correo, un APK (enlace, adjunto o
+  nombre de archivo) siempre da rojo. No se analiza el contenido del archivo.
 
 ## Estructura del repo
 
