@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { rutaEnApp } from '../lib/esAppNativa.js'
+import CabeceraPhishGuard from '../components/CabeceraPhishGuard.jsx'
 import { nombreEmpresa } from '../lib/formato.js'
 import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
@@ -82,9 +83,7 @@ function PanelTablero() {
   if (!organizacion) {
     return (
       <div className="panel panel-empresas">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
+        <CabeceraPhishGuard seccion="Tablero" titulo="Vulnerabilidad del equipo" texto="Esta cuenta no tiene el plan activo. SafeLink sigue disponible." />
         {error && <p className="panel-error">{error}</p>}
         <p className="panel-vacio">
           PhishGuard se paga por persona. Esta cuenta no tiene el plan activo.{' '}
@@ -96,21 +95,18 @@ function PanelTablero() {
 
   return (
     <div className="panel panel-empresas">
-      <header className="panel-header">
-        <Link className="panel-volver" to={rutaEnApp('/panel?app=phishguard')}>
-          ← Volver a las opciones
-        </Link>
-        <h1>Vulnerabilidad del equipo</h1>
-        <p className="panel-lead">
-          {nombreEmpresa(organizacion.nombre_empresa)}. Medimos si la persona cayó, si se capacitó y si
-          mejoró en el refuerzo.
-        </p>
+      <CabeceraPhishGuard
+        seccion="Tablero"
+        organizacion={nombreEmpresa(organizacion.nombre_empresa)}
+        titulo="Vulnerabilidad del equipo"
+        texto="Medimos si la persona cayó, si se capacitó y si mejoró en el refuerzo."
+      >
         <p className="panel-acciones">
-          <Link className="text-link" to={rutaEnApp('/panel/informe')}>
+          <Link className="pgc-boton" to={rutaEnApp('/panel/informe')}>
             Ver el informe para guardar
           </Link>
         </p>
-      </header>
+      </CabeceraPhishGuard>
 
       {error && <p className="panel-error">{error}</p>}
 
