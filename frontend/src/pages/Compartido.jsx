@@ -52,11 +52,11 @@ function Compartido() {
         casoId={token}
         resultado={casoGuardado({ ...ficha, url_analizada: ficha.url_analizada || ficha.url || '' })}
         canal="enlace"
-        onNoAbrir={() => navigate(sesion ? '/panel/enlaces' : '/')}
+        onNoAbrir={() => navigate(sesion ? '/panel' : '/')}
       />
 
       <p>
-        <Link to={sesion ? '/panel/enlaces' : '/ingresar'}>
+        <Link to={sesion ? '/panel/historial' : '/ingresar'}>
           {sesion ? 'Mis enlaces' : 'Quiero revisar otro enlace'}
         </Link>
       </p>

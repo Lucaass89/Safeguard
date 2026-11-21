@@ -6,7 +6,7 @@ import PhishGuardAcceso from './components/PhishGuardAcceso.jsx'
 import RutaPrivada from './components/RutaPrivada.jsx'
 import AppShell from './components/AppShell.jsx'
 import { esAppNativa } from './lib/esAppNativa.js'
-import { destinoSafeLink } from './lib/safelinkApp.js'
+import { destinoPanel, destinoSafeLink } from './lib/safelinkApp.js'
 import PerfilApp, { PerfilSeccionApp } from './pages/PerfilApp.jsx'
 import PhishGuard from './pages/PhishGuard.jsx'
 import SafeLink from './pages/SafeLink.jsx'
@@ -21,11 +21,7 @@ import Terminos from './pages/Terminos.jsx'
 import Funcion from './pages/Funcion.jsx'
 import Contacto from './pages/Contacto.jsx'
 import Ingresar from './pages/Ingresar.jsx'
-import Panel from './pages/Panel.jsx'
-import PanelEnlaces from './pages/PanelEnlaces.jsx'
-import PanelWhatsapp from './pages/PanelWhatsapp.jsx'
-import PanelPdf from './pages/PanelPdf.jsx'
-import PanelCorreo from './pages/PanelCorreo.jsx'
+import Panel, { PanelHistorial } from './pages/Panel.jsx'
 import PanelQr from './pages/PanelQr.jsx'
 import Compartido from './pages/Compartido.jsx'
 import PanelEmpresa from './pages/PanelEmpresa.jsx'
@@ -44,6 +40,11 @@ function MarcoApp() {
 function AlSafeLink() {
   const { search } = useLocation()
   return <Navigate to={destinoSafeLink(search)} replace />
+}
+
+function AlPanel() {
+  const { search } = useLocation()
+  return <Navigate to={destinoPanel(search)} replace />
 }
 
 function Entrada() {
@@ -96,10 +97,11 @@ function App() {
       <Route element={<PanelShell />}>
         <Route path="panel" element={<RutaPrivada />}>
           <Route index element={<Panel />} />
-          <Route path="enlaces" element={<PanelEnlaces />} />
-          <Route path="whatsapp" element={<PanelWhatsapp />} />
-          <Route path="pdf" element={<PanelPdf />} />
-          <Route path="correo" element={<PanelCorreo />} />
+          <Route path="historial" element={<PanelHistorial />} />
+          <Route path="enlaces" element={<AlPanel />} />
+          <Route path="whatsapp" element={<AlPanel />} />
+          <Route path="pdf" element={<AlPanel />} />
+          <Route path="correo" element={<AlPanel />} />
           <Route path="qr" element={<PanelQr />} />
           <Route element={<PhishGuardAcceso />}>
             <Route path="empresa" element={<PanelEmpresa />} />

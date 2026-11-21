@@ -640,8 +640,8 @@ function PanelQr() {
     <div className="panel panel-personas">
       <header className="panel-header">
         {!esAppNativa() && (
-          <Link className="panel-volver" to={rutaEnApp('/panel?app=safelink')}>
-            ← Volver a las opciones
+          <Link className="panel-volver" to="/panel">
+            ← Volver al inicio
           </Link>
         )}
         <h1>Escanear un QR</h1>
@@ -653,7 +653,7 @@ function PanelQr() {
       {sinLector && (
         <p className="panel-aviso">
           No se pudo cargar el lector de QR en este dispositivo. Pegá el enlace en{' '}
-          <Link to={rutaEnApp('/panel/enlaces')}>Revisar un enlace</Link>.
+          <Link to={rutaEnApp('/panel')}>el inicio</Link>.
         </p>
       )}
 

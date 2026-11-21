@@ -67,7 +67,7 @@ function Personas() {
                 Instalar la extensión
               </a>
               {sesion && (
-                <Link className="sl-boton sl-boton-secundario" to="/panel/enlaces">
+                <Link className="sl-boton sl-boton-secundario" to="/panel/historial">
                   Mis enlaces
                 </Link>
               )}

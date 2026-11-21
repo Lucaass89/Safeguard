@@ -2,7 +2,10 @@ import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 import {
   agruparPorDia,
+  destinoPanel,
   destinoSafeLink,
+  enlaceTraido,
+  ultimosDe,
   filtrarPorNivel,
   fraseDeNivel,
   pasoEn,
@@ -117,5 +120,32 @@ describe('destinoSafeLink', () => {
     const largo = 'https://a.com/' + 'x'.repeat(3000)
     const destino = destinoSafeLink(`?url=${encodeURIComponent(largo)}`)
     assert.equal(decodeURIComponent(destino.split('=')[1]).length, 2048)
+  })
+})
+
+describe('destinoPanel', () => {
+  test('sin enlace va al inicio del panel', () => {
+    assert.equal(destinoPanel(''), '/panel')
+  })
+
+  test('conserva el enlace que manda la extensión', () => {
+    assert.equal(destinoPanel('?url=https%3A%2F%2Fejemplo.com%2Fa'), '/panel?url=https%3A%2F%2Fejemplo.com%2Fa')
+  })
+})
+
+describe('enlaceTraido', () => {
+  test('toma solo direcciones web', () => {
+    assert.equal(enlaceTraido('?url=https%3A%2F%2Fejemplo.com%2Fa'), 'https://ejemplo.com/a')
+    assert.equal(enlaceTraido('?url=javascript%3Aalert(1)'), '')
+    assert.equal(enlaceTraido('?url=hola%20mundo'), '')
+    assert.equal(enlaceTraido(''), '')
+  })
+})
+
+describe('ultimosDe', () => {
+  test('se queda con los primeros', () => {
+    assert.deepEqual(ultimosDe([1, 2, 3, 4, 5, 6, 7]), [1, 2, 3, 4, 5])
+    assert.deepEqual(ultimosDe([1, 2], 5), [1, 2])
+    assert.deepEqual(ultimosDe(null), [])
   })
 })
