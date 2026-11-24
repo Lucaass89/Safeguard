@@ -301,9 +301,9 @@ html[data-tema='claro'] .em .em-ejemplo-anillo .em-ejemplo-mejora {
 .em-item-icono {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   background: color-mix(in srgb, var(--em-acento) 16%, transparent);
   color: var(--em-acento);
 }
@@ -506,6 +506,7 @@ html[data-tema] .em .elegir-personas {
 }
 
 .em .em-item-icono svg {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.7;
 }

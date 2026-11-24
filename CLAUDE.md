@@ -39,6 +39,10 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   qué significa cada color, dónde usarlo (web, celular, Chrome y Faro) con los botones de la app y la extensión, la tarjeta de
   la extensión con su video (`#instalar`) y la invitación a crear la cuenta. El botón de la app baja el archivo que dice
   `public/app/version.json`, así que no hay que tocar la página al publicar una versión.
+- **Empresas** (`/empresas`, `pages/Empresas.jsx`, `Empresas.css`): franja coral con un ejemplo del tablero (datos ficticios),
+  los pasos de una campaña (`pasosCampana.js`), lo que trae el panel, los tramos al lado de la calculadora `ElegirPersonas`
+  (el botón lleva a `/adquirir?personas=…`), preguntas frecuentes y un cierre con "Escribinos". Si cambian los precios o las
+  reglas del plan, revisar también los textos de esta página.
 
 ## Estructura del repo
 
