@@ -45,7 +45,12 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
     campaña, el anillo con el % que tocó el enlace contra la anterior, los cuatro pasos del plan, la última campaña en barras,
     las áreas para reforzar y los accesos (`lib/resumenPhishguard.js`, con los datos de `phishguard_tablero`). Tu empresa, Campañas, Tablero e Informe
     usan `components/CabeceraPhishGuard.jsx` (franja coral con "← Volver a PhishGuard"; dentro de la app, la cabecera de siempre) y sus
-    estilos de tarjetas, tablas, campos y botones; al imprimir el informe se ve sobre blanco, sin la franja de color ni los botones. SafeLink abre
+    estilos de tarjetas, tablas, campos y botones; al imprimir el informe se ve sobre blanco, sin la franja de color ni los botones.
+    Tablero e Informe usan `components/AnalisisEquipo.jsx` y `lib/analisisEquipo.js`: cifras con %, "Qué hacer ahora" (recomendaciones
+    armadas con los datos), evolución por campaña, barras por área y la tabla por persona con filtros y búsqueda (el informe, sin filtros).
+    Campañas (`lib/armarCampana.js`, `pages/Campanas.css`) se arma en tres pasos: canal, mensaje (tarjetas con vista previa) y a quiénes
+    (por área, al azar o de a una), con un resumen al costado; el nombre es opcional. Tu empresa (`pages/Empresa.css`) muestra el plan y los
+    datos de la empresa como resumen con "Editar", "Sumar personas" con pestañas y la lista con búsqueda y áreas. SafeLink abre
     directo el diseño propio de compu (`components/SafeLinkWeb.jsx`, también con `?app=safelink` o `?url=`): una franja a todo
     el ancho con brillo azul, "¿Qué te llegó?" y una barra tipo buscador (Enter revisa, Shift+Enter agrega una línea, se puede
     soltar un PDF), con Pegar lo copiado, Subir un PDF y Foto de un QR; abajo, lo último que revisaste y tu actividad por color. El panel no tiene barra lateral: se navega con las tarjetas, los "Volver" de cada pantalla y el menú de la cuenta

@@ -5,6 +5,9 @@ import CabeceraPhishGuard from '../components/CabeceraPhishGuard.jsx'
 import { nombreEmpresa } from '../lib/formato.js'
 import { historialCaidas, resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
+import { Areas, Cifras, Recomendaciones, TablaPersonas } from '../components/AnalisisEquipo.jsx'
+import { areasConPorcentaje, cifrasEquipo, evolucionCampanas, recomendaciones } from '../lib/analisisEquipo.js'
+import { ultimaCampana } from '../lib/resumenPhishguard.js'
 import './Panel.css'
 
 const CANAL_ETIQUETA = { email: 'Mail', whatsapp: 'WhatsApp', sms: 'SMS' }
@@ -22,33 +25,6 @@ function fechaHora(valor) {
     hour: '2-digit',
     minute: '2-digit',
   })
-}
-
-function despues(persona) {
-  const partes = [
-    persona.capacitado && 'se capacitó',
-    persona.reconocio && 'reconoció el mensaje',
-    persona.mejoro && 'mejoró en el refuerzo',
-  ].filter(Boolean)
-  if (partes.length === 0) return '—'
-  const texto = partes.join(' · ')
-  return texto[0].toUpperCase() + texto.slice(1)
-}
-
-function quePaso(persona) {
-  if (persona.cayo) return 'Tocó el enlace'
-  if (persona.participo) return 'No lo tocó'
-  return 'Sin campaña'
-}
-
-function fraseArea(area) {
-  const tocaron =
-    area.cayo === 1 ? '1 persona tocó el enlace' : `${area.cayo} personas tocaron el enlace`
-  const capacitaron =
-    area.cap === 1 ? '1 se capacitó' : `${area.cap} se capacitaron`
-  const mejoraron =
-    area.mejoro === 1 ? '1 mejoró en el refuerzo' : `${area.mejoro} mejoraron en el refuerzo`
-  return `En ${area.area}, ${tocaron} de ${area.total}. ${capacitaron} y ${mejoraron}.`
 }
 
 function PanelInforme() {
@@ -90,7 +66,7 @@ function PanelInforme() {
     }
   }, [])
 
-  const { porPersona, porArea, resumen } = useMemo(
+  const { porPersona, porArea } = useMemo(
     () => resumirEquipo(empleados, eventos, campanas),
     [empleados, eventos, campanas],
   )
@@ -105,6 +81,11 @@ function PanelInforme() {
     month: 'long',
     year: 'numeric',
   })
+  const cifras = cifrasEquipo(porPersona)
+  const areas = areasConPorcentaje(porArea)
+  const evolucion = evolucionCampanas(campanas, eventos)
+  const ultima = ultimaCampana({ campanas, eventos })
+  const consejos = recomendaciones({ areas, porPersona, evolucion })
   const sinEquipo = porPersona.length === 0
   const sinResultados = !porPersona.some((p) => p.participo)
 
@@ -164,65 +145,18 @@ function PanelInforme() {
         </section>
       ) : (
         <>
-          <ul className="metricas-franja">
-            <li>
-              <strong>{resumen.personas}</strong>
-              <span>Personas</span>
-            </li>
-            <li>
-              <strong>{resumen.cayo}</strong>
-              <span>Tocaron el enlace</span>
-            </li>
-            <li>
-              <strong>{resumen.cap}</strong>
-              <span>Se capacitaron</span>
-            </li>
-            <li>
-              <strong>{resumen.mejoro}</strong>
-              <span>Mejoraron</span>
-            </li>
-          </ul>
-
-          <section className="panel-seccion">
-            <h2>Por área</h2>
-            <ul className="informe-areas">
-              {porArea.map((area) => (
-                <li key={area.area}>{fraseArea(area)}</li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="panel-seccion">
-            <h2>Por persona</h2>
-            <div className="tabla-wrap">
-              <table className="tabla-equipo tabla-personas">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Área</th>
-                    <th>Qué pasó</th>
-                    <th>Después</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {porPersona.map((persona) => (
-                    <tr key={persona.id}>
-                      <td>{persona.nombre}</td>
-                      <td>{persona.departamento || 'General'}</td>
-                      <td>{quePaso(persona)}</td>
-                      <td>{despues(persona)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          <div className="ae-bloque">
+            <Cifras cifras={cifras} ultima={ultima} />
+            <Recomendaciones lista={consejos} />
+            <Areas areas={areas} />
+            <TablaPersonas porPersona={porPersona} conFiltros={false} />
+          </div>
 
           {historial.length > 0 && (
             <section className="panel-seccion">
-              <h2>Historial de caídas</h2>
+              <h2>Cada vez que alguien cayó</h2>
               <p className="panel-lead">
-                Cada vez que alguien tocó el enlace o cargó datos, con la fecha y la campaña.
+                Fecha, persona y campaña de cada vez que alguien tocó el enlace o cargó datos.
                 De lo más reciente a lo más viejo.
               </p>
               <div className="tabla-wrap">
