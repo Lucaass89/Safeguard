@@ -32,6 +32,13 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   APK: un enlace a un `.apk` da rojo, salvo desde el sitio oficial de una marca de `marcas.json` o de `descargaConfiable`
   (F-Droid y el sitio de SafeGuard), que da amarillo; nunca verde. En un WhatsApp o un correo, un APK (enlace, adjunto o
   nombre de archivo) siempre da rojo. No se analiza el contenido del archivo.
+- **Portada** (`/`, `pages/Landing.jsx`, `Portada.css`): arriba el buscador `components/BuscadorPortada.jsx`, que da el color
+  al pegar un enlace sin entrar a la cuenta ("Revisar" lleva a `/panel/enlaces?url=…`), y abajo los dos caminos partidos al
+  medio: SafeLink en azul y PhishGuard en coral.
+- **Personas** (`/personas`, `pages/Personas.jsx`, `Personas.css`): franja azul con el mismo buscador y lo que se puede revisar,
+  qué significa cada color, dónde usarlo (web, celular, Chrome y Faro) con los botones de la app y la extensión, la tarjeta de
+  la extensión con su video (`#instalar`) y la invitación a crear la cuenta. El botón de la app baja el archivo que dice
+  `public/app/version.json`, así que no hay que tocar la página al publicar una versión.
 
 ## Estructura del repo
 
