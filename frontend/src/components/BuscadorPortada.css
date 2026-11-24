@@ -28,9 +28,9 @@ html[data-tema='claro'] .bp {
   align-items: center;
   gap: 10px;
   padding: 9px 9px 9px 24px;
-  border: 1px solid color-mix(in srgb, var(--bp-acento) 45%, var(--h-linea));
+  border: 1px solid color-mix(in srgb, var(--bp-acento) 45%, var(--h-linea, var(--sg-line)));
   border-radius: 999px;
-  background: var(--h-fondo);
+  background: var(--h-fondo, var(--sg-bg));
   box-shadow: 0 24px 70px -26px color-mix(in srgb, var(--bp-acento) 85%, transparent);
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
@@ -42,19 +42,19 @@ html[data-tema='claro'] .bp {
     0 24px 70px -26px color-mix(in srgb, var(--bp-acento) 85%, transparent);
 }
 
-.portada .bp-barra input {
+.bp .bp-barra input {
   flex: 1;
   min-width: 0;
   min-height: 48px;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--h-tinta);
+  color: var(--h-tinta, var(--sg-text));
   font: 500 17px/1.3 var(--sg-sans);
   outline: none;
 }
 
-.portada .bp-boton {
+.bp .bp-boton {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -68,7 +68,7 @@ html[data-tema='claro'] .bp {
   transition: filter 160ms ease;
 }
 
-.portada .bp-boton:hover {
+.bp .bp-boton:hover {
   filter: brightness(1.08);
 }
 
@@ -79,9 +79,9 @@ html[data-tema='claro'] .bp {
   gap: 14px;
   min-height: 62px;
   padding: 14px 18px;
-  border: 1px solid color-mix(in srgb, var(--bp-color) 40%, var(--h-linea));
+  border: 1px solid color-mix(in srgb, var(--bp-color) 40%, var(--h-linea, var(--sg-line)));
   border-radius: 18px;
-  background: color-mix(in srgb, var(--bp-color) 8%, var(--h-fondo));
+  background: color-mix(in srgb, var(--bp-color) 8%, var(--h-fondo, var(--sg-bg)));
 }
 
 .bp-rojo {
@@ -98,7 +98,7 @@ html[data-tema='claro'] .bp {
 
 .bp-resultado p {
   margin: 2px 0 0;
-  color: var(--h-suave);
+  color: var(--h-suave, var(--sg-muted));
   font-size: 15px;
   line-height: 1.5;
 }
@@ -108,7 +108,7 @@ html[data-tema='claro'] .bp {
 }
 
 .bp-vacio strong {
-  color: var(--h-tinta);
+  color: var(--h-tinta, var(--sg-text));
 }
 
 .bp-chip {
@@ -124,7 +124,7 @@ html[data-tema='claro'] .bp {
 
 .bp-pie {
   margin: 0;
-  color: var(--h-suave);
+  color: var(--h-suave, var(--sg-muted));
   font-size: 13px;
   line-height: 1.5;
   text-align: center;
@@ -135,7 +135,7 @@ html[data-tema='claro'] .bp {
     padding-left: 18px;
   }
 
-  .portada .bp-boton {
+  .bp .bp-boton {
     padding: 0 18px;
   }
 
