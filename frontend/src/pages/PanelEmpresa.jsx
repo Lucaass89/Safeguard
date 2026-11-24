@@ -5,13 +5,15 @@ import { analizarCsv, decodificarCsv, leerXlsx, LIMITE_BYTES, plantillaCsv, repo
 import { estadosDe, etiquetaEstado } from '../lib/estados.js'
 import { nombreEmpresa } from '../lib/formato.js'
 import FormEmpresa from '../components/FormEmpresa.jsx'
-import { empresaDesdeOrganizacion, validarEmpresa } from '../lib/datosEmpresa.js'
+import { empresaDesdeOrganizacion, TIPOS_ORGANIZACION, validarEmpresa } from '../lib/datosEmpresa.js'
 import { cargarEmpresaGuardada } from '../lib/empresaGuardada.js'
 import { estadoPlan, formatoUsd, puedeActivar } from '../lib/precioPhishguard.js'
 import { supabase } from '../lib/supabase.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
+import { iniciales } from '../lib/analisisEquipo.js'
 import './Panel.css'
+import './Empresa.css'
 
 function mensajeLleno(plan) {
   return `Llegaste al límite de tu plan: ${plan.limite} personas activas (${plan.contratados} contratadas más el 10 %). Ampliá el plan para sumar más.`
@@ -24,7 +26,10 @@ function PlanContratado({ plan }) {
   return (
     <section className={clase} aria-labelledby="panel-plan-titulo">
       <h2 id="panel-plan-titulo">Tu plan</h2>
-      <p>
+      <p className="te-plan-numero">
+        <strong>{plan.activos}</strong> de {plan.limite} lugares ocupados
+      </p>
+      <p className="te-plan-detalle">
         PhishGuard para <strong>{plan.contratados} {plan.contratados === 1 ? 'persona' : 'personas'}</strong>
         {plan.porDefecto ? ', el mínimo de USD 25 por mes' : `, ${formatoUsd(plan.precio.totalUsd)} por mes`}.
         {' '}Podés tener hasta <strong>{plan.limite} activas</strong> (lo contratado más un 10 %).
@@ -102,14 +107,49 @@ function DatosEmpresa({ correo, puedeEditar, alGuardar }) {
       return
     }
     setIncompleta(false)
+    setAbierta(false)
     setAviso('Guardamos los datos de la empresa.')
     alGuardar(valor, true)
   }
 
   if (!valor) return null
 
+  const tipo = TIPOS_ORGANIZACION.find(([clave]) => clave === valor.tipo_organizacion)?.[1]
+
   return (
     <section className="panel-seccion panel-datos-empresa">
+      {!incompleta && !abierta ? (
+        <div className="te-resumen">
+          <div className="te-resumen-cabeza">
+            <h2>Datos de la empresa</h2>
+            {puedeEditar ? (
+              <button type="button" className="te-link" onClick={() => setAbierta(true)}>
+                Editar
+              </button>
+            ) : null}
+          </div>
+          <dl>
+            <div>
+              <dt>Tipo</dt>
+              <dd>{tipo || '—'}</dd>
+            </div>
+            <div>
+              <dt>CUIT</dt>
+              <dd>{valor.cuit || '—'}</dd>
+            </div>
+            <div>
+              <dt>Responsable</dt>
+              <dd>{[valor.contacto_nombre, valor.contacto_cargo].filter(Boolean).join(' · ') || '—'}</dd>
+            </div>
+            <div>
+              <dt>Áreas</dt>
+              <dd>{valor.areas || '—'}</dd>
+            </div>
+          </dl>
+          {aviso && <p className="panel-ok" role="status">{aviso}</p>}
+        </div>
+      ) : null}
+      <div hidden={!incompleta && !abierta}>
       {incompleta && (
         <p className="panel-aviso" role="status">
           Faltan los datos de tu empresa. Completalos para que el informe y las
@@ -135,6 +175,7 @@ function DatosEmpresa({ correo, puedeEditar, alGuardar }) {
           <p className="panel-vacio">Solo un administrador de la empresa puede cambiar estos datos.</p>
         )}
       </details>
+      </div>
     </section>
   )
 }
@@ -489,6 +530,8 @@ function PanelEmpresa() {
   const [resolviendo, setResolviendo] = useState([])
   const [avisoLista, setAvisoLista] = useState(null)
   const [areasEmpresa, setAreasEmpresa] = useState([])
+  const [modoAgregar, setModoAgregar] = useState('una')
+  const [busqueda, setBusqueda] = useState('')
 
   const alGuardarEmpresa = useCallback((form, guardado) => {
     setAreasEmpresa(form.areas.split(',').map((item) => item.trim()).filter(Boolean))
@@ -566,6 +609,8 @@ function PanelEmpresa() {
     if (filtroEstado !== 'todos' && persona.estado !== filtroEstado) return false
     if (filtroOrigen !== 'todos' && (persona.origen || 'manual') !== filtroOrigen) return false
     if (filtroArea !== 'todas' && (persona.departamento || 'General') !== filtroArea) return false
+    const texto = busqueda.trim().toLowerCase()
+    if (texto && ![persona.nombre, persona.email].some((campo) => String(campo ?? '').toLowerCase().includes(texto))) return false
     return true
   })
   const pendientesVisibles = visibles.filter((persona) => persona.estado === 'pendiente_aprobacion')
@@ -638,20 +683,22 @@ function PanelEmpresa() {
         titulo={organizacion ? nombreEmpresa(organizacion.nombre_empresa) : 'PhishGuard es pago'}
         texto={
           organizacion
-            ? 'Acá cargás a la gente que va a recibir las simulaciones.'
+            ? 'Las personas de tu equipo que van a recibir los mensajes de prueba. Sumalas de a una o con una planilla de Excel.'
             : 'Esta cuenta no tiene el plan activo. SafeLink sigue disponible.'
         }
       />
 
-      {plan && <PlanContratado plan={plan} />}
+      <div className="te-fila">
+        {plan && <PlanContratado plan={plan} />}
 
-      {organizacion && !cargandoMembresia && (
-        <DatosEmpresa
-          correo={sesion?.user?.email ?? ''}
-          puedeEditar={esAdministrador(rol)}
-          alGuardar={alGuardarEmpresa}
-        />
-      )}
+        {organizacion && !cargandoMembresia && (
+          <DatosEmpresa
+            correo={sesion?.user?.email ?? ''}
+            puedeEditar={esAdministrador(rol)}
+            alGuardar={alGuardarEmpresa}
+          />
+        )}
+      </div>
 
       {error && <p className="panel-error">{error}</p>}
 
@@ -663,8 +710,36 @@ function PanelEmpresa() {
         </p>
       ) : (
         <>
-          <section className="panel-seccion">
-            <h2>Agregar empleado</h2>
+          <section className="panel-seccion te-agregar">
+            <h2>Sumar personas</h2>
+            {esAdministrador(rol) && !cargandoMembresia ? (
+              <div className="te-pestanas" role="tablist" aria-label="Cómo sumar personas">
+                <button type="button" role="tab" aria-selected={modoAgregar === 'una'} className={modoAgregar === 'una' ? 'te-pestana te-pestana-activa' : 'te-pestana'} onClick={() => setModoAgregar('una')}>
+                  Una persona
+                </button>
+                <button type="button" role="tab" aria-selected={modoAgregar === 'planilla'} className={modoAgregar === 'planilla' ? 'te-pestana te-pestana-activa' : 'te-pestana'} onClick={() => setModoAgregar('planilla')}>
+                  Desde una planilla de Excel
+                </button>
+              </div>
+            ) : null}
+            {modoAgregar === 'planilla' && esAdministrador(rol) && !cargandoMembresia ? (
+              <>
+                <p className="te-ayuda">Subí un Excel o un CSV con nombre, correo y área. Antes de cargar te mostramos qué va a entrar.</p>
+                <ImportarCsv
+                empleados={empleados}
+                plan={plan}
+                correoAdmin={sesion?.user?.email ?? ''}
+                alTerminar={async () => {
+                  const estado = await cargar()
+                  setOrganizacion(estado.organizacion)
+                  setEmpleados(estado.empleados)
+                  if (estado.error) setError(estado.error)
+                }}
+              />
+              </>
+            ) : (
+              <>
+                <p className="te-ayuda">Con el nombre y el correo alcanza. El área sirve para ver después en qué sector conviene reforzar.</p>
             <form className="panel-form panel-form-fila panel-form-empleado" onSubmit={agregarEmpleado}>
               <label className="panel-campo">
                 <span>Nombre</span>
@@ -703,27 +778,20 @@ function PanelEmpresa() {
                 Agregar
               </button>
             </form>
+              </>
+            )}
           </section>
 
-          {esAdministrador(rol) && !cargandoMembresia && (
-            <section className="panel-seccion">
-              <h2>Importar</h2>
-              <ImportarCsv
-                empleados={empleados}
-                plan={plan}
-                correoAdmin={sesion?.user?.email ?? ''}
-                alTerminar={async () => {
-                  const estado = await cargar()
-                  setOrganizacion(estado.organizacion)
-                  setEmpleados(estado.empleados)
-                  if (estado.error) setError(estado.error)
-                }}
-              />
-            </section>
-          )}
-
           <section className="panel-seccion">
-            <h2>Personas ({empleados.length})</h2>
+            <div className="te-personas-cabeza">
+              <h2>Personas · {empleados.length}</h2>
+              {empleados.length > 0 ? (
+                <label className="te-buscar">
+                  <span className="visualmente-oculto">Buscar por nombre o correo</span>
+                  <input type="search" value={busqueda} onChange={(evento) => setBusqueda(evento.target.value)} placeholder="Buscar por nombre o correo" />
+                </label>
+              ) : null}
+            </div>
             {empleados.length === 0 ? (
               <p className="panel-vacio">
                 Todavía no cargaste a nadie. Sin personas no hay campaña.
@@ -749,15 +817,7 @@ function PanelEmpresa() {
                       ))}
                     </select>
                   </label>
-                  <label className="panel-campo">
-                    <span>Área</span>
-                    <select value={filtroArea} onChange={(evento) => { setFiltroArea(evento.target.value); setElegidos([]) }}>
-                      <option value="todas">Todas</option>
-                      {areas.map((nombreArea) => (
-                        <option key={nombreArea} value={nombreArea}>{nombreArea}</option>
-                      ))}
-                    </select>
-                  </label>
+
                   <button
                     type="button"
                     className={vistaPendientes ? 'persona-filtro persona-filtro-activo' : 'persona-filtro'}
@@ -766,6 +826,25 @@ function PanelEmpresa() {
                   >
                     Pendientes de aprobación ({pendientes.length})
                   </button>
+                </div>
+                <div className="te-areas" role="group" aria-label="Filtrar por área">
+                  {['todas', ...areas].map((nombreArea) => {
+                    const cantidad = nombreArea === 'todas' ? empleados.length : empleados.filter((persona) => (persona.departamento || 'General') === nombreArea).length
+                    return (
+                      <button
+                        key={nombreArea}
+                        type="button"
+                        className={filtroArea === nombreArea ? 'te-area te-area-activa' : 'te-area'}
+                        aria-pressed={filtroArea === nombreArea}
+                        onClick={() => {
+                          setFiltroArea(nombreArea)
+                          setElegidos([])
+                        }}
+                      >
+                        {nombreArea === 'todas' ? 'Todas' : nombreArea} · {cantidad}
+                      </button>
+                    )
+                  })}
                 </div>
                 {avisoLista && <p className="panel-aviso" aria-live="polite">{avisoLista}</p>}
                 {esAdministrador(rol) && !cargandoMembresia && vistaPendientes && pendientesVisibles.length > 0 && (
@@ -812,8 +891,7 @@ function PanelEmpresa() {
                               />
                             </th>
                           )}
-                          <th>Nombre</th>
-                          <th>Correo</th>
+                          <th>Persona</th>
                           <th>Área</th>
                           <th>Origen</th>
                           <th>Estado</th>
@@ -839,8 +917,15 @@ function PanelEmpresa() {
                                   )}
                                 </td>
                               )}
-                              <td>{empleado.nombre}</td>
-                              <td>{empleado.email}</td>
+                              <td>
+                                <span className="te-persona">
+                                  <span className="te-iniciales" aria-hidden="true">{iniciales(empleado.nombre)}</span>
+                                  <span>
+                                    {empleado.nombre}
+                                    <small>{empleado.email}</small>
+                                  </span>
+                                </span>
+                              </td>
                               <td>{empleado.departamento || 'General'}</td>
                               <td>
                                 <span className="persona-badge persona-badge-origen">

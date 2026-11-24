@@ -5,24 +5,10 @@ import CabeceraPhishGuard from '../components/CabeceraPhishGuard.jsx'
 import { nombreEmpresa } from '../lib/formato.js'
 import { resumirEquipo } from '../lib/tableroEquipo.js'
 import { supabase } from '../lib/supabase.js'
+import { Areas, Cifras, ComoLeer, Evolucion, Recomendaciones, TablaPersonas } from '../components/AnalisisEquipo.jsx'
+import { areasConPorcentaje, cifrasEquipo, evolucionCampanas, recomendaciones } from '../lib/analisisEquipo.js'
+import { ultimaCampana } from '../lib/resumenPhishguard.js'
 import './Panel.css'
-
-function claseResultado(persona) {
-  if (persona.cayo) return 'persona-badge persona-badge-rechazado'
-  if (persona.participo) return 'persona-badge persona-badge-activo'
-  return 'persona-badge persona-badge-inactivo'
-}
-
-function ademas(persona) {
-  const partes = [
-    persona.capacitado && 'capacitado',
-    persona.reconocio && 'reconoció el engaño',
-    persona.mejoro && 'mejoró',
-  ].filter(Boolean)
-  if (partes.length === 0) return '–'
-  const texto = partes.join(' · ')
-  return texto[0].toUpperCase() + texto.slice(1)
-}
 
 function PanelTablero() {
   const [organizacion, setOrganizacion] = useState(undefined)
@@ -70,11 +56,16 @@ function PanelTablero() {
     }
   }, [])
 
-  const { porPersona, porArea, resumen } = useMemo(
+  const { porPersona, porArea } = useMemo(
     () => resumirEquipo(empleados, eventos, campanas),
     [empleados, eventos, campanas],
   )
 
+  const cifras = cifrasEquipo(porPersona)
+  const areas = areasConPorcentaje(porArea)
+  const evolucion = evolucionCampanas(campanas, eventos)
+  const ultima = ultimaCampana({ campanas, eventos })
+  const consejos = recomendaciones({ areas, porPersona, evolucion })
   const sinEquipo = porPersona.length === 0
   const sinResultados = !porPersona.some((p) => p.participo)
 
@@ -98,12 +89,15 @@ function PanelTablero() {
       <CabeceraPhishGuard
         seccion="Tablero"
         organizacion={nombreEmpresa(organizacion.nombre_empresa)}
-        titulo="Vulnerabilidad del equipo"
-        texto="Medimos si la persona cayó, si se capacitó y si mejoró en el refuerzo."
+        titulo="Cómo viene tu equipo"
+        texto="Quién cayó en las simulaciones, quién terminó la explicación y en qué área conviene reforzar."
       >
-        <p className="panel-acciones">
+        <p className="panel-acciones pgc-acciones">
           <Link className="pgc-boton" to={rutaEnApp('/panel/informe')}>
             Ver el informe para guardar
+          </Link>
+          <Link className="pgc-boton-sec" to={rutaEnApp('/panel/campanas')}>
+            Nueva campaña
           </Link>
         </p>
       </CabeceraPhishGuard>
@@ -117,13 +111,13 @@ function PanelTablero() {
               <p>Todavía no cargaste a nadie.</p>
               <p>Cargá a tu equipo y después armá una campaña para ver resultados.</p>
               <Link className="panel-boton" to={rutaEnApp('/panel/empresa')}>
-                Cargar empleados
+                Cargar personas
               </Link>
             </>
           ) : (
             <>
               <p>Todavía no hay campañas con resultados.</p>
-              <p>Armá una campaña para ver cómo responde tu equipo.</p>
+              <p>Armá una campaña: cuando la gente reciba el mensaje de prueba, acá vas a ver qué pasó.</p>
               <Link className="panel-boton" to={rutaEnApp('/panel/campanas')}>
                 Armar una campaña
               </Link>
@@ -131,88 +125,16 @@ function PanelTablero() {
           )}
         </section>
       ) : (
-        <>
-          <ul className="metricas-franja">
-            <li>
-              <strong>{resumen.personas}</strong>
-              <span>Personas</span>
-            </li>
-            <li>
-              <strong>{resumen.cayo}</strong>
-              <span>Cayeron</span>
-            </li>
-            <li>
-              <strong>{resumen.noCayo}</strong>
-              <span>No cayeron</span>
-            </li>
-            <li>
-              <strong>{resumen.cap}</strong>
-              <span>Capacitados</span>
-            </li>
-          </ul>
-
-          <section className="panel-seccion">
-            <h2>Por área</h2>
-            <div className="tabla-wrap">
-              <table className="tabla-equipo">
-                <thead>
-                  <tr>
-                    <th>Área</th>
-                    <th>Personas</th>
-                    <th>Cayeron</th>
-                    <th>No cayeron</th>
-                    <th>Se capacitaron</th>
-                    <th>Mejoraron</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {porArea.map((a) => (
-                    <tr key={a.area}>
-                      <td>{a.area}</td>
-                      <td>{a.total}</td>
-                      <td>{a.cayo}</td>
-                      <td>{a.noCayo}</td>
-                      <td>{a.cap}</td>
-                      <td>{a.mejoro}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </>
-      )}
-
-      {!sinEquipo && (
-        <section className="panel-seccion">
-          <h2>Por persona</h2>
-          <div className="tabla-wrap">
-            <table className="tabla-equipo tabla-personas">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Área</th>
-                  <th>Resultado</th>
-                  <th>Detalle</th>
-                </tr>
-              </thead>
-              <tbody>
-                {porPersona.map((p) => (
-                  <tr key={p.id}>
-                    <td>{p.nombre}</td>
-                    <td>{p.departamento || 'General'}</td>
-                    <td>
-                      <span className={claseResultado(p)}>
-                        {p.cayo ? 'Cayó' : p.participo ? 'No cayó' : 'Sin campaña'}
-                      </span>
-                    </td>
-                    <td>{ademas(p)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="ae-bloque">
+          <Cifras cifras={cifras} ultima={ultima} />
+          <ComoLeer />
+          <Recomendaciones lista={consejos} />
+          <div className="ae-dos">
+            <Evolucion puntos={evolucion} />
+            <Areas areas={areas} />
           </div>
-        </section>
+          <TablaPersonas porPersona={porPersona} />
+        </div>
       )}
     </div>
   )

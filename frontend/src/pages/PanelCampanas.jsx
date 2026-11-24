@@ -6,13 +6,21 @@ import { copiarTexto } from '../lib/copiar.js'
 import { etiquetaEstado } from '../lib/estados.js'
 import { supabase } from '../lib/supabase.js'
 import { useSesion } from '../lib/useSesion.js'
+import {
+  alternarGrupo,
+  areasDeEmpleados,
+  CANALES_CAMPANA,
+  estadoGrupo,
+  etiquetaCategoria,
+  etiquetaDificultad,
+  nombrePorDefecto,
+  resumenFila,
+  vistaPrevia,
+} from '../lib/armarCampana.js'
 import './Panel.css'
+import './Campanas.css'
 
-const CANALES = [
-  { id: 'whatsapp', etiqueta: 'WhatsApp' },
-  { id: 'sms', etiqueta: 'SMS' },
-  { id: 'email', etiqueta: 'Mail' },
-]
+const CANALES = CANALES_CAMPANA
 
 function etiquetaCanal(canal) {
   return CANALES.find((c) => c.id === canal)?.etiqueta ?? canal
@@ -70,13 +78,6 @@ function textoKit(campana) {
     ]),
   ].join('\n')
 }
-
-const COLUMNAS = [
-  ['clic', 'Clics'],
-  ['datos', 'Datos ingresados'],
-  ['cap', 'Capacitados'],
-  ['bien', 'Lo hicieron bien'],
-]
 
 function claseCampana(estado) {
   if (estado === 'en_proceso') return 'persona-badge persona-badge-activo'
@@ -189,7 +190,7 @@ async function cargar() {
   const [{ data: tpls }, { data: emps }, { data: camps, error: falloCamps }] = await Promise.all([
     supabase
       .from('plantillas_phishing')
-      .select('id, titulo, categoria, nivel_dificultad, canal, asunto_mail, amenaza_dominio')
+      .select('id, titulo, categoria, nivel_dificultad, canal, asunto_mail, remitente_falso, cuerpo_html, amenaza_dominio')
       .order('nivel_dificultad'),
     supabase
       .from('empleados')
@@ -240,6 +241,9 @@ function PanelCampanas() {
     () => plantillas.filter((p) => p.canal === canal || p.canal === 'todos'),
     [plantillas, canal],
   )
+  const areas = useMemo(() => areasDeEmpleados(empleados), [empleados])
+  const plantillaElegida = plantillas.find((p) => p.id === plantillaId) ?? null
+  const canalElegido = CANALES.find((c) => c.id === canal)
 
   useEffect(() => {
     let activo = true
@@ -292,17 +296,23 @@ function PanelCampanas() {
     setAviso(null)
     setMailtoKit(null)
     if (elegidos.length === 0) {
-      setError('Elegí al menos un empleado.')
+      setError('Elegí al menos una persona.')
+      return
+    }
+
+    if (!plantillaId) {
+      setError('Elegí qué mensaje querés mandar.')
       return
     }
 
     setCreando(true)
     const id = crypto.randomUUID()
+    const nombreFinal = nombre.trim() || nombrePorDefecto(plantillaElegida)
     const { error: falloCampana } = await supabase.from('campanas').insert({
       id,
       organizacion_id: organizacion.id,
       plantilla_id: plantillaId || null,
-      nombre_campana: nombre.trim(),
+      nombre_campana: nombreFinal,
       estado: 'en_proceso',
       canal,
       fecha_inicio: new Date().toISOString(),
@@ -420,15 +430,10 @@ function PanelCampanas() {
   return (
     <div className="panel panel-empresas">
       <CabeceraPhishGuard
-        titulo="Campañas"
-        texto="Hay plantillas de banco, ARCA, colegio, envío y Mercado Libre, por correo, WhatsApp o SMS. Quien cae recibe un refuerzo más difícil a las 3 semanas."
-      >
-        <p className="panel-aviso">
-          Si el canal es Mail, la simulación se envía directo a cada empleado, con aspecto
-          de notificación real. Si es WhatsApp o SMS, te llega un kit a tu cuenta con el
-          mensaje y los enlaces para mandar vos. Todo queda en el listado.
-        </p>
-      </CabeceraPhishGuard>
+        seccion="Campañas"
+        titulo="Mandá una simulación"
+        texto="Elegí por dónde, qué mensaje y a quiénes. Quien toque el enlace ve en el momento por qué era un engaño, y a las 3 semanas recibe un refuerzo un poco más difícil."
+      />
 
       {error && <p className="panel-error">{error}</p>}
       {aviso && <p className="panel-aviso">{aviso}</p>}
@@ -442,117 +447,184 @@ function PanelCampanas() {
 
       {empleados.length === 0 ? (
         <p className="panel-vacio">
-          No hay empleados activos. <Link to={rutaEnApp('/panel/empresa')}>Cargalos acá</Link>.
+          Para mandar una simulación primero cargá a tu equipo. <Link to={rutaEnApp('/panel/empresa')}>Cargar personas</Link>.
         </p>
       ) : (
-        <form className="panel-form panel-pieza" onSubmit={crearCampana}>
-          <label className="panel-campo">
-            <span>Nombre de la campaña</span>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              required
-            />
-          </label>
+        <form className="nc" onSubmit={crearCampana}>
+          <div className="nc-pasos">
+            <section className="nc-paso" aria-labelledby="nc-canal">
+              <h2 id="nc-canal">
+                <span className="nc-numero">1</span>¿Por dónde se lo mandás?
+              </h2>
+              <div className="nc-opciones" role="radiogroup" aria-label="Canal">
+                {CANALES.map((c) => (
+                  <label key={c.id} className={canal === c.id ? 'nc-canal nc-elegido' : 'nc-canal'}>
+                    <input
+                      type="radio"
+                      name="canal"
+                      value={c.id}
+                      checked={canal === c.id}
+                      onChange={() => {
+                        setCanal(c.id)
+                        setPlantillaId('')
+                      }}
+                    />
+                    <strong>{c.etiqueta}</strong>
+                    <span>{c.detalle}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
 
-          <label className="panel-campo">
-            <span>Canal</span>
-            <select
-              value={canal}
-              onChange={(e) => {
-                setCanal(e.target.value)
-                setPlantillaId('')
-              }}
-            >
-              {CANALES.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.etiqueta}
-                </option>
-              ))}
-            </select>
-          </label>
+            <section className="nc-paso" aria-labelledby="nc-plantilla">
+              <h2 id="nc-plantilla">
+                <span className="nc-numero">2</span>¿Qué mensaje le llega?
+              </h2>
+              <p className="nc-ayuda">Son mensajes de prueba que imitan engaños reales. Nadie pierde nada si cae.</p>
+              {visibles.length === 0 ? (
+                <p className="panel-vacio">Todavía no hay mensajes para este canal. Probá con otro.</p>
+              ) : (
+                <div className="nc-plantillas" role="radiogroup" aria-label="Mensaje">
+                  {visibles.map((p) => (
+                    <label key={p.id} className={plantillaId === p.id ? 'nc-plantilla nc-elegido' : 'nc-plantilla'}>
+                      <input
+                        type="radio"
+                        name="plantilla"
+                        value={p.id}
+                        checked={plantillaId === p.id}
+                        onChange={() => setPlantillaId(p.id)}
+                      />
+                      <span className="nc-mensaje">
+                        {p.remitente_falso || p.asunto_mail ? (
+                          <b>{[p.remitente_falso, p.asunto_mail].filter(Boolean).join(' · ')}</b>
+                        ) : null}
+                        {vistaPrevia(p)}
+                      </span>
+                      <strong>{p.titulo}</strong>
+                      <span className="nc-datos">
+                        {etiquetaCategoria(p.categoria, p.amenaza_dominio)} · {etiquetaDificultad(p.nivel_dificultad)}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </section>
 
-          <label className="panel-campo">
-            <span>Plantilla</span>
-            <select value={plantillaId} onChange={(e) => setPlantillaId(e.target.value)} required>
-              <option value="">Elegí una</option>
-              {visibles.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.amenaza_dominio ? 'SafeLink · ' : ''}
-                  {p.titulo} ({p.nivel_dificultad})
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <fieldset className="panel-campo">
-            <legend>
-              Destinatarios{elegidos.length > 0 ? ` · ${elegidos.length} elegidos` : ''}
-            </legend>
-            <div className="azar-controles">
-              <label className="azar-cantidad">
-                <span>Cuántos al azar</span>
+            <section className="nc-paso" aria-labelledby="nc-quienes">
+              <h2 id="nc-quienes">
+                <span className="nc-numero">3</span>¿A quiénes?
+              </h2>
+              <p className="nc-ayuda">Tocá un área para sumar o sacar a todas sus personas.</p>
+              <div className="nc-areas">
+                <button
+                  type="button"
+                  className={`nc-area nc-area-${estadoGrupo(empleados.map((e) => e.id), elegidos)}`}
+                  aria-pressed={estadoGrupo(empleados.map((e) => e.id), elegidos) === 'todo'}
+                  onClick={() => setElegidos(alternarGrupo(empleados.map((e) => e.id), elegidos))}
+                >
+                  Todo el equipo · {empleados.length}
+                </button>
+                {areas.map((grupo) => {
+                  const estado = estadoGrupo(grupo.ids, elegidos)
+                  return (
+                    <button
+                      key={grupo.area}
+                      type="button"
+                      className={`nc-area nc-area-${estado}`}
+                      aria-pressed={estado === 'todo'}
+                      onClick={() => setElegidos(alternarGrupo(grupo.ids, elegidos))}
+                    >
+                      {grupo.area} · {grupo.ids.length}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="nc-azar">
+                <span>O elegí</span>
                 <input
                   type="number"
                   min="1"
                   max={empleados.length}
                   value={cantidadAzar}
+                  aria-label="Cuántas personas al azar"
                   onChange={(e) => setCantidadAzar(e.target.value)}
                 />
-              </label>
-              <button
-                type="button"
-                className="panel-boton panel-boton-borde"
-                onClick={elegirAlAzar}
-              >
-                Elegir al azar
-              </button>
-              {elegidos.length > 0 && (
-                <button
-                  type="button"
-                  className="panel-boton panel-boton-borde"
-                  onClick={() => setElegidos([])}
-                >
-                  Limpiar
+                <button type="button" className="nc-link" onClick={elegirAlAzar}>
+                  personas al azar
                 </button>
-              )}
-            </div>
-            {empleados.map((empleado) => (
-              <label className="check-empleado" key={empleado.id}>
-                <input
-                  type="checkbox"
-                  checked={elegidos.includes(empleado.id)}
-                  onChange={() => alternar(empleado.id)}
-                />
-                {empleado.nombre} · {empleado.departamento}
-              </label>
-            ))}
-          </fieldset>
+                {elegidos.length > 0 ? (
+                  <button type="button" className="nc-link nc-link-suave" onClick={() => setElegidos([])}>
+                    Sacar a todos
+                  </button>
+                ) : null}
+              </div>
+              <details className="nc-una">
+                <summary>Ver y elegir personas una por una</summary>
+                <div className="nc-checks">
+                  {empleados.map((empleado) => (
+                    <label className="check-empleado" key={empleado.id}>
+                      <input
+                        type="checkbox"
+                        checked={elegidos.includes(empleado.id)}
+                        onChange={() => alternar(empleado.id)}
+                      />
+                      {empleado.nombre} · {empleado.departamento || 'General'}
+                    </label>
+                  ))}
+                </div>
+              </details>
+            </section>
+          </div>
 
-          <button type="submit" className="panel-boton" disabled={creando}>
-            {creando ? 'Creando…' : 'Crear campaña'}
-          </button>
+          <aside className="nc-resumen" aria-label="Resumen de la campaña">
+            <h2>Resumen</h2>
+            <dl>
+              <div>
+                <dt>Por dónde</dt>
+                <dd>{canalElegido?.etiqueta}</dd>
+              </div>
+              <div>
+                <dt>Mensaje</dt>
+                <dd>{plantillaElegida?.titulo ?? 'Falta elegir'}</dd>
+              </div>
+              <div>
+                <dt>Personas</dt>
+                <dd>{elegidos.length === 0 ? 'Falta elegir' : elegidos.length}</dd>
+              </div>
+            </dl>
+            <label className="nc-nombre">
+              <span>Nombre de la campaña (opcional)</span>
+              <input
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder={nombrePorDefecto(plantillaElegida)}
+              />
+            </label>
+            <p className="nc-ayuda">
+              {canal === 'email'
+                ? 'Al crearla, el correo sale enseguida a cada persona.'
+                : 'Al crearla, te mandamos a tu correo los mensajes listos para que los envíes vos.'}
+            </p>
+            <button type="submit" className="nc-crear" disabled={creando || !plantillaId || elegidos.length === 0}>
+              {creando ? 'Creando…' : 'Crear campaña'}
+            </button>
+          </aside>
         </form>
       )}
 
       <section className="panel-seccion">
-        <h2>Listado</h2>
+        <h2>Tus campañas</h2>
+        <p className="nc-ayuda">Tocá una para ver quién cayó, copiar los mensajes o borrarla.</p>
         {campanas.length === 0 ? (
-          <p className="panel-vacio">Todavía no hay campañas.</p>
+          <p className="panel-vacio">Todavía no mandaste ninguna simulación.</p>
         ) : (
           <>
-            <div className="campanas-cabeza" aria-hidden="true">
-              <span>Campaña</span>
-              <span>Estado</span>
-              {COLUMNAS.map(([, titulo]) => (
-                <span key={titulo}>{titulo}</span>
-              ))}
-            </div>
-            <ul className="campanas">
+            <ul className="campanas nc-lista">
               {campanas.map((campana) => {
                 const evs = campana.eventos_simulacion ?? []
                 const m = metricas(evs)
+                const fila = resumenFila(evs)
                 const abiertaEsta = abierta === campana.id
                 return (
                   <li className="campana" key={campana.id}>
@@ -568,7 +640,7 @@ function PanelCampanas() {
                           {campana.es_refuerzo ? ' · refuerzo' : ''}
                         </span>
                         <span className="campana-meta">
-                          {etiquetaCanal(campana.canal)}
+                          {fecha(campana.creado_en ?? campana.fecha_inicio).split(',')[0]} · {etiquetaCanal(campana.canal)}
                           {campana.es_refuerzo && campana.estado === 'programada'
                             ? ` · se lanza el ${fecha(campana.fecha_inicio)}`
                             : ''}
@@ -579,12 +651,21 @@ function PanelCampanas() {
                           {etiquetaEstado('campana', campana.estado)}
                         </span>
                       </span>
-                      {COLUMNAS.map(([clave, titulo]) => (
-                        <span className="campana-dato" key={clave}>
-                          <strong>{m.total > 0 ? m[clave] : '–'}</strong>
-                          <span>{titulo}</span>
+                      <span className="nc-fila-dato">
+                        <span className="nc-fila-barra" aria-hidden="true">
+                          <i style={{ width: `${fila.porcentaje}%` }} />
                         </span>
-                      ))}
+                        <span>
+                          {fila.total === 0
+                            ? campana.es_refuerzo && campana.estado === 'programada'
+                              ? 'Les llega a quienes cayeron en la campaña anterior'
+                              : 'Sin personas'
+                            : fila.conResultados
+                              ? `${fila.porcentaje} % tocó el enlace · ${fila.clics} de ${fila.total}`
+                              : `${fila.total} ${fila.total === 1 ? 'persona' : 'personas'} · todavía sin resultados`}
+                        </span>
+                      </span>
+                      <span className="nc-fila-ir" aria-hidden="true">{abiertaEsta ? '▴' : '▾'}</span>
                     </button>
 
                     {abiertaEsta && (
@@ -607,7 +688,7 @@ function PanelCampanas() {
                           </p>
                         ) : (
                           <>
-                            <h3 className="campana-bloque-titulo">Estadísticas</h3>
+                            <h3 className="campana-bloque-titulo">Cómo le fue</h3>
                             <ul className="metricas-franja campana-metricas">
                               <li>
                                 <strong>{m.total}</strong>
@@ -633,7 +714,12 @@ function PanelCampanas() {
                               </Link>
                             </p>
 
-                            <h3 className="campana-bloque-titulo">Personas</h3>
+                            <h3 className="campana-bloque-titulo">Personas y mensajes</h3>
+                            <p className="nc-ayuda">
+                              {campana.canal === 'email'
+                                ? 'El correo ya salió. Si alguien no lo recibió, podés copiar el mensaje y mandárselo a mano.'
+                                : 'Copiá el mensaje de cada persona y mandáselo por ' + etiquetaCanal(campana.canal) + '. A quien no caiga, mandale después “lo hiciste bien”.'}
+                            </p>
                             <ul className="enlaces-sim">
                               {evs.map((ev) => (
                                 <li key={ev.id}>
