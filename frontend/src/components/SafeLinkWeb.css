@@ -900,3 +900,347 @@ html[data-tema] body .panel-lienzo .slw-buscar input:focus-visible {
     display: none;
   }
 }
+
+.pagina-interior:has(> .panel-lienzo .slh) {
+  padding-top: 76px;
+}
+
+.slh .slh-hero {
+  text-align: left;
+}
+
+.slh .slw-sub {
+  margin: 0 0 24px;
+}
+
+.slh-contadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slh-contador {
+  --slh-color: var(--sg-text);
+  display: grid;
+  gap: 2px;
+  min-width: 120px;
+  padding: 12px 16px;
+  border: 1px solid var(--sg-line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--sg-surface) 70%, transparent);
+  color: var(--sg-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.slh-contador strong {
+  color: var(--slh-color);
+  font: 700 26px/1 Archivo, var(--sg-sans);
+}
+
+.slh-contador-rojo {
+  --slh-color: var(--slw-rojo);
+}
+
+.slh-contador-amarillo {
+  --slh-color: var(--slw-amarillo);
+}
+
+.slh-contador-verde {
+  --slh-color: var(--slw-verde);
+}
+
+.slh-contador-gris {
+  --slh-color: var(--sg-muted);
+}
+
+.slh-contador:hover {
+  border-color: color-mix(in srgb, var(--slw-acento) 50%, var(--sg-line));
+}
+
+.slh .slh-contador-activo {
+  border-color: var(--slw-acento);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--slw-acento) 22%, transparent);
+  color: var(--sg-text);
+}
+
+.slh-cuerpo {
+  display: grid;
+  gap: 18px;
+  padding: 26px 0 30px;
+}
+
+.slh-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.slh-buscar {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  max-width: 560px;
+  padding: 0 16px;
+  border: 1px solid var(--sg-line);
+  border-radius: 999px;
+  background: var(--sg-surface);
+  color: var(--sg-muted);
+}
+
+.slh-buscar:focus-within {
+  border-color: var(--slw-acento);
+}
+
+html[data-tema] body .panel-lienzo .slh-buscar input:not([type='checkbox']):not([type='radio']) {
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--sg-text);
+  font-size: 15px;
+}
+
+html[data-tema] body .panel-lienzo .slh-buscar input:focus-visible {
+  outline: none;
+}
+
+.slh-cantidad {
+  color: var(--sg-muted);
+  font-size: 14px;
+}
+
+.slh-dia {
+  overflow: hidden;
+  border: 1px solid var(--sg-line);
+  border-radius: 18px;
+  background: var(--sg-surface);
+}
+
+.sg-landing .panel-lienzo .slh-dia h2 {
+  margin: 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--sg-line);
+  color: var(--sg-muted);
+  font: 700 13px/1.2 var(--sg-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.slh-dia ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slh-fila {
+  --slh-color: var(--sg-muted);
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--sg-line);
+}
+
+.slh-fila:last-child {
+  border-bottom: 0;
+}
+
+.slh-fila::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--slh-color);
+}
+
+.slh-fila-rojo {
+  --slh-color: var(--slw-rojo);
+}
+
+.slh-fila-amarillo {
+  --slh-color: var(--slw-amarillo);
+}
+
+.slh-fila-verde {
+  --slh-color: var(--slw-verde);
+}
+
+.slh-fila:hover {
+  background: color-mix(in srgb, var(--sg-text) 4%, transparent);
+}
+
+.slh-abrir {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  flex: 1;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 14px 8px 14px 20px;
+  border: 0;
+  background: none;
+  color: var(--sg-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.slh-icono {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--slh-color) 14%, transparent);
+  color: var(--slh-color);
+}
+
+.slh-texto {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.slh-que {
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slh-que span {
+  color: var(--sg-muted);
+}
+
+.slh-motivo {
+  overflow: hidden;
+  color: var(--sg-muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slh-meta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  color: var(--sg-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.slh-acciones {
+  display: flex;
+  gap: 2px;
+  padding-right: 12px;
+  opacity: 0.35;
+  transition: opacity 150ms ease;
+}
+
+.slh-fila:hover .slh-acciones,
+.slh-acciones:focus-within {
+  opacity: 1;
+}
+
+.slh-acciones button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--sg-muted);
+  cursor: pointer;
+}
+
+.slh-acciones button:hover {
+  border-color: var(--sg-line);
+  color: var(--sg-text);
+}
+
+.slh-acciones .slw-accion-borrar:hover {
+  color: var(--slw-rojo);
+}
+
+.slh-vacio,
+.slh-reportes {
+  padding: 24px;
+  border: 1px solid var(--sg-line);
+  border-radius: 18px;
+  background: var(--sg-surface);
+}
+
+.sg-landing .panel-lienzo :is(.slh-vacio, .slh-reportes) h2 {
+  margin: 0 0 6px;
+  color: var(--sg-text);
+  font: 700 18px/1.3 Archivo, var(--sg-sans);
+}
+
+.slh-vacio p {
+  margin: 0 0 16px;
+  color: var(--sg-muted);
+}
+
+.slh-reportes .slw-nota {
+  margin: 0 0 14px;
+}
+
+.sg-landing .slh .slh-boton {
+  display: inline-flex;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: var(--slw-acento);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+html[data-tema='oscuro'] .sg-landing .slh .slh-boton {
+  color: #0a1328;
+}
+
+@media (pointer: coarse) {
+  .slh-acciones {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .slh-contador {
+    min-width: 0;
+    flex: 1 1 40%;
+  }
+
+  .slh-abrir {
+    grid-template-columns: 36px minmax(0, 1fr);
+    padding-left: 16px;
+  }
+
+  .slh-icono {
+    width: 36px;
+    height: 36px;
+  }
+
+  .slh-meta {
+    grid-column: 2;
+    grid-auto-flow: column;
+    justify-items: start;
+    justify-content: start;
+    gap: 8px;
+  }
+
+  .slh-que,
+  .slh-motivo {
+    white-space: normal;
+  }
+}
