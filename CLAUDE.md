@@ -83,7 +83,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   las apps instaladas no se pueden actualizar sin desinstalar.
 - Perfil de la app (`src/pages/PerfilApp.jsx`): tarjeta de la cuenta, nivel de protección (`proteccion.js`), lo revisado por color
   y un menú con subpantallas `/perfil/:seccion` (seguridad, avisos, familia, reportes, apariencia, datos, version, ayuda, cuenta);
-  las de configuración reusan `PanelPerfil` con `seccion`. "Celulares con avisos" usa `push_mis_dispositivos` y `push_borrar_otros`.
+  las de configuración reusan `PanelPerfil` con `seccion`. En la web, `/panel/perfil` usa su propio diseño en `PanelPerfil` (`CabeceraPerfilWeb`,
+  `pages/PerfilWeb.css`): franja con foto, nombre, correo y chips (rol, forma de entrar, dos pasos), dos columnas de tarjetas
+  (Cuenta y Seguridad; Actividad, Organización, Apariencia y Tus datos) y la zona de peligro abajo. "Celulares con avisos" usa `push_mis_dispositivos` y `push_borrar_otros`.
   "Cuidar a un familiar" (`familia.js`): la persona cuidada crea un código de 6 letras que vence a los 30 minutos
   (`familia_crear_codigo`), quien cuida lo carga (`familia_aceptar`), y cuando la persona cuidada guarda un análisis rojo
   la función `familia-avisar` manda un aviso al celular de quien la cuida (como mucho uno cada 10 minutos). Migración

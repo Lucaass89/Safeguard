@@ -16,7 +16,9 @@ import { aplicarTema, leerPreferencia } from '../lib/tema.js'
 import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
-import { metodosDe, ROLES, textoMetodo } from '../lib/cuentaUsuario.js'
+import { etiquetaRol, fotoDe, metodosDe, ROLES, textoMetodo } from '../lib/cuentaUsuario.js'
+import { useDosPasos } from '../lib/useDosPasos.js'
+import './PerfilWeb.css'
 
 const AVISO_UNICO_ADMIN =
   'Sos el único administrador de tu empresa. Asigná a otra persona como administrador antes de eliminar tu cuenta.'
@@ -530,6 +532,40 @@ function nombreInicial(usuario) {
   return nombre
 }
 
+function CabeceraPerfilWeb({ usuario, nombre, correo, rol }) {
+  const { estado } = useDosPasos()
+  const foto = fotoDe(usuario)
+  const etiqueta = etiquetaRol(rol)
+  const metodo = textoMetodo(metodosDe(usuario))
+  return (
+    <header className="pw-hero">
+      <div className="pw-hero-adentro">
+        {foto ? (
+          <img className="pw-foto" src={foto} alt="" referrerPolicy="no-referrer" />
+        ) : (
+          <span className="pw-foto pw-foto-iniciales" aria-hidden="true">
+            {iniciales(nombre, correo)}
+          </span>
+        )}
+        <div className="pw-quien">
+          <p className="pw-eti">Tu perfil</p>
+          <h1>{nombre || 'Tu cuenta'}</h1>
+          {correo ? <p className="pw-correo">{correo}</p> : null}
+          <ul className="pw-chips">
+            {etiqueta ? <li>{etiqueta}</li> : null}
+            {metodo ? <li>{metodo.replace(/\.$/, '')}</li> : null}
+            {estado === 'activar' ? (
+              <li className="pw-chip-falta">Verificación en dos pasos: sin activar</li>
+            ) : estado === 'listo' || estado === 'codigo' ? (
+              <li className="pw-chip-bien">Verificación en dos pasos: activa</li>
+            ) : null}
+          </ul>
+        </div>
+      </div>
+    </header>
+  )
+}
+
 function PanelPerfil({ variante, seccion = null }) {
   const { sesion } = useSesion()
   const { pertenece, cargando: cargandoMembresia, rol, organizacionId, unicoAdmin } = useMembresia()
@@ -756,6 +792,162 @@ function PanelPerfil({ variante, seccion = null }) {
   const enApp = variante === 'app'
   const nombreVisible = guardado.trim()
   const mostrar = (nombre) => !enApp || !seccion || seccion === nombre
+
+  if (!enApp) {
+    return (
+      <div className="panel panel-personas perfil perfil-web">
+        <CabeceraPerfilWeb usuario={usuario} nombre={nombreVisible} correo={correo} rol={pertenece ? rol : null} />
+        <div className="pw-grid">
+          <div className="pw-col">
+            {!enApp && (
+              <section className="ajuste perfil-cuenta" aria-labelledby="perfil-cuenta-titulo">
+                <div className="ajuste-cabeza">
+                  <h2 id="perfil-cuenta-titulo">Cuenta</h2>
+                </div>
+                <form className="ajuste-cuerpo" onSubmit={guardar}>
+                  <label className="panel-campo">
+                    <span>Nombre</span>
+                    <input
+                      type="text"
+                      value={nombre}
+                      onChange={alEscribir}
+                      autoComplete="name"
+                      required
+                    />
+                  </label>
+                  <label className="panel-campo">
+                    <span>Correo</span>
+                    <span className="perfil-correo">
+                      <input type="email" value={usuario.email ?? ''} readOnly aria-readonly="true" />
+                      <svg className="perfil-candado" viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                        <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                  </label>
+                  <div aria-live="polite">
+                    {error && <p className="panel-error">{error}</p>}
+                    {aviso && <p className="panel-aviso">{aviso}</p>}
+                  </div>
+                  <button type="submit" className="panel-boton" disabled={!cambio || guardando} aria-busy={guardando}>
+                    {guardando ? 'Guardando…' : 'Guardar'}
+                  </button>
+                </form>
+              </section>
+            )}
+
+            <PerfilSeguridad usuario={usuario} />
+          </div>
+          <div className="pw-col">
+            <PerfilActividad usuarioId={usuario.id} variante={variante} />
+            {pertenece && <PerfilOrganizacion organizacionId={organizacionId} rol={rol} />}
+            <section className="ajuste perfil-preferencias" aria-labelledby="perfil-apariencia-titulo">
+              <div className="ajuste-cabeza">
+                <h2 id="perfil-apariencia-titulo">Apariencia</h2>
+              </div>
+              <div className="ajuste-cuerpo">
+                <PreferenciaTema />
+              </div>
+            </section>
+            {mostrar('datos') && (
+            <section className="ajuste perfil-datos" aria-labelledby="perfil-datos-titulo">
+              <div className="ajuste-cabeza">
+                <h2 id="perfil-datos-titulo">Tus datos</h2>
+              </div>
+              <div className="ajuste-cuerpo">
+                <button type="button" className="perfil-exportar" onClick={exportar} disabled={exportando} aria-busy={exportando}>
+                  <IconoBajar />
+                  {exportando ? 'Exportando…' : 'Exportar mis datos'}
+                </button>
+                <div aria-live="polite">
+                  {errorExportar && <p className="panel-error">{errorExportar}</p>}
+                </div>
+                {enApp && seccion === 'datos' && (
+                  <p className="perfil-legales">
+                    <Link to="/privacidad">Política de privacidad</Link>
+                    <Link to="/terminos">Términos y condiciones</Link>
+                  </p>
+                )}
+              </div>
+            </section>
+            )}
+
+          </div>
+        </div>
+        {mostrar('cuenta') && (
+        <section className="ajuste perfil-peligro" aria-labelledby="perfil-peligro-titulo">
+          <div className="ajuste-cabeza">
+            <h2 id="perfil-peligro-titulo">Zona de peligro</h2>
+          </div>
+          <div className="ajuste-cuerpo">
+            <p id="perfil-borrar-ayuda" className="perfil-ayuda">
+              {bloqueado ? AVISO_UNICO_ADMIN : [textoBorrar, 'No se puede deshacer.'].filter(Boolean).join(' ')}
+            </p>
+            {/* TODO: falta una función para asignar otro administrador; mientras tanto se pide por Contacto. */}
+            {bloqueado && (
+              <Link className="perfil-asignar" to="/contacto">
+                Pedir que asignemos otro administrador
+              </Link>
+            )}
+            <button
+              type="button"
+              className="perfil-borrar"
+              onClick={abrirBorrado}
+              disabled={cargandoMembresia || bloqueado}
+              aria-describedby="perfil-borrar-ayuda"
+            >
+              Eliminar cuenta
+            </button>
+          </div>
+        </section>
+        )}
+
+        {modalAbierto && (
+          <dialog
+            ref={dialogo}
+            className="perfil-modal"
+            aria-modal="true"
+            aria-labelledby="perfil-borrar-titulo"
+            aria-describedby="perfil-borrar-texto"
+            onCancel={(evento) => {
+              evento.preventDefault()
+              cerrarBorrado()
+            }}
+          >
+            <form onSubmit={eliminarCuenta}>
+              <h2 id="perfil-borrar-titulo">Eliminar cuenta</h2>
+              <p id="perfil-borrar-texto">
+                {textoBorrar} No se puede deshacer. Escribí tu correo para confirmar.
+              </p>
+              <label className="panel-campo">
+                <span>Correo</span>
+                <input
+                  ref={campoConfirmar}
+                  type="email"
+                  value={confirmacion}
+                  onChange={(evento) => setConfirmacion(evento.target.value)}
+                  autoComplete="off"
+                  aria-describedby="perfil-borrar-texto"
+                />
+              </label>
+              <div aria-live="polite">
+                {errorBorrar && <p className="panel-error">{errorBorrar}</p>}
+              </div>
+              <div className="perfil-modal-acciones">
+                <button type="button" className="panel-boton-borde" onClick={cerrarBorrado} disabled={borrando}>
+                  Cancelar
+                </button>
+                <button type="submit" className="perfil-borrar" disabled={!puedeBorrar || borrando} aria-busy={borrando}>
+                  {borrando ? 'Eliminando…' : 'Eliminar mi cuenta'}
+                </button>
+              </div>
+            </form>
+          </dialog>
+        )}
+
+      </div>
+    )
+  }
 
   return (
     <div className={enApp ? 'panel panel-personas perfil perfil-app' : 'panel panel-personas perfil'}>
