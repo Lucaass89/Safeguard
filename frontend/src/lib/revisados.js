@@ -75,3 +75,32 @@ export function fechaDeTabla(fecha, hoy = new Date()) {
   if (d.getFullYear() !== hoy.getFullYear()) opciones.year = 'numeric'
   return `${d.toLocaleDateString('es-AR', opciones)}, ${hora}`
 }
+
+export const FILTROS_HISTORIAL = [
+  { id: 'todos', etiqueta: 'Todo' },
+  { id: 'rojo', etiqueta: 'Peligrosos' },
+  { id: 'amarillo', etiqueta: 'Precaución' },
+  { id: 'verde', etiqueta: 'Seguros' },
+  { id: 'gris', etiqueta: 'Sin verificar' },
+]
+
+export function conteoPorNivel(items) {
+  const conteo = { todos: 0, rojo: 0, amarillo: 0, verde: 0, gris: 0 }
+  for (const item of items ?? []) {
+    const veces = item.veces ?? 1
+    conteo.todos += veces
+    const nivel = item.nivelRiesgo in conteo ? item.nivelRiesgo : 'gris'
+    conteo[nivel] += veces
+  }
+  return conteo
+}
+
+export function motivoCorto(item, largo = 110) {
+  const texto = String(item?.motivos?.[0] ?? '').split(/(?<=\.)\s/)[0].trim()
+  if (!texto || /^no aparecen/i.test(texto)) return ''
+  return texto.length > largo ? `${texto.slice(0, largo).trimEnd()}…` : texto
+}
+
+export function horaDe(fecha) {
+  return new Date(fecha).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+}

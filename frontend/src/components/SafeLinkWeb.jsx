@@ -4,9 +4,9 @@ import ChipEstado from './ChipEstado.jsx'
 import MisReportes from './MisReportes.jsx'
 import { agruparActividad, detalleDe } from '../lib/agruparActividad.js'
 import { guardarAnalisis } from '../lib/enriquecer.js'
-import { buscarEnRevisados, fechaDeTabla, partesDeTotales } from '../lib/revisados.js'
+import { buscarEnRevisados, conteoPorNivel, FILTROS_HISTORIAL, horaDe, motivoCorto, partesDeTotales } from '../lib/revisados.js'
 import { CANAL_DE, casoDeRevisado, ENTRADA_DE, resumenDe, revisarTipo } from '../lib/revisarSafeLink.js'
-import { enlaceTraido, FILTROS, filtrarPorNivel, NOMBRE_TIPO, textoProtegido, tipoDeEntrada } from '../lib/safelinkApp.js'
+import { agruparPorDia, enlaceTraido, filtrarPorNivel, NOMBRE_TIPO, textoProtegido, tipoDeEntrada } from '../lib/safelinkApp.js'
 import { borrarAnalisis, useAnalisisPropios, useTotalesPropios } from '../lib/useAnalisisPropios.js'
 import { useSesion } from '../lib/useSesion.js'
 import { PantallaResultado, Pasos } from '../pages/SafeLink.jsx'
@@ -263,59 +263,6 @@ function Ultimos({ items, cargando, onAbrir }) {
   )
 }
 
-function TablaRevisados({ items, completo, onAbrir, onBorrar, onRevisar }) {
-  return (
-    <table className="slw-tabla">
-      <thead>
-        <tr>
-          <th scope="col">Resultado</th>
-          <th scope="col">Qué revisaste</th>
-          <th scope="col">Tipo</th>
-          <th scope="col">Cuándo</th>
-          <th scope="col">
-            <span className="visualmente-oculto">Acciones</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item) => (
-          <tr key={item.id} onClick={() => onAbrir(item)}>
-            <td data-titulo="Resultado">
-              <ChipEstado nivel={item.nivel} />
-            </td>
-            <td data-titulo="Qué revisaste" className="slw-que">
-              <button type="button" className="slw-abrir" onClick={(evento) => { evento.stopPropagation(); onAbrir(item) }}>
-                <strong>{item.titulo}</strong>
-                {item.ruta ? <span>{item.ruta}</span> : null}
-              </button>
-            </td>
-            <td data-titulo="Tipo">{detalleDe(item)}</td>
-            <td data-titulo="Cuándo" className="slw-cuando">
-              {fechaDeTabla(item.fecha)}
-            </td>
-            <td className="slw-acciones">
-              {completo && (item.entrada === 'web' || item.entrada === 'qr') && item.url ? (
-                <button type="button" title="Revisar de nuevo" aria-label={`Revisar de nuevo ${item.titulo}`} onClick={(evento) => { evento.stopPropagation(); onRevisar(item) }}>
-                  <Icono nombre="otra" />
-                </button>
-              ) : null}
-              {completo ? (
-                <button type="button" title="Borrar" aria-label={`Borrar ${item.titulo}`} className="slw-accion-borrar" onClick={(evento) => { evento.stopPropagation(); onBorrar(item) }}>
-                  <Icono nombre="borrar" />
-                </button>
-              ) : (
-                <span className="slw-ir" aria-hidden="true">
-                  <Icono nombre="ir" />
-                </span>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )
-}
-
 export function InicioSafeLinkWeb({ onVolver }) {
   const revisados = useAnalisisPropios({ limite: 20 })
   const totales = useTotalesPropios()
@@ -354,6 +301,24 @@ export function InicioSafeLinkWeb({ onVolver }) {
   )
 }
 
+const ICONO_ENTRADA = {
+  web: ['M10 13.5 13.5 10', 'M8.4 11.6 7 13a3.4 3.4 0 0 0 4.8 4.8l1.4-1.4', 'M15.6 12.4 17 11a3.4 3.4 0 0 0-4.8-4.8L10.8 7.6'],
+  qr: ['M4.5 9V6.5a2 2 0 0 1 2-2H9', 'M15 4.5h2.5a2 2 0 0 1 2 2V9', 'M19.5 15v2.5a2 2 0 0 1-2 2H15', 'M9 19.5H6.5a2 2 0 0 1-2-2V15', 'M8 12h8'],
+  whatsapp: ['M5 18.5 6.2 15A7 7 0 1 1 9 17.8L5 18.5Z'],
+  pdf: ['M7 3.5h7l4 4V20.5H7v-17Z', 'M14 3.5V8h4', 'M9.5 13h5M9.5 16h5'],
+  correo: ['M4 6.5h16v11H4z', 'm4.5 7 7.5 6 7.5-6'],
+}
+
+function IconoEntrada({ entrada }) {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {(ICONO_ENTRADA[entrada] ?? ICONO_ENTRADA.web).map((d) => (
+        <path key={d} d={d} />
+      ))}
+    </svg>
+  )
+}
+
 export function HistorialWeb() {
   const revisados = useAnalisisPropios({ limite: 200 })
   const totales = useTotalesPropios()
@@ -365,7 +330,10 @@ export function HistorialWeb() {
     totales.recargar()
   })
   const agrupados = agruparActividad(revisados.items, 200)
+  const conteo = conteoPorNivel(agrupados)
   const visibles = buscarEnRevisados(filtrarPorNivel(agrupados, filtro), busqueda)
+  const dias = agruparPorDia(visibles)
+  const filtros = FILTROS_HISTORIAL.filter((opcion) => opcion.id !== 'gris' || conteo.gris > 0)
 
   async function borrar(item) {
     const listo = await borrarAnalisis(item.ids ?? [item.id])
@@ -378,76 +346,131 @@ export function HistorialWeb() {
     totales.recargar()
   }
 
-  if (revision.resultado || revision.revisando) {
-    return (
-      <div className="slw-resultado">
-        {revision.revisando ? (
-          <Pasos tipo={revision.revisando} />
-        ) : (
-          <PantallaResultado resultado={revision.resultado} onCerrar={() => revision.setResultado(null)} />
-        )}
-      </div>
-    )
-  }
-
   return (
-    <div className="slw-historial">
-      <div className="slw-herramientas-tabla">
-        <div className="slw-filtros" role="group" aria-label="Filtrar por color">
-          {FILTROS.map((opcion) => (
-            <button
-              key={opcion.id}
-              type="button"
-              className={filtro === opcion.id ? 'slw-filtro slw-filtro-activo' : 'slw-filtro'}
-              aria-pressed={filtro === opcion.id}
-              onClick={() => setFiltro(opcion.id)}
-            >
-              {opcion.etiqueta}
-            </button>
-          ))}
+    <div className="slw-inicio slh">
+      <section className="slw-hero" aria-labelledby="slh-titulo">
+        <div className="slw-hero-adentro slh-hero">
+          <Link className="slw-volver" to="/panel?app=safelink">
+            ← Volver a SafeLink
+          </Link>
+          <p className="slw-eti">SafeLink · Historial</p>
+          <h1 id="slh-titulo">Lo que revisaste</h1>
+          <p className="slw-sub">
+            Todo lo que revisaste en la web y en la app. Tocá una fila para ver por qué dio ese color y preguntarle a Faro.
+          </p>
+          <div className="slh-contadores" role="group" aria-label="Filtrar por color">
+            {filtros.map((opcion) => (
+              <button
+                key={opcion.id}
+                type="button"
+                className={`slh-contador slh-contador-${opcion.id}${filtro === opcion.id ? ' slh-contador-activo' : ''}`}
+                aria-pressed={filtro === opcion.id}
+                onClick={() => setFiltro(opcion.id)}
+              >
+                <strong>{conteo[opcion.id]}</strong>
+                <span>{opcion.etiqueta}</span>
+              </button>
+            ))}
+          </div>
         </div>
-        <label className="slw-buscar">
-          <Icono nombre="buscar" />
-          <span className="visualmente-oculto">Buscar en el historial</span>
-          <input type="search" value={busqueda} onChange={(evento) => setBusqueda(evento.target.value)} placeholder="Buscar un sitio o un mensaje" />
-        </label>
-      </div>
+      </section>
 
-      {aviso || revision.aviso ? (
-        <p className="slw-aviso" role="status">
-          {aviso || revision.aviso}
-        </p>
-      ) : null}
+      {revision.resultado || revision.revisando ? (
+        <div className="slw-resultado">
+          {revision.revisando ? (
+            <Pasos tipo={revision.revisando} />
+          ) : (
+            <PantallaResultado resultado={revision.resultado} onCerrar={() => revision.setResultado(null)} />
+          )}
+        </div>
+      ) : (
+        <div className="slh-cuerpo">
+          <div className="slh-barra">
+            <label className="slh-buscar">
+              <Icono nombre="buscar" />
+              <span className="visualmente-oculto">Buscar en el historial</span>
+              <input type="search" value={busqueda} onChange={(evento) => setBusqueda(evento.target.value)} placeholder="Buscar un sitio, un mensaje o un correo" />
+            </label>
+            <span className="slh-cantidad">
+              {visibles.length === 1 ? '1 resultado' : `${visibles.length} resultados`}
+            </span>
+          </div>
 
-      <section className="slw-tarjeta" aria-label="Lo que revisaste">
-        {revisados.cargando ? (
-          <p className="slw-nota">Buscando tus revisiones…</p>
-        ) : revisados.error ? (
-          <p className="slw-nota">No se pudieron leer tus revisiones. Probá de nuevo en un rato.</p>
-        ) : visibles.length === 0 ? (
-          <p className="slw-nota">{agrupados.length === 0 ? 'Todavía no revisaste nada.' : 'No hay revisiones que coincidan.'}</p>
-        ) : (
-          <>
-            <p className="slw-cantidad">
-              {visibles.length === 1 ? '1 revisión' : `${visibles.length} revisiones`}
+          {aviso || revision.aviso ? (
+            <p className="slw-aviso" role="status">
+              {aviso || revision.aviso}
             </p>
-            <TablaRevisados
-              items={visibles}
-              completo
-              onAbrir={(item) => revision.abrir(casoDeRevisado(item))}
-              onBorrar={borrar}
-              onRevisar={(item) => revision.ejecutar('enlace', item.url)}
-            />
-          </>
-        )}
-      </section>
+          ) : null}
 
-      <section className="slw-tarjeta slw-reportes" aria-labelledby="slw-reportes-titulo">
-        <div className="slw-tarjeta-cabeza">
-          <h2 id="slw-reportes-titulo">Tus reportes</h2>
+          {revisados.cargando ? (
+            <p className="slw-nota">Buscando tus revisiones…</p>
+          ) : revisados.error ? (
+            <p className="slw-nota">No se pudieron leer tus revisiones. Probá de nuevo en un rato.</p>
+          ) : agrupados.length === 0 ? (
+            <section className="slh-vacio">
+              <h2>Todavía no revisaste nada</h2>
+              <p>Cuando revises un enlace, un mensaje, un correo o un PDF, va a aparecer acá.</p>
+              <Link className="slh-boton" to="/panel?app=safelink">
+                Revisar algo
+              </Link>
+            </section>
+          ) : visibles.length === 0 ? (
+            <section className="slh-vacio">
+              <h2>No hay nada con ese filtro</h2>
+              <p>Probá con otro color o con otra palabra.</p>
+            </section>
+          ) : (
+            dias.map((dia) => (
+              <section key={dia.titulo} className="slh-dia" aria-label={dia.titulo}>
+                <h2>{dia.titulo}</h2>
+                <ul>
+                  {dia.items.map((item) => {
+                    const motivo = motivoCorto(item)
+                    return (
+                      <li key={item.id} className={`slh-fila slh-fila-${item.nivelRiesgo ?? 'gris'}`}>
+                        <button type="button" className="slh-abrir" onClick={() => revision.abrir(casoDeRevisado(item))}>
+                          <span className="slh-icono">
+                            <IconoEntrada entrada={item.entrada} />
+                          </span>
+                          <span className="slh-texto">
+                            <span className="slh-que">
+                              <strong>{item.titulo}</strong>
+                              {item.ruta ? <span>{item.ruta}</span> : null}
+                            </span>
+                            {motivo ? <span className="slh-motivo">{motivo}</span> : null}
+                          </span>
+                          <span className="slh-meta">
+                            <ChipEstado nivel={item.nivel} />
+                            <span>
+                              {detalleDe(item)} · {horaDe(item.fecha)}
+                            </span>
+                          </span>
+                        </button>
+                        <span className="slh-acciones">
+                          {(item.entrada === 'web' || item.entrada === 'qr') && item.url ? (
+                            <button type="button" title="Revisar de nuevo" aria-label={`Revisar de nuevo ${item.titulo}`} onClick={() => revision.ejecutar('enlace', item.url)}>
+                              <Icono nombre="otra" />
+                            </button>
+                          ) : null}
+                          <button type="button" title="Borrar" aria-label={`Borrar ${item.titulo}`} className="slw-accion-borrar" onClick={() => borrar(item)}>
+                            <Icono nombre="borrar" />
+                          </button>
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
+            ))
+          )}
+
+          <section className="slh-reportes" aria-labelledby="slw-reportes-titulo">
+            <h2 id="slw-reportes-titulo">Tus reportes</h2>
+            <p className="slw-nota">Lo que nos avisaste que era un engaño y en qué quedó.</p>
+            <MisReportes />
+          </section>
         </div>
-        <MisReportes />
-      </section>
+      )}
     </div>
   )
 }

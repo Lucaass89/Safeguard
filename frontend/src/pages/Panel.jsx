@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
 import Bienvenida from '../components/Bienvenida.jsx'
 import ElegirApp from '../components/ElegirApp.jsx'
 import PhishGuardWeb from '../components/PhishGuardWeb.jsx'
@@ -92,14 +91,7 @@ function Panel() {
 
 export function PanelHistorial() {
   return (
-    <div className="panel mesa mesa-inicio">
-      <Link className="elegir-volver" to="/panel?app=safelink">
-        ← Volver a SafeLink
-      </Link>
-      <header className="mesa-bienvenida">
-        <h1 className="mesa-saludo">Historial</h1>
-        <p>Todo lo que revisaste con SafeLink, en la web y en la app.</p>
-      </header>
+    <div className="panel mesa">
       <HistorialWeb />
     </div>
   )

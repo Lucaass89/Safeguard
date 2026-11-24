@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
-import { buscarEnRevisados, casoDeRevisado, fechaDeTabla, partesDeTotales, resumenDe } from './revisados.js'
+import { buscarEnRevisados, casoDeRevisado, conteoPorNivel, fechaDeTabla, motivoCorto, partesDeTotales, resumenDe } from './revisados.js'
 
 const enlace = {
   id: 'a1',
@@ -75,5 +75,31 @@ describe('resumenDe', () => {
   test('recorta lo largo y usa el nombre del PDF', () => {
     assert.equal(resumenDe('pdf', '', 'aviso.pdf'), 'aviso.pdf')
     assert.equal(resumenDe('mensaje', 'x'.repeat(100), '').length, 73)
+  })
+})
+
+describe('conteoPorNivel', () => {
+  test('cuenta por color y suma las repetidas', () => {
+    const conteo = conteoPorNivel([
+      { nivelRiesgo: 'rojo', veces: 2 },
+      { nivelRiesgo: 'verde' },
+      { nivelRiesgo: 'otro' },
+    ])
+    assert.deepEqual(conteo, { todos: 4, rojo: 2, amarillo: 0, verde: 1, gris: 1 })
+  })
+})
+
+describe('motivoCorto', () => {
+  test('toma la primera oración del primer motivo', () => {
+    assert.equal(motivoCorto({ motivos: ['Imita a Afterpay. Además es nuevo.'] }), 'Imita a Afterpay.')
+  })
+
+  test('no muestra el texto de sin señales ni nada si no hay motivo', () => {
+    assert.equal(motivoCorto({ motivos: ['No aparecen señales fuertes en la dirección.'] }), '')
+    assert.equal(motivoCorto({}), '')
+  })
+
+  test('recorta lo largo', () => {
+    assert.ok(motivoCorto({ motivos: ['x'.repeat(300)] }, 20).endsWith('…'))
   })
 })
