@@ -1,0 +1,228 @@
+.pagina-interior:has(> .panel-lienzo .perfil-web) {
+  padding-top: 76px;
+}
+
+.sg-landing .panel-lienzo .perfil-web {
+  --pw-acento: #60a5fa;
+  --pw-hero: #0d1830;
+  --pw-verde: #34d399;
+  --pw-ambar: #fbbf24;
+  max-width: none;
+}
+
+html[data-tema='claro'] .sg-landing .panel-lienzo .perfil-web {
+  --pw-acento: #2f5fc4;
+  --pw-hero: #e9ecf1;
+  --pw-verde: #13795b;
+  --pw-ambar: #9a6400;
+}
+
+.pw-hero {
+  width: 100vw;
+  margin: 0 0 28px calc(50% - 50vw);
+  padding: 40px 20px 40px;
+  border-bottom: 1px solid var(--sg-line);
+  background: radial-gradient(60% 120% at 15% 100%, color-mix(in srgb, var(--pw-acento) 26%, transparent), transparent 70%), var(--pw-hero);
+}
+
+.pw-hero-adentro {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  width: min(1160px, 100%);
+  margin: 0 auto;
+}
+
+.pw-foto {
+  flex: none;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pw-acento) 35%, transparent);
+}
+
+.pw-foto-iniciales {
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--pw-acento) 22%, var(--sg-surface));
+  color: var(--sg-text);
+  font: 700 36px/1 Archivo, var(--sg-sans);
+}
+
+.pw-eti {
+  margin: 0;
+  color: var(--pw-acento);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sg-landing .panel-lienzo .pw-hero h1 {
+  margin: 6px 0 4px;
+  color: var(--sg-text);
+  font: 700 clamp(32px, 4vw, 46px) / 1.05 Archivo, var(--sg-sans);
+  letter-spacing: -0.04em;
+}
+
+.pw-correo {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 16px;
+}
+
+.pw-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pw-chips li {
+  padding: 5px 12px;
+  border: 1px solid var(--sg-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sg-surface) 70%, transparent);
+  color: var(--sg-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sg-landing .perfil-web .pw-chip-bien {
+  border-color: color-mix(in srgb, var(--pw-verde) 45%, var(--sg-line));
+  color: var(--pw-verde);
+}
+
+.sg-landing .perfil-web .pw-chip-falta {
+  border-color: color-mix(in srgb, var(--pw-ambar) 45%, var(--sg-line));
+  color: var(--pw-ambar);
+}
+
+.pw-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
+
+.pw-col {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .ajuste {
+  margin: 0;
+  padding: 22px 24px;
+  border: 1px solid var(--sg-line);
+  border-radius: 18px;
+  background: var(--sg-surface);
+  backdrop-filter: none;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .ajuste-cabeza h2 {
+  margin: 0 0 12px;
+  color: var(--sg-text);
+  font: 700 18px/1.3 Archivo, var(--sg-sans);
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .perfil-peligro {
+  margin-top: 20px;
+  margin-bottom: 28px;
+  border-color: color-mix(in srgb, #ef4444 35%, var(--sg-line));
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web :is(.panel-boton, .panel-plan-accion) {
+  border-radius: 999px;
+  background: var(--pw-acento);
+  color: #ffffff;
+}
+
+html[data-tema='oscuro'] body .sg-landing .panel-lienzo .perfil-web :is(.panel-boton, .panel-plan-accion) {
+  color: #0a1328;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .panel-campo :is(input, select):not([type='checkbox']):not([type='radio']) {
+  border-radius: 12px;
+}
+
+@media (max-width: 900px) {
+  .pw-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .pw-hero {
+    padding: 28px 16px;
+  }
+
+  .pw-hero-adentro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .pw-foto {
+    width: 76px;
+    height: 76px;
+  }
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .ajuste {
+  display: block;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .ajuste-cabeza {
+  margin-bottom: 4px;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .ajuste-cuerpo {
+  display: grid;
+  gap: 14px;
+  max-width: none;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .perfil-cuenta .ajuste-cuerpo {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+}
+
+html[data-tema] body .sg-landing .panel-lienzo .perfil-web .perfil-cuenta .ajuste-cuerpo > :is(div, button) {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.perfil-web .perfil-tema-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.perfil-web .perfil-tema-opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--sg-line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.perfil-web .perfil-tema-opcion:has(input:checked) {
+  border-color: var(--pw-acento);
+  background: color-mix(in srgb, var(--pw-acento) 14%, transparent);
+}
+
+.perfil-web .perfil-tema-opcion input {
+  accent-color: var(--pw-acento);
+}
+
+@media (max-width: 600px) {
+  html[data-tema] body .sg-landing .panel-lienzo .perfil-web .perfil-cuenta .ajuste-cuerpo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
