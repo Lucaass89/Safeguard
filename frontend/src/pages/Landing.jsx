@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import CarruselEstafas from '../components/CarruselEstafas.jsx'
-import IconoFuncion from '../components/IconoFuncion.jsx'
 import Logo from '../components/Logo.jsx'
 import PantallasApp from '../components/PantallasApp.jsx'
-import ProbadorEnlace from '../components/ProbadorEnlace.jsx'
+import BuscadorPortada from '../components/BuscadorPortada.jsx'
 import TemaControl from '../components/TemaControl.jsx'
 import { useSesion } from '../lib/useSesion.js'
 import './Portada.css'
@@ -180,21 +179,38 @@ function Landing() {
       </header>
 
       <main>
-        <section className="portada-hero">
-          <div className="portada-ancho portada-hero-grilla">
-            <div className="portada-hero-texto">
-              <h1>¿Te llegó algo raro? Revisalo antes de abrirlo.</h1>
-              <p>
-                Pegá el enlace que te mandaron y te decimos con un color si
-                parece seguro y por qué. Es gratis.
-              </p>
-              <div className="portada-hero-acciones">
-                <Link className="portada-boton portada-boton-blanco" to="/personas">Probar gratis</Link>
-                <Link className="portada-boton portada-boton-borde-blanco" to="/empresas">Soy una empresa</Link>
-              </div>
-            </div>
-            <ProbadorEnlace />
+        <section className="portada-hero portada-hero-buscador">
+          <div className="portada-ancho portada-hero-centro">
+            <p className="portada-hero-eti">Hecho en Argentina · Gratis para personas</p>
+            <h1>¿Te llegó algo raro? Revisalo antes de abrirlo.</h1>
+            <p className="portada-hero-sub">
+              Pegá el enlace que te mandaron. Te decimos con un color si parece un engaño y por qué, antes de que lo abras.
+            </p>
+            <BuscadorPortada />
+            <ul className="portada-confianza">
+              <li>Sin registrarte</li>
+              <li>Lo que pegás acá no se guarda</li>
+              <li>En la web, el celular y Chrome</li>
+            </ul>
           </div>
+        </section>
+
+        <section className="portada-caminos" aria-label="Dos formas de cuidarte">
+          {caminos.map((camino) => (
+            <Link key={camino.id} id={camino.id} className={`portada-camino portada-camino-${camino.id}`} to={camino.destino}>
+              <span className="portada-camino-adentro">
+                <span className="portada-camino-eti">
+                  {camino.para} · {camino.etiqueta}
+                </span>
+                <strong>{camino.titulo}</strong>
+                <span className="portada-camino-texto">{camino.texto}</span>
+                <span className="portada-camino-boton">
+                  {camino.accion}
+                  <IconoChico nombre="flecha" className="portada-flecha" />
+                </span>
+              </span>
+            </Link>
+          ))}
         </section>
 
         <div className="portada-ancho portada-cuerpo">
@@ -214,31 +230,6 @@ function Landing() {
                 </li>
               ))}
             </ul>
-          </section>
-
-          <section className="portada-beneficios" aria-labelledby="portada-caminos-titulo">
-            <div className="portada-beneficios-cabeza">
-              <h2 id="portada-caminos-titulo">Dos formas de cuidarte</h2>
-            </div>
-            <div className="portada-beneficios-grilla">
-              {caminos.map((camino) => (
-                <Link key={camino.id} id={camino.id} className="portada-beneficio" to={camino.destino}>
-                  <span className="portada-beneficio-arriba">
-                    <span className="portada-beneficio-icono">
-                      <IconoFuncion nombre={camino.icono} className="portada-icono" />
-                    </span>
-                    <span className="portada-beneficio-modulo">{camino.etiqueta}</span>
-                  </span>
-                  <span className="portada-beneficio-para">{camino.para}</span>
-                  <strong>{camino.titulo}</strong>
-                  <span className="portada-beneficio-texto">{camino.texto}</span>
-                  <span className="portada-beneficio-mas">
-                    {camino.accion}
-                    <IconoChico nombre="flecha" className="portada-flecha" />
-                  </span>
-                </Link>
-              ))}
-            </div>
           </section>
 
           <CarruselEstafas />
