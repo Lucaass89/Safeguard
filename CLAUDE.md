@@ -48,7 +48,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   cambian solo ahí.
 - **Términos** (`/terminos`, `pages/Terminos.jsx`, `Legal.css`): franja con la descarga del convenio
   (`public/convenio-piloto-safeguard.pdf`), índice fijo al costado, "En corto" con tildes y las secciones numeradas.
-  `Legal.css` (prefijo `lg-`) sirve también para Privacidad. Cambiar el diseño no cambia el texto legal.
+  **Privacidad** (`/privacidad`, `pages/Privacidad.jsx`) usa el mismo diseño, con "En corto" armado solo con lo que dice
+  el texto. Las dos comparten `Legal.css` (prefijo `lg-`) y `components/Legal.jsx` (`Seccion`, `Indice`, `EnCorto`, `Marca`).
+  Cambiar el diseño no cambia el texto legal; si cambia lo que hace el código con los datos, hay que actualizar Privacidad.
 
 ## Estructura del repo
 
