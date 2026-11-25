@@ -43,6 +43,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   los pasos de una campaña (`pasosCampana.js`), lo que trae el panel, los tramos al lado de la calculadora `ElegirPersonas`
   (el botón lleva a `/adquirir?personas=…`), preguntas frecuentes y un cierre con "Escribinos". Si cambian los precios o las
   reglas del plan, revisar también los textos de esta página.
+- **Contacto** (`/contacto`, `pages/Contacto.jsx`, `Contacto.css`): tarjetas de correo y WhatsApp, tres motivos con el mensaje
+  ya escrito y el aviso de que nunca se piden claves. El correo y el número salen de `CONTACTO` en `lib/contacto.js`: se
+  cambian solo ahí.
 
 ## Estructura del repo
 
