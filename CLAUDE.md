@@ -46,6 +46,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
 - **Contacto** (`/contacto`, `pages/Contacto.jsx`, `Contacto.css`): tarjetas de correo y WhatsApp, tres motivos con el mensaje
   ya escrito y el aviso de que nunca se piden claves. El correo y el número salen de `CONTACTO` en `lib/contacto.js`: se
   cambian solo ahí.
+- **Términos** (`/terminos`, `pages/Terminos.jsx`, `Legal.css`): franja con la descarga del convenio
+  (`public/convenio-piloto-safeguard.pdf`), índice fijo al costado, "En corto" con tildes y las secciones numeradas.
+  `Legal.css` (prefijo `lg-`) sirve también para Privacidad. Cambiar el diseño no cambia el texto legal.
 
 ## Estructura del repo
 
