@@ -9,12 +9,12 @@ import {
   precioPesos,
   referencia,
 } from './precio.ts'
+import { conCors, pasaLimite } from '../_shared/seguridad.ts'
 
 const MONEDA = 'ARS'
 const SITIO = 'https://safeguardd.vercel.app'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -276,7 +276,7 @@ async function desbloquear(usuarioId: string, pagoMp: string, personas: number, 
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(conCors(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -308,6 +308,12 @@ Deno.serve(async (req) => {
     cuerpo = await req.json()
   } catch {
     return json({ error: 'No entendí el pedido.' }, 400)
+  }
+
+  const servicio = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
+  const limite = cuerpo.accion === 'crear' ? 10 : 120
+  if (!(await pasaLimite(servicio, `mercadopago:${String(cuerpo.accion ?? 'otra').slice(0, 20)}:${usuario.id}`, limite, 3600))) {
+    return json({ error: 'Hiciste muchos intentos seguidos. Esperá un rato y volvé a probar.' }, 429)
   }
 
   if (cuerpo.accion === 'crear') {
@@ -371,4 +377,4 @@ Deno.serve(async (req) => {
   }
 
   return json({ error: 'No entendí el pedido.' }, 400)
-})
+}))

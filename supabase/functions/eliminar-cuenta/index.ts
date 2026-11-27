@@ -1,8 +1,8 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { conCors, demasiados, pasaLimite } from '../_shared/seguridad.ts'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -20,7 +20,7 @@ function json(cuerpo: unknown, status = 200) {
   })
 }
 
-Deno.serve(async (req) => {
+Deno.serve(conCors(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -50,6 +50,7 @@ Deno.serve(async (req) => {
   }
 
   const admin = createClient(url, servicio)
+  if (!(await pasaLimite(admin, `eliminar-cuenta:${data.user.id}`, 5, 3600))) return demasiados()
   const { data: membresia, error: errorMembresia } = await admin
     .from('usuarios_admin')
     .select('rol, organizacion_id')
@@ -82,4 +83,4 @@ Deno.serve(async (req) => {
   }
 
   return json({ ok: true })
-})
+}))

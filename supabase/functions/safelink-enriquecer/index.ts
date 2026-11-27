@@ -1,8 +1,9 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { parse as partirDominio } from 'npm:tldts@7.4.18'
+import { conCors, demasiados, ipDe, pasaLimite } from '../_shared/seguridad.ts'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -444,9 +445,15 @@ async function edadCertificado(dominio: string) {
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(conCors(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
+  }
+
+  const ip = ipDe(req)
+  if (ip) {
+    const servicio = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
+    if (!(await pasaLimite(servicio, `enriquecer:${ip}`, 120, 600))) return demasiados()
   }
 
   try {
@@ -495,4 +502,4 @@ Deno.serve(async (req) => {
   } catch (error) {
     return json({ error: error instanceof Error ? error.message : 'No se pudo enriquecer' }, 400)
   }
-})
+}))
