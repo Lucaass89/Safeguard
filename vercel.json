@@ -1,3 +1,28 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/personas",
+      "destination": "/personas/index.html"
+    },
+    {
+      "source": "/empresas",
+      "destination": "/empresas/index.html"
+    },
+    {
+      "source": "/contacto",
+      "destination": "/contacto/index.html"
+    },
+    {
+      "source": "/terminos",
+      "destination": "/terminos/index.html"
+    },
+    {
+      "source": "/privacidad",
+      "destination": "/privacidad/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }

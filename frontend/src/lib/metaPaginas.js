@@ -62,7 +62,32 @@ export function sitemap(fecha) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${filas.join('\n')}\n</urlset>\n`
 }
 
+function escaparAtributo(texto) {
+  return String(texto).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+}
+
+function reemplazar(html, patron, nuevo) {
+  if (!patron.test(html)) throw new Error(`No encontré ${patron} en index.html`)
+  return html.replace(patron, nuevo)
+}
+
+export function htmlDePagina(html, ruta) {
+  const datos = metaDe(ruta)
+  const titulo = escaparAtributo(datos.titulo)
+  const descripcion = escaparAtributo(datos.descripcion)
+  let salida = html
+  salida = reemplazar(salida, /<title>[^<]*<\/title>/, `<title>${titulo}</title>`)
+  salida = reemplazar(salida, /(<meta\s+name="description"\s+content=")[^"]*(")/, `$1${descripcion}$2`)
+  salida = reemplazar(salida, /(<link rel="canonical" href=")[^"]*(")/, `$1${datos.canonica}$2`)
+  salida = reemplazar(salida, /(<meta property="og:url" content=")[^"]*(")/, `$1${datos.canonica}$2`)
+  salida = reemplazar(salida, /(<meta property="og:title" content=")[^"]*(")/, `$1${titulo}$2`)
+  salida = reemplazar(salida, /(<meta\s+property="og:description"\s+content=")[^"]*(")/, `$1${descripcion}$2`)
+  salida = reemplazar(salida, /(<meta name="twitter:title" content=")[^"]*(")/, `$1${titulo}$2`)
+  salida = reemplazar(salida, /(<meta\s+name="twitter:description"\s+content=")[^"]*(")/, `$1${descripcion}$2`)
+  return salida
+}
+
 export function robots() {
-  const reglas = PRIVADAS.map((ruta) => `Disallow: ${ruta}/`)
+  const reglas = PRIVADAS.flatMap((ruta) => [`Disallow: ${ruta}$`, `Disallow: ${ruta}/`])
   return ['User-agent: *', 'Allow: /', ...reglas, '', `Sitemap: ${SITIO}/sitemap.xml`, ''].join('\n')
 }

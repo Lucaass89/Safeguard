@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run eval && vite build",
+    "build": "npm run eval && vite build && node scripts/paginas/armar.mjs",
     "eval": "node eval/evaluar.js",
     "eval:urls": "node eval/evaluar_urls.js",
     "eval:faro": "node eval/evaluar_faro.js",

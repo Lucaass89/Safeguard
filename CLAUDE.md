@@ -167,7 +167,11 @@ La CI (`.github/workflows/safelink-eval.yml`) corre `npm test`, `npm run eval` y
 - `lib/metaPaginas.js` tiene el título y la descripción de cada página pública y las rutas privadas. `components/MetaPagina.jsx`
   los aplica al cambiar de página (con `noindex` en las privadas y la dirección canónica). `public/robots.txt` y
   `public/sitemap.xml` salen de esa misma lista: si se agrega una página pública, se suma ahí y se regeneran (la prueba falla
-  si no coinciden). La vista previa al compartir usa `public/compartir.png` (1200×630).
+  si no coinciden). La vista previa al compartir usa `public/compartir.png` (1200×630). Al compilar,
+  `scripts/paginas/armar.mjs` deja un `dist/<página>/index.html` por cada página pública con su título, descripción y
+  canónica ya escritos (`htmlDePagina`), para que Google los lea sin ejecutar JavaScript; `vercel.json` manda cada página a
+  su html (la prueba revisa que estén todas). Los datos estructurados de
+  `index.html` presentan a SafeGuard como sitio, organización (con logo) y SafeLink como aplicación gratuita.
 - Search Console: la propiedad es `https://safeguardd.vercel.app` (prefijo de URL), con la etiqueta `google-site-verification` en
   `index.html`.
 
