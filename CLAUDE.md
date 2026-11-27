@@ -168,7 +168,7 @@ La CI (`.github/workflows/safelink-eval.yml`) corre `npm test`, `npm run eval` y
   los aplica al cambiar de página (con `noindex` en las privadas y la dirección canónica). `public/robots.txt` y
   `public/sitemap.xml` salen de esa misma lista: si se agrega una página pública, se suma ahí y se regeneran (la prueba falla
   si no coinciden). La vista previa al compartir usa `public/compartir.png` (1200×630).
-- Search Console: la propiedad es `https://safeguardd.vercel.app` (prefijo de URL); la etiqueta de verificación va en
+- Search Console: la propiedad es `https://safeguardd.vercel.app` (prefijo de URL), con la etiqueta `google-site-verification` en
   `index.html`.
 
 ## Configuración
