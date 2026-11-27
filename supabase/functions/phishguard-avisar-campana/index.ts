@@ -1,9 +1,9 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { conCors, pasaLimite } from '../_shared/seguridad.ts'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
@@ -136,7 +136,7 @@ async function mandarGmail(
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(conCors(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -156,6 +156,11 @@ Deno.serve(async (req) => {
 
     if (falloUser || !user?.email) {
       return json({ ok: false, error: 'No hay sesión para saber a quién mandar el correo' })
+    }
+
+    const servicio = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
+    if (!(await pasaLimite(servicio, `avisar-campana:${user.id}`, 20, 3600))) {
+      return json({ ok: false, error: 'Mandaste muchas campañas seguidas. Esperá un rato y volvé a probar.' })
     }
 
     const cuerpoReq = await req.json().catch(() => ({}))
@@ -327,4 +332,4 @@ Deno.serve(async (req) => {
       error: error instanceof Error ? error.message : 'No se pudo avisar',
     })
   }
-})
+}))

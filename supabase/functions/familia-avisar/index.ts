@@ -1,8 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { cuentaDeServicio, enviarAvisos } from './fcm.ts'
+import { conCors } from '../_shared/seguridad.ts'
 
 const cors = {
-  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -15,7 +15,7 @@ function json(body: unknown, status = 200) {
   })
 }
 
-Deno.serve(async (req) => {
+Deno.serve(conCors(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
 
   const url = Deno.env.get('SUPABASE_URL') ?? ''
@@ -91,4 +91,4 @@ Deno.serve(async (req) => {
     .in('cuidador_id', cuidadores)
 
   return json({ ok: true, aviso: enviados > 0 ? 'enviado' : 'sin celular' })
-})
+}))

@@ -146,6 +146,22 @@ npm run lint
 
 La CI (`.github/workflows/safelink-eval.yml`) corre `npm test`, `npm run eval` y el build en cada push.
 
+## Seguridad
+
+- CORS: las funciones usan `conCors` de `supabase/functions/_shared/seguridad.ts`, que solo responde a
+  https://safeguardd.vercel.app, localhost y la extensión (`chrome-extension://`). Al publicar una función con el MCP hay
+  que subir también `../_shared/seguridad.ts`. La API REST de Supabase siempre responde a cualquier origen: la protege RLS.
+- Límites: `limite_pasar(clave, máximo, segundos)` (tabla `limites_uso`, solo `service_role`) cuenta intentos por usuario
+  o por IP. Lo usan `safelink-enriquecer` (120 cada 10 min por IP), `phishguard-mercadopago`, `phishguard-avisar-campana`,
+  `phishguard-avisar-caida`, `eliminar-cuenta`, `familia_aceptar` (10 códigos por hora), `safelink_reportar`,
+  `safelink_compartir` y `push_registrar`. Faro tiene su propio tope diario por usuario e IP.
+- Permisos: cada tabla tiene RLS y `anon`/`authenticated` solo tienen los permisos que alguna política usa
+  (migración `20261127130000_seguridad_limites.sql`). Las funciones viejas (`provision_it_admin`, `get_sim_by_token`, etc.)
+  no se pueden llamar desde la API.
+- Sesión: `vencimientoSesion.js` cierra la sesión si no se usa en 7 días en la web o 30 en la app.
+- Secretos: solo en Supabase (funciones), GitHub (firma y FCM) y Vercel. En el repo van únicamente la clave publishable y
+  el `google-services.json` de Firebase, que son públicos por diseño.
+
 ## Configuración
 
 - `frontend/.env.local` (copiar de `.env.example`): `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`.

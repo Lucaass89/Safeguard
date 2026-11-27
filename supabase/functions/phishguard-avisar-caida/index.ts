@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
 import { cuentaDeServicio, enviarAvisos } from './fcm.ts'
+import { conCors, demasiados, ipDe, pasaLimite } from '../_shared/seguridad.ts'
 
 const cors = {
-  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -54,13 +54,16 @@ function escapar(valor: string) {
   return valor.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 }
 
-Deno.serve(async (req) => {
+Deno.serve(conCors(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
 
   const admin = createClient(
     Deno.env.get('SUPABASE_URL') ?? '',
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
   )
+
+  const ip = ipDe(req)
+  if (ip && !(await pasaLimite(admin, `avisar-caida:${ip}`, 60, 600))) return demasiados()
 
   let token = ''
   try {
@@ -214,4 +217,4 @@ Deno.serve(async (req) => {
   }
 
   return json({ ok: true, aviso: 'enviado' })
-})
+}))
