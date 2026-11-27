@@ -463,7 +463,7 @@
     <svg class="icono"><use href="#atras" /></svg>
     <svg class="icono"><use href="#adelante" /></svg>
     <svg class="icono"><use href="#recargar" /></svg>
-    <div class="campo-dir" id="campo-dir"><span id="dir-texto">safeguardd.vercel.app/personas</span><i class="caret oculto" id="caret"></i></div>
+    <div class="campo-dir" id="campo-dir"><span id="dir-texto">safeguard-ar.vercel.app/personas</span><i class="caret oculto" id="caret"></i></div>
     <div class="boton-barra logo-barra oculto" id="fijado"><svg><use href="#logo" /></svg></div>
     <div class="boton-barra" id="pieza"><svg><use href="#pieza" /></svg></div>
     <div class="boton-barra" id="descargas"><svg><use href="#bajar" /></svg></div>
@@ -638,7 +638,7 @@
     const escribiendo = t >= 12.2 && t < INICIOS.abrir + 1.6
     $('#campo-dir').classList.toggle('activo', escribiendo)
     mostrar('#caret', escribiendo)
-    let texto = 'safeguardd.vercel.app/personas'
+    let texto = 'safeguard-ar.vercel.app/personas'
     if (t >= 12.2) {
       const letras = Math.floor(suave((t - 12.4) / 1.6) * DIRECCION.length)
       texto = t >= INICIOS.abrir + 1.6 ? DIRECCION : DIRECCION.slice(0, letras)

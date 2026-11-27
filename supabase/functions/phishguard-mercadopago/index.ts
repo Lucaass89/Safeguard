@@ -12,7 +12,7 @@ import {
 import { conCors, pasaLimite } from '../_shared/seguridad.ts'
 
 const MONEDA = 'ARS'
-const SITIO = 'https://safeguardd.vercel.app'
+const SITIO = 'https://safeguard-ar.vercel.app'
 
 const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',

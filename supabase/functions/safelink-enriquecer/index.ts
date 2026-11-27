@@ -13,7 +13,7 @@ const TIEMPO_TOTAL_MS = 12_000
 const MAX_PAGINA = 65_536
 const MAX_RDAP = 200_000
 const MAX_CRT = 200_000
-const AGENTE = 'SafeGuard-SafeLink/1.0 (+https://safeguardd.vercel.app)'
+const AGENTE = 'SafeGuard-SafeLink/1.0 (+https://safeguard-ar.vercel.app)'
 
 type Fallo = 'no_resuelve' | 'dns' | 'bloqueado' | 'protocolo' | 'tls' | 'tiempo' | 'conexion' | 'saltos'
 

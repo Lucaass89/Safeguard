@@ -1,4 +1,4 @@
-export const SITIO = 'https://safeguardd.vercel.app'
+export const SITIO = 'https://safeguard-ar.vercel.app'
 
 const GENERAL = {
   titulo: 'SafeGuard — Protegé el clic. Enseñá en el momento.',

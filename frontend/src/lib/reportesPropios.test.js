@@ -12,7 +12,7 @@ describe('mis reportes e invitar', () => {
 
   test('el texto para invitar lleva el enlace y el primer nombre', () => {
     const texto = textoInvitacion('Ana Prueba')
-    assert.match(texto, /https:\/\/safeguardd\.vercel\.app\/personas/)
+    assert.match(texto, /https:\/\/safeguard-ar\.vercel\.app\/personas/)
     assert.match(texto, /Te lo recomienda Ana\.$/)
     assert.doesNotMatch(textoInvitacion(''), /recomienda/)
   })

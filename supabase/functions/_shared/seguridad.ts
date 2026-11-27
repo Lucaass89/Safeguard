@@ -1,4 +1,5 @@
 const ORIGENES = new Set([
+  'https://safeguard-ar.vercel.app',
   'https://safeguardd.vercel.app',
   'http://localhost:5173',
   'http://localhost:4173',

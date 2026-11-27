@@ -11,5 +11,5 @@ export function estadoReporte(estado) {
 export function textoInvitacion(nombre) {
   const quien = (nombre ?? '').trim().split(/\s+/)[0]
   const firma = quien ? ` Te lo recomienda ${quien}.` : ''
-  return `Yo uso SafeGuard para revisar enlaces, QR y mensajes antes de abrirlos. Es gratis: https://safeguardd.vercel.app/personas${firma}`
+  return `Yo uso SafeGuard para revisar enlaces, QR y mensajes antes de abrirlos. Es gratis: https://safeguard-ar.vercel.app/personas${firma}`
 }

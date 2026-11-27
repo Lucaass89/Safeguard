@@ -10,4 +10,4 @@ Disallow: /c/
 Disallow: /ingresar/
 Disallow: /adquirir/
 
-Sitemap: https://safeguardd.vercel.app/sitemap.xml
+Sitemap: https://safeguard-ar.vercel.app/sitemap.xml
