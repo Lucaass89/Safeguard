@@ -60,3 +60,11 @@ describe('html de cada página', () => {
     assert.doesNotMatch(texto, /^Disallow: \/c$/m)
   })
 })
+
+test('vercel.json manda cada página pública a su propio html', () => {
+  const vercel = JSON.parse(readFileSync(new URL('../../../vercel.json', import.meta.url), 'utf8'))
+  for (const ruta of Object.keys(PAGINAS).filter((r) => r !== '/')) {
+    assert.ok(vercel.rewrites.some((r) => r.source === ruta && r.destination === `${ruta}/index.html`), ruta)
+  }
+  assert.equal(vercel.rewrites.at(-1).destination, '/index.html')
+})
