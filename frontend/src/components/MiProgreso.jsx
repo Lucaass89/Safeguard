@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
 import { resumenLogros } from '../lib/logros.js'
 import { elegirPortapapeles } from '../lib/portapapeles.js'
 import './MiProgreso.css'
@@ -17,11 +16,11 @@ export function CuidadosCuenta({ estado, onAlternar }) {
   const [abierta, setAbierta] = useState(false)
 
   return (
-    <details className="prog prog-caja prog-plegable" open={abierta} onToggle={(evento) => setAbierta(evento.currentTarget.open)}>
+    <details id="prog-lista" className="prog prog-caja prog-plegable" open={abierta} onToggle={(evento) => setAbierta(evento.currentTarget.open)}>
       <summary className="prog-cabeza">
         <span>
           <span className="prog-titulo">Tu cuenta, más segura</span>
-          <span className="prog-bajada">{abierta ? 'Tocá cada punto para ver cómo hacerlo.' : 'Seis cuidados para tus cuentas. Tocá para verlos.'}</span>
+          <span className="prog-bajada">{abierta ? 'Tocá cada punto para ver cómo hacerlo.' : 'Cuidados simples para tus cuentas. Tocá para verlos.'}</span>
         </span>
         <span className="prog-cuenta">
           {estado.listas} de {estado.total}
@@ -54,15 +53,6 @@ export function CuidadosCuenta({ estado, onAlternar }) {
                     Activarlo
                   </button>
                 )
-              ) : tarea.id === 'safeguard' ? (
-                <div className="prog-tarea-acciones">
-                  <Link className="prog-tarea-boton" to="/perfil/seguridad">
-                    Ir a Seguridad
-                  </Link>
-                  <button type="button" className="prog-tarea-boton prog-tarea-boton-borde" onClick={() => onAlternar(tarea.id)}>
-                    {tarea.hecha ? 'Desmarcar' : 'Ya lo hice'}
-                  </button>
-                </div>
               ) : (
                 <button type="button" className="prog-tarea-boton" onClick={() => onAlternar(tarea.id)}>
                   {tarea.hecha ? 'Desmarcar' : 'Ya lo hice'}

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import FilaAjuste from '../components/FilaAjuste.jsx'
-import { PerfilDosPasos } from '../components/DosPasos.jsx'
 import TarjetaMetrica, { ListaMetricas } from '../components/TarjetaMetrica.jsx'
 import { rutaEnApp } from '../lib/esAppNativa.js'
 import { nombreEmpresa } from '../lib/formato.js'
@@ -17,7 +16,6 @@ import { useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import './Panel.css'
 import { etiquetaRol, fotoDe, metodosDe, ROLES, textoMetodo } from '../lib/cuentaUsuario.js'
-import { useDosPasos } from '../lib/useDosPasos.js'
 import './PerfilWeb.css'
 
 const AVISO_UNICO_ADMIN =
@@ -330,7 +328,6 @@ function PerfilSeguridad({ usuario }) {
             </button>
           </form>
         )}
-        <PerfilDosPasos />
         <FilaAjuste
           titulo="Sesiones abiertas"
           nota="Si perdiste el celular o entraste desde otro lado, salí de SafeGuard en este dispositivo y en todos los demás."
@@ -533,7 +530,6 @@ function nombreInicial(usuario) {
 }
 
 function CabeceraPerfilWeb({ usuario, nombre, correo, rol }) {
-  const { estado } = useDosPasos()
   const foto = fotoDe(usuario)
   const etiqueta = etiquetaRol(rol)
   const metodo = textoMetodo(metodosDe(usuario))
@@ -554,11 +550,6 @@ function CabeceraPerfilWeb({ usuario, nombre, correo, rol }) {
           <ul className="pw-chips">
             {etiqueta ? <li>{etiqueta}</li> : null}
             {metodo ? <li>{metodo.replace(/\.$/, '')}</li> : null}
-            {estado === 'activar' ? (
-              <li className="pw-chip-falta">Verificación en dos pasos: sin activar</li>
-            ) : estado === 'listo' || estado === 'codigo' ? (
-              <li className="pw-chip-bien">Verificación en dos pasos: activa</li>
-            ) : null}
           </ul>
         </div>
       </div>

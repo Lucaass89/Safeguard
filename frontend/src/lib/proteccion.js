@@ -1,7 +1,6 @@
 export const PASOS_PROTECCION = [
-  { id: 'dosPasos', titulo: 'Verificación en dos pasos', consejo: 'Activá la verificación en dos pasos.', peso: 30, accion: 'Activarla', to: '/perfil/seguridad' },
-  { id: 'avisos', titulo: 'Avisos al celular', consejo: 'Activá los avisos al celular.', peso: 20, accion: 'Activarlos', to: '/perfil/avisos' },
-  { id: 'lista', titulo: 'Tu cuenta, más segura', consejo: 'Completá la lista "Tu cuenta, más segura" de Inicio.', peso: 20, accion: 'Completar la lista', to: '/' },
+  { id: 'avisos', titulo: 'Avisos al celular', consejo: 'Activá los avisos al celular.', peso: 30, accion: 'Activarlos', to: '/perfil/avisos' },
+  { id: 'lista', titulo: 'Tu cuenta, más segura', consejo: 'Completá la lista "Tu cuenta, más segura".', peso: 30, accion: 'Ver la lista', to: '/perfil#prog-lista' },
   { id: 'portapapeles', titulo: 'Aviso de enlaces copiados', consejo: 'Activá el aviso de enlaces copiados.', peso: 15, accion: 'Activarlo', to: '/perfil/apariencia' },
   { id: 'app', titulo: 'App al día', consejo: 'Actualizá la app.', peso: 15, accion: 'Actualizar', to: '/perfil/version' },
 ]

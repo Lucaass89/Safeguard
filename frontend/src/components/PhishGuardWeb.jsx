@@ -103,7 +103,7 @@ function PhishGuardWeb({ tablero, onVolver }) {
               <h1 id="pgw-titulo">Tu equipo</h1>
               <p className="pgw-lead">
                 {sinDatos
-                  ? 'Para ver cómo viene tu equipo, entrá a cualquier sección y confirmá la verificación en dos pasos.'
+                  ? 'Para ver cómo viene tu equipo, entrá a cualquier sección.'
                   : fraseCampana(ultima)}
               </p>
               <div className="pgw-botones">

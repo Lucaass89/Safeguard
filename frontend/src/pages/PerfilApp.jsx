@@ -16,7 +16,6 @@ import { textoEstado } from '../lib/avisos.js'
 import { useTotalesPropios } from '../lib/useAnalisisPropios.js'
 import { useActualizacion } from '../lib/useActualizacion.js'
 import { appParaAvisos, useAvisos } from '../lib/useAvisos.js'
-import { useDosPasos } from '../lib/useDosPasos.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import PanelPerfil from './PanelPerfil.jsx'
@@ -98,7 +97,7 @@ function useResumenCuenta(usuarioId) {
   return resumen
 }
 
-function TarjetaCuenta({ usuario, membresia, empresa, dosPasos }) {
+function TarjetaCuenta({ usuario, membresia, empresa }) {
   const meta = usuario.user_metadata ?? {}
   const nombre = (meta.full_name || meta.name || '').trim()
   const foto = fotoDe(usuario)
@@ -121,11 +120,6 @@ function TarjetaCuenta({ usuario, membresia, empresa, dosPasos }) {
         <ul className="pa-chips">
           {rol ? <li>{empresa ? `${rol} · ${empresa}` : rol}</li> : null}
           {metodos?.google ? <li>Entrás con Google</li> : metodos?.clave ? <li>Entrás con contraseña</li> : null}
-          {dosPasos === 'activar' || dosPasos === 'listo' || dosPasos === 'codigo' ? (
-            <li className={dosPasos === 'activar' ? 'pa-chip-falta' : 'pa-chip-bien'}>
-              {dosPasos === 'activar' ? 'Dos pasos: falta' : 'Dos pasos: activa'}
-            </li>
-          ) : null}
         </ul>
       </div>
     </section>
@@ -153,6 +147,13 @@ function Anillo({ porcentaje }) {
   )
 }
 
+function abrirLista() {
+  const lista = document.getElementById('prog-lista')
+  if (!lista) return
+  lista.open = true
+  lista.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 function Proteccion({ nivel }) {
   return (
     <section className="pa-proteccion" aria-labelledby="pa-proteccion-titulo">
@@ -163,9 +164,15 @@ function Proteccion({ nivel }) {
         {nivel.proximo ? (
           <>
             <p>Lo que más suma ahora: {nivel.proximo.consejo}</p>
-            <Link className="pa-boton" to={nivel.proximo.to}>
-              {nivel.proximo.accion}
-            </Link>
+            {nivel.proximo.id === 'lista' ? (
+              <button type="button" className="pa-boton" onClick={abrirLista}>
+                {nivel.proximo.accion}
+              </button>
+            ) : (
+              <Link className="pa-boton" to={nivel.proximo.to}>
+                {nivel.proximo.accion}
+              </Link>
+            )}
           </>
         ) : (
           <p>Tenés todo lo importante activado.</p>
@@ -238,7 +245,6 @@ function PerfilApp() {
   const membresia = useMembresia()
   const empresa = useEmpresa(membresia.pertenece ? membresia.organizacionId : null)
   const admin = membresia.pertenece && esAdministrador(membresia.rol)
-  const { estado: dosPasos } = useDosPasos()
   const avisos = useAvisos()
   const app = appParaAvisos()
   const portapapeles = usePortapapeles()
@@ -250,11 +256,9 @@ function PerfilApp() {
   const [invitado, setInvitado] = useState('')
   const [saliendo, setSaliendo] = useState(false)
   const { reportes, familia } = useResumenCuenta(usuario.id)
-  const dosPasosListo = dosPasos === 'activar' || dosPasos === 'listo' || dosPasos === 'codigo'
 
   const lista = estadoLista(hechas, { portapapeles: portapapeles.preferencia === 'si' })
   const nivel = nivelProteccion({
-    dosPasos: dosPasosListo ? dosPasos !== 'activar' : null,
     avisos: app === 'lista' ? avisos.activos && avisos.permiso === 'si' : app === 'vieja' ? false : null,
     portapapeles: portapapeles.disponible ? portapapeles.preferencia === 'si' : null,
     app: actualizacion.enApp && actualizacion.instalada > 0 && actualizacion.ultima ? !actualizacion.hayNueva : null,
@@ -303,7 +307,7 @@ function PerfilApp() {
 
   return (
     <div className="pa">
-      <TarjetaCuenta usuario={usuario} membresia={membresia} empresa={empresa} dosPasos={dosPasos} />
+      <TarjetaCuenta usuario={usuario} membresia={membresia} empresa={empresa} />
 
       {admin && empresa === null ? (
         <Link className="pa-alerta" to="/phishguard/empresa">
@@ -328,8 +332,7 @@ function PerfilApp() {
               to="/perfil/seguridad"
               icono="escudo"
               titulo="Seguridad"
-              nota={dosPasos === 'activar' ? 'Falta la verificación en dos pasos' : dosPasosListo ? 'Dos pasos activa · Sesiones abiertas' : 'Dos pasos y sesiones abiertas'}
-              alerta={dosPasos === 'activar'}
+              nota="Contraseña y sesiones abiertas"
             />
             <FilaMenu
               to="/perfil/avisos"
