@@ -1,7 +1,7 @@
 {
-  "version": 4,
-  "nombre": "1.4",
-  "archivo": "/app/safeguard-1.4.apk",
-  "novedades": "La app pasa a tener su propia firma, para que las próximas actualizaciones se instalen sin problemas.",
-  "desinstalar": true
+  "version": 5,
+  "nombre": "1.5",
+  "archivo": "/app/safeguard-1.5.apk",
+  "novedades": "Inicio y Perfil más ordenados: tus logros y la lista para cuidar tu cuenta ahora están en Perfil.",
+  "firmaDesde": 4
 }

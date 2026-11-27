@@ -79,9 +79,10 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   - `eval/` — set de URLs etiquetadas que mide el detector. El build falla si no pasa los umbrales (`eval/umbrales.json`).
 - `supabase/` — `migrations/` (SQL) y `functions/` (edge functions en TypeScript/Deno).
 - Inicio de la app (`src/pages/Inicio.jsx`) no revisa nada: lo compartido desde WhatsApp (`/?compartido=…`) y el enlace
-  copiado se mandan a SafeLink. Muestra la estafa del momento (`estafasSemana.js` o `consejoDelDia.js`), "¿Te pasó
-  algo?" (`mePaso.js`), la lista de seguridad (`listaSeguridad.js`), lecciones (`lecciones.js`), logros (`logros.js`) y
-  las novedades de `src/data/novedades.json` (para avisar mantenimientos o funciones nuevas, se agrega ahí).
+  copiado se mandan a SafeLink. Muestra solo lo de hoy: la estafa del momento (`estafasSemana.js` o `consejoDelDia.js`),
+  "¿Te pasó algo?" (`mePaso.js`), ¿Estafa o real?, lecciones (`lecciones.js`), tu equipo y las novedades de
+  `src/data/novedades.json` (para avisar mantenimientos o funciones nuevas, se agrega ahí). La lista "Tu cuenta, más
+  segura" (`listaSeguridad.js`) y los logros (`logros.js`) están en el Perfil (`components/MiProgreso.jsx`, prefijo `prog-`).
 - Notificaciones (app 1.3 o más nueva): Firebase Cloud Messaging, proyecto `safeguard-3b268`
   (`android/app/google-services.json`). La web pide activarlas con `safeguard://notificaciones?anuncios=1&estafas=1&phishguard=1`
   (`src/lib/avisos.js`, `useAvisos.js`); la app se anota a los temas `anuncios` y `estafas` y devuelve el token con el evento
@@ -94,14 +95,17 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   muestran "Actualizar", que baja el APK con el gestor de descargas de Android (`actualizarApp.js`, `useActualizacion.js`).
   Para publicar una versión: subir `versionCode`/`versionName` en `android/app/build.gradle.kts` y el número de
   `SafeGuardApp/N` en `MainActivity`, compilar, copiar el APK a `public/app/` y actualizar `version.json`.
+  `firmaDesde` en `version.json` (hoy 4) hace que solo a quien tiene una versión anterior a la firma propia se le pida
+  desinstalar (`hayQueDesinstalar`). La última es la 1.5 (`versionCode` 6, `SafeGuardApp/5`).
   Firma: desde la 1.4 todas las versiones se firman con la clave de publicación propia (alias `safeguard`, huella SHA-256
   `26:BE:D1:08:…:44:B0:63`). La clave no está en el repo: está en los secretos de GitHub `SG_FIRMA_BASE64` (el `.jks` en
   base64) y `SG_FIRMA_CLAVE`, y la guarda el equipo. `.github/workflows/android-apk.yml` compila el APK firmado
   (`assembleRelease`) al cambiar `android/` o a mano, y lo deja como artefacto. Para compilar en una compu: variables
   `SG_FIRMA_ARCHIVO` (ruta al `.jks`) y `SG_FIRMA_CLAVE`. Sin la clave, el APK de publicación sale sin firmar. Si se pierde,
   las apps instaladas no se pueden actualizar sin desinstalar.
-- Perfil de la app (`src/pages/PerfilApp.jsx`): tarjeta de la cuenta, nivel de protección (`proteccion.js`), lo revisado por color
-  y un menú con subpantallas `/perfil/:seccion` (seguridad, avisos, familia, reportes, apariencia, datos, version, ayuda, cuenta);
+- Perfil de la app (`src/pages/PerfilApp.jsx`): tarjeta de la cuenta, nivel de protección (`proteccion.js`), la lista "Tu cuenta,
+  más segura" plegada, lo revisado por color, tus logros y el menú agrupado (Seguridad y avisos, Tu actividad, La app, Ayuda y
+  cuenta) con subpantallas `/perfil/:seccion` (seguridad, avisos, familia, reportes, apariencia, datos, version, ayuda, cuenta);
   las de configuración reusan `PanelPerfil` con `seccion`. En la web, `/panel/perfil` usa su propio diseño en `PanelPerfil` (`CabeceraPerfilWeb`,
   `pages/PerfilWeb.css`): franja con foto, nombre, correo y chips (rol, forma de entrar, dos pasos), dos columnas de tarjetas
   (Cuenta y Seguridad; Actividad, Organización, Apariencia y Tus datos) y la zona de peligro abajo. "Celulares con avisos" usa `push_mis_dispositivos` y `push_borrar_otros`.
