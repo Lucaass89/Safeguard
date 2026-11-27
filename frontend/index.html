@@ -61,11 +61,37 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "SafeGuard",
-        "url": "https://safeguardd.vercel.app/",
-        "inLanguage": "es-AR",
-        "description": "Plataforma contra el phishing: SafeLink revisa enlaces, QR, mensajes y PDF, y PhishGuard entrena a los equipos con simulaciones."
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://safeguardd.vercel.app/#sitio",
+            "name": "SafeGuard",
+            "alternateName": ["SafeGuard Argentina", "SafeGuard SafeLink", "SafeGuard PhishGuard"],
+            "url": "https://safeguardd.vercel.app/",
+            "inLanguage": "es-AR",
+            "description": "Plataforma contra el phishing: SafeLink revisa enlaces, QR, mensajes y PDF, y PhishGuard entrena a los equipos con simulaciones.",
+            "publisher": { "@id": "https://safeguardd.vercel.app/#organizacion" }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://safeguardd.vercel.app/#organizacion",
+            "name": "SafeGuard",
+            "alternateName": ["SafeGuard Argentina"],
+            "url": "https://safeguardd.vercel.app/",
+            "logo": "https://safeguardd.vercel.app/icons/icon-512.png",
+            "areaServed": "AR",
+            "description": "SafeGuard ayuda a personas y organizaciones de Argentina a reconocer el phishing antes del clic."
+          },
+          {
+            "@type": "SoftwareApplication",
+            "name": "SafeLink de SafeGuard",
+            "applicationCategory": "SecurityApplication",
+            "operatingSystem": "Web, Android",
+            "url": "https://safeguardd.vercel.app/personas",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" },
+            "publisher": { "@id": "https://safeguardd.vercel.app/#organizacion" }
+          }
+        ]
       }
     </script>
     <title>SafeGuard — Protegé el clic. Enseñá en el momento.</title>
