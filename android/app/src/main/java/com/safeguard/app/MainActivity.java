@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         String agente = ajustes.getUserAgentString();
         if (agente != null) {
             agente = agente.replace("; wv", "");
-            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp/4";
+            if (!agente.contains("SafeGuardApp")) agente = agente + " SafeGuardApp/5";
             ajustes.setUserAgentString(agente);
         }
 

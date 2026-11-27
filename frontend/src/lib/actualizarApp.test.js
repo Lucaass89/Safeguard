@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
-import { leerUltimaVersion, necesitaActualizar, nombreDescarga, nombreInstalada, textoVersion } from './actualizarApp.js'
+import { hayQueDesinstalar, leerUltimaVersion, necesitaActualizar, nombreDescarga, nombreInstalada, textoVersion } from './actualizarApp.js'
 
-const valida = { version: 3, nombre: '1.3', archivo: '/app/safeguard-1.3.apk', novedades: 'Avisos.', desinstalar: false }
+const valida = { version: 3, nombre: '1.3', archivo: '/app/safeguard-1.3.apk', novedades: 'Avisos.', desinstalar: false, firmaDesde: 0 }
 
 describe('actualizar la app', () => {
   test('acepta un aviso de versión bien armado', () => {
@@ -56,4 +56,15 @@ describe('qué versión tenés', () => {
     assert.match(textoVersion({ instalada: 2, ultima: valida, estado: 'lista' }), /Hay una nueva: 1\.3\. Avisos\./)
     assert.match(textoVersion({ instalada: 0, ultima: valida, estado: 'lista' }), /app web: se actualiza sola/)
   })
+})
+
+test('hayQueDesinstalar solo pide desinstalar a quien tiene la firma vieja', () => {
+  const ultima = leerUltimaVersion({ version: 5, nombre: '1.5', archivo: '/app/safeguard-1.5.apk', firmaDesde: 4 })
+  assert.equal(ultima.firmaDesde, 4)
+  assert.equal(hayQueDesinstalar(3, ultima), true)
+  assert.equal(hayQueDesinstalar(4, ultima), false)
+  assert.equal(hayQueDesinstalar(0, ultima), false)
+  assert.equal(hayQueDesinstalar(4, { ...ultima, desinstalar: true }), true)
+  assert.equal(hayQueDesinstalar(3, null), false)
+  assert.equal(leerUltimaVersion({ ...valida, firmaDesde: 'x' }).firmaDesde, 0)
 })
