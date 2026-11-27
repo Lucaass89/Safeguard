@@ -29,11 +29,6 @@ export const TAREAS = [
     como: 'Te ofrecemos revisar lo que copiás al abrir la app. Se activa en Perfil.',
     automatica: true,
   },
-  {
-    id: 'safeguard',
-    titulo: 'Verificación en dos pasos de SafeGuard',
-    como: 'En Perfil › Seguridad, con una app de códigos.',
-  },
 ]
 
 export function leerHechas(almacen) {

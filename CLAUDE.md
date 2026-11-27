@@ -22,10 +22,9 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   Los pagos de ARS 37.500 hechos antes cuentan como 25 personas, y los viejos de prueba de ARS 500 siguen valiendo.
   Si la vuelta de Mercado Pago no llega, `PhishGuardAcceso` recupera el acceso consultando el pago. No hay
   suscripción automática ni pago anual.
-  Verificación en dos pasos obligatoria para administrar PhishGuard: `PhishGuardAcceso` envuelve las pantallas en
-  `DosPasos` (app de códigos TOTP de Supabase) y en la base `phishguard_org_id()` solo devuelve la organización con
-  sesión `aal2`. Cualquier usuario la activa o desactiva desde el perfil. Si alguien pierde el celular, se le borra el
-  factor a mano en `auth.mfa_factors` después de confirmar su identidad.
+  Sin verificación en dos pasos: se sacó el 27/11/2026 (componente `DosPasos`, el aviso del perfil y el punto de la lista).
+  `phishguard_org_id()` devuelve la organización con cualquier sesión (migración `20261127120000_phishguard_sin_dos_pasos.sql`).
+  Los factores TOTP que alguien ya había creado quedan en `auth.mfa_factors` pero la app no los pide.
 - **SafeLink** (puerta Personas, `/personas`, gratis): detector propio que devuelve un semáforo
   (verde, amarillo, rojo, gris) con el motivo, para URL, QR, PDF, correo y WhatsApp. **Faro** es el chat que
   explica cada resultado (función `safelink-faro`), en la web y en la app. No consulta VirusTotal ni Google Safe Browsing en el veredicto.
@@ -107,7 +106,7 @@ SafeGuard es una plataforma contra el phishing con dos módulos:
   más segura" plegada, lo revisado por color, tus logros y el menú agrupado (Seguridad y avisos, Tu actividad, La app, Ayuda y
   cuenta) con subpantallas `/perfil/:seccion` (seguridad, avisos, familia, reportes, apariencia, datos, version, ayuda, cuenta);
   las de configuración reusan `PanelPerfil` con `seccion`. En la web, `/panel/perfil` usa su propio diseño en `PanelPerfil` (`CabeceraPerfilWeb`,
-  `pages/PerfilWeb.css`): franja con foto, nombre, correo y chips (rol, forma de entrar, dos pasos), dos columnas de tarjetas
+  `pages/PerfilWeb.css`): franja con foto, nombre, correo y chips (rol y forma de entrar), dos columnas de tarjetas
   (Cuenta y Seguridad; Actividad, Organización, Apariencia y Tus datos) y la zona de peligro abajo. "Celulares con avisos" usa `push_mis_dispositivos` y `push_borrar_otros`.
   "Cuidar a un familiar" (`familia.js`): la persona cuidada crea un código de 6 letras que vence a los 30 minutos
   (`familia_crear_codigo`), quien cuida lo carga (`familia_aceptar`), y cuando la persona cuidada guarda un análisis rojo

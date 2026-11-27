@@ -42,7 +42,7 @@ const preguntas = [
   ],
   [
     '¿Hay que instalar algo en las computadoras?',
-    'No. Todo funciona en la web. Quien administra entra con su cuenta y la verificación en dos pasos.',
+    'No. Todo funciona en la web. Quien administra entra con su cuenta de SafeGuard.',
   ],
   [
     '¿Se renueva solo?',
