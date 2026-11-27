@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { nombreDescarga } from '../lib/actualizarApp.js'
+import { hayQueDesinstalar, nombreDescarga } from '../lib/actualizarApp.js'
+import { versionApp } from '../lib/esAppNativa.js'
 import './ActualizarApp.css'
 
 export function BotonActualizar({ ultima, className = '', nueva = false }) {
   const [bajando, setBajando] = useState(false)
+  const desinstalar = hayQueDesinstalar(versionApp(), ultima)
 
   return (
     <span className={`actualizar ${className}`.trim()}>
@@ -19,11 +21,11 @@ export function BotonActualizar({ ultima, className = '', nueva = false }) {
         <span className="actualizar-nota" role="status">
           {nueva
             ? 'Cuando termine, tocá la notificación de la descarga y elegí Instalar. Después podés usar la app nueva y borrar el acceso directo viejo.'
-            : ultima.desinstalar
+            : desinstalar
             ? 'Cuando termine: primero desinstalá SafeGuard (mantené apretado el ícono › Desinstalar) y después tocá la notificación de Android y elegí Instalar.'
             : 'Cuando termine, tocá la notificación de Android y elegí Instalar.'}
         </span>
-      ) : !nueva && ultima.desinstalar ? (
+      ) : !nueva && desinstalar ? (
         <span className="actualizar-nota">
           Esta vez cambia la firma de la app: hay que desinstalar la versión que tenés antes de instalar la nueva, y
           después volver a ingresar.

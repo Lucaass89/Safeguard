@@ -3,7 +3,7 @@
   --inicio-boton: #0f1b2d;
   --inicio-boton-texto: #ffffff;
   display: grid;
-  gap: 20px;
+  gap: 26px;
   width: 100%;
   min-width: 0;
   max-width: 520px;
@@ -401,69 +401,6 @@ html[data-tema='claro'] .inicio {
   color: var(--inicio-hero-suave);
   font-size: 15px;
   font-weight: 600;
-}
-
-.inicio-semaforo {
-  display: grid;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--sg-line);
-  border-radius: 20px;
-  background: var(--sg-surface);
-}
-
-.inicio-semaforo-luces {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.inicio-luz {
-  --luz: var(--inicio-verde);
-  display: grid;
-  gap: 2px;
-  padding: 12px 10px 10px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--luz) 12%, transparent);
-  color: var(--sg-text);
-}
-
-.inicio-luz-amarillo { --luz: var(--inicio-amarillo); }
-.inicio-luz-rojo { --luz: var(--inicio-rojo); }
-
-.inicio-luz strong {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--luz);
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.inicio-luz strong::before {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--luz);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--luz) 22%, transparent);
-  content: '';
-}
-
-.inicio-luz span {
-  color: var(--inicio-secundario);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.inicio-semaforo-texto {
-  margin: 0;
-  color: var(--inicio-secundario);
-  font-size: 14px;
-  line-height: 1.4;
 }
 
 .inicio-oferta {
@@ -928,7 +865,6 @@ a.inicio-oferta-si {
 
 .inicio-lista,
 .inicio-lecciones,
-.inicio-progreso,
 .inicio-novedades {
   display: grid;
   gap: 12px;
@@ -957,116 +893,6 @@ a.inicio-oferta-si {
   color: var(--inicio-secundario);
   font-size: 13px;
   font-weight: 700;
-}
-
-.inicio-lista-barra {
-  height: 8px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--sg-tonal);
-}
-
-.inicio-lista-barra span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--inicio-verde);
-  transition: width 300ms ease;
-}
-
-.inicio-lista-tareas {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.inicio-tarea + .inicio-tarea {
-  border-top: 1px solid var(--sg-line);
-}
-
-.inicio-tarea summary {
-  display: grid;
-  grid-template-columns: 26px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-  min-height: 52px;
-  padding: 6px 0;
-  color: var(--sg-text);
-  font-size: 15px;
-  font-weight: 650;
-  list-style: none;
-  cursor: pointer;
-}
-
-.inicio-tarea summary::-webkit-details-marker {
-  display: none;
-}
-
-.inicio-tarea-marca {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border: 2px solid var(--sg-line);
-  border-radius: 50%;
-  color: #ffffff;
-}
-
-.inicio-tarea-hecha .inicio-tarea-marca {
-  border-color: var(--inicio-verde);
-  background: var(--inicio-verde);
-}
-
-.inicio-tarea-marca svg {
-  width: 16px;
-  height: 16px;
-}
-
-.inicio-tarea-hecha summary span:last-child {
-  color: var(--inicio-secundario);
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-}
-
-.inicio-tarea p {
-  margin: 0 0 10px 38px;
-  color: var(--inicio-secundario);
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.inicio-tarea-acciones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 12px 38px;
-}
-
-.inicio-tarea > details > .inicio-tarea-boton {
-  margin: 0 0 12px 38px;
-}
-
-.inicio-tarea-boton {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--inicio-boton);
-  color: var(--inicio-boton-texto);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.inicio-tarea-boton-borde {
-  border: 1.5px solid var(--sg-line);
-  background: transparent;
-  color: var(--sg-text);
 }
 
 .inicio-lecciones-lista {
@@ -1173,59 +999,6 @@ a.inicio-oferta-si {
   gap: 10px;
 }
 
-.inicio-progreso .inicio-semaforo {
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
-.inicio-semaforo h3 {
-  margin: 0;
-  color: var(--inicio-secundario);
-  font-size: 14px;
-}
-
-.inicio-logros {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.inicio-logro {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  padding: 10px 6px;
-  border: 1px dashed var(--sg-line);
-  border-radius: 14px;
-  color: var(--inicio-secundario);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.25;
-  text-align: center;
-}
-
-.inicio-logro-icono {
-  font-size: 24px;
-  filter: grayscale(1);
-  opacity: 0.4;
-}
-
-.inicio-logro-hecho {
-  border-style: solid;
-  border-color: color-mix(in srgb, var(--inicio-verde) 40%, var(--sg-line));
-  background: color-mix(in srgb, var(--inicio-verde) 10%, transparent);
-  color: var(--sg-text);
-}
-
-.inicio-logro-hecho .inicio-logro-icono {
-  filter: none;
-  opacity: 1;
-}
-
 .inicio-equipo-tarjeta {
   display: grid;
   gap: 12px;
@@ -1327,8 +1100,6 @@ a.inicio-oferta-si {
 
 .inicio-mepaso:focus-visible,
 .inicio-leccion:focus-visible,
-.inicio-tarea summary:focus-visible,
-.inicio-tarea-boton:focus-visible,
 .inicio-mepaso-opciones button:focus-visible,
 .inicio-dialogo-principal:focus-visible,
 .inicio-dialogo-secundario:focus-visible,
@@ -1340,8 +1111,7 @@ a.inicio-oferta-si {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inicio-dialogo[open],
-  .inicio-lista-barra span {
+  .inicio-dialogo[open] {
     transition: none;
     animation: none;
   }

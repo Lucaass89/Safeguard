@@ -4,8 +4,9 @@ import { etiquetaRol, fotoDe, metodosDe } from '../lib/cuentaUsuario.js'
 import { codigoValido, formatoCodigo, minutosRestantes, normalizarCodigo, textoVinculo } from '../lib/familia.js'
 import { nombreEmpresa } from '../lib/formato.js'
 import { leerVistas } from '../lib/lecciones.js'
-import { estadoLista, leerHechas } from '../lib/listaSeguridad.js'
-import { calcularLogros, resumenLogros } from '../lib/logros.js'
+import { alternarEnLista } from '../lib/guardadoLocal.js'
+import { estadoLista, guardarHechas, leerHechas } from '../lib/listaSeguridad.js'
+import { calcularLogros } from '../lib/logros.js'
 import { usePortapapeles } from '../lib/portapapeles.js'
 import { nivelProteccion } from '../lib/proteccion.js'
 import { leerRacha, textoRacha } from '../lib/racha.js'
@@ -19,6 +20,7 @@ import { useDosPasos } from '../lib/useDosPasos.js'
 import { esAdministrador, useMembresia } from '../lib/useMembresia.js'
 import { useSesion } from '../lib/useSesion.js'
 import PanelPerfil from './PanelPerfil.jsx'
+import { CuidadosCuenta, Logros } from '../components/MiProgreso.jsx'
 import MisReportes from '../components/MisReportes.jsx'
 import './PerfilApp.css'
 
@@ -173,7 +175,7 @@ function Proteccion({ nivel }) {
   )
 }
 
-function Actividad({ totales, racha, logros }) {
+function Actividad({ totales, racha }) {
   return (
     <section className="pa-actividad" aria-labelledby="pa-actividad-titulo">
       <div className="pa-fila-titulo">
@@ -194,9 +196,7 @@ function Actividad({ totales, racha, logros }) {
           <span>Peligrosos</span>
         </li>
       </ul>
-      <p className="pa-actividad-pie">
-        {[textoRacha(racha), resumenLogros(logros)].filter(Boolean).join(' · ')}
-      </p>
+      <p className="pa-actividad-pie">{textoRacha(racha)}</p>
     </section>
   )
 }
@@ -245,7 +245,7 @@ function PerfilApp() {
   const actualizacion = useActualizacion()
   const totales = useTotalesPropios()
   const [racha] = useState(() => leerRacha())
-  const [hechas] = useState(() => leerHechas())
+  const [hechas, setHechas] = useState(() => leerHechas())
   const [vistas] = useState(() => leerVistas())
   const [invitado, setInvitado] = useState('')
   const [saliendo, setSaliendo] = useState(false)
@@ -268,6 +268,12 @@ function PerfilApp() {
     listaCompleta: lista.completa,
     lecciones: vistas.length,
   })
+
+  function alternarTarea(id) {
+    const nuevas = alternarEnLista(hechas, id)
+    setHechas(nuevas)
+    guardarHechas(nuevas)
+  }
 
   async function invitar() {
     const texto = textoInvitacion(usuario.user_metadata?.full_name)
@@ -310,50 +316,70 @@ function PerfilApp() {
       ) : null}
 
       <Proteccion nivel={nivel} />
-      <Actividad totales={totales} racha={racha} logros={logros} />
+      <CuidadosCuenta estado={lista} onAlternar={alternarTarea} />
+      <Actividad totales={totales} racha={racha} />
+      <Logros logros={logros} />
 
-      <nav aria-label="Ajustes">
-        <ul className="pa-menu">
-          <FilaMenu
-            to="/perfil/seguridad"
-            icono="escudo"
-            titulo="Seguridad"
-            nota={dosPasos === 'activar' ? 'Falta la verificación en dos pasos' : dosPasosListo ? 'Dos pasos activa · Sesiones abiertas' : 'Dos pasos y sesiones abiertas'}
-            alerta={dosPasos === 'activar'}
-          />
-          <FilaMenu
-            to="/perfil/avisos"
-            icono="campana"
-            titulo="Avisos al celular"
-            nota={app === 'lista' ? textoEstado(avisos) : app === 'pwa' ? 'Necesitan la app de Android' : 'Actualizá la app para recibirlos'}
-          />
-          <FilaMenu
-            to="/perfil/familia"
-            icono="familia"
-            titulo="Cuidar a un familiar"
-            nota={vinculos > 0 ? `${vinculos} ${vinculos === 1 ? 'persona vinculada' : 'personas vinculadas'}` : 'Avisale a alguien si revisás algo peligroso'}
-          />
-          <FilaMenu
-            to="/perfil/reportes"
-            icono="bandera"
-            titulo="Mis reportes"
-            nota={reportes === null ? 'Lo que nos avisaste' : `${reportes} ${reportes === 1 ? 'reporte' : 'reportes'}`}
-          />
-          <FilaMenu to="/perfil/apariencia" icono="pincel" titulo="Apariencia" nota="Tema y enlaces copiados" />
-          <FilaMenu to="/perfil/datos" icono="datos" titulo="Tus datos y privacidad" nota="Exportar, política y términos" />
-          {actualizacion.enApp ? (
+      <nav className="pa-grupos" aria-label="Ajustes">
+        <section className="pa-grupo" aria-labelledby="pa-grupo-0">
+          <h2 id="pa-grupo-0" className="pa-grupo-titulo">Seguridad y avisos</h2>
+          <ul className="pa-menu">
             <FilaMenu
-              to="/perfil/version"
-              icono="celular"
-              titulo="Versión de la app"
-              nota={actualizacion.hayNueva ? `Hay una nueva: ${actualizacion.ultima.nombre}` : actualizacion.esWeb ? 'App web · Bajá la de Android' : 'Estás al día'}
-              alerta={actualizacion.hayNueva}
+              to="/perfil/seguridad"
+              icono="escudo"
+              titulo="Seguridad"
+              nota={dosPasos === 'activar' ? 'Falta la verificación en dos pasos' : dosPasosListo ? 'Dos pasos activa · Sesiones abiertas' : 'Dos pasos y sesiones abiertas'}
+              alerta={dosPasos === 'activar'}
             />
-          ) : null}
-          <FilaMenu to="/perfil/ayuda" icono="ayuda" titulo="Ayuda" nota="¿Te pasó algo? Contacto" />
-          <FilaMenu icono="compartir" titulo="Invitar a alguien" nota={invitado || 'Mandale SafeGuard por WhatsApp'} onClick={invitar} />
-          <FilaMenu to="/perfil/cuenta" icono="persona" titulo="Cuenta" nota="Nombre y eliminar la cuenta" />
-        </ul>
+            <FilaMenu
+              to="/perfil/avisos"
+              icono="campana"
+              titulo="Avisos al celular"
+              nota={app === 'lista' ? textoEstado(avisos) : app === 'pwa' ? 'Necesitan la app de Android' : 'Actualizá la app para recibirlos'}
+            />
+            <FilaMenu
+              to="/perfil/familia"
+              icono="familia"
+              titulo="Cuidar a un familiar"
+              nota={vinculos > 0 ? `${vinculos} ${vinculos === 1 ? 'persona vinculada' : 'personas vinculadas'}` : 'Avisale a alguien si revisás algo peligroso'}
+            />
+          </ul>
+        </section>
+        <section className="pa-grupo" aria-labelledby="pa-grupo-1">
+          <h2 id="pa-grupo-1" className="pa-grupo-titulo">Tu actividad</h2>
+          <ul className="pa-menu">
+            <FilaMenu
+              to="/perfil/reportes"
+              icono="bandera"
+              titulo="Mis reportes"
+              nota={reportes === null ? 'Lo que nos avisaste' : `${reportes} ${reportes === 1 ? 'reporte' : 'reportes'}`}
+            />
+            <FilaMenu icono="compartir" titulo="Invitar a alguien" nota={invitado || 'Mandale SafeGuard por WhatsApp'} onClick={invitar} />
+          </ul>
+        </section>
+        <section className="pa-grupo" aria-labelledby="pa-grupo-2">
+          <h2 id="pa-grupo-2" className="pa-grupo-titulo">La app</h2>
+          <ul className="pa-menu">
+            <FilaMenu to="/perfil/apariencia" icono="pincel" titulo="Apariencia" nota="Tema y enlaces copiados" />
+            {actualizacion.enApp ? (
+              <FilaMenu
+                to="/perfil/version"
+                icono="celular"
+                titulo="Versión de la app"
+                nota={actualizacion.hayNueva ? `Hay una nueva: ${actualizacion.ultima.nombre}` : actualizacion.esWeb ? 'App web · Bajá la de Android' : 'Estás al día'}
+                alerta={actualizacion.hayNueva}
+              />
+            ) : null}
+            <FilaMenu to="/perfil/datos" icono="datos" titulo="Tus datos y privacidad" nota="Exportar, política y términos" />
+          </ul>
+        </section>
+        <section className="pa-grupo" aria-labelledby="pa-grupo-3">
+          <h2 id="pa-grupo-3" className="pa-grupo-titulo">Ayuda y cuenta</h2>
+          <ul className="pa-menu">
+            <FilaMenu to="/perfil/ayuda" icono="ayuda" titulo="Ayuda" nota="¿Te pasó algo? Contacto" />
+            <FilaMenu to="/perfil/cuenta" icono="persona" titulo="Cuenta" nota="Nombre y eliminar la cuenta" />
+          </ul>
+        </section>
       </nav>
 
       <button type="button" className="pa-salir" onClick={salir} disabled={saliendo} aria-busy={saliendo}>

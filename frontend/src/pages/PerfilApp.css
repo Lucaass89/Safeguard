@@ -7,7 +7,7 @@
   --pa-hero-suave: #c3d3f0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
+  gap: 20px;
   width: 100%;
   max-width: 520px;
   margin: 0 auto;
@@ -617,4 +617,23 @@ html[data-tema='claro'] .pa {
   .pa-anillo-avance {
     transition: none;
   }
+}
+
+.pa-grupos {
+  display: grid;
+  gap: 22px;
+}
+
+.pa-grupo {
+  display: grid;
+  gap: 8px;
+}
+
+.pa .pa-grupo-titulo {
+  margin: 0 4px;
+  color: var(--sg-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }

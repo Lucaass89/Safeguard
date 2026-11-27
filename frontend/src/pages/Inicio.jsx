@@ -7,16 +7,12 @@ import { registrarRespuesta } from '../lib/entrenamiento.js'
 import { versionApp } from '../lib/esAppNativa.js'
 import { CANALES, elegirMensaje, marcarVisto } from '../lib/estafaOReal.js'
 import { edicionVigente, fechaLegible } from '../lib/estafasSemana.js'
-import { alternarEnLista } from '../lib/guardadoLocal.js'
 import { leerVistas, marcarVista, ordenarLecciones } from '../lib/lecciones.js'
-import { estadoLista, guardarHechas, leerHechas } from '../lib/listaSeguridad.js'
-import { calcularLogros, resumenLogros } from '../lib/logros.js'
 import { SITUACIONES } from '../lib/mePaso.js'
 import { cerrarNovedad, leerCerradas, NOVEDADES, novedadesPendientes } from '../lib/novedades.js'
-import { elegirPortapapeles, olvidarCopiado, usePortapapeles } from '../lib/portapapeles.js'
+import { olvidarCopiado, usePortapapeles } from '../lib/portapapeles.js'
 import { guardarRacha, leerRacha, siguienteRacha, textoRacha } from '../lib/racha.js'
 import { saludoPara } from '../lib/saludo.js'
-import { useResumenSemana, useTotalesPropios } from '../lib/useAnalisisPropios.js'
 import { activarAvisos, apagarAvisos, appParaAvisos, useAvisos } from '../lib/useAvisos.js'
 import { useActualizacion } from '../lib/useActualizacion.js'
 import { guardarJson, leerJson } from '../lib/guardadoLocal.js'
@@ -201,66 +197,6 @@ function MePaso() {
   )
 }
 
-function ListaSeguridad({ estado, onAlternar }) {
-  const avance = Math.round((estado.listas / estado.total) * 100)
-
-  return (
-    <section className="inicio-lista" aria-labelledby="inicio-lista-titulo">
-      <div className="inicio-lista-cabeza">
-        <h2 id="inicio-lista-titulo">Tu cuenta, más segura</h2>
-        <span className="inicio-lista-cuenta">
-          {estado.listas} de {estado.total}
-        </span>
-      </div>
-      <div
-        className="inicio-lista-barra"
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={estado.total}
-        aria-valuenow={estado.listas}
-        aria-label="Avance de la lista"
-      >
-        <span style={{ width: `${avance}%` }} />
-      </div>
-      <ul className="inicio-lista-tareas">
-        {estado.tareas.map((tarea) => (
-          <li key={tarea.id} className={tarea.hecha ? 'inicio-tarea inicio-tarea-hecha' : 'inicio-tarea'}>
-            <details>
-              <summary>
-                <span className="inicio-tarea-marca" aria-hidden="true">
-                  {tarea.hecha ? <Icono nombre="tilde" /> : null}
-                </span>
-                <span>{tarea.titulo}</span>
-              </summary>
-              <p>{tarea.como}</p>
-              {tarea.automatica ? (
-                tarea.hecha ? null : (
-                  <button type="button" className="inicio-tarea-boton" onClick={() => elegirPortapapeles(true)}>
-                    Activarlo
-                  </button>
-                )
-              ) : tarea.id === 'safeguard' ? (
-                <div className="inicio-tarea-acciones">
-                  <Link className="inicio-tarea-boton" to="/perfil">
-                    Ir a Perfil
-                  </Link>
-                  <button type="button" className="inicio-tarea-boton inicio-tarea-boton-borde" onClick={() => onAlternar(tarea.id)}>
-                    {tarea.hecha ? 'Desmarcar' : 'Ya lo hice'}
-                  </button>
-                </div>
-              ) : (
-                <button type="button" className="inicio-tarea-boton" onClick={() => onAlternar(tarea.id)}>
-                  {tarea.hecha ? 'Desmarcar' : 'Ya lo hice'}
-                </button>
-              )}
-            </details>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
 function Lecciones({ vistas, onVista }) {
   const [abierta, setAbierta] = useState(null)
   const [parte, setParte] = useState(0)
@@ -339,30 +275,6 @@ function Lecciones({ vistas, onVista }) {
         ) : null}
       </Dialogo>
     </section>
-  )
-}
-
-const LUCES = [
-  ['verde', 'Seguros'],
-  ['amarillo', 'Precaución'],
-  ['rojo', 'Peligrosos'],
-]
-
-function SemaforoSemana({ conteo, texto }) {
-  if (!conteo || conteo.total === 0) return null
-  return (
-    <div className="inicio-semaforo">
-      <h3>Tu semana</h3>
-      <ul className="inicio-semaforo-luces">
-        {LUCES.map(([nivel, nombre]) => (
-          <li key={nivel} className={`inicio-luz inicio-luz-${nivel}`}>
-            <strong>{conteo[nivel]}</strong>
-            <span>{nombre}</span>
-          </li>
-        ))}
-      </ul>
-      {texto ? <p className="inicio-semaforo-texto">{texto}</p> : null}
-    </div>
   )
 }
 
@@ -517,29 +429,6 @@ function EstafaOReal({ racha, onRacha }) {
   )
 }
 
-function TuProgreso({ resumen, logros }) {
-  return (
-    <section className="inicio-progreso" aria-labelledby="inicio-progreso-titulo">
-      <div className="inicio-lista-cabeza">
-        <h2 id="inicio-progreso-titulo">Tu progreso</h2>
-        <span className="inicio-lista-cuenta">{resumenLogros(logros)}</span>
-      </div>
-      <SemaforoSemana conteo={resumen.conteo} texto={resumen.texto} />
-      <ul className="inicio-logros">
-        {logros.map((logro) => (
-          <li key={logro.id} className={logro.logrado ? 'inicio-logro inicio-logro-hecho' : 'inicio-logro'}>
-            <span className="inicio-logro-icono" aria-hidden="true">
-              {logro.icono}
-            </span>
-            <span>{logro.titulo}</span>
-            <span className="visualmente-oculto">{logro.logrado ? ' (logrado)' : ' (pendiente)'}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
 function TarjetaEquipo() {
   const { sesion } = useSesion()
   const membresia = useMembresia()
@@ -674,20 +563,9 @@ function Inicio() {
   const [parametros] = useSearchParams()
   const compartido = parametros.get('compartido')
   const portapapeles = usePortapapeles()
-  const resumen = useResumenSemana()
-  const totales = useTotalesPropios()
   const [estafas] = useState(() => edicionVigente())
   const [racha, setRacha] = useState(() => leerRacha())
-  const [hechas, setHechas] = useState(() => leerHechas())
   const [vistas, setVistas] = useState(() => leerVistas())
-  const lista = estadoLista(hechas, { portapapeles: portapapeles.preferencia === 'si' })
-  const logros = calcularLogros({
-    peligrosos: totales.peligrosos,
-    total: totales.total,
-    mejorRacha: racha.mejor,
-    listaCompleta: lista.completa,
-    lecciones: vistas.length,
-  })
 
   if (compartido?.trim()) {
     return <Navigate to={`/safelink?compartido=${encodeURIComponent(compartido)}`} replace />
@@ -696,12 +574,6 @@ function Inicio() {
   function cambiarRacha(nueva) {
     setRacha(nueva)
     guardarRacha(nueva)
-  }
-
-  function alternarTarea(id) {
-    const nuevas = alternarEnLista(hechas, id)
-    setHechas(nuevas)
-    guardarHechas(nuevas)
   }
 
   return (
@@ -734,10 +606,8 @@ function Inicio() {
       <OfertaAvisos />
       <OjoHoy edicion={estafas} />
       <MePaso />
-      <ListaSeguridad estado={lista} onAlternar={alternarTarea} />
       <EstafaOReal racha={racha} onRacha={cambiarRacha} />
       <Lecciones vistas={vistas} onVista={(id) => setVistas(marcarVista(vistas, id))} />
-      <TuProgreso resumen={resumen} logros={logros} />
       <TarjetaEquipo />
       {estafas && estafas.estafas.length > 1 ? <TarjetaEstafas edicion={estafas} /> : null}
       <Novedades />

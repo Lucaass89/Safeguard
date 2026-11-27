@@ -70,7 +70,7 @@ function Icono({ nombre }) {
 }
 
 function useApk() {
-  const [apk, setApk] = useState('/app/safeguard-1.4.apk')
+  const [apk, setApk] = useState('/app/safeguard-1.5.apk')
   useEffect(() => {
     let activo = true
     fetch('/app/version.json', { cache: 'no-store' })

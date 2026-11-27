@@ -1,6 +1,6 @@
 export function leerUltimaVersion(datos) {
   if (!datos || typeof datos !== 'object') return null
-  const { version, nombre, archivo, novedades, desinstalar } = datos
+  const { version, nombre, archivo, novedades, desinstalar, firmaDesde } = datos
   if (!Number.isInteger(version) || version < 1) return null
   if (typeof nombre !== 'string' || !/^\d+(\.\d+)*$/.test(nombre)) return null
   if (typeof archivo !== 'string' || !/^\/app\/[\w.-]+\.apk$/.test(archivo)) return null
@@ -10,6 +10,7 @@ export function leerUltimaVersion(datos) {
     archivo,
     novedades: typeof novedades === 'string' ? novedades : '',
     desinstalar: desinstalar === true,
+    firmaDesde: Number.isInteger(firmaDesde) && firmaDesde > 0 ? firmaDesde : 0,
   }
 }
 
@@ -17,11 +18,17 @@ export function necesitaActualizar(instalada, ultima) {
   return Boolean(ultima) && Number.isFinite(instalada) && instalada > 0 && instalada < ultima.version
 }
 
+export function hayQueDesinstalar(instalada, ultima) {
+  if (!ultima) return false
+  if (ultima.desinstalar) return true
+  return ultima.firmaDesde > 0 && Number.isFinite(instalada) && instalada > 0 && instalada < ultima.firmaDesde
+}
+
 export function nombreDescarga(ultima) {
   return `SafeGuard-${ultima.nombre}.apk`
 }
 
-const NOMBRES = { 1: '1.0', 2: '1.1 o 1.2', 3: '1.3', 4: '1.4' }
+const NOMBRES = { 1: '1.0', 2: '1.1 o 1.2', 3: '1.3', 4: '1.4', 5: '1.5' }
 
 export function nombreInstalada(numero) {
   if (!Number.isInteger(numero) || numero < 1) return 'desconocida'

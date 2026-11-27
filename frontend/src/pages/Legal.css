@@ -361,3 +361,36 @@ html[data-tema='claro'] .lg {
     padding: 0;
   }
 }
+
+.lg .lg-aviso {
+  display: inline-block;
+  margin: -12px 0 24px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, #fbbf24 45%, var(--sg-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, #fbbf24 10%, transparent);
+  color: var(--sg-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lg .lg-texto code {
+  padding: 1px 6px;
+  border: 1px solid var(--sg-line);
+  border-radius: 6px;
+  background: var(--sg-bg);
+  color: var(--sg-text);
+  font-size: 0.88em;
+  overflow-wrap: anywhere;
+}
+
+.lg .lg-texto .lg-lista {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.lg .lg-texto .lg-lista li::marker {
+  color: var(--lg-acento);
+}

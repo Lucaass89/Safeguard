@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { EnCorto, Indice, Marca, Seccion } from '../components/Legal.jsx'
 import Marco from '../components/Marco.jsx'
 import './Legal.css'
 
@@ -20,6 +21,7 @@ const NO_HACE = [
 ]
 
 const INDICE = [
+  ['en-corto', 'En corto'],
   ['safelink', 'SafeLink'],
   ['para-que', 'PhishGuard: para qué sirve'],
   ['no-hace', 'Qué no hace una campaña'],
@@ -30,28 +32,6 @@ const INDICE = [
   ['ley', 'Ley'],
   ['convenio', 'Convenio completo'],
 ]
-
-function Marca({ tipo }) {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {tipo === 'si' ? <path d="m5 12.5 4.5 4.5L19 7.5" /> : <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />}
-    </svg>
-  )
-}
-
-function Seccion({ id, numero, titulo, children }) {
-  return (
-    <section id={id} className="lg-seccion" aria-labelledby={`${id}-titulo`}>
-      <span className="lg-numero" aria-hidden="true">
-        {String(numero).padStart(2, '0')}
-      </span>
-      <div className="lg-seccion-cuerpo">
-        <h2 id={`${id}-titulo`}>{titulo}</h2>
-        {children}
-      </div>
-    </section>
-  )
-}
 
 function Terminos() {
   return (
@@ -77,19 +57,7 @@ function Terminos() {
         </header>
 
         <div className="lg-ancho lg-grilla">
-          <nav className="lg-indice" aria-label="En esta página">
-            <p>En esta página</p>
-            <ol>
-              <li>
-                <a href="#en-corto">En corto</a>
-              </li>
-              {INDICE.map(([id, texto]) => (
-                <li key={id}>
-                  <a href={`#${id}`}>{texto}</a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <Indice items={INDICE} />
 
           <div className="lg-texto">
             <p className="lg-intro">
@@ -98,19 +66,7 @@ function Terminos() {
               PhishGuard o al cargar personas para una campaña, aceptás estas condiciones.
             </p>
 
-            <section id="en-corto" className="lg-corto" aria-labelledby="en-corto-titulo">
-              <h2 id="en-corto-titulo">En corto</h2>
-              <ul>
-                {EN_CORTO.map((item) => (
-                  <li key={item}>
-                    <span className="lg-marca lg-marca-si">
-                      <Marca tipo="si" />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <EnCorto items={EN_CORTO} />
 
             <Seccion id="safelink" numero={1} titulo="SafeLink">
               <p>
