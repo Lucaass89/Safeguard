@@ -141,7 +141,7 @@ test('un motivo largo se corta en el aviso', () => {
 
 test('el enlace al panel lleva la dirección sin la parte después de #', () => {
   const enlace = new URL(enlaceAlPanel('https://bna-acceso.com/clave?x=1#token=9'))
-  assert.equal(enlace.origin + enlace.pathname, 'https://safeguardd.vercel.app/panel/enlaces')
+  assert.equal(enlace.origin + enlace.pathname, 'https://safeguard-ar.vercel.app/panel/enlaces')
   assert.equal(enlace.searchParams.get('url'), 'https://bna-acceso.com/clave?x=1')
   assert.equal(new URL(enlaceAlPanel('chrome://extensions')).search, '')
 })

@@ -149,7 +149,7 @@ La CI (`.github/workflows/safelink-eval.yml`) corre `npm test`, `npm run eval` y
 ## Seguridad
 
 - CORS: las funciones usan `conCors` de `supabase/functions/_shared/seguridad.ts`, que solo responde a
-  https://safeguardd.vercel.app, localhost y la extensión (`chrome-extension://`). Al publicar una función con el MCP hay
+  https://safeguard-ar.vercel.app (y la dirección anterior https://safeguardd.vercel.app), localhost y la extensión (`chrome-extension://`). Al publicar una función con el MCP hay
   que subir también `../_shared/seguridad.ts`. La API REST de Supabase siempre responde a cualquier origen: la protege RLS.
 - Límites: `limite_pasar(clave, máximo, segundos)` (tabla `limites_uso`, solo `service_role`) cuenta intentos por usuario
   o por IP. Lo usan `safelink-enriquecer` (120 cada 10 min por IP), `phishguard-mercadopago`, `phishguard-avisar-campana`,
@@ -168,14 +168,16 @@ La CI (`.github/workflows/safelink-eval.yml`) corre `npm test`, `npm run eval` y
   los aplica al cambiar de página (con `noindex` en las privadas y la dirección canónica). `public/robots.txt` y
   `public/sitemap.xml` salen de esa misma lista: si se agrega una página pública, se suma ahí y se regeneran (la prueba falla
   si no coinciden). La vista previa al compartir usa `public/compartir.png` (1200×630).
-- Search Console: la propiedad es `https://safeguardd.vercel.app` (prefijo de URL), con la etiqueta `google-site-verification` en
+- Search Console: la propiedad es `https://safeguardd.vercel.app` (prefijo de URL; falta sumar `https://safeguard-ar.vercel.app`), con la etiqueta `google-site-verification` en
   `index.html`.
 
 ## Configuración
 
 - `frontend/.env.local` (copiar de `.env.example`): `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`.
   En el navegador solo va la clave publishable, nunca la `service_role`.
-- Sitio publicado en Vercel (`vercel.json` reescribe todo a `index.html`): https://safeguardd.vercel.app
+- Sitio publicado en Vercel (`vercel.json` reescribe todo a `index.html`): https://safeguard-ar.vercel.app. La dirección anterior,
+  https://safeguardd.vercel.app, sigue sirviendo el mismo sitio sin redirigir: las apps 1.5 o anteriores solo le dan cámara, portapapeles y
+  avisos a ese dominio (`esNuestroSitio` en `MainActivity`; desde la próxima versión acepta los dos). No borrarla de Vercel.
 
 ## Convenciones
 

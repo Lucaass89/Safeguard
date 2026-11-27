@@ -23841,7 +23841,11 @@ var PALABRAS_GANCHO = [
 var RUTA_SENSIBLE = /(login|signin|verify|verification|wallet|seed|confirmar-cuenta|verificar-cuenta|actualizar-datos|recuperar-clave|secure-login)/i;
 var EXT_PELIGROSA = /\.(apk|exe|scr|bat|cmd|msi|dll|hta|lnk|iso|dmg|jse|vbs|vbe|ps1|docm|xlsm)(?=$|[?#])/i;
 var EXT_APK = /\.apk(?=$|[?#])/i;
-var DESCARGAS_CONFIABLES = /* @__PURE__ */ new Set(["f-droid.org", "safeguardd.vercel.app"]);
+var DESCARGAS_CONFIABLES = /* @__PURE__ */ new Set([
+	"f-droid.org",
+	"safeguard-ar.vercel.app",
+	"safeguardd.vercel.app"
+]);
 function esApk(direccion) {
 	try {
 		const url = new URL(direccion);
@@ -24511,7 +24515,7 @@ FALLO_AL_SEGUIR.tiempo, FALLO_AL_SEGUIR.conexion, FALLO_AL_SEGUIR.tls, FALLO_AL_
 var HORAS_LISTA = 6;
 var MAX_MOTIVOS = 4;
 var MAX_RECORDADAS = 200;
-var SITIO = "https://safeguardd.vercel.app";
+var SITIO = "https://safeguard-ar.vercel.app";
 var MAX_LARGO_AVISO = 140;
 var PESO = {
 	rojo: 2,

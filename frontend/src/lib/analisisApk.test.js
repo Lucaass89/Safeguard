@@ -22,6 +22,7 @@ describe('descargaConfiable', () => {
   test('acepta F-Droid y el sitio de SafeGuard', () => {
     assert.equal(descargaConfiable('f-droid.org'), true)
     assert.equal(descargaConfiable('www.f-droid.org'), true)
+    assert.equal(descargaConfiable('safeguard-ar.vercel.app'), true)
     assert.equal(descargaConfiable('safeguardd.vercel.app'), true)
   })
 
@@ -53,7 +54,7 @@ describe('enlaces a un APK', () => {
 
   test('desde F-Droid o el sitio de SafeGuard da amarillo', () => {
     assert.equal(analizar('https://f-droid.org/F-Droid.apk').nivel, 'amarillo')
-    assert.equal(analizar('https://safeguardd.vercel.app/app/safeguard-1.4.apk').nivel, 'amarillo')
+    assert.equal(analizar('https://safeguard-ar.vercel.app/app/safeguard-1.4.apk').nivel, 'amarillo')
   })
 
   test('el Play Store no es un APK y no se marca', () => {
@@ -120,7 +121,7 @@ describe('APK con lo que devuelve el servidor', () => {
 
   test('el sitio oficial de una marca y el de SafeGuard siguen en amarillo', () => {
     assert.equal(conServidor('https://www.whatsapp.com/android/WhatsApp.apk').nivel, 'amarillo')
-    assert.equal(conServidor('https://safeguardd.vercel.app/app/safeguard-1.4.apk').nivel, 'amarillo')
+    assert.equal(conServidor('https://safeguard-ar.vercel.app/app/safeguard-1.4.apk').nivel, 'amarillo')
   })
 
   test('un APK de un sitio desconocido sigue en rojo', () => {

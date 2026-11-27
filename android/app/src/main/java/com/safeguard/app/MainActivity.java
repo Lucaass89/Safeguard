@@ -49,7 +49,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SITIO = "https://safeguardd.vercel.app";
+    private static final String SITIO = "https://safeguard-ar.vercel.app";
+    private static final String SITIO_ANTERIOR = "safeguardd.vercel.app";
     static final String PREFERENCIAS = "avisos";
     private static final String[] TEMAS = {"anuncios", "estafas"};
     private static final int MAXIMO_COMPARTIDO = 4000;
@@ -235,10 +236,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean esNuestroSitio(Uri origen) {
         if (origen == null) return false;
-        Uri sitioUri = Uri.parse(SITIO);
+        String host = origen.getHost();
         return "https".equalsIgnoreCase(origen.getScheme())
-                && sitioUri.getHost() != null
-                && sitioUri.getHost().equalsIgnoreCase(origen.getHost());
+                && host != null
+                && (host.equalsIgnoreCase(Uri.parse(SITIO).getHost()) || host.equalsIgnoreCase(SITIO_ANTERIOR));
     }
 
     private boolean estaEnNuestroSitio() {

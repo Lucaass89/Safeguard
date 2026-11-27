@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "SafeLink",
   "description": "Avisa con un color si la pestaña activa parece riesgosa. No bloquea la navegación. Las páginas en verde no salen de tu compu.",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "action": {
     "default_title": "SafeLink",
     "default_popup": "popup.html",

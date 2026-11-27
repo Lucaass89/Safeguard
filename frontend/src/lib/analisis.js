@@ -66,7 +66,7 @@ const EXT_PELIGROSA =
 
 const EXT_APK = /\.apk(?=$|[?#])/i
 
-const DESCARGAS_CONFIABLES = new Set(['f-droid.org', 'safeguardd.vercel.app'])
+const DESCARGAS_CONFIABLES = new Set(['f-droid.org', 'safeguard-ar.vercel.app', 'safeguardd.vercel.app'])
 
 export function esApk(direccion) {
   try {

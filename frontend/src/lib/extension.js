@@ -14,7 +14,7 @@ export { analizar }
 export const HORAS_LISTA = 6
 export const MAX_MOTIVOS = 4
 export const MAX_RECORDADAS = 200
-export const SITIO = 'https://safeguardd.vercel.app'
+export const SITIO = 'https://safeguard-ar.vercel.app'
 export const MAX_LARGO_AVISO = 140
 
 const PESO = { rojo: 2, amarillo: 1 }
