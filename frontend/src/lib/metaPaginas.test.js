@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
-import { esPrivada, metaDe, normalizarRuta, PAGINAS, robots, sitemap, SITIO } from './metaPaginas.js'
+import { esPrivada, htmlDePagina, metaDe, normalizarRuta, PAGINAS, robots, sitemap, SITIO } from './metaPaginas.js'
 
 describe('meta de cada página', () => {
   test('cada página pública tiene título y descripción de largo razonable', () => {
@@ -36,5 +36,27 @@ describe('meta de cada página', () => {
     assert.equal(publicado, sitemap(fecha))
     assert.equal(readFileSync(new URL('../../public/robots.txt', import.meta.url), 'utf8'), robots())
     assert.match(robots(), /Disallow: \/panel\//)
+  })
+})
+
+describe('html de cada página', () => {
+  const base = readFileSync(new URL('../../index.html', import.meta.url), 'utf8')
+
+  test('cada página pública sale con su título, descripción y canónica', () => {
+    for (const ruta of Object.keys(PAGINAS)) {
+      const html = htmlDePagina(base, ruta)
+      const datos = metaDe(ruta)
+      assert.ok(html.includes(`<title>${datos.titulo}</title>`), ruta)
+      assert.ok(html.includes(`<link rel="canonical" href="${datos.canonica}"`), ruta)
+      assert.ok(html.includes(`content="${datos.canonica}"`), ruta)
+      assert.equal(html.split(datos.descripcion).length - 1 >= 3, true, ruta)
+    }
+  })
+
+  test('robots bloquea las privadas con y sin barra final', () => {
+    const texto = robots()
+    assert.match(texto, /^Disallow: \/panel\$$/m)
+    assert.match(texto, /^Disallow: \/ingresar\$$/m)
+    assert.doesNotMatch(texto, /^Disallow: \/c$/m)
   })
 })
