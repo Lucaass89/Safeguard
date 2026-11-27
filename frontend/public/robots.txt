@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /panel/
+Disallow: /perfil/
+Disallow: /phishguard/
+Disallow: /safelink/
+Disallow: /simulacion/
+Disallow: /bien/
+Disallow: /c/
+Disallow: /ingresar/
+Disallow: /adquirir/
+
+Sitemap: https://safeguardd.vercel.app/sitemap.xml

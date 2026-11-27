@@ -162,6 +162,15 @@ La CI (`.github/workflows/safelink-eval.yml`) corre `npm test`, `npm run eval` y
 - Secretos: solo en Supabase (funciones), GitHub (firma y FCM) y Vercel. En el repo van únicamente la clave publishable y
   el `google-services.json` de Firebase, que son públicos por diseño.
 
+## Google y vista previa
+
+- `lib/metaPaginas.js` tiene el título y la descripción de cada página pública y las rutas privadas. `components/MetaPagina.jsx`
+  los aplica al cambiar de página (con `noindex` en las privadas y la dirección canónica). `public/robots.txt` y
+  `public/sitemap.xml` salen de esa misma lista: si se agrega una página pública, se suma ahí y se regeneran (la prueba falla
+  si no coinciden). La vista previa al compartir usa `public/compartir.png` (1200×630).
+- Search Console: la propiedad es `https://safeguardd.vercel.app` (prefijo de URL), con la etiqueta `google-site-verification` en
+  `index.html`.
+
 ## Configuración
 
 - `frontend/.env.local` (copiar de `.env.example`): `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`.

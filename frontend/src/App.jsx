@@ -30,6 +30,7 @@ import PanelTablero from './pages/PanelTablero.jsx'
 import PanelInforme from './pages/PanelInforme.jsx'
 import PanelPerfil from './pages/PanelPerfil.jsx'
 import Simulacion from './pages/Simulacion.jsx'
+import MetaPagina from './components/MetaPagina.jsx'
 import Reconocimiento from './pages/Reconocimiento.jsx'
 
 function MarcoApp() {
@@ -61,6 +62,7 @@ function Entrada() {
 function App() {
   return (
     <>
+      <MetaPagina />
       <Routes>
       <Route path="simulacion/:token" element={<Simulacion />} />
       <Route path="bien/:token" element={<Reconocimiento />} />
